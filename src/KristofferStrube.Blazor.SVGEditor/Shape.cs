@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace KristofferStrube.Blazor.SVGEditor
 {
-    public abstract class Shape : Models.ISVGElement
+    public abstract class Shape : ISVGElement
     {
         public IElement Element { get; set; }
         public SVG SVG { get; set; }

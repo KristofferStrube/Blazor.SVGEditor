@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace KristofferStrube.Blazor.SVGEditor
 {
-    partial class NonImplmentedElement : ComponentBase, Models.ISVGElement
+    partial class NonImplmentedElement : ComponentBase, ISVGElement
     {
         public IElement Element { get; set; }
 
