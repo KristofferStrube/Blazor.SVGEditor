@@ -1,0 +1,42 @@
+﻿<g>
+    <polygon points="@Polygon.Element.GetAttribute("points")" fill="@Polygon.Fill" stroke="@Polygon.Stroke" stroke-width="@Polygon.StrokeWidth" @onmousedown="Select">
+    </polygon>
+    @if (Polygon.Selected)
+    {
+        @for (int i = 0; i < Polygon.Points.Count(); i++)
+        {
+            var j = i;
+            <circle @onmousedown="() => AnchorSelect(j)" cx="@(Polygon.Points[i].x)" cy="@(Polygon.Points[i].y)" r="6" stroke-width="2" stroke="black" fill="transparent" />
+        }
+    }
+</g>
+
+
+@code {
+    [Parameter]
+    public Polygon Polygon { get; set; }
+
+    public string PointsToString(List<(double x, double y)> points)
+    {
+        return string.Join(" ", points.Select(point => $"{point.x.ToString(CultureInfo.InvariantCulture)},{point.y.ToString(CultureInfo.InvariantCulture)}"));
+    }
+
+    public void AnchorSelect(int j)
+    {
+        if (Polygon.EditMode != EditMode.Add)
+        {
+            Polygon.CurrentAnchor = j;
+            Polygon.EditMode = EditMode.MoveAnchor;
+        }
+    }
+
+    public void Select(MouseEventArgs eventArgs)
+    {
+        if (Polygon.SVG.CurrentShape == null || Polygon.SVG.CurrentShape.EditMode == EditMode.None)
+        {
+            Polygon.SVG.CurrentShape = Polygon;
+            Polygon.Panner = (x: eventArgs.OffsetX, y: eventArgs.OffsetY);
+            Polygon.EditMode = EditMode.Move;
+        }
+    }
+}

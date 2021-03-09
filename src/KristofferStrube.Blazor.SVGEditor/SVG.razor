@@ -1,0 +1,94 @@
+﻿<svg @onmousemove="Move" @onmouseup="Up" @onmouseout="Out" style="border:1px solid black" width="100%" height="80vh">
+    <rect x="0" y="0" width="50" height="50" fill="pink" stroke-width="3" stroke="red" @onclick="UnSelect"  />
+    @foreach (ISVGElement element in Elements)
+    {
+        switch (element.TagName)
+        {
+            case "RECT":
+                var rectangle = (Rectangle)element;
+                <RectangleEditor Rectangle=rectangle />
+                break;
+            case "POLYGON":
+                var polygon = (Polygon)element;
+                <PolygonEditor Polygon=polygon />
+                break;
+        }
+
+    }
+</svg>
+
+@code {
+    [Parameter]
+    public string Input { get; set; }
+
+    private string _Input { get; set; }
+
+    [Parameter]
+    public Action<string> InputUpdated { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Input == _Input)
+        {
+            return;
+        }
+        _Input = Input;
+
+        var config = Configuration.Default;
+
+        var context = BrowsingContext.New(config);
+
+        var document = await context.OpenAsync(req => req.Content(Input));
+
+        Elements = document.GetElementsByTagName("BODY")[0].Children.Select<AngleSharp.Dom.IElement, ISVGElement>(child =>
+        {
+            ISVGElement element;
+            switch (child.TagName)
+            {
+                case "RECT":
+                    element = new Rectangle() { Element = child, SVG = this };
+                    break;
+                case "POLYGON":
+                    element = new Polygon() { Element = child, SVG = this };
+                    break;
+                default:
+                    element = new NonImplmentedElement();
+                    break;
+
+            }
+            element.Changed = UpdateInput;
+            return element;
+        }
+        ).ToList();
+    }
+
+    private void UpdateInput()
+    {
+        _Input = string.Join(" \n", Elements.Select(e => e.Element.ToHtml()));
+        InputUpdated(_Input);
+    }
+
+    public List<ISVGElement> Elements { get; set; }
+
+    public ISVGElement CurrentShape { get; set; }
+
+    public void Move(MouseEventArgs eventArgs)
+    {
+        CurrentShape?.HandleMouseMove(eventArgs);
+    }
+
+    public void Up(MouseEventArgs eventArgs)
+    {
+        CurrentShape?.HandleMouseUp(eventArgs);
+    }
+
+    public void Out(MouseEventArgs eventArgs)
+    {
+        CurrentShape?.HandleMouseOut(eventArgs);
+    }
+
+    public void UnSelect(MouseEventArgs eventArgs)
+    {
+        CurrentShape = null;
+    }
+}

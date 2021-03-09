@@ -1,0 +1,124 @@
+﻿@page "/"
+
+@*<div style="height:10vh; min-height:100px;">
+    @if (State.CurrentShape?.ElementType == ElementType.Polygon)
+    {
+        <button @onclick="()=>MakePolygon()" class="btn btn-success">Finish Polygon</button>
+    }
+    else if (State.CurrentShape == null)
+    {
+        <button @onclick="()=>MakePolygon()" class="btn btn-secondary">Make Polygon</button>
+    }
+    else
+    {
+        <button class="btn btn-light">Make Polygon</button>
+    }
+
+
+    @if (State.CurrentShape?.ElementType == ElementType.Rectangle)
+    {
+        <button @onclick="()=>MakeRectangle()" class="btn btn-success">Finish Rectangle</button>
+    }
+    else if (State.CurrentShape == null)
+    {
+        <button @onclick="()=>MakeRectangle()" class="btn btn-secondary">Make Rectangle</button>
+    }
+    else
+    {
+        <button class="btn btn-light">Make Polygon</button>
+    }
+
+    <br />
+    @if (State.CurrentShape?.ElementType == ElementType.Polygon || State.CurrentShape?.ElementType == ElementType.Rectangle)
+    {
+        var shape = ((Shape)State.CurrentShape);
+        <button class="btn btn-primary" @onclick="()=> { backgroundColorPickerOpened = true; }">
+            <div style="background-color:@(shape.BackgroundColor)" class="buttonColor"></div> Background Color
+        </button>
+        <ColorPicker IsOpened="backgroundColorPickerOpened" Closed="UseBackgroundColor" MyColor="@(shape.BackgroundColor)"></ColorPicker>
+        <button class="btn btn-primary" @onclick="() => { strokeColorPickerOpened = true; }">
+            <div style="background-color:@(shape.BorderColor)" class="buttonColor"></div> Border Color
+        </button>
+        <ColorPicker IsOpened="strokeColorPickerOpened" Closed="UseStrokeColor" MyColor="@(shape.BorderColor)"></ColorPicker>
+
+        @if (State.CurrentShape.AvailableEditModes.Contains(EditMode.Add))
+        {
+            if (State.CurrentShape.EditMode == EditMode.Add)
+            {
+                <button class="btn btn-success" @onclick="() => { State.CurrentShape.EditMode = EditMode.None; }">
+                    Add Points
+                </button>
+            }
+            else
+            {
+                <button class="btn btn-primary" @onclick="() => { State.CurrentShape.EditMode = EditMode.Add; }">
+                    Add Points
+                </button>
+            }
+        }
+    }
+</div>*@
+<textarea @bind="Input" @bind:event="oninput" style="width:100%;height:100px;" />
+<SVG @ref=SVG Input=@Input InputUpdated="(string s) => { Input = s; StateHasChanged(); }" />
+
+@code {
+    protected string Input = @"<rect x=""120"" y=""60"" height=""125"" width=""125"" fill=""green"" stroke=""blue"" stroke-width=""2"" ></rect>
+<polygon points=""135,171 185,96 185,146 235,71"" fill=""red"" stroke=""yellow"" stroke-width=""3""></polygon>";
+
+    protected bool backgroundColorPickerOpened = false;
+    protected bool strokeColorPickerOpened = false;
+
+    protected SVG SVG { get; set; }
+
+    //public void MakePolygon()
+    //{
+    //    if (SVG.CurrentShape == null)
+    //    {
+    //        SVG.CurrentShape = new PolygonShape(State);
+    //        SVG.CurrentShape.EditMode = EditMode.Add;
+    //        SVG.Elements.Add(State.CurrentShape);
+    //    }
+    //    else
+    //    {
+    //        SVG.CurrentShape = null;
+    //    }
+    //}
+
+    //public void MakeRectangle()
+    //{
+    //    if (SVG.CurrentShape == null)
+    //    {
+    //        SVG.CurrentShape = new RectangleShape() {;
+    //        SVG.CurrentShape.EditMode = EditMode.Add;
+    //        SVG.Elements.Add(State.CurrentShape);
+    //    }
+    //    else
+    //    {
+    //        State.CurrentShape = null;
+    //    }
+    //}
+
+    protected Boolean AllShapesNoneMode => true; //State.Elements.TrueForAll(shape => shape.EditMode == EditMode.None);
+
+    //public void UseBackgroundColor(string value)
+    //{
+    //    switch (State.CurrentShape.ElementType)
+    //    {
+    //        case ElementType.Polygon or ElementType.Rectangle:
+    //            ((Shape)State.CurrentShape).BackgroundColor = value;
+    //            break;
+    //    }
+    //    backgroundColorPickerOpened = false;
+    //}
+
+    //public void UseStrokeColor(string value)
+    //{
+    //    switch (State.CurrentShape.ElementType)
+    //    {
+    //        case ElementType.Polygon or ElementType.Rectangle:
+    //            ((Shape)State.CurrentShape).BorderColor = value;
+    //            break;
+    //    }
+    //    strokeColorPickerOpened = false;
+    //}
+} 
