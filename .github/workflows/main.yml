@@ -1,0 +1,41 @@
+name: 'Publish application'
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**/README.md'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+        # Checkout the code
+        - uses: actions/checkout@v2
+
+        # Install .NET Core SDK
+        - name: Setup .NET Core
+          uses: actions/setup-dotnet@v1.7.2
+          with:
+            dotnet-version: 5.0.102
+
+        # Run tests
+        - name: Test
+          run: dotnet test
+
+        # Generate the website
+        - name: Publish
+          run: dotnet publish samples/KristofferStrube.Blazor.SVGEditor.Samples/KristofferStrube.Blazor.SVGEditor.Samples.csproj --configuration Release --output build
+
+        # Publish the website
+        - name: GitHub Pages action
+          if: ${{ github.ref == 'refs/heads/main' }} # Publish only when the push is on main
+          uses: peaceiris/actions-gh-pages@v3.6.1
+          with:
+            github_token: ${{ secrets.PUBLISH_TOKEN }}
+            publish_branch: gh-pages
+            publish_dir: build/wwwroot
+            allow_empty_commit: false
+            keep_files: false
+            force_orphan: true
