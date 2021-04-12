@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.30615.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KristofferStrube.Blazor.SVGEditor.Samples", "samples\KristofferStrube.Blazor.SVGEditor.Samples\KristofferStrube.Blazor.SVGEditor.Samples.csproj", "{1CC1F8D5-3BFC-4DE4-9627-04344BC6584E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KristofferStrube.Blazor.SVGEditor", "src\KristofferStrube.Blazor.SVGEditor\KristofferStrube.Blazor.SVGEditor.csproj", "{2DED3DA7-FDDC-4AC1-B261-2D40AB761EA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KristofferStrube.Blazor.SVGEditor", "src\KristofferStrube.Blazor.SVGEditor\KristofferStrube.Blazor.SVGEditor.csproj", "{2DED3DA7-FDDC-4AC1-B261-2D40AB761EA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KristofferStrube.Blazor.SvgEditor.Test", "test\KristofferStrube.Blazor.SvgEditor.Test\KristofferStrube.Blazor.SvgEditor.Test.csproj", "{04F564CB-F947-4F0C-9DA6-B40D0BA55034}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{2DED3DA7-FDDC-4AC1-B261-2D40AB761EA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2DED3DA7-FDDC-4AC1-B261-2D40AB761EA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2DED3DA7-FDDC-4AC1-B261-2D40AB761EA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04F564CB-F947-4F0C-9DA6-B40D0BA55034}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04F564CB-F947-4F0C-9DA6-B40D0BA55034}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04F564CB-F947-4F0C-9DA6-B40D0BA55034}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04F564CB-F947-4F0C-9DA6-B40D0BA55034}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
