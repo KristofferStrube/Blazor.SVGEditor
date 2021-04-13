@@ -13,14 +13,14 @@ namespace KristofferStrube.Blazor.SVGEditor
     {
         public IElement Element { get; set; }
         public SVG SVG { get; set; }
-        public string Fill => Element.GetAttribute("fill");
-        public string Stroke => Element.GetAttribute("stroke");
-        public string StrokeWidth => Element.GetAttribute("stroke-width");
+        public string Fill => Element.GetAttribute("fill") ?? string.Empty;
+        public string Stroke => Element.GetAttribute("stroke") ?? string.Empty;
+        public string StrokeWidth => Element.GetAttribute("stroke-width") ?? string.Empty;
         public string TagName => Element.TagName;
         public (double x, double y) Panner { get; set; }
         public EditMode EditMode { get; set; }
         public IEnumerable<EditMode> AvailableEditModes { get; set; }
-        public Action Changed { get; set; }
+        public Action<ISVGElement> Changed { get; set; }
         public bool Selectable => SVG.CurrentShape == null;
         public bool Selected => SVG.CurrentShape == this;
         public abstract void HandleMouseMove(MouseEventArgs eventArgs);

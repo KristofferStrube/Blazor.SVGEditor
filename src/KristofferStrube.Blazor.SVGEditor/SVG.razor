@@ -12,6 +12,10 @@
                 var polygon = (Polygon)element;
                 <PolygonEditor Polygon=polygon />
                 break;
+            case "PATH":
+                var path = (Path)element;
+                <PathEditor Path=path />
+                break;
         }
 
     }
@@ -51,6 +55,9 @@
                 case "POLYGON":
                     element = new Polygon() { Element = child, SVG = this };
                     break;
+                case "PATH":
+                    element = new Path() { Element = child, SVG = this };
+                    break;
                 default:
                     element = new NonImplmentedElement();
                     break;
@@ -60,15 +67,20 @@
             return element;
         }
         ).ToList();
+
+        ElementsAsHtml = Elements.Select(e => e.Element.ToHtml()).ToList();
     }
 
-    private void UpdateInput()
+    private void UpdateInput(ISVGElement element)
     {
-        _Input = string.Join(" \n", Elements.Select(e => e.Element.ToHtml()));
+        ElementsAsHtml[Elements.IndexOf(element)] = element.Element.ToHtml();
+        _Input = string.Join(" \n", ElementsAsHtml);
         InputUpdated(_Input);
     }
 
     public List<ISVGElement> Elements { get; set; }
+
+    public List<string> ElementsAsHtml { get; set; }
 
     public ISVGElement CurrentShape { get; set; }
 

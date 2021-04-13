@@ -4,13 +4,12 @@
 <SVG @ref=SVG Input=@Input InputUpdated="(string s) => { Input = s; StateHasChanged(); }" />
 
 @code {
-    protected string Input = @"<rect x=""120"" y=""60"" height=""125"" width=""125"" fill=""green"" stroke=""blue"" stroke-width=""2"" ></rect>
-<polygon points=""135,171 185,96 185,146 235,71"" fill=""red"" stroke=""yellow"" stroke-width=""3""></polygon>";
+    protected string Input = @"<rect x=""120"" y=""60"" height=""125"" width=""140"" fill=""green"" stroke=""blue"" stroke-width=""2""></rect> 
+<polygon points=""135,171 195,95 192,147 244,72"" fill=""red"" stroke=""yellow"" stroke-width=""3""></polygon> 
+<path d=""M 120 350 l 0 -80 -30 0 100 -60 100 60 -30 0 0 80"" fill=""lightgrey"" stroke=""grey"" stroke-width=""5""></path>";
 
     protected bool backgroundColorPickerOpened = false;
     protected bool strokeColorPickerOpened = false;
 
     protected SVG SVG { get; set; }
-
-    protected Boolean AllShapesNoneMode => true; //State.Elements.TrueForAll(shape => shape.EditMode == EditMode.None);
 } 

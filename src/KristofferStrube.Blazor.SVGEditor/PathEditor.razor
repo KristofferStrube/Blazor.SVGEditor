@@ -1,0 +1,41 @@
+﻿<g>
+    <path d="@Path.Instructions.AsString()" fill="@Path.Fill" stroke="@Path.Stroke" stroke-width="@Path.StrokeWidth" @onmousedown="Select" />
+    @if (Path.Selected)
+    {
+        @for (int i = 0; i < Path.Instructions.Count; i++)
+        {
+            var j = i;
+            switch (Path.Instructions[i])
+            {
+                case AbsoluteLineInstruction or RelativeLineInstruction or AbsoluteMoveInstruction or RelativeMoveInstruction:
+                    <circle @onmousedown="() => AnchorSelect(j, 0)" cx="@Path.Instructions[i].EndPosition.x" cy="@Path.Instructions[i].EndPosition.y" r="6" stroke-width="2" stroke="black" fill="transparent" />
+                    break;
+            }
+        }
+    }
+</g>
+
+@code {
+    [Parameter]
+    public Path Path { get; set; }
+
+    public void AnchorSelect(int segment, int anchor)
+    {
+        if (Path.EditMode != EditMode.Add)
+        {
+            Path.CurrentInstruction = segment;
+            Path.CurrentAnchor = anchor;
+            Path.EditMode = EditMode.MoveAnchor;
+        }
+    }
+
+    public void Select(MouseEventArgs eventArgs)
+    {
+        if (Path.SVG.CurrentShape == null || Path.SVG.CurrentShape.EditMode == EditMode.None)
+        {
+            Path.SVG.CurrentShape = Path;
+            Path.Panner = (x: eventArgs.OffsetX, y: eventArgs.OffsetY);
+            Path.EditMode = EditMode.Move;
+        }
+    }
+}

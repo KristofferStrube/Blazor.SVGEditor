@@ -28,7 +28,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         public void HandleMouseMove(MouseEventArgs eventArgs);
         public void HandleMouseUp(MouseEventArgs eventArgs);
         public void HandleMouseOut(MouseEventArgs eventArgs);
-        public Action Changed { get; set; }
+        public Action<ISVGElement> Changed { get; set; }
     }
 
     public enum EditMode

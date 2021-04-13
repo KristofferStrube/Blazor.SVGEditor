@@ -16,23 +16,23 @@ namespace KristofferStrube.Blazor.SVGEditor
     public class Rectangle : Shape
     {
         public double x {
-            get { return double.Parse(Element.GetAttribute("x")); }
-            set { Element.SetAttribute("x", value.ToString()); Changed.Invoke(); }
+            get { return double.Parse(Element.GetAttribute("x") ?? string.Empty); }
+            set { Element.SetAttribute("x", value.ToString()); Changed.Invoke(this); }
         }
         public double y
         {
-            get { return double.Parse(Element.GetAttribute("y")); }
-            set { Element.SetAttribute("y", value.ToString()); Changed.Invoke(); }
+            get { return double.Parse(Element.GetAttribute("y") ?? string.Empty); }
+            set { Element.SetAttribute("y", value.ToString()); Changed.Invoke(this); }
         }
         public double width
         {
-            get { return double.Parse(Element.GetAttribute("width")); }
-            set { Element.SetAttribute("width", value.ToString()); Changed.Invoke(); }
+            get { return double.Parse(Element.GetAttribute("width") ?? string.Empty); }
+            set { Element.SetAttribute("width", value.ToString()); Changed.Invoke(this); }
         }
         public double height
         {
-            get { return double.Parse(Element.GetAttribute("height")); }
-            set { Element.SetAttribute("height", value.ToString()); Changed.Invoke(); }
+            get { return double.Parse(Element.GetAttribute("height") ?? string.Empty); }
+            set { Element.SetAttribute("height", value.ToString()); Changed.Invoke(this); }
         }
 
         public void Select(MouseEventArgs eventArgs)

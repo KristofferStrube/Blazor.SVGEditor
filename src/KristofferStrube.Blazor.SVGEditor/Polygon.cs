@@ -10,8 +10,8 @@ namespace KristofferStrube.Blazor.SVGEditor.Models
     public class Polygon : Shape
     {
         public List<(double x, double y)> Points {
-            get { return StringToPoints(Element.GetAttribute("points")); }
-            set { Element.SetAttribute("points", PointsToString(value)); Changed.Invoke(); }
+            get { return StringToPoints(Element.GetAttribute("points") ?? string.Empty); }
+            set { Element.SetAttribute("points", PointsToString(value)); Changed.Invoke(this); }
         }
 
         public string PointsToString(List<(double x, double y)> points)
@@ -89,7 +89,7 @@ namespace KristofferStrube.Blazor.SVGEditor.Models
                     {
                         SVG.Elements.Remove(this);
                         SVG.CurrentShape = null;
-                        Changed.Invoke();
+                        Changed.Invoke(this);
                     }
                     break;
                 case EditMode.Move:

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KristofferStrube.Blazor.SVG
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KristofferStrube.Blazor.SVGEditor", "src\KristofferStrube.Blazor.SVGEditor\KristofferStrube.Blazor.SVGEditor.csproj", "{2DED3DA7-FDDC-4AC1-B261-2D40AB761EA5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KristofferStrube.Blazor.SvgEditor.Test", "test\KristofferStrube.Blazor.SvgEditor.Test\KristofferStrube.Blazor.SvgEditor.Test.csproj", "{04F564CB-F947-4F0C-9DA6-B40D0BA55034}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KristofferStrube.Blazor.SvgEditor.Test", "test\KristofferStrube.Blazor.SvgEditor.Test\KristofferStrube.Blazor.SvgEditor.Test.csproj", "{04F564CB-F947-4F0C-9DA6-B40D0BA55034}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

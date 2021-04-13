@@ -42,10 +42,10 @@ namespace KristofferStrube.Blazor.SVGEditor
             throw new NotImplementedException();
         }
 
-        public Action Changed { get; set; }
+        public Action<ISVGElement> Changed { get; set; }
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
-            Changed.Invoke();
+            Changed.Invoke(this);
         }
     }
 }
