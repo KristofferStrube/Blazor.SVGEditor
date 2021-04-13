@@ -12,6 +12,7 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
     - Absolute and Relative Lines
 
 ## Current goals
+- Add support for touch
 - Implement rest of sequences for path data
 - Optimize path data so that it does not depend on chains of positions for relative sequences, but updates when needed instead.
 - Show text in SVG.
