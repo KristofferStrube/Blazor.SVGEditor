@@ -12,6 +12,7 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
     - Lines
     - Vertical Lines
     - Horizontal Lines
+    - Close Path
 
 ## Current goals
 - Add support for touch
