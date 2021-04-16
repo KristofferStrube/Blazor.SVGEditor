@@ -1,5 +1,7 @@
 # KristofferStrube.Blazor.SVGEditor
-A very basic HTML SVG Editor written in Blazor WASM.
+A basic HTML SVG Editor written in Blazor WASM.
+
+![Showcase](./docs/showcase.gif?raw=true)
 
 ## Demo
 The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEditor/](https://kristofferstrube.github.io/Blazor.SVGEditor/)
@@ -15,7 +17,7 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
     - Close Path
 
 ## Current goals
-- Add support for touch
+- Add support for touch devices
 - Implement rest of sequences for path data
 - Optimize path data so that it does not depend on chains of positions for relative sequences, but updates when needed instead.
 - Show text in SVG.
