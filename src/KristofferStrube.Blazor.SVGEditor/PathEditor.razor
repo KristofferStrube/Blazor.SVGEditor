@@ -7,7 +7,10 @@
             var j = i;
             switch (Path.Instructions[i])
             {
-                case AbsoluteLineInstruction or RelativeLineInstruction or AbsoluteMoveInstruction or RelativeMoveInstruction:
+                case LineInstruction 
+                    or MoveInstruction
+                    or HorizontalLineInstruction
+                    or VerticalLineInstruction:
                     <circle @onmousedown="() => AnchorSelect(j, 0)" cx="@Path.Instructions[i].EndPosition.x" cy="@Path.Instructions[i].EndPosition.y" r="6" stroke-width="2" stroke="black" fill="transparent" />
                     break;
             }

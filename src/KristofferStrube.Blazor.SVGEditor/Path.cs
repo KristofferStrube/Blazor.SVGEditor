@@ -38,16 +38,28 @@ namespace KristofferStrube.Blazor.SVGEditor
                     {
                         CurrentAnchor = 0;
                     }
-                    switch(Instructions[(int)CurrentInstruction])
+                    var _instructions = Instructions;
+                    var inst = _instructions[(int)CurrentInstruction];
+                    switch (Instructions[(int)CurrentInstruction])
                     {
-                        case AbsoluteLineInstruction or RelativeLineInstruction or AbsoluteMoveInstruction or RelativeMoveInstruction:
-                            var _instructions = Instructions;
-                            var inst = _instructions[(int)CurrentInstruction];
-                            if (inst.NextInstruction is not null && inst.NextInstruction.IsRelative())
-                            {
-                                inst.NextInstruction.EndPosition = (inst.NextInstruction.EndPosition.x - (eventArgs.OffsetX - inst.EndPosition.x), inst.NextInstruction.EndPosition.y - (eventArgs.OffsetY - inst.EndPosition.y));
-                            }
+                        case LineInstruction or MoveInstruction:
                             inst.EndPosition = (eventArgs.OffsetX, eventArgs.OffsetY);
+                            Instructions = _instructions;
+                            break;
+                        case HorizontalLineInstruction:
+                            inst.EndPosition = (eventArgs.OffsetX, eventArgs.OffsetY);
+                            if (inst.PreviousInstruction is not null)
+                            {
+                                inst.PreviousInstruction.EndPosition = (inst.PreviousInstruction.EndPosition.x, inst.PreviousInstruction.EndPosition.y + (eventArgs.OffsetY - inst.EndPosition.y));
+                            }
+                            Instructions = _instructions;
+                            break;
+                        case VerticalLineInstruction:
+                            inst.EndPosition = (eventArgs.OffsetX, eventArgs.OffsetY);
+                            if (inst.PreviousInstruction is not null)
+                            {
+                                inst.PreviousInstruction.EndPosition = (inst.PreviousInstruction.EndPosition.x + (eventArgs.OffsetX - inst.EndPosition.x), inst.PreviousInstruction.EndPosition.y);
+                            }
                             Instructions = _instructions;
                             break;
                     }
@@ -55,13 +67,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                 case EditMode.Move:
                     var diff = (x: eventArgs.OffsetX - Panner.x, y: eventArgs.OffsetY - Panner.y);
                     Panner = (x: eventArgs.OffsetX, y: eventArgs.OffsetY);
-                    Instructions = Instructions.Select(inst => { if (!inst.IsRelative()) { inst.EndPosition = (inst.EndPosition.x + diff.x, inst.EndPosition.y + diff.y); } return inst; }).ToList();
-                    if (Instructions.Count != 0 && Instructions[0] is RelativeMoveInstruction)
-                    {
-                        var inst = Instructions[0];
-                        inst.EndPosition = (inst.EndPosition.x + diff.x, inst.EndPosition.y + diff.y);
-                        Instructions = Instructions.Skip(1).Prepend(inst).ToList();
-                    }
+                    Instructions = Instructions.Select(inst => { inst.EndPosition = (inst.EndPosition.x + diff.x, inst.EndPosition.y + diff.y); return inst; }).ToList();
                     break;
             }
         }
