@@ -8,8 +8,10 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
 - RECT (x, y, width, height, fill, stroke, stroke-width)
 - POLYGON (points, fill, stroke, stroke-width)
 - PATH (d, fill, stroke, stroke-width)
-    - Absolute and Relative Movements
-    - Absolute and Relative Lines
+    - Movements
+    - Lines
+    - Vertical Lines
+    - Horizontal Lines
 
 ## Current goals
 - Add support for touch
