@@ -18,7 +18,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                 {
                     path = PathData.Parse(Element.GetAttribute("d") ?? string.Empty);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
                 }
@@ -40,6 +40,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                     }
                     var _instructions = Instructions;
                     var inst = _instructions[(int)CurrentInstruction];
+                    var prev = inst.PreviousInstruction;
                     switch (Instructions[(int)CurrentInstruction])
                     {
                         case LineInstruction or MoveInstruction:
@@ -48,18 +49,28 @@ namespace KristofferStrube.Blazor.SVGEditor
                             break;
                         case HorizontalLineInstruction:
                             inst.EndPosition = (eventArgs.OffsetX, eventArgs.OffsetY);
-                            if (inst.PreviousInstruction is not null)
+                            while (prev is HorizontalLineInstruction)
                             {
-                                inst.PreviousInstruction.EndPosition = (inst.PreviousInstruction.EndPosition.x, inst.PreviousInstruction.EndPosition.y + (eventArgs.OffsetY - inst.EndPosition.y));
+                                prev = prev.PreviousInstruction;
                             }
+                            if (prev is ClosePathInstruction closeBeforeHorizontal)
+                            {
+                                prev = closeBeforeHorizontal.GetReferenceInstruction();
+                            }
+                            prev.EndPosition = (prev.EndPosition.x, prev.EndPosition.y + (eventArgs.OffsetY - inst.EndPosition.y));
                             Instructions = _instructions;
                             break;
                         case VerticalLineInstruction:
-                            inst.EndPosition = (eventArgs.OffsetX, eventArgs.OffsetY);
-                            if (inst.PreviousInstruction is not null)
+                            while (prev is VerticalLineInstruction)
                             {
-                                inst.PreviousInstruction.EndPosition = (inst.PreviousInstruction.EndPosition.x + (eventArgs.OffsetX - inst.EndPosition.x), inst.PreviousInstruction.EndPosition.y);
+                                prev = prev.PreviousInstruction;
                             }
+                            if (prev is ClosePathInstruction closeBeforeVertical)
+                            {
+                                prev = closeBeforeVertical.GetReferenceInstruction();
+                            }
+                            inst.EndPosition = (eventArgs.OffsetX, eventArgs.OffsetY);
+                            prev.EndPosition = (prev.EndPosition.x + (eventArgs.OffsetX - inst.EndPosition.x), prev.EndPosition.y);
                             Instructions = _instructions;
                             break;
                     }

@@ -16,8 +16,32 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override (double x, double y) EndPosition
         {
-            get { return (0, 0); }
-            set { }
+            get
+            {
+                var prev = PreviousInstruction;
+                while (prev is not (ClosePathInstruction or MoveInstruction))
+                {
+                    prev = prev.PreviousInstruction;
+                }
+                return prev.EndPosition;
+            }
+            set
+            {
+            }
+        }
+
+        public IPathInstruction GetReferenceInstruction()
+        {
+            var prev = PreviousInstruction;
+            while (prev is not (ClosePathInstruction or MoveInstruction))
+            {
+                prev = prev.PreviousInstruction;
+            }
+            while (prev is ClosePathInstruction closePath)
+            {
+                prev = closePath.GetReferenceInstruction();
+            }
+            return prev;
         }
 
         public override string AbsoluteInstruction => "Z";
