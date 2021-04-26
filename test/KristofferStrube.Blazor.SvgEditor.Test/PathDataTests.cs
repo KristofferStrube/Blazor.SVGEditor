@@ -148,7 +148,7 @@ namespace KristofferStrube.Blazor.SvgEditor.Test
         }
 
         [Test]
-        public void RelativeCubicBézierCurve()
+        public void RelativeCubicBezierCurve()
         {
             var input = "M 10 10 c 10 0 0 10 10 10";
             var inst = PathData.Parse(input)[1];
@@ -164,7 +164,7 @@ namespace KristofferStrube.Blazor.SvgEditor.Test
         }
 
         [Test]
-        public void AbsoluteCubicBézierCurve()
+        public void AbsoluteCubicBezierCurve()
         {
             var input = "M 10 10 C 20 10 10 20 20 20";
             var inst = PathData.Parse(input)[1];
