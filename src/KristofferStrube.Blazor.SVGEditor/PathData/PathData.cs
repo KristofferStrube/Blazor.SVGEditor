@@ -77,6 +77,15 @@ namespace KristofferStrube.Blazor.SVGEditor
                                 list.Add(new ClosePathInstruction(previous, instruction == "z"));
                                 previous = list.Last();
                                 break;
+                            case "C" or "c":
+                                if (parameters.Count % 6 != 0 && parameters.Count >= 6)
+                                    throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
+                                Enumerable.Range(0, parameters.Count / 6).ToList().ForEach(i =>
+                                {
+                                    list.Add(new CubicBézierCurveInstruction(parameters[i * 2], parameters[i * 2 + 1], parameters[i * 2 + 2], parameters[i * 2 + 3], parameters[i * 2 + 4], parameters[i * 2 + 5], previous, instruction == "c") { ExplicitSymbol = i == 0 });
+                                    previous = list.Last();
+                                });
+                                break;
                             default:
                                 throw new ArgumentException($"Non supported sequence initializer: {instruction}");
                         }

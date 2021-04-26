@@ -38,47 +38,88 @@ namespace KristofferStrube.Blazor.SVGEditor
                     {
                         CurrentAnchor = 0;
                     }
-                    var _instructions = Instructions;
-                    var inst = _instructions[(int)CurrentInstruction];
-                    var prev = inst.PreviousInstruction;
-                    switch (Instructions[(int)CurrentInstruction])
+                    if (CurrentAnchor == 0)
                     {
-                        case LineInstruction or MoveInstruction:
-                            inst.EndPosition = (eventArgs.OffsetX, eventArgs.OffsetY);
-                            Instructions = _instructions;
-                            break;
-                        case HorizontalLineInstruction:
-                            inst.EndPosition = (eventArgs.OffsetX, eventArgs.OffsetY);
-                            while (prev is HorizontalLineInstruction)
-                            {
-                                prev = prev.PreviousInstruction;
-                            }
-                            if (prev is ClosePathInstruction closeBeforeHorizontal)
-                            {
-                                prev = closeBeforeHorizontal.GetReferenceInstruction();
-                            }
-                            prev.EndPosition = (prev.EndPosition.x, prev.EndPosition.y + (eventArgs.OffsetY - inst.EndPosition.y));
-                            Instructions = _instructions;
-                            break;
-                        case VerticalLineInstruction:
-                            while (prev is VerticalLineInstruction)
-                            {
-                                prev = prev.PreviousInstruction;
-                            }
-                            if (prev is ClosePathInstruction closeBeforeVertical)
-                            {
-                                prev = closeBeforeVertical.GetReferenceInstruction();
-                            }
-                            inst.EndPosition = (eventArgs.OffsetX, eventArgs.OffsetY);
-                            prev.EndPosition = (prev.EndPosition.x + (eventArgs.OffsetX - inst.EndPosition.x), prev.EndPosition.y);
-                            Instructions = _instructions;
-                            break;
+                        var _instructions = Instructions;
+                        var inst = _instructions[(int)CurrentInstruction];
+                        var prev = inst.PreviousInstruction;
+                        switch (inst)
+                        {
+                            case LineInstruction or MoveInstruction or CubicBézierCurveInstruction:
+                                inst.EndPosition = (eventArgs.OffsetX, eventArgs.OffsetY);
+                                Instructions = _instructions;
+                                break;
+                            case HorizontalLineInstruction:
+                                inst.EndPosition = (eventArgs.OffsetX, eventArgs.OffsetY);
+                                while (prev is HorizontalLineInstruction)
+                                {
+                                    prev = prev.PreviousInstruction;
+                                }
+                                if (prev is ClosePathInstruction closeBeforeHorizontal)
+                                {
+                                    prev = closeBeforeHorizontal.GetReferenceInstruction();
+                                }
+                                prev.EndPosition = (prev.EndPosition.x, prev.EndPosition.y + (eventArgs.OffsetY - inst.EndPosition.y));
+                                Instructions = _instructions;
+                                break;
+                            case VerticalLineInstruction:
+                                while (prev is VerticalLineInstruction)
+                                {
+                                    prev = prev.PreviousInstruction;
+                                }
+                                if (prev is ClosePathInstruction closeBeforeVertical)
+                                {
+                                    prev = closeBeforeVertical.GetReferenceInstruction();
+                                }
+                                inst.EndPosition = (eventArgs.OffsetX, eventArgs.OffsetY);
+                                prev.EndPosition = (prev.EndPosition.x + (eventArgs.OffsetX - inst.EndPosition.x), prev.EndPosition.y);
+                                Instructions = _instructions;
+                                break;
+                        }
+                    }
+                    else if (CurrentAnchor == 1)
+                    {
+                        var _instructions = Instructions;
+                        var inst = _instructions[(int)CurrentInstruction];
+                        var prev = inst.PreviousInstruction;
+                        switch (inst)
+                        {
+                            case CubicBézierCurveInstruction cubicCurve:
+                                cubicCurve.x1 = eventArgs.OffsetX;
+                                cubicCurve.y1 = eventArgs.OffsetY;
+                                Instructions = _instructions;
+                                break;
+                        }
+                    }
+                    else if (CurrentAnchor == 2)
+                    {
+                        var _instructions = Instructions;
+                        var inst = _instructions[(int)CurrentInstruction];
+                        var prev = inst.PreviousInstruction;
+                        switch (inst)
+                        {
+                            case CubicBézierCurveInstruction cubicCurve:
+                                cubicCurve.x2 = eventArgs.OffsetX;
+                                cubicCurve.y2 = eventArgs.OffsetY;
+                                Instructions = _instructions;
+                                break;
+                        }
                     }
                     break;
                 case EditMode.Move:
                     var diff = (x: eventArgs.OffsetX - Panner.x, y: eventArgs.OffsetY - Panner.y);
                     Panner = (x: eventArgs.OffsetX, y: eventArgs.OffsetY);
-                    Instructions = Instructions.Select(inst => { inst.EndPosition = (inst.EndPosition.x + diff.x, inst.EndPosition.y + diff.y); return inst; }).ToList();
+                    Instructions = Instructions.Select(inst => {
+                        inst.EndPosition = (inst.EndPosition.x + diff.x, inst.EndPosition.y + diff.y);
+                        if (inst is CubicBézierCurveInstruction cubicCurve)
+                        {
+                            cubicCurve.x1 += diff.x;
+                            cubicCurve.y1 += diff.y;
+                            cubicCurve.x2 += diff.x;
+                            cubicCurve.y2 += diff.y;
+                        }
+                        return inst;
+                    }).ToList();
                     break;
             }
         }
