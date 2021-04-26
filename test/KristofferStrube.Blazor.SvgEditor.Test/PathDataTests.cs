@@ -148,14 +148,14 @@ namespace KristofferStrube.Blazor.SvgEditor.Test
         }
 
         [Test]
-        public void RelativeCubicBezierCurve()
+        public void RelativeCubicBÃ©zierCurve()
         {
             var input = "M 10 10 c 10 0 0 10 10 10";
             var inst = PathData.Parse(input)[1];
             Assert.AreEqual(20, inst.EndPosition.x);
             Assert.AreEqual(20, inst.EndPosition.y);
-            Assert.IsInstanceOf(typeof(CubicBézierCurveInstruction), inst);
-            var cubic = (CubicBézierCurveInstruction)inst;
+            Assert.IsInstanceOf(typeof(CubicBÃ©zierCurveInstruction), inst);
+            var cubic = (CubicBÃ©zierCurveInstruction)inst;
             Assert.AreEqual(20, cubic.x1);
             Assert.AreEqual(10, cubic.y1);
             Assert.AreEqual(10, cubic.x2);
@@ -164,14 +164,14 @@ namespace KristofferStrube.Blazor.SvgEditor.Test
         }
 
         [Test]
-        public void AbsoluteCubicBezierCurve()
+        public void AbsoluteCubicBÃ©zierCurve()
         {
             var input = "M 10 10 C 20 10 10 20 20 20";
             var inst = PathData.Parse(input)[1];
             Assert.AreEqual(20, inst.EndPosition.x);
             Assert.AreEqual(20, inst.EndPosition.y);
-            Assert.IsInstanceOf(typeof(CubicBézierCurveInstruction), inst);
-            var cubic = (CubicBézierCurveInstruction)inst;
+            Assert.IsInstanceOf(typeof(CubicBÃ©zierCurveInstruction), inst);
+            var cubic = (CubicBÃ©zierCurveInstruction)inst;
             Assert.AreEqual(20, cubic.x1);
             Assert.AreEqual(10, cubic.y1);
             Assert.AreEqual(10, cubic.x2);
