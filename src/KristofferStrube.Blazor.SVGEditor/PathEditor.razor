@@ -12,15 +12,21 @@
                 or VerticalLineInstruction
                 or CubicBézierCurveInstruction)
             {
-                <circle @onmousedown="() => AnchorSelect(j, 0)" cx="@Path.Instructions[i].EndPosition.x" cy="@Path.Instructions[i].EndPosition.y" r="6" stroke-width="2" stroke="black" fill="transparent" />
+                <circle @onmousedown="() => AnchorSelect(j, -1)" cx="@Path.Instructions[i].EndPosition.x" cy="@Path.Instructions[i].EndPosition.y" r="6" stroke-width="2" stroke="black" fill="transparent" />
             }
-            if (Path.Instructions[i]
-                is CubicBézierCurveInstruction cubicCurve)
+            if (Path.Instructions[i] is CubicBézierCurveInstruction cubicCurve)
             {
-                <line x1="@cubicCurve.StartPosition.x" y1="@cubicCurve.StartPosition.y" x2="@cubicCurve.x1" y2="@cubicCurve.y1" stroke-dasharray="4" stroke="black" stroke-width="2" />
-                <line x1="@cubicCurve.x2" y1="@cubicCurve.y2" x2="@cubicCurve.EndPosition.x" y2="@cubicCurve.EndPosition.y" stroke-dasharray="4" stroke="black" stroke-width="2" />
-                <circle @onmousedown="() => AnchorSelect(j, 1)" cx="@cubicCurve.x1" cy="@cubicCurve.y1" r="6" stroke-width="2" stroke="black" fill="transparent" />
-                <circle @onmousedown="() => AnchorSelect(j, 2)" cx="@cubicCurve.x2" cy="@cubicCurve.y2" r="6" stroke-width="2" stroke="black" fill="transparent" />
+                <line x1="@cubicCurve.StartPosition.x" y1="@cubicCurve.StartPosition.y" x2="@cubicCurve.ControlPoints[0].x" y2="@cubicCurve.ControlPoints[0].y" stroke-dasharray="4" stroke="black" stroke-width="2" />
+                <line x1="@cubicCurve.ControlPoints[1].x" y1="@cubicCurve.ControlPoints[1].y" x2="@cubicCurve.EndPosition.x" y2="@cubicCurve.EndPosition.y" stroke-dasharray="4" stroke="black" stroke-width="2" />
+            }
+            if (Path.Instructions[i].GetType().IsSubclassOf(typeof(BaseControlPointPathInstruction)))
+            {
+                var ControlPointInstruction = (BaseControlPointPathInstruction)Path.Instructions[i];
+                for (int k = 0; k < ControlPointInstruction.ControlPoints.Count; k++)
+                {
+                    var anchor = k;
+                    <circle @onmousedown="() => AnchorSelect(j, anchor)" cx="@ControlPointInstruction.ControlPoints[k].x" cy="@ControlPointInstruction.ControlPoints[k].y" r="6" stroke-width="2" stroke="black" fill="transparent" />
+                }
             }
         }
     }

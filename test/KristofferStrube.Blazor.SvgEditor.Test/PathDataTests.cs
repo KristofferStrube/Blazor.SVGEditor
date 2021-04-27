@@ -156,10 +156,8 @@ namespace KristofferStrube.Blazor.SvgEditor.Test
             Assert.AreEqual(20, inst.EndPosition.y);
             Assert.IsInstanceOf(typeof(CubicBézierCurveInstruction), inst);
             var cubic = (CubicBézierCurveInstruction)inst;
-            Assert.AreEqual(20, cubic.x1);
-            Assert.AreEqual(10, cubic.y1);
-            Assert.AreEqual(10, cubic.x2);
-            Assert.AreEqual(20, cubic.y2);
+            Assert.AreEqual((20, 10), cubic.ControlPoints[0]);
+            Assert.AreEqual((10, 20), cubic.ControlPoints[1]);
             Assert.AreEqual(input, PathData.Parse(input).AsString());
         }
 
@@ -172,10 +170,8 @@ namespace KristofferStrube.Blazor.SvgEditor.Test
             Assert.AreEqual(20, inst.EndPosition.y);
             Assert.IsInstanceOf(typeof(CubicBézierCurveInstruction), inst);
             var cubic = (CubicBézierCurveInstruction)inst;
-            Assert.AreEqual(20, cubic.x1);
-            Assert.AreEqual(10, cubic.y1);
-            Assert.AreEqual(10, cubic.x2);
-            Assert.AreEqual(20, cubic.y2);
+            Assert.AreEqual((20, 10), cubic.ControlPoints[0]);
+            Assert.AreEqual((10, 20), cubic.ControlPoints[1]);
             Assert.AreEqual(input, PathData.Parse(input).AsString());
         }
     }
