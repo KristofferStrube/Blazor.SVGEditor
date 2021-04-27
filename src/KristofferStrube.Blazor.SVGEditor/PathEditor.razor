@@ -10,7 +10,8 @@
                 or MoveInstruction
                 or HorizontalLineInstruction
                 or VerticalLineInstruction
-                or CubicBézierCurveInstruction)
+                or CubicBézierCurveInstruction
+                or ShorthandCubicBézierCurveInstruction)
             {
                 <circle @onmousedown="() => AnchorSelect(j, -1)" cx="@Path.Instructions[i].EndPosition.x" cy="@Path.Instructions[i].EndPosition.y" r="6" stroke-width="2" stroke="black" fill="transparent" />
             }
@@ -27,6 +28,13 @@
                     var anchor = k;
                     <circle @onmousedown="() => AnchorSelect(j, anchor)" cx="@ControlPointInstruction.ControlPoints[k].x" cy="@ControlPointInstruction.ControlPoints[k].y" r="6" stroke-width="2" stroke="black" fill="transparent" />
                 }
+            }
+            if (Path.Instructions[i] is ShorthandCubicBézierCurveInstruction shorthandCubicCurve)
+            {
+                <line x1="@shorthandCubicCurve.StartPosition.x" y1="@shorthandCubicCurve.StartPosition.y" x2="@shorthandCubicCurve.ReflectedPreviousInstructionsLastControlPoint.x" y2="@shorthandCubicCurve.ReflectedPreviousInstructionsLastControlPoint.y" stroke-dasharray="4" stroke="grey" stroke-width="2" />
+                <line x1="@shorthandCubicCurve.ControlPoints[0].x" y1="@shorthandCubicCurve.ControlPoints[0].y" x2="@shorthandCubicCurve.EndPosition.x" y2="@shorthandCubicCurve.EndPosition.y" stroke-dasharray="4" stroke="black" stroke-width="2" />
+                var ControlPointInstruction = (BaseControlPointPathInstruction)Path.Instructions[i];
+                <circle @onmousedown="() => AnchorSelect(j, -2)" cx="@ControlPointInstruction.ReflectedPreviousInstructionsLastControlPoint.x" cy="@ControlPointInstruction.ReflectedPreviousInstructionsLastControlPoint.y" r="6" stroke-width="2" stroke="grey" fill="transparent" />
             }
         }
     }

@@ -86,6 +86,15 @@ namespace KristofferStrube.Blazor.SVGEditor
                                     previous = list.Last();
                                 });
                                 break;
+                            case "S" or "s":
+                                if (parameters.Count % 4 != 0 && parameters.Count >= 4)
+                                    throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
+                                Enumerable.Range(0, parameters.Count / 4).ToList().ForEach(i =>
+                                {
+                                    list.Add(new ShorthandCubicBézierCurveInstruction(parameters[i * 2], parameters[i * 2 + 1], parameters[i * 2 + 2], parameters[i * 2 + 3], previous, instruction == "s") { ExplicitSymbol = i == 0 });
+                                    previous = list.Last();
+                                });
+                                break;
                             default:
                                 throw new ArgumentException($"Non supported sequence initializer: {instruction}");
                         }

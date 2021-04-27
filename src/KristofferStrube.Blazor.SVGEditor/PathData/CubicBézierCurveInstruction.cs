@@ -8,7 +8,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 {
     public class CubicBézierCurveInstruction : BaseControlPointPathInstruction
     {
-        public CubicBézierCurveInstruction(double x1, double y1, double x2, double y2, double x, double y, IPathInstruction PreviousInstruction, bool Relative)
+        public CubicBézierCurveInstruction(double x1, double y1, double x2, double y2, double x, double y, IPathInstruction PreviousInstruction, bool Relative) : base(PreviousInstruction)
         {
             this.Relative = Relative;
             this.PreviousInstruction = PreviousInstruction;

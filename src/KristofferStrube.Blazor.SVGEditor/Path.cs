@@ -45,7 +45,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                     {
                         switch (inst)
                         {
-                            case LineInstruction or MoveInstruction or CubicBézierCurveInstruction:
+                            case LineInstruction or MoveInstruction or CubicBézierCurveInstruction or ShorthandCubicBézierCurveInstruction:
                                 inst.EndPosition = (eventArgs.OffsetX, eventArgs.OffsetY);
                                 break;
                             case HorizontalLineInstruction:
@@ -74,10 +74,15 @@ namespace KristofferStrube.Blazor.SVGEditor
                                 break;
                         }
                     }
+                    else if (CurrentAnchor == -2)
+                    {
+                        var controlPointInstruction = (BaseControlPointPathInstruction)inst;
+                        controlPointInstruction.ReflectedPreviousInstructionsLastControlPoint = (eventArgs.OffsetX, eventArgs.OffsetY);
+                    }
                     else if (inst.GetType().IsSubclassOf(typeof(BaseControlPointPathInstruction)))
                     {
-                        var ControlPoints = ((BaseControlPointPathInstruction)inst).ControlPoints;
-                        ControlPoints[(int)CurrentAnchor] = (eventArgs.OffsetX, eventArgs.OffsetY);
+                        var controlPointInstruction = (BaseControlPointPathInstruction)inst;
+                        controlPointInstruction.ControlPoints[(int)CurrentAnchor] = (eventArgs.OffsetX, eventArgs.OffsetY);
                     }
                     Instructions = _instructions;
                     Console.WriteLine(CurrentAnchor);
@@ -85,7 +90,8 @@ namespace KristofferStrube.Blazor.SVGEditor
                 case EditMode.Move:
                     var diff = (x: eventArgs.OffsetX - Panner.x, y: eventArgs.OffsetY - Panner.y);
                     Panner = (x: eventArgs.OffsetX, y: eventArgs.OffsetY);
-                    Instructions = Instructions.Select(inst => {
+                    Instructions = Instructions.Select(inst =>
+                    {
                         inst.EndPosition = (inst.EndPosition.x + diff.x, inst.EndPosition.y + diff.y);
                         if (inst.GetType().IsSubclassOf(typeof(BaseControlPointPathInstruction)))
                         {
