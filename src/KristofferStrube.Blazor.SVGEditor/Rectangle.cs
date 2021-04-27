@@ -15,6 +15,12 @@ namespace KristofferStrube.Blazor.SVGEditor
 {
     public class Rectangle : Shape
     {
+        public Rectangle(IElement element, SVG svg)
+        {
+            Element = element;
+            SVG = svg;
+        }
+
         public double x {
             get { return double.Parse(Element.GetAttribute("x") ?? string.Empty); }
             set { Element.SetAttribute("x", value.ToString()); Changed.Invoke(this); }

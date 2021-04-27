@@ -174,5 +174,33 @@ namespace KristofferStrube.Blazor.SvgEditor.Test
             Assert.AreEqual((10, 20), cubic.ControlPoints[1]);
             Assert.AreEqual(input, PathData.Parse(input).AsString());
         }
+
+        [Test]
+        public void RelativeShorthandCubicBézierCurve()
+        {
+            var input = "M 10 10 c 10 0 0 10 10 10 s 10 10 20 20";
+            var inst = PathData.Parse(input)[2];
+            Assert.AreEqual(40, inst.EndPosition.x);
+            Assert.AreEqual(40, inst.EndPosition.y);
+            Assert.IsInstanceOf(typeof(ShorthandCubicBézierCurveInstruction), inst);
+            var cubic = (ShorthandCubicBézierCurveInstruction)inst;
+            Assert.AreEqual((30, 30), cubic.ControlPoints[0]);
+            Assert.AreEqual((30, 20), cubic.ReflectedPreviousInstructionsLastControlPoint);
+            Assert.AreEqual(input, PathData.Parse(input).AsString());
+        }
+
+        [Test]
+        public void AbsoluteShorthandCubicBézierCurve()
+        {
+            var input = "M 10 10 C 20 10 10 20 20 20 S 30 30 40 40";
+            var inst = PathData.Parse(input)[2];
+            Assert.AreEqual(40, inst.EndPosition.x);
+            Assert.AreEqual(40, inst.EndPosition.y);
+            Assert.IsInstanceOf(typeof(ShorthandCubicBézierCurveInstruction), inst);
+            var cubic = (ShorthandCubicBézierCurveInstruction)inst;
+            Assert.AreEqual((30, 30), cubic.ControlPoints[0]);
+            Assert.AreEqual((30, 20), cubic.ReflectedPreviousInstructionsLastControlPoint);
+            Assert.AreEqual(input, PathData.Parse(input).AsString());
+        }
     }
 }

@@ -50,13 +50,13 @@
             switch (child.TagName)
             {
                 case "RECT":
-                    element = new Rectangle() { Element = child, SVG = this };
+                    element = new Rectangle(child, this);
                     break;
                 case "POLYGON":
-                    element = new Polygon() { Element = child, SVG = this };
+                    element = new Polygon(child, this);
                     break;
                 case "PATH":
-                    element = new Path() { Element = child, SVG = this };
+                    element = new Path(child, this);
                     break;
                 default:
                     element = new NonImplmentedElement();

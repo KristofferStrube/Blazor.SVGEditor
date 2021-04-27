@@ -9,6 +9,12 @@ namespace KristofferStrube.Blazor.SVGEditor.Models
 {
     public class Polygon : Shape
     {
+        public Polygon(IElement element, SVG svg)
+        {
+            Element = element;
+            SVG = svg;
+        }
+
         public List<(double x, double y)> Points {
             get { return StringToPoints(Element.GetAttribute("points") ?? string.Empty); }
             set { Element.SetAttribute("points", PointsToString(value)); Changed.Invoke(this); }

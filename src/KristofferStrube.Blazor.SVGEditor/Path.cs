@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Web;
+﻿using AngleSharp.Dom;
+using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,22 +10,29 @@ namespace KristofferStrube.Blazor.SVGEditor
 {
     public class Path : Shape
     {
-        public List<IPathInstruction> Instructions
+        public Path(IElement element, SVG svg)
         {
-            get
+            Element = element;
+            SVG = svg;
+            try
             {
-                var path = new List<IPathInstruction>();
-                try
-                {
-                    path = PathData.Parse(Element.GetAttribute("d") ?? string.Empty);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-                return path;
+                Instructions = PathData.Parse(Element.GetAttribute("d") ?? string.Empty);
             }
-            set { Element.SetAttribute("d", value.AsString()); Changed.Invoke(this); }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Instructions = new();
+            }
+        }
+        public List<IPathInstruction> Instructions { get; set; }
+
+        private void UpdateData()
+        {
+            if (Instructions.Count > 0)
+            {
+                Element.SetAttribute("d", Instructions.AsString());
+                Changed.Invoke(this);
+            }
         }
         public int? CurrentInstruction { get; set; }
         public int? CurrentAnchor { get; set; }
@@ -38,15 +46,21 @@ namespace KristofferStrube.Blazor.SVGEditor
                     {
                         CurrentAnchor = -1;
                     }
-                    var _instructions = Instructions;
-                    var inst = _instructions[(int)CurrentInstruction];
+                    var inst = Instructions[(int)CurrentInstruction];
                     var prev = inst.PreviousInstruction;
                     if (CurrentAnchor == -1)
                     {
                         switch (inst)
                         {
-                            case LineInstruction or MoveInstruction or CubicBézierCurveInstruction or ShorthandCubicBézierCurveInstruction:
+                            case LineInstruction or MoveInstruction:
                                 inst.EndPosition = (eventArgs.OffsetX, eventArgs.OffsetY);
+                                break;
+                            case CubicBézierCurveInstruction or ShorthandCubicBézierCurveInstruction:
+                                var diffX = eventArgs.OffsetX - inst.EndPosition.x;
+                                var diffY = eventArgs.OffsetY - inst.EndPosition.y;
+                                inst.EndPosition = (eventArgs.OffsetX, eventArgs.OffsetY);
+                                var controlPointInstruction = (BaseControlPointPathInstruction)inst;
+                                controlPointInstruction.ControlPoints = controlPointInstruction.ControlPoints.Select(p => (p.x + diffX, p.y + diffY)).ToList();
                                 break;
                             case HorizontalLineInstruction:
                                 inst.EndPosition = (eventArgs.OffsetX, eventArgs.OffsetY);
@@ -84,8 +98,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                         var controlPointInstruction = (BaseControlPointPathInstruction)inst;
                         controlPointInstruction.ControlPoints[(int)CurrentAnchor] = (eventArgs.OffsetX, eventArgs.OffsetY);
                     }
-                    Instructions = _instructions;
-                    Console.WriteLine(CurrentAnchor);
+                    UpdateData();
                     break;
                 case EditMode.Move:
                     var diff = (x: eventArgs.OffsetX - Panner.x, y: eventArgs.OffsetY - Panner.y);
@@ -100,6 +113,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                         }
                         return inst;
                     }).ToList();
+                    UpdateData();
                     break;
             }
         }
