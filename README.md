@@ -15,6 +15,8 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
     - Vertical Lines
     - Horizontal Lines
     - Close Path
+    - Cubic Bézier Curve
+        - Shorthand aswell
 
 ## Current goals
 - Add support for touch devices
