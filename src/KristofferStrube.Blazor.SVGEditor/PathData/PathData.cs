@@ -82,7 +82,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                                     throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
                                 Enumerable.Range(0, parameters.Count / 6).ToList().ForEach(i =>
                                 {
-                                    list.Add(new CubicBézierCurveInstruction(parameters[i * 2], parameters[i * 2 + 1], parameters[i * 2 + 2], parameters[i * 2 + 3], parameters[i * 2 + 4], parameters[i * 2 + 5], previous, instruction == "c") { ExplicitSymbol = i == 0 });
+                                    list.Add(new CubicBézierCurveInstruction(parameters[i * 6], parameters[i * 6 + 1], parameters[i * 6 + 2], parameters[i * 6 + 3], parameters[i * 6 + 4], parameters[i * 6 + 5], previous, instruction == "c") { ExplicitSymbol = i == 0 });
                                     previous = list.Last();
                                 });
                                 break;
@@ -91,7 +91,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                                     throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
                                 Enumerable.Range(0, parameters.Count / 4).ToList().ForEach(i =>
                                 {
-                                    list.Add(new ShorthandCubicBézierCurveInstruction(parameters[i * 2], parameters[i * 2 + 1], parameters[i * 2 + 2], parameters[i * 2 + 3], previous, instruction == "s") { ExplicitSymbol = i == 0 });
+                                    list.Add(new ShorthandCubicBézierCurveInstruction(parameters[i * 4], parameters[i * 4 + 1], parameters[i * 4 + 2], parameters[i * 4 + 3], previous, instruction == "s") { ExplicitSymbol = i == 0 });
                                     previous = list.Last();
                                 });
                                 break;
