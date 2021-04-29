@@ -17,8 +17,8 @@
             }
             if (Path.Instructions[i] is CubicBézierCurveInstruction cubicCurve)
             {
-                <line x1="@cubicCurve.StartPosition.x.AsString()" y1="@cubicCurve.StartPosition.y.AsString()" x2="@cubicCurve.ControlPoints[0].x.AsString()" y2="@cubicCurve.ControlPoints[0].y.AsString()" stroke-dasharray="4" stroke="black" stroke-width="2" />
-                <line x1="@cubicCurve.ControlPoints[1].x.AsString()" y1="@cubicCurve.ControlPoints[1].y.AsString()" x2="@cubicCurve.EndPosition.x.AsString()" y2="@cubicCurve.EndPosition.y.AsString()" stroke-dasharray="4" stroke="black" stroke-width="2" />
+                <line x1="@cubicCurve.StartPosition.x.AsString()" y1="@cubicCurve.StartPosition.y.AsString()" x2="@cubicCurve.ControlPoints[0].x.AsString()" y2="@cubicCurve.ControlPoints[0].y.AsString()" style="pointer-events: none;" stroke-dasharray="4" stroke="black" stroke-width="2" />
+                <line x1="@cubicCurve.ControlPoints[1].x.AsString()" y1="@cubicCurve.ControlPoints[1].y.AsString()" x2="@cubicCurve.EndPosition.x.AsString()" y2="@cubicCurve.EndPosition.y.AsString()" style="pointer-events: none;" stroke-dasharray="4" stroke="black" stroke-width="2" />
             }
             if (Path.Instructions[i].GetType().IsSubclassOf(typeof(BaseControlPointPathInstruction)))
             {
@@ -31,8 +31,8 @@
             }
             if (Path.Instructions[i] is ShorthandCubicBézierCurveInstruction shorthandCubicCurve)
             {
-                <line x1="@shorthandCubicCurve.StartPosition.x.AsString()" y1="@shorthandCubicCurve.StartPosition.y.AsString()" x2="@shorthandCubicCurve.ReflectedPreviousInstructionsLastControlPoint.x.AsString()" y2="@shorthandCubicCurve.ReflectedPreviousInstructionsLastControlPoint.y.AsString()" stroke-dasharray="4" stroke="grey" stroke-width="2" />
-                <line x1="@shorthandCubicCurve.ControlPoints[0].x.AsString()" y1="@shorthandCubicCurve.ControlPoints[0].y.AsString()" x2="@shorthandCubicCurve.EndPosition.x.AsString()" y2="@shorthandCubicCurve.EndPosition.y.AsString()" stroke-dasharray="4" stroke="black" stroke-width="2" />
+                <line x1="@shorthandCubicCurve.StartPosition.x.AsString()" y1="@shorthandCubicCurve.StartPosition.y.AsString()" x2="@shorthandCubicCurve.ReflectedPreviousInstructionsLastControlPoint.x.AsString()" y2="@shorthandCubicCurve.ReflectedPreviousInstructionsLastControlPoint.y.AsString()" style="pointer-events: none;" stroke-dasharray="4" stroke="grey" stroke-width="2" />
+                <line x1="@shorthandCubicCurve.ControlPoints[0].x.AsString()" y1="@shorthandCubicCurve.ControlPoints[0].y.AsString()" x2="@shorthandCubicCurve.EndPosition.x.AsString()" y2="@shorthandCubicCurve.EndPosition.y.AsString()" style="pointer-events: none;" stroke-dasharray="4" stroke="black" stroke-width="2" />
                 var ControlPointInstruction = (BaseControlPointPathInstruction)Path.Instructions[i];
                 <circle @onmousedown="() => AnchorSelect(j, -2)" cx="@ControlPointInstruction.ReflectedPreviousInstructionsLastControlPoint.x.AsString()" cy="@ControlPointInstruction.ReflectedPreviousInstructionsLastControlPoint.y.AsString()" r="6" stroke-width="2" stroke="grey" fill="transparent" />
             }
