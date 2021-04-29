@@ -13,16 +13,20 @@ namespace KristofferStrube.Blazor.SVGEditor.Models
         {
             Element = element;
             SVG = svg;
+            Points = StringToPoints(Element.GetAttribute("points") ?? string.Empty);
         }
 
-        public List<(double x, double y)> Points {
-            get { return StringToPoints(Element.GetAttribute("points") ?? string.Empty); }
-            set { Element.SetAttribute("points", PointsToString(value)); Changed.Invoke(this); }
+        public List<(double x, double y)> Points { get; set; }
+
+        private void UpdatePoints()
+        {
+            Element.SetAttribute("points", PointsToString(Points));
+            Changed.Invoke(this);
         }
 
         public string PointsToString(List<(double x, double y)> points)
         {
-            return string.Join(" ", points.Select(point => $"{point.x},{point.y}"));
+            return string.Join(" ", points.Select(point => $"{point.x.AsString()},{point.y.AsString()}"));
         }
         public List<(double x, double y)> StringToPoints(string points)
         {
@@ -41,6 +45,7 @@ namespace KristofferStrube.Blazor.SVGEditor.Models
 
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
+            var pos = (x: eventArgs.OffsetX / SVG.Scale, y: eventArgs.OffsetY / SVG.Scale);
             switch (EditMode)
             {
                 case EditMode.MoveAnchor:
@@ -48,24 +53,24 @@ namespace KristofferStrube.Blazor.SVGEditor.Models
                     {
                         CurrentAnchor = 0;
                     }
-                    var _points = Points;
-                    _points[(int)CurrentAnchor] = (eventArgs.OffsetX, eventArgs.OffsetY);
-                    Points = _points;
+                    Points[(int)CurrentAnchor] = (pos.x, pos.y);
+                    UpdatePoints();
                     break;
                 case EditMode.Move:
-                    var diff = (x: eventArgs.OffsetX - Panner.x, y: eventArgs.OffsetY - Panner.y);
-                    Panner = (x: eventArgs.OffsetX, y: eventArgs.OffsetY);
+                    var diff = (x: pos.x - Panner.x, y: pos.y - Panner.y);
+                    Panner = (x: pos.x, y: pos.y);
                     Points = Points.Select(point => { point.x += diff.x; point.y += diff.y; return point; }).ToList();
+                    UpdatePoints();
                     break;
                 case EditMode.Add:
                     if (TempPoint == null)
                     {
                         TempPoint = Points.Count();
-                        Points.Add((x: eventArgs.OffsetX, y: eventArgs.OffsetY));
+                        Points.Add((x: pos.x, y: pos.y));
                     }
                     else
                     {
-                        Points[(int)TempPoint] = (x: eventArgs.OffsetX, y: eventArgs.OffsetY);
+                        Points[(int)TempPoint] = (x: pos.x, y: pos.y);
                     }
                     break;
                 case EditMode.None:
@@ -80,14 +85,14 @@ namespace KristofferStrube.Blazor.SVGEditor.Models
 
         public override void HandleMouseUp(MouseEventArgs eventArgs)
         {
+            var pos = (x: eventArgs.OffsetX / SVG.Scale, y: eventArgs.OffsetY / SVG.Scale);
             switch (EditMode)
             {
                 case EditMode.MoveAnchor:
-                    if (eventArgs.OffsetX < 50 && eventArgs.OffsetY < 50)
+                    if (pos.x < 50 && pos.y < 50)
                     {
-                        var _points = Points;
-                        _points.RemoveAt((int)CurrentAnchor);
-                        Points = _points;
+                        Points.RemoveAt((int)CurrentAnchor);
+                        UpdatePoints();
                     }
                     CurrentAnchor = null;
                     EditMode = EditMode.None;

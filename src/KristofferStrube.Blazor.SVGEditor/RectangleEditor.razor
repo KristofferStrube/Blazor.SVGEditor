@@ -1,18 +1,20 @@
 ﻿<g>
-    <rect x=@Rectangle.x
-          y=@Rectangle.y
-          width=@Rectangle.width
-          height=@Rectangle.height
-          stroke="@Rectangle.Stroke"
-          stroke-width="@Rectangle.StrokeWidth"
-          fill="@Rectangle.Fill"
-          @onmousedown="Rectangle.Select" />
+    <g transform="scale(@Rectangle.SVG.Scale.AsString())">
+        <rect x=@Rectangle.x.AsString()
+              y=@Rectangle.y.AsString()
+              width=@Rectangle.width.AsString()
+              height=@Rectangle.height.AsString()
+              stroke="@Rectangle.Stroke"
+              stroke-width="@Rectangle.StrokeWidth"
+              fill="@Rectangle.Fill"
+              @onmousedown="Rectangle.Select" />
+    </g>
     @if (Rectangle.Selected)
     {
-        <circle @onmousedown="() => Rectangle.SelectAnchor(0)" cx="@Rectangle.x" cy="@Rectangle.y" r="6" stroke-width="2" stroke="black" fill="transparent" />
-        <circle @onmousedown="() => Rectangle.SelectAnchor(1)" cx="@(Rectangle.x+Rectangle.width)" cy="@Rectangle.y" r="6" stroke-width="2" stroke="black" fill="transparent" />
-        <circle @onmousedown="() => Rectangle.SelectAnchor(2)" cx="@(Rectangle.x+Rectangle.width)" cy="@(Rectangle.y+Rectangle.height)" r="6" stroke-width="2" stroke="black" fill="transparent" />
-        <circle @onmousedown="() => Rectangle.SelectAnchor(3)" cx="@Rectangle.x" cy="@(Rectangle.y+Rectangle.height)" r="6" stroke-width="2" stroke="black" fill="transparent" />
+        <circle @onmousedown="() => Rectangle.SelectAnchor(0)" cx="@((Rectangle.x*Rectangle.SVG.Scale).AsString())" cy="@((Rectangle.y*Rectangle.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
+        <circle @onmousedown="() => Rectangle.SelectAnchor(1)" cx="@(((Rectangle.x+Rectangle.width)*Rectangle.SVG.Scale).AsString())" cy="@((Rectangle.y*Rectangle.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
+        <circle @onmousedown="() => Rectangle.SelectAnchor(2)" cx="@(((Rectangle.x+Rectangle.width)*Rectangle.SVG.Scale).AsString())" cy="@(((Rectangle.y+Rectangle.height)*Rectangle.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
+        <circle @onmousedown="() => Rectangle.SelectAnchor(3)" cx="@((Rectangle.x*Rectangle.SVG.Scale).AsString())" cy="@(((Rectangle.y+Rectangle.height)*Rectangle.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
     }
 </g>
 

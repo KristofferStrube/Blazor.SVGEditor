@@ -1,5 +1,4 @@
-﻿<svg @onmousemove="Move" @onmouseup="Up" @onmouseout="Out" style="border:1px solid black" width="100%" height="80vh">
-    <rect x="0" y="0" width="50" height="50" fill="pink" stroke-width="3" stroke="red" @onclick="UnSelect"  />
+﻿<svg @onmousemove="Move" @onmouseup="Up" @onmouseout="Out" style="border:1px solid black" width="100%" height="80vh" @onmousedown:preventDefault="true">
     @foreach (ISVGElement element in Elements)
     {
         switch (element.TagName)
@@ -17,8 +16,16 @@
                 <PathEditor Path=path />
                 break;
         }
-
     }
+    <rect x="0" y="0" width="50" height="50" fill="pink" stroke-width="3" stroke="red" @onclick="UnSelect" />
+
+    <circle cx="30" cy="80" r="27" fill="lightgrey" @onclick="() => ZoomIn()"></circle>
+    <path d="M 27 57 v 20 h -20 v 6 h 20 v 20 h 6 v -20 h 20 v -6 h -20 v -20 z" fill="black" style="pointer-events:none;"></path>
+
+    <circle cx="30" cy="140" r="27" fill="lightgrey" @onclick="() => ZoomOut()"></circle>
+    <path d="M 7 137 h 46 v 6 h -46 z" fill="black" style="pointer-events:none;"></path>
+
+    <foreignObject x="60" y="0" height="22" width="150" style="font-size:20px;">Scale 1:@(Math.Round(Scale, 2).AsString())</foreignObject>
 </svg>
 
 @code {
@@ -78,6 +85,8 @@
         InputUpdated(_Input);
     }
 
+    public double Scale { get; set; } = 1;
+
     public List<ISVGElement> Elements { get; set; }
 
     public List<string> ElementsAsHtml { get; set; }
@@ -102,5 +111,33 @@
     public void UnSelect(MouseEventArgs eventArgs)
     {
         CurrentShape = null;
+    }
+
+    public void ZoomIn()
+    {
+        if (Scale >= 0.5)
+        {
+            Scale += 0.1 + 0.1 * (int)(Scale / 2);
+        }
+        else
+        {
+            Scale *= 1.1;
+            if (Scale > 0.99 && Scale < 1.01)
+            {
+                Scale = 1;
+            }
+        }
+    }
+
+    public void ZoomOut()
+    {
+        if (Scale > 0.5)
+        {
+            Scale -= 0.1 + 0.1 * (int)(Scale / 2);
+        }
+        else
+        {
+            Scale /= 1.1;
+        }
     }
 }

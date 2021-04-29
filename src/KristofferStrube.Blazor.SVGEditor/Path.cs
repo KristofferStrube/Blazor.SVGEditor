@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -39,6 +40,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
+            var pos = (x: eventArgs.OffsetX / SVG.Scale, y: eventArgs.OffsetY / SVG.Scale);
             switch (EditMode)
             {
                 case EditMode.MoveAnchor:
@@ -53,17 +55,17 @@ namespace KristofferStrube.Blazor.SVGEditor
                         switch (inst)
                         {
                             case LineInstruction or MoveInstruction:
-                                inst.EndPosition = (eventArgs.OffsetX, eventArgs.OffsetY);
+                                inst.EndPosition = (pos.x, pos.y);
                                 break;
                             case CubicBézierCurveInstruction or ShorthandCubicBézierCurveInstruction:
-                                var diffX = eventArgs.OffsetX - inst.EndPosition.x;
-                                var diffY = eventArgs.OffsetY - inst.EndPosition.y;
-                                inst.EndPosition = (eventArgs.OffsetX, eventArgs.OffsetY);
+                                var diffX = pos.x - inst.EndPosition.x;
+                                var diffY = pos.y - inst.EndPosition.y;
+                                inst.EndPosition = (pos.x, pos.y);
                                 var controlPointInstruction = (BaseControlPointPathInstruction)inst;
                                 controlPointInstruction.ControlPoints = controlPointInstruction.ControlPoints.Select(p => (p.x + diffX, p.y + diffY)).ToList();
                                 break;
                             case HorizontalLineInstruction:
-                                inst.EndPosition = (eventArgs.OffsetX, eventArgs.OffsetY);
+                                inst.EndPosition = (pos.x, pos.y);
                                 while (prev is HorizontalLineInstruction)
                                 {
                                     prev = prev.PreviousInstruction;
@@ -72,7 +74,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                                 {
                                     prev = closeBeforeHorizontal.GetReferenceInstruction();
                                 }
-                                prev.EndPosition = (prev.EndPosition.x, prev.EndPosition.y + (eventArgs.OffsetY - inst.EndPosition.y));
+                                prev.EndPosition = (prev.EndPosition.x, prev.EndPosition.y + (pos.y - inst.EndPosition.y));
                                 break;
                             case VerticalLineInstruction:
                                 while (prev is VerticalLineInstruction)
@@ -83,26 +85,26 @@ namespace KristofferStrube.Blazor.SVGEditor
                                 {
                                     prev = closeBeforeVertical.GetReferenceInstruction();
                                 }
-                                inst.EndPosition = (eventArgs.OffsetX, eventArgs.OffsetY);
-                                prev.EndPosition = (prev.EndPosition.x + (eventArgs.OffsetX - inst.EndPosition.x), prev.EndPosition.y);
+                                inst.EndPosition = (pos.x, pos.y);
+                                prev.EndPosition = (prev.EndPosition.x + (pos.x - inst.EndPosition.x), prev.EndPosition.y);
                                 break;
                         }
                     }
                     else if (CurrentAnchor == -2)
                     {
                         var controlPointInstruction = (BaseControlPointPathInstruction)inst;
-                        controlPointInstruction.ReflectedPreviousInstructionsLastControlPoint = (eventArgs.OffsetX, eventArgs.OffsetY);
+                        controlPointInstruction.ReflectedPreviousInstructionsLastControlPoint = (pos.x, pos.y);
                     }
                     else if (inst.GetType().IsSubclassOf(typeof(BaseControlPointPathInstruction)))
                     {
                         var controlPointInstruction = (BaseControlPointPathInstruction)inst;
-                        controlPointInstruction.ControlPoints[(int)CurrentAnchor] = (eventArgs.OffsetX, eventArgs.OffsetY);
+                        controlPointInstruction.ControlPoints[(int)CurrentAnchor] = (pos.x, pos.y);
                     }
                     UpdateData();
                     break;
                 case EditMode.Move:
-                    var diff = (x: eventArgs.OffsetX - Panner.x, y: eventArgs.OffsetY - Panner.y);
-                    Panner = (x: eventArgs.OffsetX, y: eventArgs.OffsetY);
+                    var diff = (x: pos.x - Panner.x, y: pos.y - Panner.y);
+                    Panner = (pos.x, pos.y);
                     Instructions = Instructions.Select(inst =>
                     {
                         inst.EndPosition = (inst.EndPosition.x + diff.x, inst.EndPosition.y + diff.y);

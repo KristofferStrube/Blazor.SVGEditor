@@ -1,12 +1,14 @@
 ﻿<g>
-    <polygon points="@Polygon.Element.GetAttribute("points")" fill="@Polygon.Fill" stroke="@Polygon.Stroke" stroke-width="@Polygon.StrokeWidth" @onmousedown="Select">
-    </polygon>
+    <g transform="scale(@Polygon.SVG.Scale.AsString())">
+        <polygon points="@Polygon.Element.GetAttribute("points")" fill="@Polygon.Fill" stroke="@Polygon.Stroke" stroke-width="@Polygon.StrokeWidth" @onmousedown="Select">
+        </polygon>
+    </g>
     @if (Polygon.Selected)
     {
         @for (int i = 0; i < Polygon.Points.Count(); i++)
         {
             var j = i;
-            <circle @onmousedown="() => AnchorSelect(j)" cx="@(Polygon.Points[i].x)" cy="@(Polygon.Points[i].y)" r="6" stroke-width="2" stroke="black" fill="transparent" />
+            <circle @onmousedown="() => AnchorSelect(j)" cx="@((Polygon.Points[i].x*Polygon.SVG.Scale).AsString())" cy="@((Polygon.Points[i].y*Polygon.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
         }
     }
 </g>
@@ -15,11 +17,6 @@
 @code {
     [Parameter]
     public Polygon Polygon { get; set; }
-
-    public string PointsToString(List<(double x, double y)> points)
-    {
-        return string.Join(" ", points.Select(point => $"{point.x.ToString(CultureInfo.InvariantCulture)},{point.y.ToString(CultureInfo.InvariantCulture)}"));
-    }
 
     public void AnchorSelect(int j)
     {
@@ -35,7 +32,7 @@
         if (Polygon.SVG.CurrentShape == null || Polygon.SVG.CurrentShape.EditMode == EditMode.None)
         {
             Polygon.SVG.CurrentShape = Polygon;
-            Polygon.Panner = (x: eventArgs.OffsetX, y: eventArgs.OffsetY);
+            Polygon.Panner = (x: eventArgs.OffsetX / Polygon.SVG.Scale, y: eventArgs.OffsetY / Polygon.SVG.Scale);
             Polygon.EditMode = EditMode.Move;
         }
     }

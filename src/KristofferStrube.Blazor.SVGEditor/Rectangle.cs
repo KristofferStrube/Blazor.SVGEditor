@@ -46,7 +46,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             if (SVG.CurrentShape == null || SVG.CurrentShape.EditMode == EditMode.None)
             {
                 SVG.CurrentShape = this;
-                Panner = (x: eventArgs.OffsetX, y: eventArgs.OffsetY);
+                Panner = (x: eventArgs.OffsetX/SVG.Scale, y: eventArgs.OffsetY / SVG.Scale);
                 EditMode = EditMode.Move;
             }
         }
@@ -63,14 +63,15 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
+            var pos = (x: eventArgs.OffsetX / SVG.Scale, y: eventArgs.OffsetY / SVG.Scale);
             switch (EditMode)
             {
                 case EditMode.Add:
-                    Cursor = (x: eventArgs.OffsetX, y: eventArgs.OffsetY);
+                    Cursor = (pos.x, pos.y);
                     break;
                 case EditMode.Move:
-                    var diff = (x: eventArgs.OffsetX - Panner.x, y: eventArgs.OffsetY - Panner.y);
-                    Panner = (x: eventArgs.OffsetX, y: eventArgs.OffsetY);
+                    var diff = (x: pos.x - Panner.x, y: pos.y - Panner.y);
+                    Panner = (pos.x, y: pos.y);
                     x += diff.x;
                     y += diff.y;
                     break;
@@ -82,24 +83,24 @@ namespace KristofferStrube.Blazor.SVGEditor
                     switch (CurrentAnchor)
                     {
                         case 0:
-                            width -= eventArgs.OffsetX - x;
-                            height -= eventArgs.OffsetY - y;
-                            x = eventArgs.OffsetX;
-                            y = eventArgs.OffsetY;
+                            width -= pos.x - x;
+                            height -= pos.y - y;
+                            x = pos.x;
+                            y = pos.y;
                             break;
                         case 1:
-                            width = eventArgs.OffsetX - x;
-                            height -= eventArgs.OffsetY - y;
-                            y = eventArgs.OffsetY;
+                            width = pos.x - x;
+                            height -= pos.y - y;
+                            y = pos.y;
                             break;
                         case 2:
-                            width = eventArgs.OffsetX - x;
-                            height = eventArgs.OffsetY - y;
+                            width = pos.x - x;
+                            height = pos.y - y;
                             break;
                         case 3:
-                            width -= eventArgs.OffsetX - x;
-                            height = eventArgs.OffsetY - y;
-                            x = eventArgs.OffsetX;
+                            width -= pos.x - x;
+                            height = pos.y - y;
+                            x = pos.x;
                             break;
                     }
                     break;
