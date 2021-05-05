@@ -17,11 +17,12 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
     - Close Path
     - Cubic Bézier Curve
         - Shorthand aswell
+    - Quadratic Bézier Curve
+        - Shorthand aswell
 
 ## Current goals
 - Add support for touch devices
 - Implement rest of sequences for path data
-- Optimize path data so that it does not depend on chains of positions for relative sequences, but updates when needed instead.
 - Show text in SVG.
 - Implement text edit in SVG.
 - Support more browsers using style attribute.

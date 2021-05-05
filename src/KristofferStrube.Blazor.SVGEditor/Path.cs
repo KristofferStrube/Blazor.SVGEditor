@@ -54,18 +54,17 @@ namespace KristofferStrube.Blazor.SVGEditor
                     var prev = inst.PreviousInstruction;
                     if (CurrentAnchor == -1)
                     {
+                        inst.EndPosition = (pos.x, pos.y);
                         switch (inst)
                         {
-                            case LineInstruction or MoveInstruction:
-                                inst.EndPosition = (pos.x, pos.y);
-                                break;
-                            case CubicBézierCurveInstruction or ShorthandCubicBézierCurveInstruction:
-                                inst.EndPosition = (pos.x, pos.y);
-                                var controlPointInstruction = (BaseControlPointPathInstruction)inst;
-                                controlPointInstruction.ControlPoints[^1] = (controlPointInstruction.ControlPoints[^1].x + diffX, controlPointInstruction.ControlPoints[^1].y + diffY);
+                            case BaseControlPointPathInstruction controlPointInstruction:
+                                if (inst is CubicBézierCurveInstruction or ShorthandCubicBézierCurveInstruction)
+                                {
+                                    controlPointInstruction.ControlPoints[^1] = (controlPointInstruction.ControlPoints[^1].x + diffX, controlPointInstruction.ControlPoints[^1].y + diffY);
+                                }
+                                controlPointInstruction.UpdateReflectionForInstructions();
                                 break;
                             case HorizontalLineInstruction:
-                                inst.EndPosition = (pos.x, pos.y);
                                 while (prev is HorizontalLineInstruction)
                                 {
                                     prev = prev.PreviousInstruction;
@@ -85,24 +84,25 @@ namespace KristofferStrube.Blazor.SVGEditor
                                 {
                                     prev = closeBeforeVertical.GetReferenceInstruction();
                                 }
-                                inst.EndPosition = (pos.x, pos.y);
                                 prev.EndPosition = (prev.EndPosition.x + (pos.x - inst.EndPosition.x), prev.EndPosition.y);
                                 break;
                         }
-                        if (inst.NextInstruction is not null and not ShorthandCubicBézierCurveInstruction and BaseControlPointPathInstruction nextInst)
+                        if (inst.NextInstruction is not null and not ShorthandCubicBézierCurveInstruction and not QuadraticBézierCurveInstruction and not ShorthandQuadraticBézierCurveInstruction and BaseControlPointPathInstruction nextInst)
                         {
                             nextInst.ControlPoints[0] = (nextInst.ControlPoints[0].x + diffX, nextInst.ControlPoints[0].y + diffY);
                         }
                     }
-                    else if (CurrentAnchor == -2)
+                    else if (inst is BaseControlPointPathInstruction controlPointInstruction)
                     {
-                        var controlPointInstruction = (BaseControlPointPathInstruction)inst;
-                        controlPointInstruction.ReflectedPreviousInstructionsLastControlPoint = (pos.x, pos.y);
-                    }
-                    else if (inst.GetType().IsSubclassOf(typeof(BaseControlPointPathInstruction)))
-                    {
-                        var controlPointInstruction = (BaseControlPointPathInstruction)inst;
-                        controlPointInstruction.ControlPoints[(int)CurrentAnchor] = (pos.x, pos.y);
+                        if (CurrentAnchor == -2)
+                        {
+                            controlPointInstruction.ReflectedPreviousInstructionsLastControlPoint = (pos.x, pos.y);
+                        }
+                        else
+                        {
+                            controlPointInstruction.ControlPoints[(int)CurrentAnchor] = (pos.x, pos.y);
+                            controlPointInstruction.UpdateReflectionForInstructions();
+                        }
                     }
                     UpdateData();
                     break;
@@ -112,10 +112,10 @@ namespace KristofferStrube.Blazor.SVGEditor
                     Instructions = Instructions.Select(inst =>
                     {
                         inst.EndPosition = (inst.EndPosition.x + diff.x, inst.EndPosition.y + diff.y);
-                        if (inst.GetType().IsSubclassOf(typeof(BaseControlPointPathInstruction)))
+                        if (inst is BaseControlPointPathInstruction controlPointInstruction)
                         {
-                            var ControlPointInstruction = ((BaseControlPointPathInstruction)inst);
-                            ControlPointInstruction.ControlPoints = ControlPointInstruction.ControlPoints.Select(p => (p.x + diff.x, p.y + diff.y)).ToList();
+                            controlPointInstruction.ControlPoints = controlPointInstruction.ControlPoints.Select(p => (p.x + diff.x, p.y + diff.y)).ToList();
+                            controlPointInstruction.UpdateReflectionForInstructions();
                         }
                         return inst;
                     }).ToList();

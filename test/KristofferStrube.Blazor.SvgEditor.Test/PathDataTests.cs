@@ -202,5 +202,57 @@ namespace KristofferStrube.Blazor.SvgEditor.Test
             Assert.AreEqual((30, 20), cubic.ReflectedPreviousInstructionsLastControlPoint);
             Assert.AreEqual(input, PathData.Parse(input).AsString());
         }
+
+        [Test]
+        public void RelativeQuadraticBézierCurve()
+        {
+            var input = "M 10 10 q 10 0 0 10";
+            var inst = PathData.Parse(input)[1];
+            Assert.AreEqual(10, inst.EndPosition.x);
+            Assert.AreEqual(20, inst.EndPosition.y);
+            Assert.IsInstanceOf(typeof(QuadraticBézierCurveInstruction), inst);
+            var quadratic = (QuadraticBézierCurveInstruction)inst;
+            Assert.AreEqual((20, 10), quadratic.ControlPoints[0]);
+            Assert.AreEqual(input, PathData.Parse(input).AsString());
+        }
+
+        [Test]
+        public void AbsoluteQuadraticBézierCurve()
+        {
+            var input = "M 10 10 Q 20 10 10 20";
+            var inst = PathData.Parse(input)[1];
+            Assert.AreEqual(10, inst.EndPosition.x);
+            Assert.AreEqual(20, inst.EndPosition.y);
+            Assert.IsInstanceOf(typeof(QuadraticBézierCurveInstruction), inst);
+            var quadratic = (QuadraticBézierCurveInstruction)inst;
+            Assert.AreEqual((20, 10), quadratic.ControlPoints[0]);
+            Assert.AreEqual(input, PathData.Parse(input).AsString());
+        }
+
+        [Test]
+        public void RelativeShorthandQuadraticBézierCurve()
+        {
+            var input = "M 10 10 q 10 0 0 10 t 10 10";
+            var inst = PathData.Parse(input)[2];
+            Assert.AreEqual(20, inst.EndPosition.x);
+            Assert.AreEqual(30, inst.EndPosition.y);
+            Assert.IsInstanceOf(typeof(ShorthandQuadraticBézierCurveInstruction), inst);
+            var quadratic = (ShorthandQuadraticBézierCurveInstruction)inst;
+            Assert.AreEqual((0, 30), quadratic.ReflectedPreviousInstructionsLastControlPoint);
+            Assert.AreEqual(input, PathData.Parse(input).AsString());
+        }
+
+        [Test]
+        public void AbsoluteShorthandQuadraticBézierCurve()
+        {
+            var input = "M 10 10 q 10 0 0 10 T 20 30";
+            var inst = PathData.Parse(input)[2];
+            Assert.AreEqual(20, inst.EndPosition.x);
+            Assert.AreEqual(30, inst.EndPosition.y);
+            Assert.IsInstanceOf(typeof(ShorthandQuadraticBézierCurveInstruction), inst);
+            var quadratic = (ShorthandQuadraticBézierCurveInstruction)inst;
+            Assert.AreEqual((0, 30), quadratic.ReflectedPreviousInstructionsLastControlPoint);
+            Assert.AreEqual(input, PathData.Parse(input).AsString());
+        }
     }
 }

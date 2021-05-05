@@ -95,6 +95,24 @@ namespace KristofferStrube.Blazor.SVGEditor
                                     previous = list.Last();
                                 });
                                 break;
+                            case "Q" or "q":
+                                if (parameters.Count % 4 != 0 && parameters.Count >= 4)
+                                    throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
+                                Enumerable.Range(0, parameters.Count / 4).ToList().ForEach(i =>
+                                {
+                                    list.Add(new QuadraticBézierCurveInstruction(parameters[i * 4], parameters[i * 4 + 1], parameters[i * 4 + 2], parameters[i * 4 + 3], previous, instruction == "q") { ExplicitSymbol = i == 0 });
+                                    previous = list.Last();
+                                });
+                                break;
+                            case "T" or "t":
+                                if (parameters.Count % 2 != 0 && parameters.Count >= 2)
+                                    throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
+                                Enumerable.Range(0, parameters.Count / 2).ToList().ForEach(i =>
+                                {
+                                    list.Add(new ShorthandQuadraticBézierCurveInstruction(parameters[i * 2], parameters[i * 2 + 1], previous, instruction == "t") { ExplicitSymbol = i == 0 });
+                                    previous = list.Last();
+                                });
+                                break;
                             default:
                                 throw new ArgumentException($"Non supported sequence initializer: {instruction}");
                         }
