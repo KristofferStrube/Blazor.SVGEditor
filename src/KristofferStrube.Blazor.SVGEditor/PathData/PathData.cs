@@ -113,6 +113,6 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public static string AsString(this List<IPathInstruction> pathData) => string.Join(" ", pathData.Select(p => p.ToString()));
 
-        public static string AsString(this double d) => d.ToString(CultureInfo.InvariantCulture);
+        public static string AsString(this double d) => Math.Round(d, 9).ToString(CultureInfo.InvariantCulture);
     }
 }

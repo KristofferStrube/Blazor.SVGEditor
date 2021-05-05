@@ -49,6 +49,8 @@ namespace KristofferStrube.Blazor.SVGEditor
                         CurrentAnchor = -1;
                     }
                     var inst = Instructions[(int)CurrentInstruction];
+                    var diffX = pos.x - inst.EndPosition.x;
+                    var diffY = pos.y - inst.EndPosition.y;
                     var prev = inst.PreviousInstruction;
                     if (CurrentAnchor == -1)
                     {
@@ -58,11 +60,9 @@ namespace KristofferStrube.Blazor.SVGEditor
                                 inst.EndPosition = (pos.x, pos.y);
                                 break;
                             case CubicBézierCurveInstruction or ShorthandCubicBézierCurveInstruction:
-                                var diffX = pos.x - inst.EndPosition.x;
-                                var diffY = pos.y - inst.EndPosition.y;
                                 inst.EndPosition = (pos.x, pos.y);
                                 var controlPointInstruction = (BaseControlPointPathInstruction)inst;
-                                controlPointInstruction.ControlPoints = controlPointInstruction.ControlPoints.Select(p => (p.x + diffX, p.y + diffY)).ToList();
+                                controlPointInstruction.ControlPoints[^1] = (controlPointInstruction.ControlPoints[^1].x + diffX, controlPointInstruction.ControlPoints[^1].y + diffY);
                                 break;
                             case HorizontalLineInstruction:
                                 inst.EndPosition = (pos.x, pos.y);
@@ -88,6 +88,10 @@ namespace KristofferStrube.Blazor.SVGEditor
                                 inst.EndPosition = (pos.x, pos.y);
                                 prev.EndPosition = (prev.EndPosition.x + (pos.x - inst.EndPosition.x), prev.EndPosition.y);
                                 break;
+                        }
+                        if (inst.NextInstruction is not null and not ShorthandCubicBézierCurveInstruction and BaseControlPointPathInstruction nextInst)
+                        {
+                            nextInst.ControlPoints[0] = (nextInst.ControlPoints[0].x + diffX, nextInst.ControlPoints[0].y + diffY);
                         }
                     }
                     else if (CurrentAnchor == -2)
