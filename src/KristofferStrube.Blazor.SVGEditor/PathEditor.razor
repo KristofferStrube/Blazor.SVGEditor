@@ -1,33 +1,37 @@
 ﻿<g>
-    <g transform="scale(@Path.SVG.Scale.AsString())">
-        <path d="@Path.Instructions.AsString()" fill="@Path.Fill" stroke="@Path.Stroke" stroke-width="@Path.StrokeWidth" @onmousedown="Select" />
-    </g>
-    @if (Path.Selected)
-    {
-        @for (int i = 0; i < Path.Instructions.Count; i++)
-        {
-            var j = i;
-            if (Path.Instructions[i] is not ClosePathInstruction)
-            {
-                <circle @onmousedown="() => AnchorSelect(j, -1)" cx="@((Path.Instructions[i].EndPosition.x*Path.SVG.Scale).AsString())" cy="@((Path.Instructions[i].EndPosition.y*Path.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
-            }
-            if (Path.Instructions[i] is CubicBézierCurveInstruction cubicCurve)
-            {
-                <line x1="@((cubicCurve.StartPosition.x*Path.SVG.Scale).AsString())" y1="@((cubicCurve.StartPosition.y*Path.SVG.Scale).AsString())" x2="@((cubicCurve.ControlPoints[0].x*Path.SVG.Scale).AsString())" y2="@((cubicCurve.ControlPoints[0].y*Path.SVG.Scale).AsString())" style="pointer-events: none;" stroke-dasharray="4" stroke="black" stroke-width="2" />
-                <line x1="@((cubicCurve.ControlPoints[1].x*Path.SVG.Scale).AsString())" y1="@((cubicCurve.ControlPoints[1].y*Path.SVG.Scale).AsString())" x2="@((cubicCurve.EndPosition.x*Path.SVG.Scale).AsString())" y2="@((cubicCurve.EndPosition.y*Path.SVG.Scale).AsString())" style="pointer-events: none;" stroke-dasharray="4" stroke="black" stroke-width="2" />
-            }
-            if (Path.Instructions[i] is QuadraticBézierCurveInstruction quadraticCurve)
-            {
-                <line x1="@((quadraticCurve.StartPosition.x*Path.SVG.Scale).AsString())" y1="@((quadraticCurve.StartPosition.y*Path.SVG.Scale).AsString())" x2="@((quadraticCurve.ControlPoints[0].x*Path.SVG.Scale).AsString())" y2="@((quadraticCurve.ControlPoints[0].y*Path.SVG.Scale).AsString())" style="pointer-events: none;" stroke-dasharray="4" stroke="black" stroke-width="2" />
-                <line x1="@((quadraticCurve.ControlPoints[0].x*Path.SVG.Scale).AsString())" y1="@((quadraticCurve.ControlPoints[0].y*Path.SVG.Scale).AsString())" x2="@((quadraticCurve.EndPosition.x*Path.SVG.Scale).AsString())" y2="@((quadraticCurve.EndPosition.y*Path.SVG.Scale).AsString())" style="pointer-events: none;" stroke-dasharray="4" stroke="black" stroke-width="2" />
-            }
-            if (Path.Instructions[i] is BaseControlPointPathInstruction ControlPointInstruction)
-            {
-                for (int k = 0; k < ControlPointInstruction.ControlPoints.Count; k++)
-                {
-                    var anchor = k;
-                    <circle @onmousedown="() => AnchorSelect(j, anchor)" cx="@((ControlPointInstruction.ControlPoints[k].x*Path.SVG.Scale).AsString())" cy="@((ControlPointInstruction.ControlPoints[k].y*Path.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
-                }
+	<g transform="scale(@Path.SVG.Scale.AsString())">
+		<path d="@Path.Instructions.AsString()" fill="@Path.Fill" stroke="@Path.Stroke" stroke-width="@Path.StrokeWidth" @onmousedown="Select" />
+	</g>
+	@if (Path.Selected)
+	{
+		@for (int i = 0; i < Path.Instructions.Count; i++)
+		{
+			var j = i;
+			if (Path.Instructions[i] is not ClosePathInstruction)
+			{
+				<circle @onmousedown="() => AnchorSelect(j, -1)" cx="@((Path.Instructions[i].EndPosition.x*Path.SVG.Scale).AsString())" cy="@((Path.Instructions[i].EndPosition.y*Path.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
+			}
+			if (Path.Instructions[i] is CubicBézierCurveInstruction cubicCurve)
+			{
+				<line x1="@((cubicCurve.StartPosition.x*Path.SVG.Scale).AsString())" y1="@((cubicCurve.StartPosition.y*Path.SVG.Scale).AsString())" x2="@((cubicCurve.ControlPoints[0].x*Path.SVG.Scale).AsString())" y2="@((cubicCurve.ControlPoints[0].y*Path.SVG.Scale).AsString())" style="pointer-events: none;" stroke-dasharray="4" stroke="black" stroke-width="2" />
+				<line x1="@((cubicCurve.ControlPoints[1].x*Path.SVG.Scale).AsString())" y1="@((cubicCurve.ControlPoints[1].y*Path.SVG.Scale).AsString())" x2="@((cubicCurve.EndPosition.x*Path.SVG.Scale).AsString())" y2="@((cubicCurve.EndPosition.y*Path.SVG.Scale).AsString())" style="pointer-events: none;" stroke-dasharray="4" stroke="black" stroke-width="2" />
+			}
+			else if (Path.Instructions[i] is QuadraticBézierCurveInstruction quadraticCurve)
+			{
+				<line x1="@((quadraticCurve.StartPosition.x*Path.SVG.Scale).AsString())" y1="@((quadraticCurve.StartPosition.y*Path.SVG.Scale).AsString())" x2="@((quadraticCurve.ControlPoints[0].x*Path.SVG.Scale).AsString())" y2="@((quadraticCurve.ControlPoints[0].y*Path.SVG.Scale).AsString())" style="pointer-events: none;" stroke-dasharray="4" stroke="black" stroke-width="2" />
+				<line x1="@((quadraticCurve.ControlPoints[0].x*Path.SVG.Scale).AsString())" y1="@((quadraticCurve.ControlPoints[0].y*Path.SVG.Scale).AsString())" x2="@((quadraticCurve.EndPosition.x*Path.SVG.Scale).AsString())" y2="@((quadraticCurve.EndPosition.y*Path.SVG.Scale).AsString())" style="pointer-events: none;" stroke-dasharray="4" stroke="black" stroke-width="2" />
+			}
+			else if (Path.Instructions[i] is EllipticalArcInstruction ellipticalArc)
+			{
+				<circle @onmousedown="() => AnchorSelect(j, 0)" cx="@(((ellipticalArc.ControlPoint.x)*Path.SVG.Scale).AsString())" cy="@(((ellipticalArc.ControlPoint.y)*Path.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
+			}
+			if (Path.Instructions[i] is BaseControlPointPathInstruction ControlPointInstruction)
+			{
+				for (int k = 0; k < ControlPointInstruction.ControlPoints.Count; k++)
+				{
+					var anchor = k;
+					<circle @onmousedown="() => AnchorSelect(j, anchor)" cx="@((ControlPointInstruction.ControlPoints[k].x*Path.SVG.Scale).AsString())" cy="@((ControlPointInstruction.ControlPoints[k].y*Path.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
+				}
 				if (Path.Instructions[i] is ShorthandCubicBézierCurveInstruction shorthandCubicCurve)
 				{
 					<line x1="@((shorthandCubicCurve.StartPosition.x*Path.SVG.Scale).AsString())" y1="@((shorthandCubicCurve.StartPosition.y*Path.SVG.Scale).AsString())" x2="@((shorthandCubicCurve.ReflectedPreviousInstructionsLastControlPoint.x*Path.SVG.Scale).AsString())" y2="@((shorthandCubicCurve.ReflectedPreviousInstructionsLastControlPoint.y*Path.SVG.Scale).AsString())" style="pointer-events: none;" stroke-dasharray="4" stroke="grey" stroke-width="2" />
@@ -40,32 +44,32 @@
 					<line x1="@((shorthandQuadraticCurve.EndPosition.x*Path.SVG.Scale).AsString())" y1="@((shorthandQuadraticCurve.EndPosition.y*Path.SVG.Scale).AsString())" x2="@((shorthandQuadraticCurve.ReflectedPreviousInstructionsLastControlPoint.x*Path.SVG.Scale).AsString())" y2="@((shorthandQuadraticCurve.ReflectedPreviousInstructionsLastControlPoint.y*Path.SVG.Scale).AsString())" style="pointer-events: none;" stroke-dasharray="4" stroke="grey" stroke-width="2" />
 					<circle @onmousedown="() => AnchorSelect(j, -2)" cx="@((ControlPointInstruction.ReflectedPreviousInstructionsLastControlPoint.x*Path.SVG.Scale).AsString())" cy="@((ControlPointInstruction.ReflectedPreviousInstructionsLastControlPoint.y*Path.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="grey" fill="transparent" />
 				}
-            }
-        }
-    }
+			}
+		}
+	}
 </g>
 
 @code {
-    [Parameter]
-    public Path Path { get; set; }
+	[Parameter]
+	public Path Path { get; set; }
 
-    public void AnchorSelect(int segment, int anchor)
-    {
-        if (Path.EditMode != EditMode.Add)
-        {
-            Path.CurrentInstruction = segment;
-            Path.CurrentAnchor = anchor;
-            Path.EditMode = EditMode.MoveAnchor;
-        }
-    }
+	public void AnchorSelect(int segment, int anchor)
+	{
+		if (Path.EditMode != EditMode.Add)
+		{
+			Path.CurrentInstruction = segment;
+			Path.CurrentAnchor = anchor;
+			Path.EditMode = EditMode.MoveAnchor;
+		}
+	}
 
-    public void Select(MouseEventArgs eventArgs)
-    {
-        if (Path.SVG.CurrentShape == null || Path.SVG.CurrentShape.EditMode == EditMode.None)
-        {
-            Path.SVG.CurrentShape = Path;
-            Path.Panner = (x: eventArgs.OffsetX / Path.SVG.Scale, y: eventArgs.OffsetY / Path.SVG.Scale);
-            Path.EditMode = EditMode.Move;
-        }
-    }
+	public void Select(MouseEventArgs eventArgs)
+	{
+		if (Path.SVG.CurrentShape == null || Path.SVG.CurrentShape.EditMode == EditMode.None)
+		{
+			Path.SVG.CurrentShape = Path;
+			Path.Panner = (x: eventArgs.OffsetX / Path.SVG.Scale, y: eventArgs.OffsetY / Path.SVG.Scale);
+			Path.EditMode = EditMode.Move;
+		}
+	}
 }

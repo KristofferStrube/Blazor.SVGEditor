@@ -8,10 +8,9 @@ namespace KristofferStrube.Blazor.SVGEditor
 {
     public class VerticalLineInstruction : BasePathInstruction
     {
-        public VerticalLineInstruction(double y, IPathInstruction PreviousInstruction, bool Relative)
+        public VerticalLineInstruction(double y, bool Relative, IPathInstruction PreviousInstruction) : base(Relative, PreviousInstruction)
         {
             this.Relative = Relative;
-            this.PreviousInstruction = PreviousInstruction;
             if (Relative)
             {
                 this.y = StartPosition.y + y;

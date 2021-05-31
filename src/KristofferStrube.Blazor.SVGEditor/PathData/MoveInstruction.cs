@@ -8,10 +8,8 @@ namespace KristofferStrube.Blazor.SVGEditor
 {
     public class MoveInstruction : BasePathInstruction
     {
-        public MoveInstruction(double x, double y, IPathInstruction PreviousInstruction, bool Relative)
+        public MoveInstruction(double x, double y, bool Relative, IPathInstruction PreviousInstruction) : base(Relative, PreviousInstruction)
         {
-            this.Relative = Relative;
-            this.PreviousInstruction = PreviousInstruction;
             if (Relative)
             {
                 this.x = StartPosition.x + x;

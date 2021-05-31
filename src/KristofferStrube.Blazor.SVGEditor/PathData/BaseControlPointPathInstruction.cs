@@ -8,9 +8,8 @@ namespace KristofferStrube.Blazor.SVGEditor
 {
     public abstract class BaseControlPointPathInstruction : BasePathInstruction
     {
-        public BaseControlPointPathInstruction(IPathInstruction PreviousInstruction)
+        public BaseControlPointPathInstruction(bool Relative, IPathInstruction PreviousInstruction) : base(Relative, PreviousInstruction)
         {
-            this.PreviousInstruction = PreviousInstruction;
             UpdateReflectedPreviousInstructionsLastControlPoint();
         }
         public List<(double x, double y)> ControlPoints { get; set; } = new();
