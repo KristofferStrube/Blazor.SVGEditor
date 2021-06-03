@@ -15,11 +15,10 @@ jobs:
         - uses: actions/checkout@v2
 
         # Install .NET Core SDK
-        - name: Setup .NET
-          uses: actions/setup-dotnet@v1
-          with:
-            dotnet-version: 6.0.x
-            include-prerelease: true
+        - name: Setup .NET daily build .NET 6
+          run: | 
+            wget https://aka.ms/dotnet/6.0/daily/dotnet-sdk-x64.deb
+            sudo dpkg -i dotnet-sdk-x64.deb
         
         - name: Add AOT Workload
           run: dotnet workload install microsoft-net-sdk-blazorwebassembly-aot
