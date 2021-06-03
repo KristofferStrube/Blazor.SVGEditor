@@ -18,7 +18,7 @@ jobs:
         - name: Setup .NET daily build .NET 6
           run: | 
             wget https://dot.net/v1/dotnet-install.sh
-            ./dotnet-install.sh -Channel release/6.0.1xx-preview5 -InstallDir dotnet
+            sudo dotnet-install.sh -Channel release/6.0.1xx-preview5 -InstallDir dotnet
         
         # Add Nuget.Config to solution
         - name: Install Nuget configs
