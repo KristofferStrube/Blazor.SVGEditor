@@ -17,12 +17,14 @@ jobs:
         # Install .NET Core SDK
         - name: Setup .NET daily build .NET 6
           run: | 
-            wget https://aka.ms/dotnet/6.0/daily/dotnet-sdk-linux-x64.tar.gz
-            tar -xzf dotnet-sdk-linux-x64.tar.gz
-            cd dotnet-sdk-linux-x64
-            ./configure
-            make
-            sudo make install
+            wget https://aka.ms/dotnet/6.0/daily/dotnet-host-x64.deb
+            sudo dpkg -i dotnet-host-x64.deb
+            wget https://aka.ms/dotnet/6.0/daily/dotnet-hostfxr-x64.deb
+            sudo dpkg -i dotnet-hostfxr-x64.deb
+            wget https://aka.ms/dotnet/6.0/daily/dotnet-runtime-x64.deb
+            sudo dpkg -i dotnet-runtime-x64.deb
+            wget https://aka.ms/dotnet/6.0/daily/dotnet-sdk-x64.deb
+            sudo dpkg -i dotnet-sdk-x64.deb
         
         - name: Add AOT Workload
           run: dotnet workload install microsoft-net-sdk-blazorwebassembly-aot
