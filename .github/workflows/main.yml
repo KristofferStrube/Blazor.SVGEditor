@@ -37,7 +37,7 @@ jobs:
             sudo dpkg -i dotnet-sdk-x64.deb
         
         - name: Add AOT Workload
-          run: dotnet workload install microsoft-net-sdk-blazorwebassembly-aot
+          run: dotnet --add-source https://dnceng.pkgs.visualstudio.com/public/_packaging/dotnet6/nuget/v3/index.json workload install microsoft-net-sdk-blazorwebassembly-aot
 
         # Run tests
         - name: Test
