@@ -39,12 +39,16 @@ jobs:
         # Add Nuget.Config to solution
         - name: Install Nuget configs
           run: |
-            dotnet new nugetconfig
-            dotnet nuget add source -n dotnet6 https://dnceng.pkgs.visualstudio.com/public/_packaging/dotnet6/nuget/v3/index.json
+            sudo dotnet new nugetconfig
+            sudo dotnet nuget add source -n dotnet6 https://dnceng.pkgs.visualstudio.com/public/_packaging/dotnet6/nuget/v3/index.json
         
         # Added Ahead-Of-Time workload
         - name: Add AOT Workload
-          run: sudo dotnet workload install microsoft-net-sdk-blazorwebassembly-aot --configfile nuget.config --skip-manifest-update 2>&1 | tee log
+          run: |
+            ls
+            find dotnet/sdk-manifests/6.0.100/ -type f
+            sudo dotnet workload install microsoft-net-sdk-blazorwebassembly-aot --configfile nuget.config --skip-manifest-update 2>&1 | tee log
+            find dotnet/sdk-manifests/6.0.100/ -type f
 
         # Run tests
         - name: Test
