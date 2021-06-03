@@ -31,6 +31,8 @@ jobs:
             sudo dpkg -i dotnet-runtime-x64.deb
             wget https://aka.ms/dotnet/6.0/daily/aspnetcore-runtime-x64.deb
             sudo dpkg -i aspnetcore-runtime-x64.deb
+            wget https://aka.ms/dotnet/6.0/daily/aspnetcore-targeting-pack.deb
+            sudo dpkg -i aspnetcore-targeting-pack.deb
             wget https://aka.ms/dotnet/6.0/daily/dotnet-sdk-x64.deb
             sudo dpkg -i dotnet-sdk-x64.deb
         
