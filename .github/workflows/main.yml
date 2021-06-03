@@ -17,11 +17,24 @@ jobs:
         # Install .NET Core SDK
         - name: Setup .NET daily build .NET 6
           run: |
-            wget -O ./dotnet-install.sh https://dot.net/v1/dotnet-install.sh
-            echo $PATH
-            ls -l
-            sudo ./dotnet-install.sh -Channel release/6.0.1xx-preview5 -InstallDir dotnet
-            sudo which dotnet
+            wget https://aka.ms/dotnet/6.0/daily/dotnet-runtime-deps-x64.deb
+            sudo dpkg -i dotnet-runtime-deps-x64.deb
+            wget https://aka.ms/dotnet/6.0/daily/dotnet-host-x64.deb
+            sudo dpkg -i dotnet-host-x64.deb
+            wget https://aka.ms/dotnet/6.0/daily/dotnet-apphost-pack-x64.deb
+            sudo dpkg -i dotnet-apphost-pack-x64.deb
+            wget https://aka.ms/dotnet/6.0/daily/dotnet-hostfxr-x64.deb
+            sudo dpkg -i dotnet-hostfxr-x64.deb
+            wget https://aka.ms/dotnet/6.0/daily/dotnet-targeting-pack-x64.deb
+            sudo dpkg -i dotnet-targeting-pack-x64.deb
+            wget https://aka.ms/dotnet/6.0/daily/dotnet-runtime-x64.deb
+            sudo dpkg -i dotnet-runtime-x64.deb
+            wget https://aka.ms/dotnet/6.0/daily/aspnetcore-runtime-x64.deb
+            sudo dpkg -i aspnetcore-runtime-x64.deb
+            wget https://aka.ms/dotnet/6.0/daily/aspnetcore-targeting-pack.deb
+            sudo dpkg -i aspnetcore-targeting-pack.deb
+            wget https://aka.ms/dotnet/6.0/daily/dotnet-sdk-x64.deb
+            sudo dpkg -i dotnet-sdk-x64.deb
         
         # Add Nuget.Config to solution
         - name: Install Nuget configs
@@ -31,7 +44,7 @@ jobs:
         
         # Added Ahead-Of-Time workload
         - name: Add AOT Workload
-          run: dotnet workload install microsoft-net-sdk-blazorwebassembly-aot 2>&1 | tee log
+          run: sudo dotnet workload install microsoft-net-sdk-blazorwebassembly-aot 2>&1 | tee log
 
         # Run tests
         - name: Test
