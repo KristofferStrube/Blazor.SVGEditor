@@ -36,8 +36,15 @@ jobs:
             wget https://aka.ms/dotnet/6.0/daily/dotnet-sdk-x64.deb
             sudo dpkg -i dotnet-sdk-x64.deb
         
+        # Add Nuget.Config to solution
+        - name: Install Nuget configs
+          run: |
+            dotnet new nugetconfig
+            dotnet nuget add source -n dotnet6 https://dnceng.pkgs.visualstudio.com/public/_packaging/dotnet6/nuget/v3/index.json
+        
+        # Added Ahead-Of-Time workload
         - name: Add AOT Workload
-          run: dotnet  --include-previews  --add-source https://dnceng.pkgs.visualstudio.com/public/_packaging/dotnet6/nuget/v3/index.json workload install microsoft-net-sdk-blazorwebassembly-aot
+          run: dotnet workload install microsoft-net-sdk-blazorwebassembly-aot
 
         # Run tests
         - name: Test
