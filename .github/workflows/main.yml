@@ -45,10 +45,10 @@ jobs:
         # Added Ahead-Of-Time workload
         - name: Add AOT Workload
           run: |
-            ls
-            find dotnet/sdk-manifests/6.0.100/ -type f
+            sudo ls
+            sudo find dotnet/sdk-manifests/6.0.100/ -type f
             sudo dotnet workload install microsoft-net-sdk-blazorwebassembly-aot --configfile nuget.config --skip-manifest-update 2>&1 | tee log
-            find dotnet/sdk-manifests/6.0.100/ -type f
+            sudo find dotnet/sdk-manifests/6.0.100/ -type f
 
         # Run tests
         - name: Test
