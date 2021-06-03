@@ -17,8 +17,8 @@ jobs:
         # Install .NET Core SDK
         - name: Setup .NET daily build .NET 6
           run: | 
-            wget https://aka.ms/dotnet/6.0/daily/dotnet-sdk-x64.deb
-            sudo dpkg -i dotnet-sdk-x64.deb
+            wget https://aka.ms/dotnet/6.0/daily/dotnet-sdk-x64.rpm
+            sudo rpm -i dotnet-sdk-x64.rpm
         
         - name: Add AOT Workload
           run: dotnet workload install microsoft-net-sdk-blazorwebassembly-aot
