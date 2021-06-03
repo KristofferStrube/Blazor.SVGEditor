@@ -16,9 +16,10 @@ jobs:
 
         # Install .NET Core SDK
         - name: Setup .NET daily build .NET 6
-          run: | 
-            wget https://dot.net/v1/dotnet-install.sh
+          run: |
+            sudo wget https://dot.net/v1/dotnet-install.sh
             sudo ./dotnet-install.sh -Channel release/6.0.1xx-preview5 -InstallDir dotnet
+            sudo which dotnet
         
         # Add Nuget.Config to solution
         - name: Install Nuget configs
