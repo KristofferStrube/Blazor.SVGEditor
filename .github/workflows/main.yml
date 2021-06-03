@@ -44,7 +44,7 @@ jobs:
         
         # Added Ahead-Of-Time workload
         - name: Add AOT Workload
-          run: sudo dotnet -v d --configfile nuget.config --skip-manifest-update workload install microsoft-net-sdk-blazorwebassembly-aot 2>&1 | tee log
+          run: sudo dotnet workload install microsoft-net-sdk-blazorwebassembly-aot --configfile nuget.config --skip-manifest-update 2>&1 | tee log
 
         # Run tests
         - name: Test
