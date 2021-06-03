@@ -17,7 +17,9 @@ jobs:
         # Install .NET Core SDK
         - name: Setup .NET daily build .NET 6
           run: |
-            sudo wget https://dot.net/v1/dotnet-install.sh
+            wget -O ./dotnet-install.sh https://dot.net/v1/dotnet-install.sh
+            echo $PATH
+            ls -l
             sudo ./dotnet-install.sh -Channel release/6.0.1xx-preview5 -InstallDir dotnet
             sudo which dotnet
         
