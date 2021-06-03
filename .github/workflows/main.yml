@@ -21,10 +21,10 @@ jobs:
             sudo dpkg -i dotnet-host-x64.deb
             wget https://aka.ms/dotnet/6.0/daily/dotnet-hostfxr-x64.deb
             sudo dpkg -i dotnet-hostfxr-x64.deb
-            wget https://aka.ms/dotnet/6.0/daily/dotnet-runtime-x64.deb
-            sudo dpkg -i dotnet-runtime-x64.deb
             wget https://aka.ms/dotnet/6.0/daily/dotnet-runtime-deps-x64.deb
             sudo dpkg -i dotnet-runtime-deps-x64.deb
+            wget https://aka.ms/dotnet/6.0/daily/dotnet-runtime-x64.deb
+            sudo dpkg -i dotnet-runtime-x64.deb
             wget https://aka.ms/dotnet/6.0/daily/dotnet-sdk-x64.deb
             sudo dpkg -i dotnet-sdk-x64.deb
         
