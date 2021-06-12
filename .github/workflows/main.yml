@@ -39,8 +39,8 @@ jobs:
         # Add Nuget.Config to solution
         - name: Install Nuget configs
           run: |
-            sudo dotnet new nugetconfig
-            sudo dotnet nuget add source -n dotnet6 https://dnceng.pkgs.visualstudio.com/public/_packaging/dotnet6/nuget/v3/index.json
+            dotnet new nugetconfig
+            dotnet nuget add source -n dotnet6 https://dnceng.pkgs.visualstudio.com/public/_packaging/dotnet6/nuget/v3/index.json
         
         # Added Ahead-Of-Time workload
         #- name: Add AOT Workload
