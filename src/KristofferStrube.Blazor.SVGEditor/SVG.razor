@@ -1,4 +1,7 @@
-﻿<svg @onmousemove="Move" @onmouseup="Up" @onmouseout="Out" style="border:1px solid black" width="100%" height="80vh" @onmousedown:preventDefault="true">
+﻿@using System.Reactive.Subjects
+@using System.Reactive.Linq
+
+<svg @onmousemove="Move" @onmouseup="Up" @onmouseout="Out" style="border:1px solid black" width="100%" height="80vh" @onmousedown:preventDefault="true">
     @foreach (ISVGElement element in Elements)
     {
         switch (element.TagName)
@@ -29,7 +32,7 @@
 </svg>
 
 @code {
-    [Parameter]
+	[Parameter]
     public string Input { get; set; }
 
     private string _Input { get; set; }
@@ -78,11 +81,30 @@
         ElementsAsHtml = Elements.Select(e => e.Element.ToHtml()).ToList();
     }
 
+	protected override void OnInitialized()
+	{
+		ElementSubject
+			.Buffer(TimeSpan.FromMilliseconds(33))
+			.Where(updates => updates.Count > 0)
+			.Subscribe(updates =>
+			{
+				updates
+					.DistinctBy(element => Elements.IndexOf(element))
+					.ToList()
+					.ForEach(element =>
+					{
+						ElementsAsHtml[Elements.IndexOf(element)] = element.Element.ToHtml();
+					});
+				_Input = string.Join(" \n", ElementsAsHtml);
+				InputUpdated(_Input);
+			});
+	}
+
+	private Subject<ISVGElement> ElementSubject = new();
+
     private void UpdateInput(ISVGElement element)
     {
-        ElementsAsHtml[Elements.IndexOf(element)] = element.Element.ToHtml();
-        _Input = string.Join(" \n", ElementsAsHtml);
-        InputUpdated(_Input);
+		ElementSubject.OnNext(element);
     }
 
     public double Scale { get; set; } = 1;
