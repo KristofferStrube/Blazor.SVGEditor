@@ -37,14 +37,14 @@ jobs:
             sudo dpkg -i dotnet-sdk-x64.deb
         
         # Add Nuget.Config to solution
-        - name: Install Nuget configs
-          run: |
-            sudo dotnet new nugetconfig
-            sudo dotnet nuget add source -n dotnet6 https://dnceng.pkgs.visualstudio.com/public/_packaging/dotnet6/nuget/v3/index.json
+        #- name: Install Nuget configs
+        #  run: |
+        #    sudo dotnet new nugetconfig
+        #    sudo dotnet nuget add source -n dotnet6 https://dnceng.pkgs.visualstudio.com/public/_packaging/dotnet6/nuget/v3/index.json
         
         # Added Ahead-Of-Time workload
-        - name: Add AOT Workload
-          run: sudo dotnet --configfile "nuget.config" workload install microsoft-net-sdk-blazorwebassembly-aot 2>&1 | tee log
+        #- name: Add AOT Workload
+        #  run: sudo dotnet --configfile "nuget.config" workload install microsoft-net-sdk-blazorwebassembly-aot 2>&1 | tee log
 
         # Run tests
         - name: Test
