@@ -8,11 +8,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 {
     public class ClosePathInstruction : BasePathInstruction
     {
-        public ClosePathInstruction(IPathInstruction PreviousInstruction, bool Relative)
-        {
-            this.Relative = Relative;
-            this.PreviousInstruction = PreviousInstruction;
-        }
+        public ClosePathInstruction(bool Relative, IPathInstruction PreviousInstruction) : base(Relative, PreviousInstruction) { }
 
         public override (double x, double y) EndPosition
         {

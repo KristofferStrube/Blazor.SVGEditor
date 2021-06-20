@@ -40,7 +40,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                                     throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
                                 Enumerable.Range(0, parameters.Count / 2).ToList().ForEach(i =>
                                 {
-                                    list.Add(new LineInstruction(parameters[i * 2], parameters[i * 2 + 1], previous, instruction == "l") { ExplicitSymbol = i == 0 });
+                                    list.Add(new LineInstruction(parameters[i * 2], parameters[i * 2 + 1], instruction == "l", previous) { ExplicitSymbol = i == 0 });
                                     previous = list.Last();
                                 });
                                 break;
@@ -49,7 +49,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                                     throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
                                 Enumerable.Range(0, parameters.Count / 2).ToList().ForEach(i =>
                                 {
-                                    list.Add(new MoveInstruction(parameters[i * 2], parameters[i * 2 + 1], previous, instruction == "m") { ExplicitSymbol = i == 0 });
+                                    list.Add(new MoveInstruction(parameters[i * 2], parameters[i * 2 + 1], instruction == "m", previous) { ExplicitSymbol = i == 0 });
                                     previous = list.Last();
                                 });
                                 break;
@@ -58,7 +58,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                                     throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
                                 Enumerable.Range(0, parameters.Count).ToList().ForEach(i =>
                                 {
-                                    list.Add(new HorizontalLineInstruction(parameters[i], previous, instruction == "h") { ExplicitSymbol = i == 0 });
+                                    list.Add(new HorizontalLineInstruction(parameters[i], instruction == "h", previous) { ExplicitSymbol = i == 0 });
                                     previous = list.Last();
                                 });
                                 break;
@@ -67,14 +67,14 @@ namespace KristofferStrube.Blazor.SVGEditor
                                     throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
                                 Enumerable.Range(0, parameters.Count).ToList().ForEach(i =>
                                 {
-                                    list.Add(new VerticalLineInstruction(parameters[i], previous, instruction == "v") { ExplicitSymbol = i == 0 });
+                                    list.Add(new VerticalLineInstruction(parameters[i], instruction == "v", previous) { ExplicitSymbol = i == 0 });
                                     previous = list.Last();
                                 });
                                 break;
                             case "Z" or "z":
                                 if (parameters.Count != 0)
                                     throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
-                                list.Add(new ClosePathInstruction(previous, instruction == "z"));
+                                list.Add(new ClosePathInstruction(instruction == "z", previous));
                                 previous = list.Last();
                                 break;
                             case "C" or "c":
@@ -82,7 +82,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                                     throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
                                 Enumerable.Range(0, parameters.Count / 6).ToList().ForEach(i =>
                                 {
-                                    list.Add(new CubicBézierCurveInstruction(parameters[i * 6], parameters[i * 6 + 1], parameters[i * 6 + 2], parameters[i * 6 + 3], parameters[i * 6 + 4], parameters[i * 6 + 5], previous, instruction == "c") { ExplicitSymbol = i == 0 });
+                                    list.Add(new CubicBézierCurveInstruction(parameters[i * 6], parameters[i * 6 + 1], parameters[i * 6 + 2], parameters[i * 6 + 3], parameters[i * 6 + 4], parameters[i * 6 + 5], instruction == "c", previous) { ExplicitSymbol = i == 0 });
                                     previous = list.Last();
                                 });
                                 break;
@@ -91,7 +91,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                                     throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
                                 Enumerable.Range(0, parameters.Count / 4).ToList().ForEach(i =>
                                 {
-                                    list.Add(new ShorthandCubicBézierCurveInstruction(parameters[i * 4], parameters[i * 4 + 1], parameters[i * 4 + 2], parameters[i * 4 + 3], previous, instruction == "s") { ExplicitSymbol = i == 0 });
+                                    list.Add(new ShorthandCubicBézierCurveInstruction(parameters[i * 4], parameters[i * 4 + 1], parameters[i * 4 + 2], parameters[i * 4 + 3], instruction == "s", previous) { ExplicitSymbol = i == 0 });
                                     previous = list.Last();
                                 });
                                 break;
@@ -100,7 +100,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                                     throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
                                 Enumerable.Range(0, parameters.Count / 4).ToList().ForEach(i =>
                                 {
-                                    list.Add(new QuadraticBézierCurveInstruction(parameters[i * 4], parameters[i * 4 + 1], parameters[i * 4 + 2], parameters[i * 4 + 3], previous, instruction == "q") { ExplicitSymbol = i == 0 });
+                                    list.Add(new QuadraticBézierCurveInstruction(parameters[i * 4], parameters[i * 4 + 1], parameters[i * 4 + 2], parameters[i * 4 + 3], instruction == "q", previous) { ExplicitSymbol = i == 0 });
                                     previous = list.Last();
                                 });
                                 break;
@@ -109,7 +109,16 @@ namespace KristofferStrube.Blazor.SVGEditor
                                     throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
                                 Enumerable.Range(0, parameters.Count / 2).ToList().ForEach(i =>
                                 {
-                                    list.Add(new ShorthandQuadraticBézierCurveInstruction(parameters[i * 2], parameters[i * 2 + 1], previous, instruction == "t") { ExplicitSymbol = i == 0 });
+                                    list.Add(new ShorthandQuadraticBézierCurveInstruction(parameters[i * 2], parameters[i * 2 + 1], instruction == "t", previous) { ExplicitSymbol = i == 0 });
+                                    previous = list.Last();
+                                });
+                                break;
+                            case "A" or "a":
+                                if (parameters.Count % 7 != 0 && parameters.Count >= 7)
+                                    throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
+                                Enumerable.Range(0, parameters.Count / 7).ToList().ForEach(i =>
+                                {
+                                    list.Add(new EllipticalArcInstruction(parameters[i * 7], parameters[i * 7 + 1], parameters[i * 7 + 2], parameters[i * 7 + 3] == 1, parameters[i * 7 + 4] == 1, parameters[i * 7 + 5], parameters[i * 7 + 6], instruction == "a", previous) { ExplicitSymbol = i == 0 });
                                     previous = list.Last();
                                 });
                                 break;

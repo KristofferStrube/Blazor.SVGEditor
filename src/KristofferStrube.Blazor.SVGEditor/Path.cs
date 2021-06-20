@@ -104,6 +104,24 @@ namespace KristofferStrube.Blazor.SVGEditor
                             controlPointInstruction.UpdateReflectionForInstructions();
                         }
                     }
+                    else if (inst is EllipticalArcInstruction ellipticalArcInstruction)
+                    {
+                        switch (CurrentAnchor)
+                        {
+                            case 0:
+                                ellipticalArcInstruction.ControlPointYPos = (pos.x, pos.y);
+                                break;
+                            case 1:
+                                ellipticalArcInstruction.ControlPointYNeg = (pos.x, pos.y);
+                                break;
+                            case 2:
+                                ellipticalArcInstruction.ControlPointXPos = (pos.x, pos.y);
+                                break;
+                            case 3:
+                                ellipticalArcInstruction.ControlPointXNeg = (pos.x, pos.y);
+                                break;
+                        }
+                    }
                     UpdateData();
                     break;
                 case EditMode.Move:

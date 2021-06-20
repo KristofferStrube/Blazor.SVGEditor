@@ -8,6 +8,11 @@ namespace KristofferStrube.Blazor.SVGEditor
 {
     public abstract class BasePathInstruction : IPathInstruction
     {
+        public BasePathInstruction (bool Relative, IPathInstruction PreviousInstruction)
+        {
+            this.Relative = Relative;
+            this.PreviousInstruction = PreviousInstruction;
+        }
         public IPathInstruction PreviousInstruction { get; set; }
         public IPathInstruction NextInstruction { get; set; }
         public bool ExplicitSymbol { get; set; }

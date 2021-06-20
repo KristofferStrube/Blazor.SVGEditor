@@ -8,10 +8,8 @@ namespace KristofferStrube.Blazor.SVGEditor
 {
     public class HorizontalLineInstruction : BasePathInstruction
     {
-        public HorizontalLineInstruction(double x, IPathInstruction PreviousInstruction, bool Relative)
+        public HorizontalLineInstruction(double x, bool Relative, IPathInstruction PreviousInstruction) : base(Relative, PreviousInstruction)
         {
-            this.Relative = Relative;
-            this.PreviousInstruction = PreviousInstruction;
             if (Relative)
             {
                 this.x = StartPosition.x + x;
