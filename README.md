@@ -19,10 +19,15 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
         - Shorthand aswell
     - Quadratic Bézier Curve
         - Shorthand aswell
+    - Elliptical Arc Curve
+        - Only absolute command supported
+        - Needs more work for radi interaction
 
 ## Current goals
 - Add support for touch devices
 - Implement rest of sequences for path data
+    - Catmull-Rom curve
+    - Bearing command
 - Show text in SVG.
 - Implement text edit in SVG.
 - Support more browsers using style attribute.
