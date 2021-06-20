@@ -25,6 +25,9 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
 
 ## Current goals
 - Add support for touch devices
+- Add support for scroll-zoom
+- Add support for contextmenu-zoom
+- Implement path creation action
 - Implement rest of sequences for path data
     - Catmull-Rom curve
     - Bearing command
