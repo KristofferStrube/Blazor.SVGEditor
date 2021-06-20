@@ -43,7 +43,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             set
             {
                 var radius = Math.Sqrt(Math.Pow(value.x - Center.x, 2) + Math.Pow(value.y - Center.y, 2));
-                ry = radius;
+                EllipseRadi = (EllipseRadi.Rx, radius);
                 xAxisRotation = -Math.Atan((value.x - Center.x) / (value.y - Center.y)) * 180.0 / Math.PI;
             }
         }
@@ -53,7 +53,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             set
             {
                 var radius = Math.Sqrt(Math.Pow(value.x - Center.x, 2) + Math.Pow(value.y - Center.y, 2));
-                ry = radius;
+                EllipseRadi = (EllipseRadi.Rx, radius);
                 xAxisRotation = -Math.Atan((value.x - Center.x) / (value.y - Center.y)) * 180.0 / Math.PI+180;
             }
         }
@@ -63,7 +63,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             set
             {
                 var radius = Math.Sqrt(Math.Pow(value.x - Center.x, 2) + Math.Pow(value.y - Center.y, 2));
-                rx = radius;
+                EllipseRadi = (radius, EllipseRadi.Ry);
                 xAxisRotation = -Math.Atan((value.x - Center.x) / (value.y - Center.y)) * 180.0 / Math.PI+90;
             }
         }
@@ -73,7 +73,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             set
             {
                 var radius = Math.Sqrt(Math.Pow(value.x - Center.x, 2) + Math.Pow(value.y - Center.y, 2));
-                rx = radius;
+                EllipseRadi = (radius, EllipseRadi.Ry);
                 xAxisRotation = -Math.Atan((value.x - Center.x) / (value.y - Center.y)) * 180.0 / Math.PI-90;
             }
         }
