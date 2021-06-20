@@ -24,6 +24,7 @@
 			else if (Path.Instructions[i] is EllipticalArcInstruction ellipticalArc)
 			{
 				<circle @onmousedown="() => AnchorSelect(j, 0)" cx="@(((ellipticalArc.ControlPoint.x)*Path.SVG.Scale).AsString())" cy="@(((ellipticalArc.ControlPoint.y)*Path.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
+				<ellipse transform="rotate(@(ellipticalArc.xAxisRotation.AsString()) @((ellipticalArc.cx*Path.SVG.Scale).AsString()) @((ellipticalArc.cy*Path.SVG.Scale).AsString()))" cx="@((ellipticalArc.cx*Path.SVG.Scale).AsString())" cy="@((ellipticalArc.cy*Path.SVG.Scale).AsString())" rx="@((ellipticalArc.ellipseRx*Path.SVG.Scale).AsString())" ry="@((ellipticalArc.ellipseRy*Path.SVG.Scale).AsString())" style="pointer-events: none;" fill="none" stroke-dasharray="4" stroke="grey" stroke-width="2"></ellipse>
 			}
 			if (Path.Instructions[i] is BaseControlPointPathInstruction ControlPointInstruction)
 			{

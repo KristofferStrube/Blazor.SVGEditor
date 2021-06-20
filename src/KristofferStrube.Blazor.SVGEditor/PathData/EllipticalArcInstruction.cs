@@ -61,6 +61,50 @@ namespace KristofferStrube.Blazor.SVGEditor
             }
         }
 
+        public double cx
+        {
+            get
+            {
+                return (x + StartPosition.x) / 2.0;
+            }
+        }
+
+        public double cy
+        {
+            get
+            {
+                return (y + StartPosition.y) / 2.0;
+            }
+        }
+
+        public double ellipseRx
+        {
+            get
+            {
+                var definedDistance = Math.Sqrt(Math.Pow(rx, 2) + Math.Pow(ry, 2));
+                var actualDistance = Math.Sqrt(Math.Pow(x - StartPosition.x, 2) + Math.Pow(y - StartPosition.y, 2));
+                if (actualDistance > definedDistance)
+                {
+                    return rx * (actualDistance / definedDistance);
+                }
+                return rx;
+            }
+        }
+
+        public double ellipseRy
+        {
+            get
+            {
+                var definedDistance = Math.Sqrt(Math.Pow(rx, 2) + Math.Pow(ry, 2));
+                var actualDistance = Math.Sqrt(Math.Pow(x - StartPosition.x, 2) + Math.Pow(y - StartPosition.y, 2));
+                if (actualDistance > definedDistance)
+                {
+                    return ry * (actualDistance / definedDistance);
+                }
+                return ry;
+            }
+        }
+
         public override (double x, double y) EndPosition {
             get => (x, y);
             set { x = value.x; y = value.y; }
