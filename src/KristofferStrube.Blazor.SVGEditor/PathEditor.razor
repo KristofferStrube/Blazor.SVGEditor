@@ -23,7 +23,10 @@
 			}
 			else if (Path.Instructions[i] is EllipticalArcInstruction ellipticalArc)
 			{
-				<circle @onmousedown="() => AnchorSelect(j, 0)" cx="@(((ellipticalArc.ControlPoint.x)*Path.SVG.Scale).AsString())" cy="@(((ellipticalArc.ControlPoint.y)*Path.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
+				<circle @onmousedown="() => AnchorSelect(j, 0)" cx="@(((ellipticalArc.ControlPointYPos.x)*Path.SVG.Scale).AsString())" cy="@(((ellipticalArc.ControlPointYPos.y)*Path.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
+				<circle @onmousedown="() => AnchorSelect(j, 1)" cx="@(((ellipticalArc.ControlPointYNeg.x)*Path.SVG.Scale).AsString())" cy="@(((ellipticalArc.ControlPointYNeg.y)*Path.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
+				<circle @onmousedown="() => AnchorSelect(j, 2)" cx="@(((ellipticalArc.ControlPointXPos.x)*Path.SVG.Scale).AsString())" cy="@(((ellipticalArc.ControlPointXPos.y)*Path.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
+				<circle @onmousedown="() => AnchorSelect(j, 3)" cx="@(((ellipticalArc.ControlPointXNeg.x)*Path.SVG.Scale).AsString())" cy="@(((ellipticalArc.ControlPointXNeg.y)*Path.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
 				<ellipse transform="rotate(@(ellipticalArc.xAxisRotation.AsString()) @((ellipticalArc.Center.x*Path.SVG.Scale).AsString()) @((ellipticalArc.Center.y*Path.SVG.Scale).AsString()))" cx="@((ellipticalArc.Center.x*Path.SVG.Scale).AsString())" cy="@((ellipticalArc.Center.y*Path.SVG.Scale).AsString())" rx="@((ellipticalArc.EllipseRadi.Rx*Path.SVG.Scale).AsString())" ry="@((ellipticalArc.EllipseRadi.Ry*Path.SVG.Scale).AsString())" style="pointer-events: none;" fill="none" stroke-dasharray="4" stroke="grey" stroke-width="2"></ellipse>
 			}
 			if (Path.Instructions[i] is BaseControlPointPathInstruction ControlPointInstruction)

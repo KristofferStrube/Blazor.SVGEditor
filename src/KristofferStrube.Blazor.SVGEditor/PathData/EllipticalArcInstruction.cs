@@ -37,11 +37,44 @@ namespace KristofferStrube.Blazor.SVGEditor
         public double x { get; set; }
         public double y { get; set; }
 
-        public (double x, double y) ControlPoint
+        public (double x, double y) ControlPointYPos
         {
-            get
+            get => (Center.x + EllipseRadi.Ry * Math.Sin(xAxisRotation / 180 * Math.PI), Center.y - EllipseRadi.Ry * Math.Cos(xAxisRotation / 180 * Math.PI));
+            set
             {
-                return (Center.x + EllipseRadi.Ry * Math.Sin(xAxisRotation / 180 * Math.PI), Center.y - EllipseRadi.Ry * Math.Cos(xAxisRotation / 180 * Math.PI));
+                var radius = Math.Sqrt(Math.Pow(value.x - Center.x, 2) + Math.Pow(value.y - Center.y, 2));
+                ry = radius;
+                xAxisRotation = -Math.Atan((value.x - Center.x) / (value.y - Center.y)) * 180.0 / Math.PI;
+            }
+        }
+        public (double x, double y) ControlPointYNeg
+        {
+            get => (Center.x - EllipseRadi.Ry * Math.Sin(xAxisRotation / 180 * Math.PI), Center.y + EllipseRadi.Ry * Math.Cos(xAxisRotation / 180 * Math.PI));
+            set
+            {
+                var radius = Math.Sqrt(Math.Pow(value.x - Center.x, 2) + Math.Pow(value.y - Center.y, 2));
+                ry = radius;
+                xAxisRotation = -Math.Atan((value.x - Center.x) / (value.y - Center.y)) * 180.0 / Math.PI+180;
+            }
+        }
+        public (double x, double y) ControlPointXPos
+        {
+            get => (Center.x + EllipseRadi.Rx * Math.Cos(xAxisRotation / 180 * Math.PI), Center.y + EllipseRadi.Rx * Math.Sin(xAxisRotation / 180 * Math.PI));
+            set
+            {
+                var radius = Math.Sqrt(Math.Pow(value.x - Center.x, 2) + Math.Pow(value.y - Center.y, 2));
+                rx = radius;
+                xAxisRotation = -Math.Atan((value.x - Center.x) / (value.y - Center.y)) * 180.0 / Math.PI+90;
+            }
+        }
+        public (double x, double y) ControlPointXNeg
+        {
+            get => (Center.x - EllipseRadi.Rx * Math.Cos(xAxisRotation / 180 * Math.PI), Center.y - EllipseRadi.Rx * Math.Sin(xAxisRotation / 180 * Math.PI));
+            set
+            {
+                var radius = Math.Sqrt(Math.Pow(value.x - Center.x, 2) + Math.Pow(value.y - Center.y, 2));
+                rx = radius;
+                xAxisRotation = -Math.Atan((value.x - Center.x) / (value.y - Center.y)) * 180.0 / Math.PI-90;
             }
         }
 
@@ -91,6 +124,19 @@ namespace KristofferStrube.Blazor.SVGEditor
                     return (Math.Abs(rx), Math.Abs(ry));
                 }
                 return (Math.Sqrt(Delta) * Math.Abs(rx), Math.Sqrt(Delta) * Math.Abs(ry));
+            }
+            set
+            {
+                if (Delta <= 1)
+                {
+                    rx = value.Rx;
+                    ry = value.Ry;
+                }
+                else
+                {
+                    rx = value.Rx / Math.Sqrt(Delta);
+                    ry = value.Ry / Math.Sqrt(Delta);
+                }
             }
         }
 
