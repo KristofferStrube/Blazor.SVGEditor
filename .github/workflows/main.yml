@@ -48,7 +48,9 @@ jobs:
         
         # Added Ahead-Of-Time workload
         - name: Add AOT Workload
-          run: dotnet --configfile "nuget.config" workload install microsoft-net-sdk-blazorwebassembly-aot 2>&1 | tee log
+          run: |
+            dotnet workload install microsoft-net-sdk-blazorwebassembly-aot 2>&1 | tee log
+            dotnet workload update
 
         # Run tests
         - name: Test
