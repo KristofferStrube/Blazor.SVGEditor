@@ -29,7 +29,7 @@ jobs:
         
         # Added Ahead-Of-Time workload
         - name: Add AOT Workload
-          run: dotnet workload install microsoft-net-sdk-blazorwebassembly-aot
+          run: sudo dotnet workload install microsoft-net-sdk-blazorwebassembly-aot
 
         # Run tests
         - name: Test
