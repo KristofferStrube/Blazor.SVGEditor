@@ -36,4 +36,15 @@
             Polygon.EditMode = EditMode.Move;
         }
     }
+
+    protected override bool ShouldRender()
+    {
+        var StateRepresentation = Polygon.StateRepresentation;
+        if (Polygon._StateRepresentation != StateRepresentation)
+        {
+            Polygon._StateRepresentation = StateRepresentation;
+            return true;
+        }
+        return false;
+    }
 }

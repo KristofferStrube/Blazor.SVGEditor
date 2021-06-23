@@ -21,4 +21,15 @@
 @code {
     [Parameter]
     public Rectangle Rectangle { get; set; }
+
+    protected override bool ShouldRender()
+    {
+        var StateRepresentation = Rectangle.StateRepresentation;
+        if (Rectangle._StateRepresentation != StateRepresentation)
+        {
+            Rectangle._StateRepresentation = StateRepresentation;
+            return true;
+        }
+        return false;
+    }
 }
