@@ -27,9 +27,6 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
 - Add support for scroll-zoom
 - Add support for contextmenu-zoom
 - Implement path creation action
-- Implement rest of sequences for path data
-    - Catmull-Rom curve
-    - Bearing command
 - Show text in SVG.
 - Implement text edit in SVG.
 - Support more browsers using style attribute.
