@@ -17,10 +17,8 @@ namespace KristofferStrube.Blazor.SVGEditor
             this.sweepFlag = sweepFlag;
             if (Relative)
             {
-                // TODO:
-                // When a relative a command is used, the end point of the arc is (cpx + x, cpy + y).
-                this.x = x;
-                this.y = y;
+                this.x = StartPosition.x + x;
+                this.y = StartPosition.y + y;
             }
             else
             {
@@ -150,10 +148,8 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override string RelativeInstruction => "a";
 
-        // TODO:
-        // When a relative a command is used, the end point of the arc is (cpx + x, cpy + y).
         public override string ToString() => Relative ?
-                            $"{RelativeInstruction} {rx.AsString()} {ry.AsString()} {xAxisRotation.AsString()} {(largeArcFlag ? '1' : '0')} {(sweepFlag ? '1' : '0')} {x.AsString()} {y.AsString()}" :
+                            $"{RelativeInstruction} {rx.AsString()} {ry.AsString()} {xAxisRotation.AsString()} {(largeArcFlag ? '1' : '0')} {(sweepFlag ? '1' : '0')} {(x - StartPosition.x).AsString()} {(y - StartPosition.y).AsString()}" :
                             $"{AbsoluteInstruction} {rx.AsString()} {ry.AsString()} {xAxisRotation.AsString()} {(largeArcFlag ? '1' : '0')} {(sweepFlag ? '1' : '0')} {x.AsString()} {y.AsString()}";
     }
 }

@@ -254,5 +254,41 @@ namespace KristofferStrube.Blazor.SvgEditor.Test
             Assert.AreEqual((0, 30), quadratic.ReflectedPreviousInstructionsLastControlPoint);
             Assert.AreEqual(input, PathData.Parse(input).AsString());
         }
+
+        [Test]
+        public void AbsoluteEllipticalArcCurve()
+        {
+            var input = "M 10 10 A 1 1 0 1 1 20 30";
+            var inst = PathData.Parse(input)[1];
+            Assert.AreEqual(20, inst.EndPosition.x);
+            Assert.AreEqual(30, inst.EndPosition.y);
+            Assert.IsInstanceOf(typeof(EllipticalArcInstruction), inst);
+            var ellipticalArc = (EllipticalArcInstruction)inst;
+            Assert.AreEqual(1, ellipticalArc.rx);
+            Assert.AreEqual(1, ellipticalArc.ry);
+            Assert.AreEqual((15, 20 - Math.Sqrt(Math.Pow(5, 2) + Math.Pow(10, 2))), ellipticalArc.ControlPointYPos);
+            Assert.AreEqual((15, 20 + Math.Sqrt(Math.Pow(5, 2) + Math.Pow(10, 2))), ellipticalArc.ControlPointYNeg);
+            Assert.AreEqual((15 - Math.Sqrt(Math.Pow(5, 2) + Math.Pow(10, 2)), 20), ellipticalArc.ControlPointXNeg);
+            Assert.AreEqual((15 + Math.Sqrt(Math.Pow(5, 2) + Math.Pow(10, 2)), 20), ellipticalArc.ControlPointXPos);
+            Assert.AreEqual(input, PathData.Parse(input).AsString());
+        }
+
+        [Test]
+        public void RelativeEllipticalArcCurve()
+        {
+            var input = "M 10 10 a 1 1 0 1 1 10 20";
+            var inst = PathData.Parse(input)[1];
+            Assert.AreEqual(20, inst.EndPosition.x);
+            Assert.AreEqual(30, inst.EndPosition.y);
+            Assert.IsInstanceOf(typeof(EllipticalArcInstruction), inst);
+            var ellipticalArc = (EllipticalArcInstruction)inst;
+            Assert.AreEqual(1, ellipticalArc.rx);
+            Assert.AreEqual(1, ellipticalArc.ry);
+            Assert.AreEqual((15, 20 - Math.Sqrt(Math.Pow(5, 2) + Math.Pow(10, 2))), ellipticalArc.ControlPointYPos);
+            Assert.AreEqual((15, 20 + Math.Sqrt(Math.Pow(5, 2) + Math.Pow(10, 2))), ellipticalArc.ControlPointYNeg);
+            Assert.AreEqual((15 - Math.Sqrt(Math.Pow(5, 2) + Math.Pow(10, 2)), 20), ellipticalArc.ControlPointXNeg);
+            Assert.AreEqual((15 + Math.Sqrt(Math.Pow(5, 2) + Math.Pow(10, 2)), 20), ellipticalArc.ControlPointXPos);
+            Assert.AreEqual(input, PathData.Parse(input).AsString());
+        }
     }
 }
