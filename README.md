@@ -20,7 +20,6 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
     - Quadratic Bézier Curve
         - Shorthand aswell
     - Elliptical Arc Curve
-        - Only absolute command supported
         - Needs more work for radi interaction
 
 ## Current goals
