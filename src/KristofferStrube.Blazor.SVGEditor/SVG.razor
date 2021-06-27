@@ -11,6 +11,10 @@
                 var rectangle = (Rectangle)element;
                 <RectangleEditor Rectangle=rectangle />
                 break;
+            case "CIRCLE":
+                var circle = (Circle)element;
+                <CircleEditor Circle=circle />
+                break;
             case "POLYGON":
                 var polygon = (Polygon)element;
                 <PolygonEditor Polygon=polygon />
@@ -60,6 +64,9 @@
             {
                 case "RECT":
                     element = new Rectangle(child, this);
+                    break;
+                case "CIRCLE":
+                    element = new Circle(child, this);
                     break;
                 case "POLYGON":
                     element = new Polygon(child, this);

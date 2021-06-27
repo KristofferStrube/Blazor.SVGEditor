@@ -1,0 +1,34 @@
+﻿<g>
+    <g transform="scale(@Circle.SVG.Scale.AsString())">
+        <circle cx=@Circle.cx.AsString()
+              cy=@Circle.cy.AsString()
+              r=@Circle.r.AsString()
+              stroke="@Circle.Stroke"
+              stroke-width="@Circle.StrokeWidth"
+              fill="@Circle.Fill"
+              @onmousedown="Circle.Select" />
+    </g>
+    @if (Circle.Selected)
+    {
+        <circle @onmousedown="() => Circle.SelectAnchor(0)" cx="@(((Circle.cx + Circle.r)*Circle.SVG.Scale).AsString())" cy="@((Circle.cy*Circle.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
+        <circle @onmousedown="() => Circle.SelectAnchor(1)" cx="@(((Circle.cx - Circle.r)*Circle.SVG.Scale).AsString())" cy="@((Circle.cy*Circle.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
+        <circle @onmousedown="() => Circle.SelectAnchor(2)" cx="@(((Circle.cx)*Circle.SVG.Scale).AsString())" cy="@(((Circle.cy + Circle.r)*Circle.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
+        <circle @onmousedown="() => Circle.SelectAnchor(3)" cx="@(((Circle.cx)*Circle.SVG.Scale).AsString())" cy="@(((Circle.cy - Circle.r)*Circle.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
+    }
+</g>
+
+@code {
+    [Parameter]
+    public Circle Circle { get; set; }
+
+    protected override bool ShouldRender()
+    {
+        var StateRepresentation = Circle.StateRepresentation;
+        if (Circle._StateRepresentation != StateRepresentation)
+        {
+            Circle._StateRepresentation = StateRepresentation;
+            return true;
+        }
+        return false;
+    }
+}
