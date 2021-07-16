@@ -1,41 +1,42 @@
 ﻿@using System.Reactive.Subjects
 @using System.Reactive.Linq
+@using BlazorContextMenu
 
-<svg @onmousemove="Move" @onmouseup="Up" @onmouseout="Out" style="border:1px solid black" width="100%" height="80vh" @onmousedown:preventDefault="true">
-    <rect width="100%" height="100%" fill="transparent" @onclick="UnSelect"></rect>
-    @foreach (ISVGElement element in Elements)
-    {
-        switch (element.TagName)
+<ContextMenu Id="SVGMenu">
+    <Item OnClick="@ZoomIn">🔍 Zoom In</Item>
+    <Item OnClick="@ZoomOut">🔍 Zoom Out</Item>
+</ContextMenu>
+<ContextMenuTrigger MenuId="SVGMenu">
+    <svg @onmousemove="Move" @onmouseup="Up" @onmouseout="Out" style="border:1px solid black" width="100%" height="80vh" @onmousedown:preventDefault="true">
+        <rect width="100%" height="100%" fill="transparent" @onmousedown="UnSelect"></rect>
+        @foreach (ISVGElement element in Elements)
         {
-            case "RECT":
-                var rectangle = (Rectangle)element;
-                <RectangleEditor Rectangle=rectangle />
-                break;
-            case "CIRCLE":
-                var circle = (Circle)element;
-                <CircleEditor Circle=circle />
-                break;
-            case "POLYGON":
-                var polygon = (Polygon)element;
-                <PolygonEditor Polygon=polygon />
-                break;
-            case "PATH":
-                var path = (Path)element;
-                <PathEditor Path=path />
-                break;
+            switch (element.TagName)
+            {
+                case "RECT":
+                    var rectangle = (Rectangle)element;
+                    <RectangleEditor Rectangle=rectangle />
+                    break;
+                case "CIRCLE":
+                    var circle = (Circle)element;
+                    <CircleEditor Circle=circle />
+                    break;
+                case "POLYGON":
+                    var polygon = (Polygon)element;
+                    <PolygonEditor Polygon=polygon />
+                    break;
+                case "PATH":
+                    var path = (Path)element;
+                    <PathEditor Path=path />
+                    break;
+            }
         }
-    }
-    <circle cx="30" cy="30" r="27" fill="lightgrey" @onclick="() => ZoomIn()"></circle>
-    <path d="M 27 7 v 20 h -20 v 6 h 20 v 20 h 6 v -20 h 20 v -6 h -20 v -20 z" fill="black" style="pointer-events:none;"></path>
-
-    <circle cx="30" cy="90" r="27" fill="lightgrey" @onclick="() => ZoomOut()"></circle>
-    <path d="M 7 87 h 46 v 6 h -46 z" fill="black" style="pointer-events:none;"></path>
-
-    <foreignObject x="60" y="0" height="22" width="150" style="font-size:20px;">Scale 1:@(Math.Round(Scale, 2).AsString())</foreignObject>
-</svg>
+        <foreignObject x="5" y="0" height="22" width="150" style="font-size:20px;">Scale 1:@(Math.Round(Scale, 2).AsString())</foreignObject>
+    </svg>
+</ContextMenuTrigger>
 
 @code {
-	[Parameter]
+    [Parameter]
     public string Input { get; set; }
 
     private string _Input { get; set; }
@@ -87,30 +88,30 @@
         ElementsAsHtml = Elements.Select(e => e.Element.ToHtml()).ToList();
     }
 
-	protected override void OnInitialized()
-	{
-		ElementSubject
-			.Buffer(TimeSpan.FromMilliseconds(33))
-			.Where(updates => updates.Count > 0)
-			.Subscribe(updates =>
-			{
-				updates
-					.DistinctBy(element => Elements.IndexOf(element))
-					.ToList()
-					.ForEach(element =>
-					{
-						ElementsAsHtml[Elements.IndexOf(element)] = element.Element.ToHtml();
-					});
-				_Input = string.Join(" \n", ElementsAsHtml);
-				InputUpdated(_Input);
-			});
-	}
+    protected override void OnInitialized()
+    {
+        ElementSubject
+            .Buffer(TimeSpan.FromMilliseconds(33))
+            .Where(updates => updates.Count > 0)
+            .Subscribe(updates =>
+            {
+                updates
+                    .DistinctBy(element => Elements.IndexOf(element))
+                    .ToList()
+                    .ForEach(element =>
+                    {
+                        ElementsAsHtml[Elements.IndexOf(element)] = element.Element.ToHtml();
+                    });
+                _Input = string.Join(" \n", ElementsAsHtml);
+                InputUpdated(_Input);
+            });
+    }
 
-	private Subject<ISVGElement> ElementSubject = new();
+    private Subject<ISVGElement> ElementSubject = new();
 
     private void UpdateInput(ISVGElement element)
     {
-		ElementSubject.OnNext(element);
+        ElementSubject.OnNext(element);
     }
 
     public double Scale { get; set; } = 1;
@@ -141,7 +142,7 @@
         CurrentShape = null;
     }
 
-    public void ZoomIn()
+    public void ZoomIn(ItemClickEventArgs e)
     {
         if (Scale >= 0.5)
         {
@@ -157,7 +158,7 @@
         }
     }
 
-    public void ZoomOut()
+    public void ZoomOut(ItemClickEventArgs e)
     {
         if (Scale > 0.5)
         {
