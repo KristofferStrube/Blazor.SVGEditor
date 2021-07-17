@@ -1,11 +1,7 @@
 ﻿@using System.Reactive.Subjects
 @using System.Reactive.Linq
-@using BlazorContextMenu
+@using BlazorColorPicker
 
-<ContextMenu Id="SVGMenu">
-    <Item OnClick="@ZoomIn">🔍 Zoom In</Item>
-    <Item OnClick="@ZoomOut">🔍 Zoom Out</Item>
-</ContextMenu>
 <ContextMenuTrigger MenuId="SVGMenu">
     <svg @onmousemove="Move" @onmouseup="Up" @onmouseout="Out" style="border:1px solid black" width="100%" height="80vh" @onmousedown:preventDefault="true">
         <rect width="100%" height="100%" fill="transparent" @onmousedown="UnSelect"></rect>
@@ -34,6 +30,19 @@
         <foreignObject x="5" y="0" height="22" width="150" style="font-size:20px;">Scale 1:@(Math.Round(Scale, 2).AsString())</foreignObject>
     </svg>
 </ContextMenuTrigger>
+<ContextMenu Id="SVGMenu">
+    <Item OnClick="@ZoomIn">🔍 Zoom In</Item>
+    <Item OnClick="@ZoomOut">🔍 Zoom Out</Item>
+    @if(context.Data != null)
+    {
+        if (context.Data is Shape shape)
+        {
+            <Item data=shape OnClick="@OpenFillColorPicker"><span class="colorPickerCube" style="background-color:@shape.Fill;"></span> Fill Color</Item>
+            <Item data=shape OnClick="@OpenStrokeColorPicker"><span class="colorPickerCube" style="background-color:@shape.Stroke;"></span> Stroke Color</Item>
+        }
+    }
+</ContextMenu>
+<ColorPicker Title=@ColorPickerTitle IsOpened=@IsColorPickerOpen Closed=@ColorPickerClosed MyColor=@PreviousColor></ColorPicker>
 
 @code {
     [Parameter]
@@ -43,6 +52,16 @@
 
     [Parameter]
     public Action<string> InputUpdated { get; set; }
+
+    public Shape ColorPickerShape { get; set; }
+
+    public string ColorPickerAttribute { get; set; }
+
+    public string ColorPickerTitle => $"Pick {ColorPickerAttribute} Color";
+
+    public bool IsColorPickerOpen => ColorPickerShape is not null;
+
+    public string PreviousColor => ColorPickerShape is not null ? (ColorPickerAttribute == "Fill" ? ColorPickerShape.Fill : ColorPickerShape.Stroke) : String.Empty;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -168,5 +187,30 @@
         {
             Scale /= 1.1;
         }
+    }
+
+    protected void OpenFillColorPicker(ItemClickEventArgs e)
+    {
+        ColorPickerShape = (Shape)e.Data;
+        ColorPickerAttribute = "Fill";
+    }
+
+    protected void OpenStrokeColorPicker(ItemClickEventArgs e)
+    {
+        ColorPickerShape = (Shape)e.Data;
+        ColorPickerAttribute = "Stroke";
+    }
+
+    protected void ColorPickerClosed(string value)
+    {
+        if (ColorPickerAttribute == "Fill")
+        {
+            ColorPickerShape.Fill = value;
+        }
+        else if (ColorPickerAttribute == "Stroke")
+        {
+            ColorPickerShape.Stroke = value;
+        }
+        ColorPickerShape = null;
     }
 }

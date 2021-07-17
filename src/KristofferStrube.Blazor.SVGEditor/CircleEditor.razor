@@ -1,4 +1,4 @@
-﻿<g>
+﻿<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@Circle>
     <g transform="scale(@Circle.SVG.Scale.AsString())">
         <circle cx=@Circle.cx.AsString()
               cy=@Circle.cy.AsString()
@@ -15,7 +15,7 @@
         <circle @onmousedown="() => Circle.SelectAnchor(2)" cx="@(((Circle.cx)*Circle.SVG.Scale).AsString())" cy="@(((Circle.cy + Circle.r)*Circle.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
         <circle @onmousedown="() => Circle.SelectAnchor(3)" cx="@(((Circle.cx)*Circle.SVG.Scale).AsString())" cy="@(((Circle.cy - Circle.r)*Circle.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
     }
-</g>
+</ContextMenuTrigger>
 
 @code {
     [Parameter]

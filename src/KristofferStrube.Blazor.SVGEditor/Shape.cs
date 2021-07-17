@@ -13,8 +13,15 @@ namespace KristofferStrube.Blazor.SVGEditor
     {
         public IElement Element { get; set; }
         public SVG SVG { get; set; }
-        public string Fill => Element.GetAttribute("fill") ?? string.Empty;
-        public string Stroke => Element.GetAttribute("stroke") ?? string.Empty;
+        public string Fill {
+            get => Element.GetAttribute("fill") ?? string.Empty;
+            set { Element.SetAttribute("fill", value); Changed.Invoke(this); }
+        }
+        public string Stroke
+        {
+            get => Element.GetAttribute("stroke") ?? string.Empty;
+            set { Element.SetAttribute("stroke", value); Changed.Invoke(this); }
+        }
         public string StrokeWidth => Element.GetAttribute("stroke-width") ?? string.Empty;
         public string TagName => Element.TagName;
         public (double x, double y) Panner { get; set; }

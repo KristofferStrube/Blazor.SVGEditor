@@ -1,4 +1,4 @@
-﻿<g>
+﻿<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@Path>
     <g transform="scale(@Path.SVG.Scale.AsString())">
         <path d="@Path.Instructions.AsString()" fill="@Path.Fill" stroke="@Path.Stroke" stroke-width="@Path.StrokeWidth" @onmousedown="Select" />
     </g>
@@ -51,7 +51,7 @@
             }
         }
     }
-</g>
+</ContextMenuTrigger>
 
 @code {
     [Parameter]

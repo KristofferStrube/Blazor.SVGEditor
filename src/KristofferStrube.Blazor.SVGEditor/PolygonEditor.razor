@@ -1,4 +1,4 @@
-﻿<g>
+﻿<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@Polygon>
     <g transform="scale(@Polygon.SVG.Scale.AsString())">
         <polygon points="@Polygon.Element.GetAttribute("points")" fill="@Polygon.Fill" stroke="@Polygon.Stroke" stroke-width="@Polygon.StrokeWidth" @onmousedown="Select">
         </polygon>
@@ -11,7 +11,7 @@
             <circle @onmousedown="() => AnchorSelect(j)" cx="@((Polygon.Points[i].x*Polygon.SVG.Scale).AsString())" cy="@((Polygon.Points[i].y*Polygon.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
         }
     }
-</g>
+</ContextMenuTrigger>
 
 
 @code {

@@ -1,4 +1,4 @@
-﻿<g>
+﻿<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@Rectangle>
     <g transform="scale(@Rectangle.SVG.Scale.AsString())">
         <rect x=@Rectangle.x.AsString()
               y=@Rectangle.y.AsString()
@@ -16,7 +16,7 @@
         <circle @onmousedown="() => Rectangle.SelectAnchor(2)" cx="@(((Rectangle.x+Rectangle.width)*Rectangle.SVG.Scale).AsString())" cy="@(((Rectangle.y+Rectangle.height)*Rectangle.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
         <circle @onmousedown="() => Rectangle.SelectAnchor(3)" cx="@((Rectangle.x*Rectangle.SVG.Scale).AsString())" cy="@(((Rectangle.y+Rectangle.height)*Rectangle.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
     }
-</g>
+</ContextMenuTrigger>
 
 @code {
     [Parameter]

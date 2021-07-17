@@ -1,0 +1,9 @@
+﻿.colorPickerCube {
+    width: 0.8rem;
+    height: 0.8rem;
+    display: inline-block;
+    border-width: 1px;
+    border-style: solid;
+    margin-left: 5px;
+    margin-right: 5px;
+}
