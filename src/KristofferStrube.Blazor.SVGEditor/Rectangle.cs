@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
 using Microsoft.AspNetCore.Components.Web;
-using KristofferStrube.Blazor.SVGEditor.Models;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 

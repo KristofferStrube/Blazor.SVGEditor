@@ -1,5 +1,4 @@
 ﻿using AngleSharp.Dom;
-using KristofferStrube.Blazor.SVGEditor.Models;
 using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
@@ -22,7 +21,11 @@ namespace KristofferStrube.Blazor.SVGEditor
             get => Element.GetAttribute("stroke") ?? string.Empty;
             set { Element.SetAttribute("stroke", value); Changed.Invoke(this); }
         }
-        public string StrokeWidth => Element.GetAttribute("stroke-width") ?? string.Empty;
+        public string StrokeWidth
+        {
+            get => Element.GetAttribute("stroke-width") ?? string.Empty;
+            set { Element.SetAttribute("stroke-width", value); Changed.Invoke(this); }
+        }
         public string TagName => Element.TagName;
         public (double x, double y) Panner { get; set; }
         public EditMode EditMode { get; set; }

@@ -139,11 +139,24 @@ namespace KristofferStrube.Blazor.SVGEditor
                     }).ToList();
                     UpdateData();
                     break;
+                case EditMode.Add:
+                    if (Instructions.Count == 0)
+                    {
+                        Instructions.Add(new MoveInstruction(pos.x, pos.y, false, null) { ExplicitSymbol = true });
+                        Instructions.Add(new CubicBézierCurveInstruction(0, 0, 0, 0, 0, 0, false, Instructions.Last()) { ExplicitSymbol = true });
+                    }
+                    var cubicBezierCurveInstruction = (CubicBézierCurveInstruction)Instructions.Last();
+                    cubicBezierCurveInstruction.EndPosition = (pos.x, pos.y);
+                    cubicBezierCurveInstruction.ControlPoints[0] = ((int)(cubicBezierCurveInstruction.StartPosition.x * 2.0 / 3.0 + cubicBezierCurveInstruction.EndPosition.x * 1.0 / 3.0), (int)(cubicBezierCurveInstruction.StartPosition.y * 2.0 / 3.0 + cubicBezierCurveInstruction.EndPosition.y * 1.0 / 3.0));
+                    cubicBezierCurveInstruction.ControlPoints[^1] = ((int)(cubicBezierCurveInstruction.StartPosition.x * 1.0 / 3.0 + cubicBezierCurveInstruction.EndPosition.x * 2.0 / 3.0), (int)(cubicBezierCurveInstruction.StartPosition.y * 1.0 / 3.0 + cubicBezierCurveInstruction.EndPosition.y * 2.0 / 3.0));
+                    UpdateData();
+                    break;
             }
         }
 
         public override void HandleMouseUp(MouseEventArgs eventArgs)
         {
+            var pos = (x: eventArgs.OffsetX / SVG.Scale, y: eventArgs.OffsetY / SVG.Scale);
             switch (EditMode)
             {
                 case EditMode.MoveAnchor:
@@ -152,6 +165,14 @@ namespace KristofferStrube.Blazor.SVGEditor
                     break;
                 case EditMode.Move:
                     EditMode = EditMode.None;
+                    break;
+                case EditMode.Add:
+                    var cubicBezierCurveInstruction = (CubicBézierCurveInstruction)Instructions.Last();
+                    cubicBezierCurveInstruction.EndPosition = (pos.x, pos.y);
+                    cubicBezierCurveInstruction.ControlPoints[0] = ((int)(cubicBezierCurveInstruction.StartPosition.x * 2.0 / 3.0 + cubicBezierCurveInstruction.EndPosition.x * 1.0 / 3.0), (int)(cubicBezierCurveInstruction.StartPosition.y * 2.0 / 3.0 + cubicBezierCurveInstruction.EndPosition.y * 1.0 / 3.0));
+                    cubicBezierCurveInstruction.ControlPoints[^1] = ((int)(cubicBezierCurveInstruction.StartPosition.x * 1.0 / 3.0 + cubicBezierCurveInstruction.EndPosition.x * 2.0 / 3.0), (int)(cubicBezierCurveInstruction.StartPosition.y * 1.0 / 3.0 + cubicBezierCurveInstruction.EndPosition.y * 2.0 / 3.0));
+                    Instructions.Add(new CubicBézierCurveInstruction(pos.x, pos.y, pos.x, pos.y, pos.x, pos.y, false, Instructions.Last()) { ExplicitSymbol = true });
+                    UpdateData();
                     break;
             }
         }

@@ -1,5 +1,4 @@
 ﻿using AngleSharp.Dom;
-using KristofferStrube.Blazor.SVGEditor.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using System;

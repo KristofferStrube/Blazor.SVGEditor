@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace KristofferStrube.Blazor.SVGEditor.Models
+namespace KristofferStrube.Blazor.SVGEditor
 {
     public class Polygon : Shape
     {
