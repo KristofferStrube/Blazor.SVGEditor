@@ -126,7 +126,9 @@ namespace KristofferStrube.Blazor.SVGEditor
         public void UnSelect(MouseEventArgs eventArgs)
         {
             if (CurrentShape != null && CurrentShape.EditMode != EditMode.Add)
-            CurrentShape = null;
+            {
+                CurrentShape = null;
+            }
         }
 
         public void Out(MouseEventArgs eventArgs)
