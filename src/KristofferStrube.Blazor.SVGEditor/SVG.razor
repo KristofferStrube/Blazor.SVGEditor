@@ -41,14 +41,14 @@
     }
     @if (CurrentShape != null && CurrentShape.EditMode == EditMode.Add)
     {
-        <Item OnClick=@CompleteShape>Complete New Shape</Item>
+        <Item OnClick=@CompleteShape>✨ Complete New Shape</Item>
     }
     else
     {
         <Item>
-            Add
+            ✨ Add
             <SubMenu>
-                <Item OnClick="@AddNewPath">New Path</Item>
+                <Item OnClick="@AddNewPath">🎢 New Path</Item>
             </SubMenu>
         </Item>
     }

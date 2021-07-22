@@ -202,6 +202,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             Elements.Add(path);
             CurrentShape = path;
             path.EditMode = EditMode.Add;
+            path.Element.SetAttribute("d", path.Instructions.AsString());
             ElementsAsHtml.Add(element.ToHtml());
             _Input = string.Join(" \n", ElementsAsHtml);
             InputUpdated(_Input);
@@ -214,8 +215,8 @@ namespace KristofferStrube.Blazor.SVGEditor
             {
                 case Path path:
                     path.Instructions.RemoveAt(path.Instructions.Count - 1);
-                    path.Instructions.RemoveAt(path.Instructions.Count - 1);
                     path.Instructions.Add(new ClosePathInstruction(false, path.Instructions.Last()));
+                    path.Element.SetAttribute("d", path.Instructions.AsString());
                     ElementsAsHtml[Elements.IndexOf(path)] = path.Element.ToHtml();
                     _Input = string.Join(" \n", ElementsAsHtml);
                     InputUpdated(_Input);
