@@ -136,7 +136,19 @@ namespace KristofferStrube.Blazor.SVGEditor
             CurrentShape?.HandleMouseOut(eventArgs);
         }
 
-        public void ZoomIn(ItemClickEventArgs e)
+        public void Wheel(WheelEventArgs eventArgs)
+        {
+            if (eventArgs.DeltaY < 0)
+            {
+                ZoomIn(0,0);
+            }
+            else if (eventArgs.DeltaY > 0)
+            {
+                ZoomOut(0,0);
+            }
+        }
+
+        private void ZoomIn(double x, double y)
         {
             if (Scale >= 0.5)
             {
@@ -152,7 +164,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             }
         }
 
-        public void ZoomOut(ItemClickEventArgs e)
+        private void ZoomOut(double x, double y)
         {
             if (Scale > 0.5)
             {
