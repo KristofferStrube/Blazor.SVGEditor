@@ -40,7 +40,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
-            var pos = (x: eventArgs.OffsetX / SVG.Scale, y: eventArgs.OffsetY / SVG.Scale);
+            var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             switch (EditMode)
             {
                 case EditMode.MoveAnchor:
@@ -145,10 +145,10 @@ namespace KristofferStrube.Blazor.SVGEditor
                         Instructions.Add(new MoveInstruction(pos.x, pos.y, false, null) { ExplicitSymbol = true });
                         Instructions.Add(new CubicBézierCurveInstruction(0, 0, 0, 0, 0, 0, false, Instructions.Last()) { ExplicitSymbol = true });
                     }
-                    var cubicBezierCurveInstruction = (CubicBézierCurveInstruction)Instructions.Last();
-                    cubicBezierCurveInstruction.EndPosition = (pos.x, pos.y);
-                    cubicBezierCurveInstruction.ControlPoints[0] = ((int)(cubicBezierCurveInstruction.StartPosition.x * 2.0 / 3.0 + cubicBezierCurveInstruction.EndPosition.x * 1.0 / 3.0), (int)(cubicBezierCurveInstruction.StartPosition.y * 2.0 / 3.0 + cubicBezierCurveInstruction.EndPosition.y * 1.0 / 3.0));
-                    cubicBezierCurveInstruction.ControlPoints[^1] = ((int)(cubicBezierCurveInstruction.StartPosition.x * 1.0 / 3.0 + cubicBezierCurveInstruction.EndPosition.x * 2.0 / 3.0), (int)(cubicBezierCurveInstruction.StartPosition.y * 1.0 / 3.0 + cubicBezierCurveInstruction.EndPosition.y * 2.0 / 3.0));
+                    var currentInstruction = (CubicBézierCurveInstruction)Instructions.Last();
+                    currentInstruction.EndPosition = (pos.x, pos.y);
+                    currentInstruction.ControlPoints[0] = ((int)(currentInstruction.StartPosition.x * 2.0 / 3.0 + currentInstruction.EndPosition.x * 1.0 / 3.0), (int)(currentInstruction.StartPosition.y * 2.0 / 3.0 + currentInstruction.EndPosition.y * 1.0 / 3.0));
+                    currentInstruction.ControlPoints[^1] = ((int)(currentInstruction.StartPosition.x * 1.0 / 3.0 + currentInstruction.EndPosition.x * 2.0 / 3.0), (int)(currentInstruction.StartPosition.y * 1.0 / 3.0 + currentInstruction.EndPosition.y * 2.0 / 3.0));
                     UpdateData();
                     break;
             }
@@ -156,7 +156,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override void HandleMouseUp(MouseEventArgs eventArgs)
         {
-            var pos = (x: eventArgs.OffsetX / SVG.Scale, y: eventArgs.OffsetY / SVG.Scale);
+            var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             switch (EditMode)
             {
                 case EditMode.MoveAnchor:
@@ -167,11 +167,13 @@ namespace KristofferStrube.Blazor.SVGEditor
                     EditMode = EditMode.None;
                     break;
                 case EditMode.Add:
-                    var cubicBezierCurveInstruction = (CubicBézierCurveInstruction)Instructions.Last();
-                    cubicBezierCurveInstruction.EndPosition = (pos.x, pos.y);
-                    cubicBezierCurveInstruction.ControlPoints[0] = ((int)(cubicBezierCurveInstruction.StartPosition.x * 2.0 / 3.0 + cubicBezierCurveInstruction.EndPosition.x * 1.0 / 3.0), (int)(cubicBezierCurveInstruction.StartPosition.y * 2.0 / 3.0 + cubicBezierCurveInstruction.EndPosition.y * 1.0 / 3.0));
-                    cubicBezierCurveInstruction.ControlPoints[^1] = ((int)(cubicBezierCurveInstruction.StartPosition.x * 1.0 / 3.0 + cubicBezierCurveInstruction.EndPosition.x * 2.0 / 3.0), (int)(cubicBezierCurveInstruction.StartPosition.y * 1.0 / 3.0 + cubicBezierCurveInstruction.EndPosition.y * 2.0 / 3.0));
-                    Instructions.Add(new CubicBézierCurveInstruction(pos.x, pos.y, pos.x, pos.y, pos.x, pos.y, false, Instructions.Last()) { ExplicitSymbol = true });
+                    var currentInstruction = (CubicBézierCurveInstruction)Instructions.Last();
+                    var nextInstruction = new CubicBézierCurveInstruction(pos.x, pos.y, pos.x, pos.y, pos.x, pos.y, false, Instructions.Last()) { ExplicitSymbol = true };
+                    currentInstruction.EndPosition = (pos.x, pos.y);
+                    currentInstruction.ControlPoints[0] = ((int)(currentInstruction.StartPosition.x * 2.0 / 3.0 + currentInstruction.EndPosition.x * 1.0 / 3.0), (int)(currentInstruction.StartPosition.y * 2.0 / 3.0 + currentInstruction.EndPosition.y * 1.0 / 3.0));
+                    currentInstruction.ControlPoints[^1] = ((int)(currentInstruction.StartPosition.x * 1.0 / 3.0 + currentInstruction.EndPosition.x * 2.0 / 3.0), (int)(currentInstruction.StartPosition.y * 1.0 / 3.0 + currentInstruction.EndPosition.y * 2.0 / 3.0));
+                    currentInstruction.NextInstruction = nextInstruction;
+                    Instructions.Add(nextInstruction);
                     UpdateData();
                     break;
             }

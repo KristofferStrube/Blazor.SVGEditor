@@ -40,29 +40,13 @@ namespace KristofferStrube.Blazor.SVGEditor
             set { Element.SetAttribute("height", value.ToString()); Changed.Invoke(this); }
         }
 
-        public void Select(MouseEventArgs eventArgs)
-        {
-            if (SVG.CurrentShape == null || SVG.CurrentShape.EditMode == EditMode.None)
-            {
-                SVG.CurrentShape = this;
-                Panner = (x: eventArgs.OffsetX/SVG.Scale, y: eventArgs.OffsetY / SVG.Scale);
-                EditMode = EditMode.Move;
-            }
-        }
-
-        public void SelectAnchor(int anchor)
-        {
-            CurrentAnchor = anchor;
-            EditMode = EditMode.MoveAnchor;
-        }
-
         public (double x, double y) Cursor { get; set; }
 
         public int? CurrentAnchor { get; set; }
 
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
-            var pos = (x: eventArgs.OffsetX / SVG.Scale, y: eventArgs.OffsetY / SVG.Scale);
+            var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             switch (EditMode)
             {
                 case EditMode.Add:

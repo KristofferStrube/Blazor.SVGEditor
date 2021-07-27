@@ -45,7 +45,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
-            var pos = (x: eventArgs.OffsetX / SVG.Scale, y: eventArgs.OffsetY / SVG.Scale);
+            var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             switch (EditMode)
             {
                 case EditMode.MoveAnchor:
@@ -85,7 +85,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override void HandleMouseUp(MouseEventArgs eventArgs)
         {
-            var pos = (x: eventArgs.OffsetX / SVG.Scale, y: eventArgs.OffsetY / SVG.Scale);
+            var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             switch (EditMode)
             {
                 case EditMode.MoveAnchor:

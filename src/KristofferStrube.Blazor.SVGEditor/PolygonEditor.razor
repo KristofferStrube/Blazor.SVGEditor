@@ -1,5 +1,5 @@
 ﻿<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@Polygon>
-    <g transform="scale(@Polygon.SVG.Scale.AsString())">
+    <g transform="translate(@Polygon.SVG.Translate.x.AsString() @Polygon.SVG.Translate.y.AsString()) scale(@Polygon.SVG.Scale.AsString())">
         <polygon points="@Polygon.Element.GetAttribute("points")" fill="@Polygon.Fill" stroke="@Polygon.Stroke" stroke-width="@Polygon.StrokeWidth" @onmousedown="Select">
         </polygon>
     </g>
@@ -8,7 +8,7 @@
         @for (int i = 0; i < Polygon.Points.Count(); i++)
         {
             var j = i;
-            <circle @onmousedown="() => AnchorSelect(j)" cx="@((Polygon.Points[i].x*Polygon.SVG.Scale).AsString())" cy="@((Polygon.Points[i].y*Polygon.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
+            <PrimaryAnchor OnMouseDown="() => AnchorSelect(j)" Position=Polygon.Points[i] />
         }
     }
 </ContextMenuTrigger>
@@ -32,7 +32,7 @@
         if (Polygon.SVG.CurrentShape == null || Polygon.SVG.CurrentShape.EditMode == EditMode.None)
         {
             Polygon.SVG.CurrentShape = Polygon;
-            Polygon.Panner = (x: eventArgs.OffsetX / Polygon.SVG.Scale, y: eventArgs.OffsetY / Polygon.SVG.Scale);
+            Polygon.Panner = Polygon.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             Polygon.EditMode = EditMode.Move;
         }
     }

@@ -107,6 +107,8 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public double Scale { get; set; } = 1;
 
+        public (double x, double y) Translate = (0, 0);
+
         public List<ISVGElement> Elements { get; set; }
 
         public List<string> ElementsAsHtml { get; set; }
@@ -140,40 +142,44 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
             if (eventArgs.DeltaY < 0)
             {
-                ZoomIn(0,0);
+                ZoomIn(eventArgs.OffsetX, eventArgs.OffsetY);
             }
             else if (eventArgs.DeltaY > 0)
             {
-                ZoomOut(0,0);
+                ZoomOut(eventArgs.OffsetX, eventArgs.OffsetY);
             }
+        }
+
+        public (double x, double y) LocalTransform((double x, double y) pos)
+        {
+            return (pos.x * Scale + Translate.x, pos.y * Scale + Translate.y);
+        }
+
+        public (double x, double y) LocalDetransform((double x, double y) pos)
+        {
+            return ((pos.x - Translate.x) / Scale, (pos.y - Translate.y) / Scale);
         }
 
         private void ZoomIn(double x, double y)
         {
-            if (Scale >= 0.5)
+            var prevScale = Scale;
+            Scale *= 1.1;
+            if (Scale > 0.45 && Scale < 0.53)
             {
-                Scale += 0.1 + 0.1 * (int)(Scale / 2);
+                Scale = 0.5;
             }
-            else
-            {
-                Scale *= 1.1;
-                if (Scale > 0.47 && Scale < 0.53)
-                {
-                    Scale = 0.5;
-                }
-            }
+            Translate = (Translate.x + (x - Translate.x) * (1 - Scale / prevScale), Translate.y + (y - Translate.y) * (1 - Scale / prevScale));
         }
 
         private void ZoomOut(double x, double y)
         {
-            if (Scale > 0.5)
+            var prevScale = Scale;
+            Scale /= 1.1;
+            if (Scale > 0.46 && Scale < 0.54)
             {
-                Scale -= 0.1 + 0.1 * (int)(Scale / 2);
+                Scale = 0.5;
             }
-            else
-            {
-                Scale /= 1.1;
-            }
+            Translate = (Translate.x + (x - Translate.x) * (1 - Scale / prevScale), Translate.y + (y - Translate.y) * (1 - Scale / prevScale));
         }
 
         protected void OpenFillColorPicker(ItemClickEventArgs e)

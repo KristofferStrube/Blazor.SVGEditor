@@ -1,5 +1,5 @@
 ﻿<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@Rectangle>
-    <g transform="scale(@Rectangle.SVG.Scale.AsString())">
+    <g transform="translate(@Rectangle.SVG.Translate.x.AsString() @Rectangle.SVG.Translate.y.AsString()) scale(@Rectangle.SVG.Scale.AsString())">
         <rect x=@Rectangle.x.AsString()
               y=@Rectangle.y.AsString()
               width=@Rectangle.width.AsString()
@@ -7,20 +7,36 @@
               stroke="@Rectangle.Stroke"
               stroke-width="@Rectangle.StrokeWidth"
               fill="@Rectangle.Fill"
-              @onmousedown="Rectangle.Select" />
+              @onmousedown="Select" />
     </g>
     @if (Rectangle.Selected)
     {
-        <circle @onmousedown="() => Rectangle.SelectAnchor(0)" cx="@((Rectangle.x*Rectangle.SVG.Scale).AsString())" cy="@((Rectangle.y*Rectangle.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
-        <circle @onmousedown="() => Rectangle.SelectAnchor(1)" cx="@(((Rectangle.x+Rectangle.width)*Rectangle.SVG.Scale).AsString())" cy="@((Rectangle.y*Rectangle.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
-        <circle @onmousedown="() => Rectangle.SelectAnchor(2)" cx="@(((Rectangle.x+Rectangle.width)*Rectangle.SVG.Scale).AsString())" cy="@(((Rectangle.y+Rectangle.height)*Rectangle.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
-        <circle @onmousedown="() => Rectangle.SelectAnchor(3)" cx="@((Rectangle.x*Rectangle.SVG.Scale).AsString())" cy="@(((Rectangle.y+Rectangle.height)*Rectangle.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(0)" Position="(Rectangle.x, Rectangle.y)" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(1)" Position="(Rectangle.x + Rectangle.width, Rectangle.y)" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(2)" Position="(Rectangle.x + Rectangle.width, Rectangle.y + Rectangle.height)" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(3)" Position="(Rectangle.x, Rectangle.y + Rectangle.height)" />
     }
 </ContextMenuTrigger>
 
 @code {
     [Parameter]
     public Rectangle Rectangle { get; set; }
+
+    public void AnchorSelect(int anchor)
+    {
+        Rectangle.CurrentAnchor = anchor;
+        Rectangle.EditMode = EditMode.MoveAnchor;
+    }
+
+    public void Select(MouseEventArgs eventArgs)
+    {
+        if (Rectangle.SVG.CurrentShape == null || Rectangle.SVG.CurrentShape.EditMode == EditMode.None)
+        {
+            Rectangle.SVG.CurrentShape = Rectangle;
+            Rectangle.Panner = Rectangle.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+            Rectangle.EditMode = EditMode.Move;
+        }
+    }
 
     protected override bool ShouldRender()
     {

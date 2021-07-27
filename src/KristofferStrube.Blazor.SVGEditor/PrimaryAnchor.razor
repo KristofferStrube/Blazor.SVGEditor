@@ -1,0 +1,12 @@
+﻿<circle @onmousedown=OnMouseDown cx=@SVG.LocalTransform(Position).x.AsString() cy=@SVG.LocalTransform(Position).y.AsString() r="6" stroke-width="2" stroke="black" fill="transparent" />
+
+@code {
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnMouseDown { get; set; }
+
+    [Parameter]
+    public (double x, double y) Position { get; set; }
+
+    [CascadingParameter]
+    protected SVG SVG { get; set; }
+}

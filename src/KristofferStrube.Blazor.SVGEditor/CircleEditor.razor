@@ -1,25 +1,41 @@
 ﻿<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@Circle>
-    <g transform="scale(@Circle.SVG.Scale.AsString())">
+    <g transform="translate(@Circle.SVG.Translate.x.AsString() @Circle.SVG.Translate.y.AsString()) scale(@Circle.SVG.Scale.AsString())">
         <circle cx=@Circle.cx.AsString()
-              cy=@Circle.cy.AsString()
-              r=@Circle.r.AsString()
-              stroke="@Circle.Stroke"
-              stroke-width="@Circle.StrokeWidth"
-              fill="@Circle.Fill"
-              @onmousedown="Circle.Select" />
+                cy=@Circle.cy.AsString()
+                r=@Circle.r.AsString()
+                stroke="@Circle.Stroke"
+                stroke-width="@Circle.StrokeWidth"
+                fill="@Circle.Fill"
+                @onmousedown="Select" />
     </g>
     @if (Circle.Selected)
     {
-        <circle @onmousedown="() => Circle.SelectAnchor(0)" cx="@(((Circle.cx + Circle.r)*Circle.SVG.Scale).AsString())" cy="@((Circle.cy*Circle.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
-        <circle @onmousedown="() => Circle.SelectAnchor(1)" cx="@(((Circle.cx - Circle.r)*Circle.SVG.Scale).AsString())" cy="@((Circle.cy*Circle.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
-        <circle @onmousedown="() => Circle.SelectAnchor(2)" cx="@(((Circle.cx)*Circle.SVG.Scale).AsString())" cy="@(((Circle.cy + Circle.r)*Circle.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
-        <circle @onmousedown="() => Circle.SelectAnchor(3)" cx="@(((Circle.cx)*Circle.SVG.Scale).AsString())" cy="@(((Circle.cy - Circle.r)*Circle.SVG.Scale).AsString())" r="6" stroke-width="2" stroke="black" fill="transparent" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(0)" Position="(Circle.cx + Circle.r, Circle.cy)" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(1)" Position="(Circle.cx - Circle.r, Circle.cy)" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(2)" Position="(Circle.cx, Circle.cy + Circle.r)" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(3)" Position="(Circle.cx, Circle.cy - Circle.r)" />
     }
 </ContextMenuTrigger>
 
 @code {
     [Parameter]
     public Circle Circle { get; set; }
+
+    public void AnchorSelect(int anchor)
+    {
+        Circle.CurrentAnchor = anchor;
+        Circle.EditMode = EditMode.MoveAnchor;
+    }
+
+    public void Select(MouseEventArgs eventArgs)
+    {
+        if (Circle.SVG.CurrentShape == null || Circle.SVG.CurrentShape.EditMode == EditMode.None)
+        {
+            Circle.SVG.CurrentShape = Circle;
+            Circle.Panner = Circle.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+            Circle.EditMode = EditMode.Move;
+        }
+    }
 
     protected override bool ShouldRender()
     {
