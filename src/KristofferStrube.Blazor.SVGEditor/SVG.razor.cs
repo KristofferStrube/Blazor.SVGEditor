@@ -164,9 +164,9 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
             var prevScale = Scale;
             Scale *= 1.1;
-            if (Scale > 0.45 && Scale < 0.53)
+            if (Scale > 0.91 && Scale < 1.09)
             {
-                Scale = 0.5;
+                Scale = 1;
             }
             Translate = (Translate.x + (x - Translate.x) * (1 - Scale / prevScale), Translate.y + (y - Translate.y) * (1 - Scale / prevScale));
         }
@@ -175,9 +175,9 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
             var prevScale = Scale;
             Scale /= 1.1;
-            if (Scale > 0.46 && Scale < 0.54)
+            if (Scale > 0.91 && Scale < 1.09)
             {
-                Scale = 0.5;
+                Scale = 1;
             }
             Translate = (Translate.x + (x - Translate.x) * (1 - Scale / prevScale), Translate.y + (y - Translate.y) * (1 - Scale / prevScale));
         }
