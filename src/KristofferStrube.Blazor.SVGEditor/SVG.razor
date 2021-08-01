@@ -31,8 +31,8 @@
     </svg>
 </ContextMenuTrigger>
 <ContextMenu Id="SVGMenu">
-    <Item OnClick="e => ZoomIn(e.MouseEvent.OffsetX, e.MouseEvent.OffsetY)">🔍 Zoom In</Item>
-    <Item OnClick="e => ZoomOut(e.MouseEvent.OffsetX, e.MouseEvent.OffsetY)">🔍 Zoom Out</Item>
+    <Item OnClick="() => ContextZoomIn()">🔍 Zoom In</Item>
+    <Item OnClick="() => ContextZoomOut()">🔍 Zoom Out</Item>
     @if (context.Data != null)
     {
         if (context.Data is Shape shape)

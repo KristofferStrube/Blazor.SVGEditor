@@ -115,6 +115,8 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public ISVGElement CurrentShape { get; set; }
 
+        private (double x, double y)? LastRightClick { get; set; } = null; 
+
         public void Move(MouseEventArgs eventArgs)
         {
             CurrentShape?.HandleMouseMove(eventArgs);
@@ -123,6 +125,10 @@ namespace KristofferStrube.Blazor.SVGEditor
         public void Up(MouseEventArgs eventArgs)
         {
             CurrentShape?.HandleMouseUp(eventArgs);
+            if (eventArgs.Button == 2)
+            {
+                LastRightClick = (eventArgs.OffsetX, eventArgs.OffsetY);
+            }
         }
 
         public void UnSelect(MouseEventArgs eventArgs)
@@ -150,6 +156,18 @@ namespace KristofferStrube.Blazor.SVGEditor
             }
         }
 
+        public void ContextZoomIn()
+        {
+            ZoomIn(LastRightClick.Value.x, LastRightClick.Value.y, 1.5);
+            LastRightClick = null;
+        }
+
+        public void ContextZoomOut()
+        {
+            ZoomOut(LastRightClick.Value.x, LastRightClick.Value.y, 1.5);
+            LastRightClick = null;
+        }
+
         public (double x, double y) LocalTransform((double x, double y) pos)
         {
             return (pos.x * Scale + Translate.x, pos.y * Scale + Translate.y);
@@ -160,10 +178,10 @@ namespace KristofferStrube.Blazor.SVGEditor
             return ((pos.x - Translate.x) / Scale, (pos.y - Translate.y) / Scale);
         }
 
-        private void ZoomIn(double x, double y)
+        private void ZoomIn(double x, double y, double ZoomFactor = 1.1)
         {
             var prevScale = Scale;
-            Scale *= 1.1;
+            Scale *= ZoomFactor;
             if (Scale > 0.91 && Scale < 1.09)
             {
                 Scale = 1;
@@ -171,10 +189,10 @@ namespace KristofferStrube.Blazor.SVGEditor
             Translate = (Translate.x + (x - Translate.x) * (1 - Scale / prevScale), Translate.y + (y - Translate.y) * (1 - Scale / prevScale));
         }
 
-        private void ZoomOut(double x, double y)
+        private void ZoomOut(double x, double y, double ZoomFactor = 1.1)
         {
             var prevScale = Scale;
-            Scale /= 1.1;
+            Scale /= ZoomFactor;
             if (Scale > 0.91 && Scale < 1.09)
             {
                 Scale = 1;
