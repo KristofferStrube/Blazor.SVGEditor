@@ -1,6 +1,4 @@
-﻿<circle cx=@SVG.LocalTransform(Position).x.AsString() cy=@SVG.LocalTransform(Position).y.AsString() r="4.5" stroke-width="1" stroke="grey" fill="transparent" />
-<circle cx=@SVG.LocalTransform(Position).x.AsString() cy=@SVG.LocalTransform(Position).y.AsString() r="5.25" stroke-width="0.5" stroke="white" fill="transparent" />
-<circle @onmousedown=OnMouseDown cx=@SVG.LocalTransform(Position).x.AsString() cy=@SVG.LocalTransform(Position).y.AsString() r="6" stroke-width="1" stroke="grey" fill="transparent" />
+﻿<use @onmousedown=OnMouseDown href="#secondaryAnchor" x=@SVG.LocalTransform(Position).x.AsString() y=@SVG.LocalTransform(Position).y.AsString() transform="translate(-7 -7)" />
 
 @code {
     [Parameter]
