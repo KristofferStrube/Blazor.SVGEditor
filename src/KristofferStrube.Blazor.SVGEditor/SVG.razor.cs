@@ -115,7 +115,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public ISVGElement CurrentShape { get; set; }
 
-        private (double x, double y)? LastRightClick { get; set; } = null; 
+        public (double x, double y) LastRightClick { get; set; }
 
         public void Move(MouseEventArgs eventArgs)
         {
@@ -158,14 +158,12 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public void ContextZoomIn()
         {
-            ZoomIn(LastRightClick.Value.x, LastRightClick.Value.y, 1.5);
-            LastRightClick = null;
+            ZoomIn(LastRightClick.x, LastRightClick.y, 1.5);
         }
 
         public void ContextZoomOut()
         {
-            ZoomOut(LastRightClick.Value.x, LastRightClick.Value.y, 1.5);
-            LastRightClick = null;
+            ZoomOut(LastRightClick.x, LastRightClick.y, 1.5);
         }
 
         public (double x, double y) LocalTransform((double x, double y) pos)

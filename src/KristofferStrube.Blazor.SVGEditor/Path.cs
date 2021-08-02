@@ -142,7 +142,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                 case EditMode.Add:
                     if (Instructions.Count == 0)
                     {
-                        Instructions.Add(new MoveInstruction(pos.x, pos.y, false, null) { ExplicitSymbol = true });
+                        Instructions.Add(new MoveInstruction(SVG.LastRightClick.x, SVG.LastRightClick.y, false, null) { ExplicitSymbol = true });
                         Instructions.Add(new CubicBézierCurveInstruction(0, 0, 0, 0, 0, 0, false, Instructions.Last()) { ExplicitSymbol = true });
                     }
                     var currentInstruction = (CubicBézierCurveInstruction)Instructions.Last();
