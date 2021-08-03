@@ -1,30 +1,30 @@
 ﻿<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement>
     <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
-        <circle cx=@SVGElement.cx.AsString()
-                cy=@SVGElement.cy.AsString()
-                r=@SVGElement.r.AsString()
-                stroke="@SVGElement.Stroke"
-                stroke-width="@SVGElement.StrokeWidth"
-                fill="@SVGElement.Fill"
-                @onmousedown="Select" />
+        <polyline points="@SVGElement.Element.GetAttribute("points")" fill="@SVGElement.Fill" stroke="@SVGElement.Stroke" stroke-width="@SVGElement.StrokeWidth" @onmousedown="Select">
+        </polyline>
     </g>
     @if (SVGElement.Selected)
     {
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(0)" Position="(SVGElement.cx + SVGElement.r, SVGElement.cy)" />
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(1)" Position="(SVGElement.cx - SVGElement.r, SVGElement.cy)" />
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(2)" Position="(SVGElement.cx, SVGElement.cy + SVGElement.r)" />
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(3)" Position="(SVGElement.cx, SVGElement.cy - SVGElement.r)" />
+        @for (int i = 0; i < SVGElement.Points.Count(); i++)
+        {
+            var j = i;
+            <PrimaryAnchor OnMouseDown="() => AnchorSelect(j)" Position=SVGElement.Points[i] />
+        }
     }
 </ContextMenuTrigger>
 
+
 @code {
     [Parameter]
-    public Circle SVGElement { get; set; }
+    public Polyline SVGElement { get; set; }
 
-    public void AnchorSelect(int anchor)
+    public void AnchorSelect(int j)
     {
-        SVGElement.CurrentAnchor = anchor;
-        SVGElement.EditMode = EditMode.MoveAnchor;
+        if (SVGElement.EditMode != EditMode.Add)
+        {
+            SVGElement.CurrentAnchor = j;
+            SVGElement.EditMode = EditMode.MoveAnchor;
+        }
     }
 
     public void Select(MouseEventArgs eventArgs)

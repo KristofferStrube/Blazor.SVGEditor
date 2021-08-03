@@ -5,27 +5,10 @@
         <Symbols />
         <rect width="100%" height="100%" fill="transparent" @onmouseup=@UnSelect></rect>
         <CascadingValue Value=this>
-            @foreach (ISVGElement element in Elements)
+            @foreach (ISVGElement SVGElement in Elements)
             {
-                switch (element.TagName)
-                {
-                    case "RECT":
-                        var rectangle = (Rectangle)element;
-                        <RectangleEditor Rectangle=rectangle />
-                        break;
-                    case "CIRCLE":
-                        var circle = (Circle)element;
-                        <CircleEditor Circle=circle />
-                        break;
-                    case "POLYGON":
-                        var polygon = (Polygon)element;
-                        <PolygonEditor Polygon=polygon />
-                        break;
-                    case "PATH":
-                        var path = (Path)element;
-                        <PathEditor Path=path />
-                        break;
-                }
+                var Parameters = new Dictionary<string, object> { { "SVGElement", SVGElement } };
+                <DynamicComponent Type=@SVGElement.Editor Parameters=@Parameters />
             }
         </CascadingValue>
         <foreignObject x="5" y="0" height="22" width="150" style="font-size:20px;">Scale 1:@(Math.Round(Scale, 3).AsString())</foreignObject>
@@ -52,6 +35,8 @@
             ✨ Add
             <SubMenu>
                 <Item OnClick="@AddNewPath">🎢 New Path</Item>
+                <Item OnClick="@AddNewPolygon">⬛ New Polygon</Item>
+                <Item OnClick="@AddNewPolyline"> New Polyline</Item>
             </SubMenu>
         </Item>
     }

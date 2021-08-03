@@ -11,6 +11,8 @@ namespace KristofferStrube.Blazor.SVGEditor
     public abstract class Shape : ISVGElement
     {
         public IElement Element { get; set; }
+
+        public abstract Type Editor { get; }
         public SVG SVG { get; set; }
         public string Fill {
             get => Element.GetAttribute("fill") ?? string.Empty;
@@ -26,18 +28,19 @@ namespace KristofferStrube.Blazor.SVGEditor
             get => Element.GetAttribute("stroke-width") ?? string.Empty;
             set { Element.SetAttribute("stroke-width", value); Changed.Invoke(this); }
         }
-        public string TagName => Element.TagName;
         public (double x, double y) Panner { get; set; }
         public EditMode EditMode { get; set; }
         public IEnumerable<EditMode> AvailableEditModes { get; set; }
         public Action<ISVGElement> Changed { get; set; }
         public bool Selectable => SVG.CurrentShape == null;
         public bool Selected => SVG.CurrentShape == this;
-        internal string _StateRepresentation { get; set;}
+        public string _StateRepresentation { get; set;}
         public string StateRepresentation => string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y;
         public abstract void HandleMouseMove(MouseEventArgs eventArgs);
         public abstract void HandleMouseUp(MouseEventArgs eventArgs);
         public abstract void HandleMouseOut(MouseEventArgs eventArgs);
 
+        public static Action<SVG> AddNew;
+        public abstract void Complete();
     }
 }

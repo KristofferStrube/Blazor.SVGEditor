@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -23,7 +24,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         [Parameter]
         public Action<string> InputUpdated { get; set; }
 
-        private IDocument Document { get; set; }
+        internal IDocument Document { get; set; }
 
         public Shape ColorPickerShape { get; set; }
 
@@ -34,6 +35,14 @@ namespace KristofferStrube.Blazor.SVGEditor
         public bool IsColorPickerOpen => ColorPickerShape is not null;
 
         public string PreviousColor => ColorPickerShape is not null ? (ColorPickerAttribute == "Fill" ? ColorPickerShape.Fill : ColorPickerShape.Stroke) : String.Empty;
+
+        public Dictionary<string, Type> SupportedTypes { get; set; } = new Dictionary<string, Type> {
+                { "RECT", typeof(Rectangle) },
+                { "CIRCLE", typeof(Circle) },
+                { "POLYGON", typeof(Polygon) },
+                { "POLYLINE", typeof(Polyline) },
+                { "PATH", typeof(Path) },
+            };
 
         protected override async Task OnParametersSetAsync()
         {
@@ -49,30 +58,19 @@ namespace KristofferStrube.Blazor.SVGEditor
 
             Document = await context.OpenAsync(req => req.Content(Input));
 
-            Elements = Document.GetElementsByTagName("BODY")[0].Children.Select<AngleSharp.Dom.IElement, ISVGElement>(child =>
+            Elements = Document.GetElementsByTagName("BODY")[0].Children.Select(child =>
             {
-                ISVGElement element;
-                switch (child.TagName)
+                ISVGElement SVGElement;
+                if (SupportedTypes.ContainsKey(child.TagName))
                 {
-                    case "RECT":
-                        element = new Rectangle(child, this);
-                        break;
-                    case "CIRCLE":
-                        element = new Circle(child, this);
-                        break;
-                    case "POLYGON":
-                        element = new Polygon(child, this);
-                        break;
-                    case "PATH":
-                        element = new Path(child, this);
-                        break;
-                    default:
-                        element = new NonImplmentedElement();
-                        break;
-
+                    SVGElement = (ISVGElement)Activator.CreateInstance(SupportedTypes[child.TagName], child, this);
                 }
-                element.Changed = UpdateInput;
-                return element;
+                else
+                {
+                    SVGElement = new NonImplmentedElement();
+                }
+                SVGElement.Changed = UpdateInput;
+                return SVGElement;
             }
             ).ToList();
 
@@ -87,22 +85,39 @@ namespace KristofferStrube.Blazor.SVGEditor
                 .Subscribe(updates =>
                 {
                     updates
-                        .DistinctBy(element => Elements.IndexOf(element))
+                        .Distinct()
                         .ToList()
                         .ForEach(element =>
                         {
                             ElementsAsHtml[Elements.IndexOf(element)] = element.Element.ToHtml();
                         });
-                    _Input = string.Join(" \n", ElementsAsHtml);
-                    InputUpdated(_Input);
+                    UpdateInput();
                 });
         }
 
         private Subject<ISVGElement> ElementSubject = new();
 
-        private void UpdateInput(ISVGElement element)
+        internal void UpdateInput(ISVGElement SVGElement)
         {
-            ElementSubject.OnNext(element);
+            ElementSubject.OnNext(SVGElement);
+        }
+
+        internal void AddElement(ISVGElement SVGElement)
+{
+            Elements.Add(SVGElement);
+            ElementsAsHtml.Add(SVGElement.Element.ToHtml());
+            UpdateInput();
+        }
+
+        public void UpdateInput()
+        {
+            _Input = string.Join(" \n", ElementsAsHtml);
+            InputUpdated(_Input);
+        }
+
+        public void RerenderAll()
+        {
+            Elements.ForEach(e => e._StateRepresentation = null);
         }
 
         public double Scale { get; set; } = 1;
@@ -225,37 +240,23 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         protected void AddNewPath(ItemClickEventArgs e)
         {
-            var element = Document.CreateElement("PATH");
-            var path = new Path(element, this);
-            path.Changed = UpdateInput;
+            Path.AddNew(this);
+        }
 
-            path.Stroke = "black";
-            path.StrokeWidth = "1";
-            path.Fill = "lightgrey";
+        protected void AddNewPolygon(ItemClickEventArgs e)
+        {
+            Polygon.AddNew(this);
+        }
 
-            Elements.Add(path);
-            CurrentShape = path;
-            path.EditMode = EditMode.Add;
-            path.Element.SetAttribute("d", path.Instructions.AsString());
-            ElementsAsHtml.Add(element.ToHtml());
-            _Input = string.Join(" \n", ElementsAsHtml);
-            InputUpdated(_Input);
+        protected void AddNewPolyline(ItemClickEventArgs e)
+        {
+            Polyline.AddNew(this);
         }
 
         protected void CompleteShape(ItemClickEventArgs e)
         {
             CurrentShape.EditMode = EditMode.None;
-            switch (CurrentShape)
-            {
-                case Path path:
-                    path.Instructions.RemoveAt(path.Instructions.Count - 1);
-                    path.Instructions.Add(new ClosePathInstruction(false, path.Instructions.Last()));
-                    path.Element.SetAttribute("d", path.Instructions.AsString());
-                    ElementsAsHtml[Elements.IndexOf(path)] = path.Element.ToHtml();
-                    _Input = string.Join(" \n", ElementsAsHtml);
-                    InputUpdated(_Input);
-                    break;
-            }
+            CurrentShape.Complete();
             CurrentShape = null;
         }
     }

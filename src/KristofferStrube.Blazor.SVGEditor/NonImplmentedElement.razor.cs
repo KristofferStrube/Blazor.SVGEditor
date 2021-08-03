@@ -42,9 +42,54 @@ namespace KristofferStrube.Blazor.SVGEditor
         }
 
         public Action<ISVGElement> Changed { get; set; }
+
+        public Type Editor => throw new NotImplementedException();
+
+        IElement ISVGElement.Element { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        Type ISVGElement.Editor => throw new NotImplementedException();
+
+        bool ISVGElement.Selected => throw new NotImplementedException();
+
+        bool ISVGElement.Selectable => throw new NotImplementedException();
+
+        EditMode ISVGElement.EditMode { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        IEnumerable<EditMode> ISVGElement.AvailableEditModes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        (double x, double y) ISVGElement.Panner { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        string ISVGElement._StateRepresentation { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        Action<ISVGElement> ISVGElement.Changed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             Changed.Invoke(this);
+        }
+
+        public new static Action<SVG> AddNew = SVG =>
+        {
+        };
+
+        public void Complete()
+        {
+        }
+
+        void ISVGElement.HandleMouseMove(MouseEventArgs eventArgs)
+        {
+            throw new NotImplementedException();
+        }
+
+        void ISVGElement.HandleMouseUp(MouseEventArgs eventArgs)
+        {
+            throw new NotImplementedException();
+        }
+
+        void ISVGElement.HandleMouseOut(MouseEventArgs eventArgs)
+        {
+            throw new NotImplementedException();
+        }
+
+        void ISVGElement.Complete()
+        {
+            throw new NotImplementedException();
         }
     }
 }

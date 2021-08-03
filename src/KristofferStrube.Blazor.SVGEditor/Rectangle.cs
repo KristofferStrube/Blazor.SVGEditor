@@ -20,6 +20,8 @@ namespace KristofferStrube.Blazor.SVGEditor
             SVG = svg;
         }
 
+        public override Type Editor => typeof(RectangleEditor);
+
         public double x {
             get { return double.Parse(Element.GetAttribute("x") ?? string.Empty); }
             set { Element.SetAttribute("x", value.ToString()); Changed.Invoke(this); }
@@ -101,6 +103,14 @@ namespace KristofferStrube.Blazor.SVGEditor
         }
 
         public override void HandleMouseOut(MouseEventArgs eventArgs)
+        {
+        }
+
+        public new static Action<SVG> AddNew = SVG =>
+        {
+        };
+
+        public override void Complete()
         {
         }
     }

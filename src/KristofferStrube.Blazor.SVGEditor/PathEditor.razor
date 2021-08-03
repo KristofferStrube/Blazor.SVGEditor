@@ -1,50 +1,53 @@
-﻿<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@Path>
-    <g transform="translate(@Path.SVG.Translate.x.AsString() @Path.SVG.Translate.y.AsString()) scale(@Path.SVG.Scale.AsString())">
-        <path d="@Path.Instructions.AsString()" fill="@Path.Fill" stroke="@Path.Stroke" stroke-width="@Path.StrokeWidth" @onmousedown="Select" />
+﻿@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement>
+    <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
+        <path tabindex="0" @ref=ElementReference d="@SVGElement.Instructions.AsString()" fill="@SVGElement.Fill" stroke="@SVGElement.Stroke" stroke-width="@SVGElement.StrokeWidth" @onmousedown="Select" @onkeyup="KeyUp" />
     </g>
-    @if (Path.Selected)
+    @if (SVGElement.Selected)
     {
-        if (Path.EditMode != EditMode.Add)
+        if (SVGElement.EditMode != EditMode.Add)
         {
-            @for (int i = 0; i < Path.Instructions.Count; i++)
+            @for (int i = 0; i < SVGElement.Instructions.Count; i++)
             {
                 var j = i;
-                if (Path.Instructions[i] is not ClosePathInstruction)
+                if (SVGElement.Instructions[i] is not ClosePathInstruction)
                 {
-                    <PrimaryAnchor OnMouseDown="() => AnchorSelect(j, -1)" Position=Path.Instructions[i].EndPosition />
+                    <PrimaryAnchor OnMouseDown="() => AnchorSelect(j, -1)" Position=SVGElement.Instructions[i].EndPosition />
                 }
-                if (Path.Instructions[i] is CubicBézierCurveInstruction cubicCurve)
+                if (SVGElement.Instructions[i] is CubicBézierCurveInstruction cubicCurve)
                 {
                     <PrimaryLine From=cubicCurve.StartPosition To=cubicCurve.ControlPoints[0] />
                     <PrimaryLine From=cubicCurve.ControlPoints[1] To=cubicCurve.EndPosition />
                 }
-                else if (Path.Instructions[i] is QuadraticBézierCurveInstruction quadraticCurve)
+                else if (SVGElement.Instructions[i] is QuadraticBézierCurveInstruction quadraticCurve)
                 {
                     <PrimaryLine From=quadraticCurve.StartPosition To=quadraticCurve.ControlPoints[0] />
                     <PrimaryLine From=quadraticCurve.ControlPoints[0] To=quadraticCurve.EndPosition />
                 }
-                else if (Path.Instructions[i] is EllipticalArcInstruction ellipticalArc)
+                else if (SVGElement.Instructions[i] is EllipticalArcInstruction ellipticalArc)
                 {
                     <PrimaryAnchor OnMouseDown="() => AnchorSelect(j, 0)" Position=ellipticalArc.ControlPointYPos />
                     <PrimaryAnchor OnMouseDown="() => AnchorSelect(j, 1)" Position=ellipticalArc.ControlPointYNeg />
                     <PrimaryAnchor OnMouseDown="() => AnchorSelect(j, 2)" Position=ellipticalArc.ControlPointXPos />
                     <PrimaryAnchor OnMouseDown="() => AnchorSelect(j, 3)" Position=ellipticalArc.ControlPointXNeg />
-                    <ellipse transform="translate(@Path.SVG.Translate.x.AsString() @Path.SVG.Translate.y.AsString()) rotate(@(ellipticalArc.xAxisRotation.AsString()) @((ellipticalArc.Center.x*Path.SVG.Scale).AsString()) @((ellipticalArc.Center.y*Path.SVG.Scale).AsString()))" cx="@((ellipticalArc.Center.x*Path.SVG.Scale).AsString())" cy="@((ellipticalArc.Center.y*Path.SVG.Scale).AsString())" rx="@((ellipticalArc.EllipseRadi.Rx*Path.SVG.Scale).AsString())" ry="@((ellipticalArc.EllipseRadi.Ry*Path.SVG.Scale).AsString())" style="pointer-events: none;" fill="none" stroke-dasharray="4" stroke="grey" stroke-width="2"></ellipse>
+                    <ellipse transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) rotate(@(ellipticalArc.xAxisRotation.AsString()) @((ellipticalArc.Center.x*SVGElement.SVG.Scale).AsString()) @((ellipticalArc.Center.y*SVGElement.SVG.Scale).AsString()))" cx="@((ellipticalArc.Center.x*SVGElement.SVG.Scale).AsString())" cy="@((ellipticalArc.Center.y*SVGElement.SVG.Scale).AsString())" rx="@((ellipticalArc.EllipseRadi.Rx*SVGElement.SVG.Scale).AsString())" ry="@((ellipticalArc.EllipseRadi.Ry*SVGElement.SVG.Scale).AsString())" style="pointer-events: none;" fill="none" stroke-dasharray="4" stroke="grey" stroke-width="2"></ellipse>
                 }
-                if (Path.Instructions[i] is BaseControlPointPathInstruction ControlPointInstruction)
+                if (SVGElement.Instructions[i] is BaseControlPointPathInstruction ControlPointInstruction)
                 {
                     for (int k = 0; k < ControlPointInstruction.ControlPoints.Count; k++)
                     {
                         var anchor = k;
                         <PrimaryAnchor OnMouseDown="() => AnchorSelect(j, anchor)" Position=ControlPointInstruction.ControlPoints[k] />
                     }
-                    if (Path.Instructions[i] is ShorthandCubicBézierCurveInstruction shorthandCubicCurve)
+                    if (SVGElement.Instructions[i] is ShorthandCubicBézierCurveInstruction shorthandCubicCurve)
                     {
                         <SecondaryLine From=shorthandCubicCurve.StartPosition To=shorthandCubicCurve.ReflectedPreviousInstructionsLastControlPoint />
                         <PrimaryLine From=shorthandCubicCurve.ControlPoints[0] To=shorthandCubicCurve.EndPosition />
                         <SecondaryAnchor OnMouseDown="() => AnchorSelect(j, -2)" Position=ControlPointInstruction.ReflectedPreviousInstructionsLastControlPoint />
                     }
-                    if (Path.Instructions[i] is ShorthandQuadraticBézierCurveInstruction shorthandQuadraticCurve)
+                    if (SVGElement.Instructions[i] is ShorthandQuadraticBézierCurveInstruction shorthandQuadraticCurve)
                     {
                         <SecondaryLine From=shorthandQuadraticCurve.StartPosition To=shorthandQuadraticCurve.ReflectedPreviousInstructionsLastControlPoint />
                         <SecondaryLine From=shorthandQuadraticCurve.EndPosition To=shorthandQuadraticCurve.ReflectedPreviousInstructionsLastControlPoint />
@@ -58,34 +61,48 @@
 
 @code {
     [Parameter]
-    public Path Path { get; set; }
+    public Path SVGElement { get; set; }
+
+    public ElementReference ElementReference { get; set; }
 
     public void AnchorSelect(int segment, int anchor)
     {
-        if (Path.EditMode != EditMode.Add)
+        if (SVGElement.EditMode != EditMode.Add)
         {
-            Path.CurrentInstruction = segment;
-            Path.CurrentAnchor = anchor;
-            Path.EditMode = EditMode.MoveAnchor;
+            SVGElement.CurrentInstruction = segment;
+            SVGElement.CurrentAnchor = anchor;
+            SVGElement.EditMode = EditMode.MoveAnchor;
         }
     }
 
-    public void Select(MouseEventArgs eventArgs)
+    public async Task Select(MouseEventArgs eventArgs)
     {
-        if (Path.SVG.CurrentShape == null || Path.SVG.CurrentShape.EditMode == EditMode.None)
+        if (SVGElement.SVG.CurrentShape == null || SVGElement.SVG.CurrentShape.EditMode == EditMode.None)
         {
-            Path.SVG.CurrentShape = Path;
-            Path.Panner = Path.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-            Path.EditMode = EditMode.Move;
+            //await Task.Yield();
+            //await ElementReference.FocusAsync();
+            var module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/KristofferStrube.Blazor.SVGEditor/KristofferStrube.Blazor.SVGEditor.js");
+            await module.InvokeVoidAsync("focus", ElementReference);
+            SVGElement.SVG.CurrentShape = SVGElement;
+            SVGElement.Panner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+            SVGElement.EditMode = EditMode.Move;
+        }
+    }
+
+    public void KeyUp(KeyboardEventArgs eventArgs)
+    {
+        if (eventArgs.Key == "Delete")
+        {
+            SVGElement.RemoveThis();
         }
     }
 
     protected override bool ShouldRender()
     {
-        var StateRepresentation = Path.StateRepresentation;
-        if (Path._StateRepresentation != StateRepresentation)
+        var StateRepresentation = SVGElement.StateRepresentation;
+        if (SVGElement._StateRepresentation != StateRepresentation)
         {
-            Path._StateRepresentation = StateRepresentation;
+            SVGElement._StateRepresentation = StateRepresentation;
             return true;
         }
         return false;

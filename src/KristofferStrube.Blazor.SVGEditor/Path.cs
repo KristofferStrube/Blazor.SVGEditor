@@ -1,4 +1,5 @@
-﻿using AngleSharp.Dom;
+﻿using AngleSharp;
+using AngleSharp.Dom;
 using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace KristofferStrube.Blazor.SVGEditor
 {
@@ -25,6 +27,9 @@ namespace KristofferStrube.Blazor.SVGEditor
                 Instructions = new();
             }
         }
+
+        public override Type Editor => typeof(PathEditor);
+
         public List<IPathInstruction> Instructions { get; set; }
 
         private void UpdateData()
@@ -146,7 +151,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                         Instructions.Add(new MoveInstruction(startPos.x, startPos.y, false, null) { ExplicitSymbol = true });
                         Instructions.Add(new CubicBézierCurveInstruction(0, 0, 0, 0, 0, 0, false, Instructions.Last()) { ExplicitSymbol = true });
                     }
-                    var currentInstruction = (CubicBézierCurveInstruction)Instructions.Last();
+                    var currentInstruction = (CubicBézierCurveInstruction)Instructions[^1];
                     currentInstruction.EndPosition = (pos.x, pos.y);
                     currentInstruction.ControlPoints[0] = ((int)(currentInstruction.StartPosition.x * 2.0 / 3.0 + currentInstruction.EndPosition.x * 1.0 / 3.0), (int)(currentInstruction.StartPosition.y * 2.0 / 3.0 + currentInstruction.EndPosition.y * 1.0 / 3.0));
                     currentInstruction.ControlPoints[^1] = ((int)(currentInstruction.StartPosition.x * 1.0 / 3.0 + currentInstruction.EndPosition.x * 2.0 / 3.0), (int)(currentInstruction.StartPosition.y * 1.0 / 3.0 + currentInstruction.EndPosition.y * 2.0 / 3.0));
@@ -182,6 +187,39 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override void HandleMouseOut(MouseEventArgs eventArgs)
         {
+        }
+
+        public new static Action<SVG> AddNew = SVG =>
+        {
+            var element = SVG.Document.CreateElement("PATH");
+
+            var path = new Path(element, SVG);
+            path.Changed = SVG.UpdateInput;
+            path.Stroke = "black";
+            path.StrokeWidth = "1";
+            path.Fill = "lightgrey";
+            path.EditMode = EditMode.Add;
+
+            SVG.CurrentShape = path;
+            SVG.AddElement(path);
+        };
+
+        public override void Complete()
+        {
+            Instructions.RemoveAt(Instructions.Count - 1);
+            Instructions.Add(new ClosePathInstruction(false, Instructions.Last()));
+            UpdateData();
+            SVG.UpdateInput(this);
+        }
+
+        public void RemoveThis()
+        {
+            SVG.ElementsAsHtml.RemoveAt(SVG.Elements.IndexOf(this));
+            SVG.Elements.Remove(this);
+            _StateRepresentation = null;
+            SVG.CurrentShape = null;
+            SVG.UpdateInput();
+            SVG.RerenderAll();
         }
     }
 }

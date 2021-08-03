@@ -1,49 +1,49 @@
-﻿<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@Rectangle>
-    <g transform="translate(@Rectangle.SVG.Translate.x.AsString() @Rectangle.SVG.Translate.y.AsString()) scale(@Rectangle.SVG.Scale.AsString())">
-        <rect x=@Rectangle.x.AsString()
-              y=@Rectangle.y.AsString()
-              width=@Rectangle.width.AsString()
-              height=@Rectangle.height.AsString()
-              stroke="@Rectangle.Stroke"
-              stroke-width="@Rectangle.StrokeWidth"
-              fill="@Rectangle.Fill"
+﻿<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement>
+    <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
+        <rect x=@SVGElement.x.AsString()
+              y=@SVGElement.y.AsString()
+              width=@SVGElement.width.AsString()
+              height=@SVGElement.height.AsString()
+              stroke="@SVGElement.Stroke"
+              stroke-width="@SVGElement.StrokeWidth"
+              fill="@SVGElement.Fill"
               @onmousedown="Select" />
     </g>
-    @if (Rectangle.Selected)
+    @if (SVGElement.Selected)
     {
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(0)" Position="(Rectangle.x, Rectangle.y)" />
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(1)" Position="(Rectangle.x + Rectangle.width, Rectangle.y)" />
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(2)" Position="(Rectangle.x + Rectangle.width, Rectangle.y + Rectangle.height)" />
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(3)" Position="(Rectangle.x, Rectangle.y + Rectangle.height)" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(0)" Position="(SVGElement.x, SVGElement.y)" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(1)" Position="(SVGElement.x + SVGElement.width, SVGElement.y)" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(2)" Position="(SVGElement.x + SVGElement.width, SVGElement.y + SVGElement.height)" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(3)" Position="(SVGElement.x, SVGElement.y + SVGElement.height)" />
     }
 </ContextMenuTrigger>
 
 @code {
     [Parameter]
-    public Rectangle Rectangle { get; set; }
+    public Rectangle SVGElement { get; set; }
 
     public void AnchorSelect(int anchor)
     {
-        Rectangle.CurrentAnchor = anchor;
-        Rectangle.EditMode = EditMode.MoveAnchor;
+        SVGElement.CurrentAnchor = anchor;
+        SVGElement.EditMode = EditMode.MoveAnchor;
     }
 
     public void Select(MouseEventArgs eventArgs)
     {
-        if (Rectangle.SVG.CurrentShape == null || Rectangle.SVG.CurrentShape.EditMode == EditMode.None)
+        if (SVGElement.SVG.CurrentShape == null || SVGElement.SVG.CurrentShape.EditMode == EditMode.None)
         {
-            Rectangle.SVG.CurrentShape = Rectangle;
-            Rectangle.Panner = Rectangle.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-            Rectangle.EditMode = EditMode.Move;
+            SVGElement.SVG.CurrentShape = SVGElement;
+            SVGElement.Panner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+            SVGElement.EditMode = EditMode.Move;
         }
     }
 
     protected override bool ShouldRender()
     {
-        var StateRepresentation = Rectangle.StateRepresentation;
-        if (Rectangle._StateRepresentation != StateRepresentation)
+        var StateRepresentation = SVGElement.StateRepresentation;
+        if (SVGElement._StateRepresentation != StateRepresentation)
         {
-            Rectangle._StateRepresentation = StateRepresentation;
+            SVGElement._StateRepresentation = StateRepresentation;
             return true;
         }
         return false;

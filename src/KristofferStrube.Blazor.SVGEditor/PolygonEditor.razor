@@ -1,14 +1,14 @@
-﻿<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@Polygon>
-    <g transform="translate(@Polygon.SVG.Translate.x.AsString() @Polygon.SVG.Translate.y.AsString()) scale(@Polygon.SVG.Scale.AsString())">
-        <polygon points="@Polygon.Element.GetAttribute("points")" fill="@Polygon.Fill" stroke="@Polygon.Stroke" stroke-width="@Polygon.StrokeWidth" @onmousedown="Select">
+﻿<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement>
+    <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
+        <polygon points="@SVGElement.Element.GetAttribute("points")" fill="@SVGElement.Fill" stroke="@SVGElement.Stroke" stroke-width="@SVGElement.StrokeWidth" @onmousedown="Select">
         </polygon>
     </g>
-    @if (Polygon.Selected)
+    @if (SVGElement.Selected)
     {
-        @for (int i = 0; i < Polygon.Points.Count(); i++)
+        @for (int i = 0; i < SVGElement.Points.Count(); i++)
         {
             var j = i;
-            <PrimaryAnchor OnMouseDown="() => AnchorSelect(j)" Position=Polygon.Points[i] />
+            <PrimaryAnchor OnMouseDown="() => AnchorSelect(j)" Position=SVGElement.Points[i] />
         }
     }
 </ContextMenuTrigger>
@@ -16,33 +16,33 @@
 
 @code {
     [Parameter]
-    public Polygon Polygon { get; set; }
+    public Polygon SVGElement { get; set; }
 
     public void AnchorSelect(int j)
     {
-        if (Polygon.EditMode != EditMode.Add)
+        if (SVGElement.EditMode != EditMode.Add)
         {
-            Polygon.CurrentAnchor = j;
-            Polygon.EditMode = EditMode.MoveAnchor;
+            SVGElement.CurrentAnchor = j;
+            SVGElement.EditMode = EditMode.MoveAnchor;
         }
     }
 
     public void Select(MouseEventArgs eventArgs)
     {
-        if (Polygon.SVG.CurrentShape == null || Polygon.SVG.CurrentShape.EditMode == EditMode.None)
+        if (SVGElement.SVG.CurrentShape == null || SVGElement.SVG.CurrentShape.EditMode == EditMode.None)
         {
-            Polygon.SVG.CurrentShape = Polygon;
-            Polygon.Panner = Polygon.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-            Polygon.EditMode = EditMode.Move;
+            SVGElement.SVG.CurrentShape = SVGElement;
+            SVGElement.Panner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+            SVGElement.EditMode = EditMode.Move;
         }
     }
 
     protected override bool ShouldRender()
     {
-        var StateRepresentation = Polygon.StateRepresentation;
-        if (Polygon._StateRepresentation != StateRepresentation)
+        var StateRepresentation = SVGElement.StateRepresentation;
+        if (SVGElement._StateRepresentation != StateRepresentation)
         {
-            Polygon._StateRepresentation = StateRepresentation;
+            SVGElement._StateRepresentation = StateRepresentation;
             return true;
         }
         return false;

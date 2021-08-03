@@ -10,6 +10,7 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
 - RECT (x, y, width, height, fill, stroke, stroke-width)
 - CIRCLE (cx, cy, r, fill, stroke, stroke-width)
 - POLYGON (points, fill, stroke, stroke-width)
+- POLYLINE (points, fill, stroke, stroke-width)
 - PATH (d, fill, stroke, stroke-width)
     - Movements
     - Lines

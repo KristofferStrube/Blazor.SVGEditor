@@ -20,6 +20,8 @@ namespace KristofferStrube.Blazor.SVGEditor
             SVG = svg;
         }
 
+        public override Type Editor => typeof(CircleEditor);
+
         public double cx {
             get { return double.Parse(Element.GetAttribute("cx") ?? string.Empty); }
             set { Element.SetAttribute("cx", value.ToString()); Changed.Invoke(this); }
@@ -35,8 +37,6 @@ namespace KristofferStrube.Blazor.SVGEditor
             set { Element.SetAttribute("r", value.ToString()); Changed.Invoke(this); }
         }
 
-        public (double x, double y) Cursor { get; set; }
-
         public int? CurrentAnchor { get; set; }
 
         public override void HandleMouseMove(MouseEventArgs eventArgs)
@@ -45,7 +45,12 @@ namespace KristofferStrube.Blazor.SVGEditor
             switch (EditMode)
             {
                 case EditMode.Add:
-                    Cursor = (pos.x, pos.y);
+                    if (cx == 0 && cy == 0)
+                    {
+                        var startPos = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
+                        (cx, cy) = startPos;
+                    }
+                    r = Math.Sqrt(Math.Pow(cx-pos.x,2) + Math.Pow(cy - pos.y, 2));
                     break;
                 case EditMode.Move:
                     var diff = (x: pos.x - Panner.x, y: pos.y - Panner.y);
@@ -80,11 +85,44 @@ namespace KristofferStrube.Blazor.SVGEditor
                 case EditMode.Move or EditMode.MoveAnchor:
                     EditMode = EditMode.None;
                     break;
+                case EditMode.Add:
+                    EditMode = EditMode.None;
+                    break;
             }
         }
 
         public override void HandleMouseOut(MouseEventArgs eventArgs)
         {
+        }
+
+        public new static Action<SVG> AddNew = SVG =>
+        {
+            var element = SVG.Document.CreateElement("CIRCLE");
+
+            var circle = new Circle(element, SVG);
+            circle.Changed = SVG.UpdateInput;
+            circle.Stroke = "black";
+            circle.StrokeWidth = "1";
+            circle.Fill = "lightgrey";
+            circle.EditMode = EditMode.Add;
+
+            SVG.CurrentShape = circle;
+            SVG.AddElement(circle);
+        };
+
+        public override void Complete()
+        {
+            RemoveThis();
+        }
+
+        public void RemoveThis()
+        {
+            SVG.ElementsAsHtml.RemoveAt(SVG.Elements.IndexOf(this));
+            SVG.Elements.Remove(this);
+            _StateRepresentation = null;
+            SVG.CurrentShape = null;
+            SVG.UpdateInput();
+            SVG.RerenderAll();
         }
     }
 }

@@ -2,22 +2,21 @@
 using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace KristofferStrube.Blazor.SVGEditor
 {
-    public class Polygon : Shape
+    public class Polyline : Shape
     {
-        public Polygon(IElement element, SVG svg)
+        public Polyline(IElement element, SVG svg)
         {
             Element = element;
             SVG = svg;
             Points = StringToPoints(Element.GetAttribute("points") ?? string.Empty);
         }
 
-        public override Type Editor => typeof(PolygonEditor);
+        public override Type Editor => typeof(PolylineEditor);
 
         public List<(double x, double y)> Points { get; set; }
 
@@ -109,17 +108,17 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public new static Action<SVG> AddNew = SVG =>
         {
-            var element = SVG.Document.CreateElement("POLYGON");
+            var element = SVG.Document.CreateElement("POLYLINE");
 
-            var polygon = new Polygon(element, SVG);
-            polygon.Changed = SVG.UpdateInput;
-            polygon.Stroke = "black";
-            polygon.StrokeWidth = "1";
-            polygon.Fill = "lightgrey";
-            polygon.EditMode = EditMode.Add;
+            var polyline = new Polyline(element, SVG);
+            polyline.Changed = SVG.UpdateInput;
+            polyline.Stroke = "black";
+            polyline.StrokeWidth = "3";
+            polyline.Fill = "none";
+            polyline.EditMode = EditMode.Add;
 
-            SVG.CurrentShape = polygon;
-            SVG.AddElement(polygon);
+            SVG.CurrentShape = polyline;
+            SVG.AddElement(polyline);
         };
 
         public override void Complete()
