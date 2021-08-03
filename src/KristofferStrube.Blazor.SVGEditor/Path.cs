@@ -176,8 +176,8 @@ namespace KristofferStrube.Blazor.SVGEditor
                     var currentInstruction = (CubicBézierCurveInstruction)Instructions.Last();
                     var nextInstruction = new CubicBézierCurveInstruction(pos.x, pos.y, pos.x, pos.y, pos.x, pos.y, false, Instructions.Last()) { ExplicitSymbol = true };
                     currentInstruction.EndPosition = (pos.x, pos.y);
-                    currentInstruction.ControlPoints[0] = ((int)(currentInstruction.StartPosition.x * 2.0 / 3.0 + currentInstruction.EndPosition.x * 1.0 / 3.0), (int)(currentInstruction.StartPosition.y * 2.0 / 3.0 + currentInstruction.EndPosition.y * 1.0 / 3.0));
-                    currentInstruction.ControlPoints[^1] = ((int)(currentInstruction.StartPosition.x * 1.0 / 3.0 + currentInstruction.EndPosition.x * 2.0 / 3.0), (int)(currentInstruction.StartPosition.y * 1.0 / 3.0 + currentInstruction.EndPosition.y * 2.0 / 3.0));
+                    currentInstruction.ControlPoints[0] = (currentInstruction.StartPosition.x * 2.0 / 3.0 + currentInstruction.EndPosition.x * 1.0 / 3.0, currentInstruction.StartPosition.y * 2.0 / 3.0 + currentInstruction.EndPosition.y * 1.0 / 3.0);
+                    currentInstruction.ControlPoints[^1] = (currentInstruction.StartPosition.x * 1.0 / 3.0 + currentInstruction.EndPosition.x * 2.0 / 3.0, currentInstruction.StartPosition.y * 1.0 / 3.0 + currentInstruction.EndPosition.y * 2.0 / 3.0);
                     currentInstruction.NextInstruction = nextInstruction;
                     Instructions.Add(nextInstruction);
                     UpdateData();
@@ -189,7 +189,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
         }
 
-        public new static Action<SVG> AddNew = SVG =>
+        public static void AddNew(SVG SVG)
         {
             var element = SVG.Document.CreateElement("PATH");
 
@@ -202,7 +202,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
             SVG.CurrentShape = path;
             SVG.AddElement(path);
-        };
+        }
 
         public override void Complete()
         {
@@ -210,16 +210,6 @@ namespace KristofferStrube.Blazor.SVGEditor
             Instructions.Add(new ClosePathInstruction(false, Instructions.Last()));
             UpdateData();
             SVG.UpdateInput(this);
-        }
-
-        public void RemoveThis()
-        {
-            SVG.ElementsAsHtml.RemoveAt(SVG.Elements.IndexOf(this));
-            SVG.Elements.Remove(this);
-            _StateRepresentation = null;
-            SVG.CurrentShape = null;
-            SVG.UpdateInput();
-            SVG.RerenderAll();
         }
     }
 }

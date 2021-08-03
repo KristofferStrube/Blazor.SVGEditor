@@ -34,9 +34,11 @@
         <Item>
             ✨ Add
             <SubMenu>
-                <Item OnClick="@AddNewPath">🎢 New Path</Item>
-                <Item OnClick="@AddNewPolygon">⬛ New Polygon</Item>
-                <Item OnClick="@AddNewPolyline"> New Polyline</Item>
+                <Item OnClick="e => Path.AddNew(this)">🎢 New Path</Item>
+                <Item OnClick="e => Polygon.AddNew(this)">🔷 New Polygon</Item>
+                <Item OnClick="e => Polyline.AddNew(this)">〰 New Polyline</Item>
+                <Item OnClick="e => Circle.AddNew(this)">🔵 New Circle</Item>
+                <Item OnClick="e => Rectangle.AddNew(this)">🟦 New rectangle</Item>
             </SubMenu>
         </Item>
     }

@@ -9,7 +9,7 @@
               fill="@SVGElement.Fill"
               @onmousedown="Select" />
     </g>
-    @if (SVGElement.Selected)
+    @if (SVGElement.Selected && SVGElement.EditMode != EditMode.Add)
     {
         <PrimaryAnchor OnMouseDown="() => AnchorSelect(0)" Position="(SVGElement.x, SVGElement.y)" />
         <PrimaryAnchor OnMouseDown="() => AnchorSelect(1)" Position="(SVGElement.x + SVGElement.width, SVGElement.y)" />

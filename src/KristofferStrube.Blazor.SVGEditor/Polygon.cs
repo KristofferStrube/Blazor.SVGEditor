@@ -107,7 +107,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
         }
 
-        public new static Action<SVG> AddNew = SVG =>
+        public static void AddNew(SVG SVG)
         {
             var element = SVG.Document.CreateElement("POLYGON");
 
@@ -120,7 +120,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
             SVG.CurrentShape = polygon;
             SVG.AddElement(polygon);
-        };
+        }
 
         public override void Complete()
         {

@@ -22,29 +22,30 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override Type Editor => typeof(RectangleEditor);
 
-        public double x {
-            get { return double.Parse(Element.GetAttribute("x") ?? string.Empty); }
+        public double x
+        {
+            get { return double.Parse(Element.GetAttribute("x") ?? "0"); }
             set { Element.SetAttribute("x", value.ToString()); Changed.Invoke(this); }
         }
         public double y
         {
-            get { return double.Parse(Element.GetAttribute("y") ?? string.Empty); }
+            get { return double.Parse(Element.GetAttribute("y") ?? "0"); }
             set { Element.SetAttribute("y", value.ToString()); Changed.Invoke(this); }
         }
         public double width
         {
-            get { return double.Parse(Element.GetAttribute("width") ?? string.Empty); }
+            get { return double.Parse(Element.GetAttribute("width") ?? "0"); }
             set { Element.SetAttribute("width", value.ToString()); Changed.Invoke(this); }
         }
         public double height
         {
-            get { return double.Parse(Element.GetAttribute("height") ?? string.Empty); }
+            get { return double.Parse(Element.GetAttribute("height") ?? "0"); }
             set { Element.SetAttribute("height", value.ToString()); Changed.Invoke(this); }
         }
 
-        public (double x, double y) Cursor { get; set; }
-
         public int? CurrentAnchor { get; set; }
+
+        private (double x, double y)? AddPos { get; set; }
 
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
@@ -52,7 +53,30 @@ namespace KristofferStrube.Blazor.SVGEditor
             switch (EditMode)
             {
                 case EditMode.Add:
-                    Cursor = (pos.x, pos.y);
+                    if (AddPos is null)
+                    {
+                        AddPos = (x, y);
+                    }
+                    if (pos.x < AddPos.Value.x)
+                    {
+                        x = pos.x;
+                        width = AddPos.Value.x - pos.x;
+                    }
+                    else
+                    {
+                        x = AddPos.Value.x;
+                        width = pos.x - AddPos.Value.x;
+                    }
+                    if (pos.y < AddPos.Value.y)
+                    {
+                        y = pos.y;
+                        height = AddPos.Value.y - pos.y;
+                    }
+                    else
+                    {
+                        y = AddPos.Value.y;
+                        height = pos.y - AddPos.Value.y;
+                    }
                     break;
                 case EditMode.Move:
                     var diff = (x: pos.x - Panner.x, y: pos.y - Panner.y);
@@ -96,7 +120,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
             switch (EditMode)
             {
-                case EditMode.Move or EditMode.MoveAnchor:
+                case EditMode.Move or EditMode.MoveAnchor or EditMode.Add:
                     EditMode = EditMode.None;
                     break;
             }
@@ -106,12 +130,27 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
         }
 
-        public new static Action<SVG> AddNew = SVG =>
+        public static void AddNew(SVG SVG)
         {
-        };
+            var element = SVG.Document.CreateElement("RECTANGLE");
+
+            var rectangle = new Rectangle(element, SVG);
+            rectangle.Changed = SVG.UpdateInput;
+            rectangle.Stroke = "black";
+            rectangle.StrokeWidth = "1";
+            rectangle.Fill = "lightgrey";
+            rectangle.EditMode = EditMode.Add;
+
+            var startPos = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
+            (rectangle.x, rectangle.y) = startPos;
+
+            SVG.CurrentShape = rectangle;
+            SVG.AddElement(rectangle);
+        }
 
         public override void Complete()
         {
+            SVG.Remove(this);
         }
     }
 }

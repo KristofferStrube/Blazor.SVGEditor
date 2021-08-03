@@ -35,12 +35,10 @@ namespace KristofferStrube.Blazor.SVGEditor
         public bool Selectable => SVG.CurrentShape == null;
         public bool Selected => SVG.CurrentShape == this;
         public string _StateRepresentation { get; set;}
-        public string StateRepresentation => string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y;
+        public string StateRepresentation => string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y;
         public abstract void HandleMouseMove(MouseEventArgs eventArgs);
         public abstract void HandleMouseUp(MouseEventArgs eventArgs);
         public abstract void HandleMouseOut(MouseEventArgs eventArgs);
-
-        public static Action<SVG> AddNew;
         public abstract void Complete();
     }
 }

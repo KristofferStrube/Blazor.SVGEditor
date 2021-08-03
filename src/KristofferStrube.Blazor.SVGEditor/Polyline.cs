@@ -106,7 +106,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
         }
 
-        public new static Action<SVG> AddNew = SVG =>
+        public static void AddNew(SVG SVG)
         {
             var element = SVG.Document.CreateElement("POLYLINE");
 
@@ -119,7 +119,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
             SVG.CurrentShape = polyline;
             SVG.AddElement(polyline);
-        };
+        }
 
         public override void Complete()
         {

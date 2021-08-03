@@ -3,7 +3,7 @@
         <polygon points="@SVGElement.Element.GetAttribute("points")" fill="@SVGElement.Fill" stroke="@SVGElement.Stroke" stroke-width="@SVGElement.StrokeWidth" @onmousedown="Select">
         </polygon>
     </g>
-    @if (SVGElement.Selected)
+    @if (SVGElement.Selected && SVGElement.EditMode != EditMode.Add)
     {
         @for (int i = 0; i < SVGElement.Points.Count(); i++)
         {

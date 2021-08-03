@@ -23,17 +23,17 @@ namespace KristofferStrube.Blazor.SVGEditor
         public override Type Editor => typeof(CircleEditor);
 
         public double cx {
-            get { return double.Parse(Element.GetAttribute("cx") ?? string.Empty); }
+            get { return double.Parse(Element.GetAttribute("cx") ?? "0"); }
             set { Element.SetAttribute("cx", value.ToString()); Changed.Invoke(this); }
         }
         public double cy
         {
-            get { return double.Parse(Element.GetAttribute("cy") ?? string.Empty); }
+            get { return double.Parse(Element.GetAttribute("cy") ?? "0"); }
             set { Element.SetAttribute("cy", value.ToString()); Changed.Invoke(this); }
         }
         public double r
         {
-            get { return double.Parse(Element.GetAttribute("r") ?? string.Empty); }
+            get { return double.Parse(Element.GetAttribute("r") ?? "0"); }
             set { Element.SetAttribute("r", value.ToString()); Changed.Invoke(this); }
         }
 
@@ -45,11 +45,6 @@ namespace KristofferStrube.Blazor.SVGEditor
             switch (EditMode)
             {
                 case EditMode.Add:
-                    if (cx == 0 && cy == 0)
-                    {
-                        var startPos = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
-                        (cx, cy) = startPos;
-                    }
                     r = Math.Sqrt(Math.Pow(cx-pos.x,2) + Math.Pow(cy - pos.y, 2));
                     break;
                 case EditMode.Move:
@@ -82,10 +77,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
             switch (EditMode)
             {
-                case EditMode.Move or EditMode.MoveAnchor:
-                    EditMode = EditMode.None;
-                    break;
-                case EditMode.Add:
+                case EditMode.Move or EditMode.MoveAnchor or EditMode.Add:
                     EditMode = EditMode.None;
                     break;
             }
@@ -95,7 +87,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
         }
 
-        public new static Action<SVG> AddNew = SVG =>
+        public static void AddNew(SVG SVG)
         {
             var element = SVG.Document.CreateElement("CIRCLE");
 
@@ -106,23 +98,17 @@ namespace KristofferStrube.Blazor.SVGEditor
             circle.Fill = "lightgrey";
             circle.EditMode = EditMode.Add;
 
+
+            var startPos = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
+            (circle.cx, circle.cy) = startPos;
+
             SVG.CurrentShape = circle;
             SVG.AddElement(circle);
-        };
+        }
 
         public override void Complete()
         {
-            RemoveThis();
-        }
-
-        public void RemoveThis()
-        {
-            SVG.ElementsAsHtml.RemoveAt(SVG.Elements.IndexOf(this));
-            SVG.Elements.Remove(this);
-            _StateRepresentation = null;
-            SVG.CurrentShape = null;
-            SVG.UpdateInput();
-            SVG.RerenderAll();
+            SVG.Remove(this);
         }
     }
 }

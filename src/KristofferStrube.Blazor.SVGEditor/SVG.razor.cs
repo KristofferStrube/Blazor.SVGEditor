@@ -238,26 +238,20 @@ namespace KristofferStrube.Blazor.SVGEditor
             ColorPickerShape = null;
         }
 
-        protected void AddNewPath(ItemClickEventArgs e)
-        {
-            Path.AddNew(this);
-        }
-
-        protected void AddNewPolygon(ItemClickEventArgs e)
-        {
-            Polygon.AddNew(this);
-        }
-
-        protected void AddNewPolyline(ItemClickEventArgs e)
-        {
-            Polyline.AddNew(this);
-        }
-
         protected void CompleteShape(ItemClickEventArgs e)
         {
             CurrentShape.EditMode = EditMode.None;
             CurrentShape.Complete();
             CurrentShape = null;
+        }
+
+        public void Remove(ISVGElement SVGElement)
+        {
+            ElementsAsHtml.RemoveAt(Elements.IndexOf(SVGElement));
+            Elements.Remove(SVGElement);
+            CurrentShape = null;
+            UpdateInput();
+            RerenderAll();
         }
     }
 }

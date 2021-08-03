@@ -31,8 +31,6 @@ namespace KristofferStrube.Blazor.SVGEditor
         public void HandleMouseUp(MouseEventArgs eventArgs);
         public void HandleMouseOut(MouseEventArgs eventArgs);
         public Action<ISVGElement> Changed { get; set; }
-
-        public static Action<SVG> AddNew;
         public void Complete();
     }
 
