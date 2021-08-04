@@ -17,15 +17,6 @@
 <ContextMenu Id="SVGMenu">
     <Item OnClick="() => ContextZoomIn()">🔍 Zoom In</Item>
     <Item OnClick="() => ContextZoomOut()">🔍 Zoom Out</Item>
-    @if (context.Data != null)
-    {
-        if (context.Data is Shape shape)
-        {
-            <Item data=shape OnClick="@OpenFillColorPicker"><span class="colorPickerCube" style="background-color:@shape.Fill;"></span> Fill Color</Item>
-            <Item data=shape OnClick="@OpenStrokeColorPicker"><span class="colorPickerCube" style="background-color:@shape.Stroke;"></span> Stroke Color</Item>
-            <Item data=shape OnClick="@DeleteShape">❌ Delete</Item>
-        }
-    }
     @if (CurrentShape != null && CurrentShape.EditMode == EditMode.Add)
     {
         <Item OnClick=@CompleteShape>✨ Complete New Shape</Item>
@@ -42,6 +33,24 @@
                 <Item OnClick="e => Rectangle.AddNew(this)">🟦 New rectangle</Item>
             </SubMenu>
         </Item>
+    }
+    @if (context.Data != null)
+    {
+        if (context.Data is Shape shape)
+        {
+            <Item data=shape OnClick="@OpenFillColorPicker"><span class="colorPickerCube" style="background-color:@shape.Fill;"></span> Fill Color</Item>
+            <Item data=shape OnClick="@OpenStrokeColorPicker"><span class="colorPickerCube" style="background-color:@shape.Stroke;"></span> Stroke Color</Item>
+            <Item data=shape OnClick="@DeleteShape">❌ Delete</Item>
+            <Item>
+                ↕ Move
+                <SubMenu>
+                    <Item data=shape OnClick="@MoveToBack">⏫ To Back</Item>
+                    <Item data=shape OnClick="@MoveBack">🔼 Back</Item>
+                    <Item data=shape OnClick="@MoveForward">🔽 Forward</Item>
+                    <Item data=shape OnClick="@MoveToFront">⏬ To Front</Item>
+                </SubMenu>
+            </Item>
+        }
     }
 </ContextMenu>
 <ColorPicker Title=@ColorPickerTitle IsOpened=@IsColorPickerOpen Closed=@ColorPickerClosed MyColor=@PreviousColor></ColorPicker>

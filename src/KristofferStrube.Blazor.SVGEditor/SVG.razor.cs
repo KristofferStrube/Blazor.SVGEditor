@@ -265,6 +265,58 @@ namespace KristofferStrube.Blazor.SVGEditor
             ColorPickerShape = null;
         }
 
+        protected void MoveToBack(ItemClickEventArgs e)
+        {
+            var shape = (Shape)e.Data;
+            CurrentShape = null;
+            Elements.Remove(shape);
+            Elements.Insert(0, shape);
+            ElementsAsHtml = Elements.Select(e => e.Element.ToHtml()).ToList();
+            UpdateInput();
+            RerenderAll();
+        }
+
+        protected void MoveBack(ItemClickEventArgs e)
+        {
+            var shape = (Shape)e.Data;
+            var index = Elements.IndexOf(shape);
+            if (index != 0)
+            {
+                CurrentShape = null;
+                Elements.Remove(shape);
+                Elements.Insert(index - 1, shape);
+                ElementsAsHtml = Elements.Select(e => e.Element.ToHtml()).ToList();
+                UpdateInput();
+                RerenderAll();
+            }
+        }
+
+        protected void MoveForward(ItemClickEventArgs e)
+        {
+            var shape = (Shape)e.Data;
+            var index = Elements.IndexOf(shape);
+            if (index != Elements.Count - 1)
+            {
+                CurrentShape = null;
+                Elements.Remove(shape);
+                Elements.Insert(index + 1, shape);
+                ElementsAsHtml = Elements.Select(e => e.Element.ToHtml()).ToList();
+                UpdateInput();
+                RerenderAll();
+            }
+        }
+
+        protected void MoveToFront(ItemClickEventArgs e)
+        {
+            var shape = (Shape)e.Data;
+            CurrentShape = null;
+            Elements.Remove(shape);
+            Elements.Insert(Elements.Count, shape);
+            ElementsAsHtml = Elements.Select(e => e.Element.ToHtml()).ToList();
+            UpdateInput();
+            RerenderAll();
+        }
+
         protected void DeleteShape(ItemClickEventArgs e)
         {
             Remove((Shape)e.Data);
