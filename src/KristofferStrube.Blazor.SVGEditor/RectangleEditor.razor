@@ -1,13 +1,21 @@
-﻿<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement>
+﻿@inject IJSRuntime JSRuntime
+
+<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement>
     <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
-        <rect x=@SVGElement.x.AsString()
-              y=@SVGElement.y.AsString()
-              width=@SVGElement.width.AsString()
-              height=@SVGElement.height.AsString()
-              stroke="@SVGElement.Stroke"
-              stroke-width="@SVGElement.StrokeWidth"
-              fill="@SVGElement.Fill"
-              @onmousedown="Select" />
+        <rect
+            tabindex="0"
+            @onfocusin="() => SVGElement.SVG.CurrentShape = SVGElement"
+            @onfocusout="() => SVGElement.SVG.CurrentShape = null"
+            @ref=ElementReference
+            x=@SVGElement.x.AsString()
+            y=@SVGElement.y.AsString()
+            width=@SVGElement.width.AsString()
+            height=@SVGElement.height.AsString()
+            stroke="@SVGElement.Stroke"
+            stroke-width="@SVGElement.StrokeWidth"
+            fill="@SVGElement.Fill"
+            @onmousedown="Select"
+            @onkeyup="KeyUp" />
     </g>
     @if (SVGElement.Selected && SVGElement.EditMode != EditMode.Add)
     {
@@ -22,16 +30,27 @@
     [Parameter]
     public Rectangle SVGElement { get; set; }
 
+    public ElementReference ElementReference { get; set; }
+
+    public void KeyUp(KeyboardEventArgs eventArgs)
+    {
+        if (eventArgs.Key == "Delete")
+        {
+            SVGElement.SVG.Remove(SVGElement);
+        }
+    }
+
     public void AnchorSelect(int anchor)
     {
         SVGElement.CurrentAnchor = anchor;
         SVGElement.EditMode = EditMode.MoveAnchor;
     }
 
-    public void Select(MouseEventArgs eventArgs)
+    public async Task Select(MouseEventArgs eventArgs)
     {
         if (SVGElement.SVG.CurrentShape == null || SVGElement.SVG.CurrentShape.EditMode == EditMode.None)
         {
+            await JSRuntime.Focus(ElementReference);
             SVGElement.SVG.CurrentShape = SVGElement;
             SVGElement.Panner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             SVGElement.EditMode = EditMode.Move;

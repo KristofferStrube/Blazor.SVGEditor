@@ -238,6 +238,11 @@ namespace KristofferStrube.Blazor.SVGEditor
             ColorPickerShape = null;
         }
 
+        protected void DeleteShape(ItemClickEventArgs e)
+        {
+            Remove((Shape)e.Data);
+        }
+
         protected void CompleteShape(ItemClickEventArgs e)
         {
             CurrentShape.EditMode = EditMode.None;

@@ -1,9 +1,18 @@
-﻿@using Microsoft.JSInterop
-@inject IJSRuntime JSRuntime
+﻿@inject IJSRuntime JSRuntime
 
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement>
     <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
-        <path tabindex="0" @ref=ElementReference d="@SVGElement.Instructions.AsString()" fill="@SVGElement.Fill" stroke="@SVGElement.Stroke" stroke-width="@SVGElement.StrokeWidth" @onmousedown="Select" @onkeyup="KeyUp" />
+        <path
+            tabindex="0"
+            @onfocusin="() => SVGElement.SVG.CurrentShape = SVGElement"
+            @onfocusout="() => SVGElement.SVG.CurrentShape = null"
+            @ref=ElementReference
+            d="@SVGElement.Instructions.AsString()"
+            fill="@SVGElement.Fill"
+            stroke="@SVGElement.Stroke"
+            stroke-width="@SVGElement.StrokeWidth"
+            @onmousedown="Select"
+            @onkeyup="KeyUp" />
     </g>
     @if (SVGElement.Selected && SVGElement.EditMode != EditMode.Add)
     {
@@ -62,6 +71,14 @@
 
     public ElementReference ElementReference { get; set; }
 
+    public void KeyUp(KeyboardEventArgs eventArgs)
+    {
+        if (eventArgs.Key == "Delete")
+        {
+            SVGElement.SVG.Remove(SVGElement);
+        }
+    }
+
     public void AnchorSelect(int segment, int anchor)
     {
         if (SVGElement.EditMode != EditMode.Add)
@@ -76,21 +93,10 @@
     {
         if (SVGElement.SVG.CurrentShape == null || SVGElement.SVG.CurrentShape.EditMode == EditMode.None)
         {
-            //await Task.Yield();
-            //await ElementReference.FocusAsync();
-            var module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/KristofferStrube.Blazor.SVGEditor/KristofferStrube.Blazor.SVGEditor.js");
-            await module.InvokeVoidAsync("focus", ElementReference);
+            await JSRuntime.Focus(ElementReference);
             SVGElement.SVG.CurrentShape = SVGElement;
             SVGElement.Panner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             SVGElement.EditMode = EditMode.Move;
-        }
-    }
-
-    public void KeyUp(KeyboardEventArgs eventArgs)
-    {
-        if (eventArgs.Key == "Delete")
-        {
-            SVGElement.SVG.Remove(SVGElement);
         }
     }
 

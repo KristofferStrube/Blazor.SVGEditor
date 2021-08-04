@@ -1,7 +1,18 @@
-﻿<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement>
+﻿@inject IJSRuntime JSRuntime
+
+<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement>
     <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
-        <polygon points="@SVGElement.Element.GetAttribute("points")" fill="@SVGElement.Fill" stroke="@SVGElement.Stroke" stroke-width="@SVGElement.StrokeWidth" @onmousedown="Select">
-        </polygon>
+        <polygon
+            tabindex="0"
+            @onfocusin="() => SVGElement.SVG.CurrentShape = SVGElement"
+            @onfocusout="() => SVGElement.SVG.CurrentShape = null"
+            @ref=ElementReference
+            points="@SVGElement.Element.GetAttribute("points")"
+            fill="@SVGElement.Fill"
+            stroke="@SVGElement.Stroke"
+            stroke-width="@SVGElement.StrokeWidth"
+            @onmousedown="Select"
+            @onkeyup="KeyUp" />
     </g>
     @if (SVGElement.Selected && SVGElement.EditMode != EditMode.Add)
     {
@@ -18,6 +29,16 @@
     [Parameter]
     public Polygon SVGElement { get; set; }
 
+    public ElementReference ElementReference { get; set; }
+
+    public void KeyUp(KeyboardEventArgs eventArgs)
+    {
+        if (eventArgs.Key == "Delete")
+        {
+            SVGElement.SVG.Remove(SVGElement);
+        }
+    }
+
     public void AnchorSelect(int j)
     {
         if (SVGElement.EditMode != EditMode.Add)
@@ -27,10 +48,11 @@
         }
     }
 
-    public void Select(MouseEventArgs eventArgs)
+    public async Task Select(MouseEventArgs eventArgs)
     {
         if (SVGElement.SVG.CurrentShape == null || SVGElement.SVG.CurrentShape.EditMode == EditMode.None)
         {
+            await JSRuntime.Focus(ElementReference);
             SVGElement.SVG.CurrentShape = SVGElement;
             SVGElement.Panner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             SVGElement.EditMode = EditMode.Move;

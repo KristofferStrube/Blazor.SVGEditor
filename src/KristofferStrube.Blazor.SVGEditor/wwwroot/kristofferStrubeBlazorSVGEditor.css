@@ -8,6 +8,6 @@
     margin-right: 5px;
 }
 
-path:focus {
+path:focus, rect:focus, circle:focus, polygon:focus, polyline:focus {
     outline: none;
 }

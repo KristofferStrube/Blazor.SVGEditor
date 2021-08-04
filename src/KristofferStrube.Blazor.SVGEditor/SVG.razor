@@ -23,6 +23,7 @@
         {
             <Item data=shape OnClick="@OpenFillColorPicker"><span class="colorPickerCube" style="background-color:@shape.Fill;"></span> Fill Color</Item>
             <Item data=shape OnClick="@OpenStrokeColorPicker"><span class="colorPickerCube" style="background-color:@shape.Stroke;"></span> Stroke Color</Item>
+            <Item data=shape OnClick="@DeleteShape">❌ Delete</Item>
         }
     }
     @if (CurrentShape != null && CurrentShape.EditMode == EditMode.Add)
