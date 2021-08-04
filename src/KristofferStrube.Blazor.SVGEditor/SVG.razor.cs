@@ -103,7 +103,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         }
 
         internal void AddElement(ISVGElement SVGElement)
-{
+        {
             Elements.Add(SVGElement);
             ElementsAsHtml.Add(SVGElement.Element.ToHtml());
             UpdateInput();
@@ -132,9 +132,31 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public (double x, double y) LastRightClick { get; set; }
 
+        private (double x, double y)? Panner { get; set; }
+
+        protected bool Panning { get; set; }
+
         public void Move(MouseEventArgs eventArgs)
         {
-            CurrentShape?.HandleMouseMove(eventArgs);
+            if (Panner.HasValue)
+            {
+                var newPanner = (x: eventArgs.OffsetX, y: eventArgs.OffsetY);
+                Translate = (Translate.x + newPanner.x - Panner.Value.x, Translate.y + newPanner.y - Panner.Value.y);
+                Panner = newPanner;
+            }
+            else
+            {
+                CurrentShape?.HandleMouseMove(eventArgs);
+            }
+        }
+
+        public void Down(MouseEventArgs eventArgs)
+        {
+            if (eventArgs.Button == 1)
+            {
+                Panner = (eventArgs.OffsetX, eventArgs.OffsetY);
+                Panning = true;
+            }
         }
 
         public void Up(MouseEventArgs eventArgs)
@@ -143,6 +165,11 @@ namespace KristofferStrube.Blazor.SVGEditor
             if (eventArgs.Button == 2)
             {
                 LastRightClick = (eventArgs.OffsetX, eventArgs.OffsetY);
+            }
+            else if (eventArgs.Button == 1)
+            {
+                Panner = null;
+                Panning = false;
             }
         }
 

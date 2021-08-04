@@ -1,9 +1,9 @@
 ﻿@using BlazorColorPicker
 
 <ContextMenuTrigger MenuId="SVGMenu">
-    <svg @onmousemove="Move" @onmouseup="Up" @onmouseout="Out" @onwheel="Wheel" style="border:1px solid black" width="100%" height="80vh" @onmousedown:preventDefault="true">
+    <svg @onmousemove="Move" @onmousedown="Down" @onmouseup="Up" @onmouseout="Out" @onwheel="Wheel" style="border:1px solid black; cursor:@(Panning ? "move" : "initial");" width="100%" height="80vh" @onmousedown:preventDefault="true">
         <Symbols />
-        <rect width="100%" height="100%" fill="transparent" @onmouseup=@UnSelect></rect>
+        <rect width="100%" height="100%" fill="transparent" @onmousedown=@UnSelect></rect>
         <CascadingValue Value=this>
             @foreach (ISVGElement SVGElement in Elements)
             {

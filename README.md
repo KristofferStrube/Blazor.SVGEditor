@@ -26,7 +26,6 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
 
 ## Current goals
 - Add support for touch devices
-- Implement creation action for all other tag types
 - Support errors better to recover instead of crashing on malformed SVG
 - Show text in SVG.
 - Implement text edit in SVG.
