@@ -15,22 +15,22 @@
     </svg>
 </ContextMenuTrigger>
 <ContextMenu Id="SVGMenu">
-    <Item OnClick="() => ContextZoomIn()">🔍 Zoom In</Item>
-    <Item OnClick="() => ContextZoomOut()">🔍 Zoom Out</Item>
+    <Item OnClick="() => ContextZoomIn()"><div class="icon">🔍</div> Zoom In</Item>
+    <Item OnClick="() => ContextZoomOut()"><div class="icon">🔍</div> Zoom Out</Item>
     @if (CurrentShape != null && CurrentShape.EditMode == EditMode.Add)
     {
-        <Item OnClick=@CompleteShape>✨ Complete New Shape</Item>
+        <Item OnClick=@CompleteShape><div class="icon">✨</div> Complete New Shape</Item>
     }
     else
     {
         <Item>
-            ✨ Add
+            <div class="icon">✨</div> Add
             <SubMenu>
-                <Item OnClick="e => Path.AddNew(this)">🎢 New Path</Item>
-                <Item OnClick="e => Polygon.AddNew(this)">🔷 New Polygon</Item>
-                <Item OnClick="e => Polyline.AddNew(this)">〰 New Polyline</Item>
-                <Item OnClick="e => Circle.AddNew(this)">🔵 New Circle</Item>
-                <Item OnClick="e => Rectangle.AddNew(this)">🟦 New rectangle</Item>
+                <Item OnClick="e => Path.AddNew(this)"><div class="icon">🎢</div> New Path</Item>
+                <Item OnClick="e => Polygon.AddNew(this)"><div class="icon">🔷</div> New Polygon</Item>
+                <Item OnClick="e => Polyline.AddNew(this)"><div class="icon">〰</div> New Polyline</Item>
+                <Item OnClick="e => Circle.AddNew(this)"><div class="icon">🔵</div> New Circle</Item>
+                <Item OnClick="e => Rectangle.AddNew(this)"><div class="icon">🟦</div> New rectangle</Item>
             </SubMenu>
         </Item>
     }
@@ -38,16 +38,16 @@
     {
         if (context.Data is Shape shape)
         {
-            <Item data=shape OnClick="@OpenFillColorPicker"><span class="colorPickerCube" style="background-color:@shape.Fill;"></span> Fill Color</Item>
-            <Item data=shape OnClick="@OpenStrokeColorPicker"><span class="colorPickerCube" style="background-color:@shape.Stroke;"></span> Stroke Color</Item>
-            <Item data=shape OnClick="@DeleteShape">❌ Delete</Item>
+            <Item data=shape OnClick="@OpenFillColorPicker"><div class="colorPickerCube" style="background-color:@shape.Fill;"></div> Fill Color</Item>
+            <Item data=shape OnClick="@OpenStrokeColorPicker"><div class="colorPickerCube" style="background-color:@shape.Stroke;"></div> Stroke Color</Item>
+            <Item data=shape OnClick="@DeleteShape"><div class="icon">❌</div> Delete</Item>
             <Item>
-                ↕ Move
+                <div class="icon">↕</div> Move
                 <SubMenu>
-                    <Item data=shape OnClick="@MoveToBack">⏫ To Back</Item>
-                    <Item data=shape OnClick="@MoveBack">🔼 Back</Item>
-                    <Item data=shape OnClick="@MoveForward">🔽 Forward</Item>
-                    <Item data=shape OnClick="@MoveToFront">⏬ To Front</Item>
+                    <Item data=shape OnClick="@MoveToBack"><div class="icon">⏫</div> To Back</Item>
+                    <Item data=shape OnClick="@MoveBack"><div class="icon">🔼</div> Back</Item>
+                    <Item data=shape OnClick="@MoveForward"><div class="icon">🔽</div> Forward</Item>
+                    <Item data=shape OnClick="@MoveToFront"><div class="icon">⏬</div> To Front</Item>
                 </SubMenu>
             </Item>
         }
