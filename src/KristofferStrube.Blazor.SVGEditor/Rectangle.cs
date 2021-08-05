@@ -132,7 +132,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public static void AddNew(SVG SVG)
         {
-            var element = SVG.Document.CreateElement("RECTANGLE");
+            var element = SVG.Document.CreateElement("RECT");
 
             var rectangle = new Rectangle(element, SVG);
             rectangle.Changed = SVG.UpdateInput;
