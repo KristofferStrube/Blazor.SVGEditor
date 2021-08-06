@@ -39,6 +39,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         public Dictionary<string, Type> SupportedTypes { get; set; } = new Dictionary<string, Type> {
                 { "RECT", typeof(Rectangle) },
                 { "CIRCLE", typeof(Circle) },
+                { "ELLIPSE", typeof(Ellipse) },
                 { "POLYGON", typeof(Polygon) },
                 { "POLYLINE", typeof(Polyline) },
                 { "PATH", typeof(Path) },
