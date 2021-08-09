@@ -21,5 +21,22 @@ namespace KristofferStrube.Blazor.SVGEditor
             var module = await jSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/KristofferStrube.Blazor.SVGEditor/KristofferStrube.Blazor.SVGEditor.js");
             await module.InvokeVoidAsync("focus", elementReference);
         }
+
+        public static async Task<BoundingBox> BBox(this IJSRuntime jSRuntime, ElementReference elementReference)
+        {
+            var module = await jSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/KristofferStrube.Blazor.SVGEditor/KristofferStrube.Blazor.SVGEditor.js");
+            return await module.InvokeAsync<BoundingBox>("BBox", elementReference);
+        }
+    }
+
+    public class BoundingBox
+    {
+        public double x { get; set; }
+
+        public double y { get; set; }
+
+        public double width { get; set; }
+
+        public double height { get; set; }
     }
 }

@@ -157,6 +157,16 @@ namespace KristofferStrube.Blazor.SVGEditor
                     currentInstruction.ControlPoints[^1] = ((int)(currentInstruction.StartPosition.x * 1.0 / 3.0 + currentInstruction.EndPosition.x * 2.0 / 3.0), (int)(currentInstruction.StartPosition.y * 1.0 / 3.0 + currentInstruction.EndPosition.y * 2.0 / 3.0));
                     UpdateData();
                     break;
+                case EditMode.Scale:
+                    var minX = Instructions.Min(inst => inst.EndPosition.x);
+                    var maxX = Instructions.Max(inst => inst.EndPosition.x);
+                    var minY = Instructions.Max(inst => inst.EndPosition.y);
+                    var maxY = Instructions.Max(inst => inst.EndPosition.y);
+                    if (pos.x < (minX + maxX) / 2)
+                    {
+
+                    }
+                    break;
             }
         }
 

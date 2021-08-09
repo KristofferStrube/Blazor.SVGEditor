@@ -12,15 +12,15 @@ using System.Runtime.CompilerServices;
 
 namespace KristofferStrube.Blazor.SVGEditor
 {
-    public class Rectangle : Shape
+    public class Rect : Shape
     {
-        public Rectangle(IElement element, SVG svg)
+        public Rect(IElement element, SVG svg)
         {
             Element = element;
             SVG = svg;
         }
 
-        public override Type Editor => typeof(RectangleEditor);
+        public override Type Editor => typeof(RectEditor);
 
         public double x
         {
@@ -80,7 +80,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                     break;
                 case EditMode.Move:
                     var diff = (x: pos.x - Panner.x, y: pos.y - Panner.y);
-                    Panner = (pos.x, y: pos.y);
+                    Panner = (x: pos.x, y: pos.y);
                     x += diff.x;
                     y += diff.y;
                     break;
@@ -134,18 +134,17 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
             var element = SVG.Document.CreateElement("RECT");
 
-            var rectangle = new Rectangle(element, SVG);
-            rectangle.Changed = SVG.UpdateInput;
-            rectangle.Stroke = "black";
-            rectangle.StrokeWidth = "1";
-            rectangle.Fill = "lightgrey";
-            rectangle.EditMode = EditMode.Add;
+            var rect = new Rect(element, SVG);
+            rect.Changed = SVG.UpdateInput;
+            rect.Stroke = "black";
+            rect.StrokeWidth = "1";
+            rect.Fill = "lightgrey";
+            rect.EditMode = EditMode.Add;
 
-            var startPos = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
-            (rectangle.x, rectangle.y) = startPos;
+            (rect.x, rect.y) = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
 
-            SVG.CurrentShape = rectangle;
-            SVG.AddElement(rectangle);
+            SVG.CurrentShape = rect;
+            SVG.AddElement(rect);
         }
 
         public override void Complete()

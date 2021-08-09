@@ -37,11 +37,12 @@ namespace KristofferStrube.Blazor.SVGEditor
         public string PreviousColor => ColorPickerShape is not null ? (ColorPickerAttribute == "Fill" ? ColorPickerShape.Fill : ColorPickerShape.Stroke) : String.Empty;
 
         public Dictionary<string, Type> SupportedTypes { get; set; } = new Dictionary<string, Type> {
-                { "RECT", typeof(Rectangle) },
+                { "RECT", typeof(Rect) },
                 { "CIRCLE", typeof(Circle) },
                 { "ELLIPSE", typeof(Ellipse) },
                 { "POLYGON", typeof(Polygon) },
                 { "POLYLINE", typeof(Polyline) },
+                { "LINE", typeof(Line) },
                 { "PATH", typeof(Path) },
             };
 
@@ -328,6 +329,13 @@ namespace KristofferStrube.Blazor.SVGEditor
             CurrentShape.EditMode = EditMode.None;
             CurrentShape.Complete();
             CurrentShape = null;
+        }
+
+        protected void ScaleShape(ItemClickEventArgs e)
+        {
+            var shape = (Shape)e.Data;
+            CurrentShape = shape;
+            shape.EditMode = EditMode.Scale;
         }
 
         public void Remove(ISVGElement SVGElement)

@@ -14,7 +14,7 @@
             @onmousedown="Select"
             @onkeyup="KeyUp" />
     </g>
-    @if (SVGElement.Selected && SVGElement.EditMode != EditMode.Add)
+    @if (SVGElement.Selected && SVGElement.EditMode != EditMode.Add && SVGElement.EditMode != EditMode.Scale)
     {
         @for (int i = 0; i < SVGElement.Instructions.Count; i++)
         {
@@ -63,6 +63,10 @@
             }
         }
     }
+    else if (SVGElement.Selected && SVGElement.EditMode == EditMode.Scale)
+    {
+        <rect x=@BBox.x.AsString() y=@BBox.y.AsString() width=@BBox.width.AsString() height=@BBox.height.AsString() fill="none" stroke="black" stroke-dasharray="4" stroke-width="1" />
+    }
 </ContextMenuTrigger>
 
 @code {
@@ -70,6 +74,13 @@
     public Path SVGElement { get; set; }
 
     public ElementReference ElementReference { get; set; }
+
+    public BoundingBox BBox { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        BBox = await JSRuntime.BBox(ElementReference);
+    }
 
     public void KeyUp(KeyboardEventArgs eventArgs)
     {

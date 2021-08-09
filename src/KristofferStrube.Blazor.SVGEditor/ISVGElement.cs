@@ -33,12 +33,4 @@ namespace KristofferStrube.Blazor.SVGEditor
         public Action<ISVGElement> Changed { get; set; }
         public void Complete();
     }
-
-    public enum EditMode
-    {
-        None,
-        Add,
-        Move,
-        MoveAnchor,
-    }
 }
