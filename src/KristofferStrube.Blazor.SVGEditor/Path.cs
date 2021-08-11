@@ -30,6 +30,8 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override Type Editor => typeof(PathEditor);
 
+        public BoundingBox BBox { get; set; }
+
         public List<IPathInstruction> Instructions { get; set; }
 
         private void UpdateData()
@@ -158,13 +160,11 @@ namespace KristofferStrube.Blazor.SVGEditor
                     UpdateData();
                     break;
                 case EditMode.Scale:
-                    var minX = Instructions.Min(inst => inst.EndPosition.x);
-                    var maxX = Instructions.Max(inst => inst.EndPosition.x);
-                    var minY = Instructions.Max(inst => inst.EndPosition.y);
-                    var maxY = Instructions.Max(inst => inst.EndPosition.y);
-                    if (pos.x < (minX + maxX) / 2)
+                    switch (CurrentAnchor)
                     {
+                        case 0:
 
+                            break;
                     }
                     break;
             }

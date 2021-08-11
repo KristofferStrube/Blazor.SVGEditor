@@ -11,6 +11,7 @@ using AngleSharp.Dom;
 using BlazorContextMenu;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
 
 namespace KristofferStrube.Blazor.SVGEditor
 {
@@ -23,6 +24,8 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         [Parameter]
         public Action<string> InputUpdated { get; set; }
+
+        private ElementReference ElementReference { get; set; }
 
         internal IDocument Document { get; set; }
 
@@ -95,6 +98,16 @@ namespace KristofferStrube.Blazor.SVGEditor
                         });
                     UpdateInput();
                 });
+        }
+
+        public BoundingBox BBox { get; set; }
+
+        [Inject]
+        protected IJSRuntime JSRuntime { get; set; }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            BBox = await JSRuntime.BBox(ElementReference);
         }
 
         private Subject<ISVGElement> ElementSubject = new();

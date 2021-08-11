@@ -3,16 +3,16 @@
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement>
     <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
         <path
-            tabindex="0"
-            @onfocusin="() => SVGElement.SVG.CurrentShape = SVGElement"
-            @onfocusout="() => SVGElement.SVG.CurrentShape = null"
-            @ref=ElementReference
-            d="@SVGElement.Instructions.AsString()"
-            fill="@SVGElement.Fill"
-            stroke="@SVGElement.Stroke"
-            stroke-width="@SVGElement.StrokeWidth"
-            @onmousedown="Select"
-            @onkeyup="KeyUp" />
+			  tabindex="0"
+              @onfocusin="() => SVGElement.SVG.CurrentShape = SVGElement"
+              @onfocusout="() => SVGElement.SVG.CurrentShape = null"
+              @ref=ElementReference
+              d="@SVGElement.Instructions.AsString()"
+              fill="@SVGElement.Fill"
+              stroke="@SVGElement.Stroke"
+              stroke-width="@SVGElement.StrokeWidth"
+              @onmousedown="Select"
+              @onkeyup="KeyUp" />
     </g>
     @if (SVGElement.Selected && SVGElement.EditMode != EditMode.Add && SVGElement.EditMode != EditMode.Scale)
     {
@@ -65,7 +65,11 @@
     }
     else if (SVGElement.Selected && SVGElement.EditMode == EditMode.Scale)
     {
-        <rect x=@BBox.x.AsString() y=@BBox.y.AsString() width=@BBox.width.AsString() height=@BBox.height.AsString() fill="none" stroke="black" stroke-dasharray="4" stroke-width="1" />
+        <rect x=@((SVGElement.BBox.x-SVGElement.SVG.BBox.x).AsString()) y=@((SVGElement.BBox.y-SVGElement.SVG.BBox.y).AsString()) width=@SVGElement.BBox.width.AsString() height=@SVGElement.BBox.height.AsString() fill="none" stroke="black" stroke-dasharray="4" stroke-width="2" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(-1, 0)" Transform=false Position="(SVGElement.BBox.x-SVGElement.SVG.BBox.x, SVGElement.BBox.y-SVGElement.SVG.BBox.y)" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(-1, 1)" Transform=false Position="(SVGElement.BBox.x-SVGElement.SVG.BBox.x+SVGElement.BBox.width, SVGElement.BBox.y-SVGElement.SVG.BBox.y)" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(-1, 2)" Transform=false Position="(SVGElement.BBox.x-SVGElement.SVG.BBox.x+SVGElement.BBox.width, SVGElement.BBox.y-SVGElement.SVG.BBox.y+SVGElement.BBox.height)" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(-1, 3)" Transform=false Position="(SVGElement.BBox.x-SVGElement.SVG.BBox.x, SVGElement.BBox.y-SVGElement.SVG.BBox.y+SVGElement.BBox.height)" />
     }
 </ContextMenuTrigger>
 
@@ -75,11 +79,9 @@
 
     public ElementReference ElementReference { get; set; }
 
-    public BoundingBox BBox { get; set; }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        BBox = await JSRuntime.BBox(ElementReference);
+        SVGElement.BBox = await JSRuntime.BBox(ElementReference);
     }
 
     public void KeyUp(KeyboardEventArgs eventArgs)
@@ -92,11 +94,15 @@
 
     public void AnchorSelect(int segment, int anchor)
     {
-        if (SVGElement.EditMode != EditMode.Add)
+        if (SVGElement.EditMode is EditMode.Move or EditMode.None)
         {
             SVGElement.CurrentInstruction = segment;
             SVGElement.CurrentAnchor = anchor;
             SVGElement.EditMode = EditMode.MoveAnchor;
+        }
+        if (SVGElement.EditMode is EditMode.Scale)
+        {
+            SVGElement.CurrentAnchor = anchor;
         }
     }
 

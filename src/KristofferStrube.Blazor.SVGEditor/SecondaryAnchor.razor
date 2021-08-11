@@ -1,4 +1,5 @@
-﻿<use @onmousedown=OnMouseDown href="#secondaryAnchor" x=@SVG.LocalTransform(Position).x.AsString() y=@SVG.LocalTransform(Position).y.AsString() transform="translate(-7 -7)" />
+﻿<circle cx=@X cy=@Y r="5" stroke-width="2" stroke="grey" fill="transparent" @onmousedown=OnMouseDown />
+<circle cx=@X cy=@Y r="5" stroke-width="0.5" stroke="white" fill="transparent" style="pointer-events:none;" />
 
 @code {
     [Parameter]
@@ -7,6 +8,27 @@
     [Parameter]
     public (double x, double y) Position { get; set; }
 
+    [Parameter]
+    public bool Transform { get; set; } = true;
+
     [CascadingParameter]
     protected SVG SVG { get; set; }
+
+    protected string X => Transform ? SVG.LocalTransform(Position).x.AsString() : Position.x.AsString();
+
+    protected string Y => Transform ? SVG.LocalTransform(Position).y.AsString() : Position.y.AsString();
+
+    private string _State { get; set; }
+
+    private string State => string.Join("-", new string[] { Position.x.ToString(), Position.y.ToString(), SVG.Scale.ToString(), SVG.Translate.x.ToString(), SVG.Translate.y.ToString() });
+
+    protected override bool ShouldRender()
+    {
+        if (_State != State)
+        {
+            _State = State;
+            return true;
+        }
+        return false;
+    }
 }

@@ -1,7 +1,9 @@
 ﻿@page "/"
 
 <textarea @bind="Input" @bind:event="oninput" style="width:100%;height:150px;" />
-<SVG @ref=SVG Input=@Input InputUpdated="(string s) => { Input = s; StateHasChanged(); }" />
+<div style="height:80vh">
+    <SVG @ref=SVG Input=@Input InputUpdated="(string s) => { Input = s; StateHasChanged(); }" />
+</div>
 
 @code {
     protected string Input = @"<rect x=""120"" y=""380"" height=""125"" width=""140"" fill=""green"" stroke=""blue"" stroke-width=""2""></rect>
