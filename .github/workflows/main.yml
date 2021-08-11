@@ -29,7 +29,7 @@ jobs:
         
         # Added Ahead-Of-Time workload
         - name: Add AOT Workload
-          run: dotnet workload install microsoft-net-sdk-blazorwebassembly-aot
+          run: dotnet workload install wasm-tools
 
         # Run tests
         - name: Test
