@@ -1,0 +1,9 @@
+﻿<rect x=@((BBox.x-SVG.BBox.x).AsString()) y=@((BBox.y-SVG.BBox.y).AsString()) width=@BBox.width.AsString() height=@BBox.height.AsString() fill="none" stroke="black" stroke-dasharray="4" stroke-width="2" />
+
+@code {
+    [Parameter]
+    public BoundingBox BBox { get; set; }
+
+    [CascadingParameter]
+    protected SVG SVG { get; set; }
+}

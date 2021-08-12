@@ -162,8 +162,20 @@ namespace KristofferStrube.Blazor.SVGEditor
                 case EditMode.Scale:
                     switch (CurrentAnchor)
                     {
-                        case 0:
-
+                        case -1:
+                            var moveDiff = (x: pos.x - Panner.x, y: pos.y - Panner.y);
+                            Panner = (pos.x, pos.y);
+                            Instructions = Instructions.Select(inst =>
+                            {
+                                inst.EndPosition = (inst.EndPosition.x + moveDiff.x, inst.EndPosition.y + moveDiff.y);
+                                if (inst is BaseControlPointPathInstruction controlPointInstruction)
+                                {
+                                    controlPointInstruction.ControlPoints = controlPointInstruction.ControlPoints.Select(p => (p.x + moveDiff.x, p.y + moveDiff.y)).ToList();
+                                    controlPointInstruction.UpdateReflectionForInstructions();
+                                }
+                                return inst;
+                            }).ToList();
+                            UpdateData();
                             break;
                     }
                     break;
@@ -191,6 +203,9 @@ namespace KristofferStrube.Blazor.SVGEditor
                     currentInstruction.NextInstruction = nextInstruction;
                     Instructions.Add(nextInstruction);
                     UpdateData();
+                    break;
+                case EditMode.Scale:
+                    CurrentAnchor = null;
                     break;
             }
         }

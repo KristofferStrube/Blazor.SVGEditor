@@ -192,6 +192,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
             if (CurrentShape != null && CurrentShape.EditMode != EditMode.Add)
             {
+                CurrentShape.EditMode = EditMode.None;
                 CurrentShape = null;
             }
         }
