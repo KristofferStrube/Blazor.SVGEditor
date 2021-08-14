@@ -1,9 +1,25 @@
-﻿<rect x=@((BBox.x-SVG.BBox.x).AsString()) y=@((BBox.y-SVG.BBox.y).AsString()) width=@BBox.width.AsString() height=@BBox.height.AsString() fill="none" stroke="black" stroke-dasharray="4" stroke-width="2" />
+﻿<rect x=@X.AsString() y=@Y.AsString() width=@Width.AsString() height=@Height.AsString() fill="none" stroke="black" stroke-dasharray="4" stroke-width="2" />
+
+<PrimaryAnchor OnMouseDown="() => AnchorOnMouseDown(-1, 0)" Position="(BBox.x, BBox.y)" />
+<PrimaryAnchor OnMouseDown="() => AnchorOnMouseDown(-1, 1)" Position="(BBox.x+BBox.width, BBox.y)" />
+<PrimaryAnchor OnMouseDown="() => AnchorOnMouseDown(-1, 2)" Position="(BBox.x+BBox.width, BBox.y+BBox.height)" />
+<PrimaryAnchor OnMouseDown="() => AnchorOnMouseDown(-1, 3)" Position="(BBox.x, BBox.y+BBox.height)" />
 
 @code {
     [Parameter]
     public BoundingBox BBox { get; set; }
 
+    [Parameter]
+    public Action<int, int> AnchorOnMouseDown { get; set; }
+
     [CascadingParameter]
     protected SVG SVG { get; set; }
+
+    private double X => SVG.LocalTransform((BBox.x, BBox.y)).x;
+
+    private double Y => SVG.LocalTransform((BBox.x, BBox.y)).y;
+
+    private double Height => BBox.height * SVG.Scale;
+
+    private double Width => BBox.width * SVG.Scale;
 }

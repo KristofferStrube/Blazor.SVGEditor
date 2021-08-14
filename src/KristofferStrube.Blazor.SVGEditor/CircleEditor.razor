@@ -2,8 +2,7 @@
 
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement>
     <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
-        <circle
-                tabindex="0"
+        <circle tabindex="0"
                 @onfocusin="() => SVGElement.SVG.CurrentShape = SVGElement"
                 @onfocusout="() => SVGElement.SVG.CurrentShape = null"
                 @ref=ElementReference
@@ -47,10 +46,14 @@
 
     public async Task Select(MouseEventArgs eventArgs)
     {
-        if (SVGElement.SVG.CurrentShape == null || SVGElement.SVG.CurrentShape.EditMode == EditMode.None)
+        if (SVGElement.SVG.CurrentShape == null || SVGElement.SVG.CurrentShape.EditMode is EditMode.None or EditMode.Scale)
         {
+            if (SVGElement.SVG.CurrentShape is not null && SVGElement.SVG.CurrentShape != SVGElement)
+            {
+                SVGElement.SVG.CurrentShape.EditMode = EditMode.None;
+            }
             await JSRuntime.Focus(ElementReference);
-            SVGElement.SVG.CurrentShape = SVGElement;
+                SVGElement.SVG.CurrentShape = SVGElement;
             SVGElement.Panner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             SVGElement.EditMode = EditMode.Move;
         }

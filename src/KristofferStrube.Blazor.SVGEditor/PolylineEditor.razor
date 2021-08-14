@@ -50,8 +50,12 @@
 
     public async Task Select(MouseEventArgs eventArgs)
     {
-        if (SVGElement.SVG.CurrentShape == null || SVGElement.SVG.CurrentShape.EditMode == EditMode.None)
+        if (SVGElement.SVG.CurrentShape == null || SVGElement.SVG.CurrentShape.EditMode is EditMode.None or EditMode.Scale)
         {
+            if (SVGElement.SVG.CurrentShape is not null && SVGElement.SVG.CurrentShape != SVGElement)
+            {
+                SVGElement.SVG.CurrentShape.EditMode = EditMode.None;
+            }
             await JSRuntime.Focus(ElementReference);
             SVGElement.SVG.CurrentShape = SVGElement;
             SVGElement.Panner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));

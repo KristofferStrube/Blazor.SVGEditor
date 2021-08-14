@@ -8,15 +8,12 @@
     [Parameter]
     public (double x, double y) Position { get; set; }
 
-    [Parameter]
-    public bool Transform { get; set; } = true;
-
     [CascadingParameter]
     protected SVG SVG { get; set; }
 
-	protected string X => Transform ? SVG.LocalTransform(Position).x.AsString() : Position.x.AsString();
+	protected string X => SVG.LocalTransform(Position).x.AsString();
 
-	protected string Y => Transform ? SVG.LocalTransform(Position).y.AsString() : Position.y.AsString();
+	protected string Y => SVG.LocalTransform(Position).y.AsString();
 
     private string _State { get; set; }
 

@@ -23,9 +23,20 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public ElementReference ElementReference { get; set; }
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        protected override async Task OnParametersSetAsync()
         {
-            SVGElement.BBox = await JSRuntime.BBox(ElementReference);
+            if (SVGElement.EditMode == EditMode.Scale)
+            {
+                var BBox = await JSRuntime.BBox(ElementReference);
+                var pos = SVGElement.SVG.LocalDetransform((BBox.x - SVGElement.SVG.BBox.x, BBox.y - SVGElement.SVG.BBox.y));
+                SVGElement.BBox = new BoundingBox()
+                {
+                    x = pos.x,
+                    y = pos.y,
+                    height = BBox.height / SVGElement.SVG.Scale,
+                    width = BBox.width / SVGElement.SVG.Scale
+                };
+            }
         }
 
         public void KeyUp(KeyboardEventArgs eventArgs)
@@ -54,6 +65,10 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
             if (SVGElement.SVG.CurrentShape == null || SVGElement.SVG.CurrentShape.EditMode is EditMode.None or EditMode.Scale)
             {
+                if (SVGElement.SVG.CurrentShape is not null && SVGElement.SVG.CurrentShape != SVGElement)
+                {
+                    SVGElement.SVG.CurrentShape.EditMode = EditMode.None;
+                }
                 await JSRuntime.Focus(ElementReference);
                 SVGElement.SVG.CurrentShape = SVGElement;
                 SVGElement.Panner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));

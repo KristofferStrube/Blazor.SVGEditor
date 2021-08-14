@@ -2,20 +2,19 @@
 
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement>
     <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
-        <line
-            tabindex="0"
-            @onfocusin="() => SVGElement.SVG.CurrentShape = SVGElement"
-            @onfocusout="() => SVGElement.SVG.CurrentShape = null"
-            @ref=ElementReference
-            x1=@SVGElement.x1.AsString()
-            y1=@SVGElement.y1.AsString()
-            x2=@SVGElement.x2.AsString()
-            y2=@SVGElement.y2.AsString()
-            stroke="@SVGElement.Stroke"
-            stroke-width="@SVGElement.StrokeWidth"
-            fill="@SVGElement.Fill"
-            @onmousedown="Select"
-            @onkeyup="KeyUp" />
+        <line tabindex="0"
+              @onfocusin="() => SVGElement.SVG.CurrentShape = SVGElement"
+              @onfocusout="() => SVGElement.SVG.CurrentShape = null"
+              @ref=ElementReference
+              x1=@SVGElement.x1.AsString()
+              y1=@SVGElement.y1.AsString()
+              x2=@SVGElement.x2.AsString()
+              y2=@SVGElement.y2.AsString()
+              stroke="@SVGElement.Stroke"
+              stroke-width="@SVGElement.StrokeWidth"
+              fill="@SVGElement.Fill"
+              @onmousedown="Select"
+              @onkeyup="KeyUp" />
     </g>
     @if (SVGElement.Selected && SVGElement.EditMode != EditMode.Add)
     {
@@ -46,8 +45,12 @@
 
     public async Task Select(MouseEventArgs eventArgs)
     {
-        if (SVGElement.SVG.CurrentShape == null || SVGElement.SVG.CurrentShape.EditMode == EditMode.None)
+        if (SVGElement.SVG.CurrentShape == null || SVGElement.SVG.CurrentShape.EditMode is EditMode.None or EditMode.Scale)
         {
+            if (SVGElement.SVG.CurrentShape is not null && SVGElement.SVG.CurrentShape != SVGElement)
+            {
+                SVGElement.SVG.CurrentShape.EditMode = EditMode.None;
+            }
             await JSRuntime.Focus(ElementReference);
             SVGElement.SVG.CurrentShape = SVGElement;
             SVGElement.Panner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));

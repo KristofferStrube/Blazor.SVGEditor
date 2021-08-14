@@ -62,10 +62,6 @@
     }
     else if (SVGElement.Selected && SVGElement.EditMode == EditMode.Scale)
     {
-        <BoundingBoxScaler BBox=SVGElement.BBox />
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(-1, 0)" Transform=false Position="(SVGElement.BBox.x-SVGElement.SVG.BBox.x, SVGElement.BBox.y-SVGElement.SVG.BBox.y)" />
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(-1, 1)" Transform=false Position="(SVGElement.BBox.x-SVGElement.SVG.BBox.x+SVGElement.BBox.width, SVGElement.BBox.y-SVGElement.SVG.BBox.y)" />
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(-1, 2)" Transform=false Position="(SVGElement.BBox.x-SVGElement.SVG.BBox.x+SVGElement.BBox.width, SVGElement.BBox.y-SVGElement.SVG.BBox.y+SVGElement.BBox.height)" />
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(-1, 3)" Transform=false Position="(SVGElement.BBox.x-SVGElement.SVG.BBox.x, SVGElement.BBox.y-SVGElement.SVG.BBox.y+SVGElement.BBox.height)" />
+        <BoundingBoxScaler BBox=SVGElement.BBox AnchorOnMouseDown=AnchorSelect />
     }
 </ContextMenuTrigger>

@@ -64,7 +64,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             Changed.Invoke(this);
         }
 
-        public new static Action<SVG> AddNew = SVG =>
+        public static Action<SVG> AddNew = SVG =>
         {
         };
 

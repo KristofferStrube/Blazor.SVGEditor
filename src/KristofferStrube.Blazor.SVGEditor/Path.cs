@@ -30,7 +30,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override Type Editor => typeof(PathEditor);
 
-        public BoundingBox BBox { get; set; }
+        public BoundingBox BBox { get; set; } = new();
 
         public List<IPathInstruction> Instructions { get; set; }
 
@@ -134,16 +134,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                 case EditMode.Move:
                     var diff = (x: pos.x - Panner.x, y: pos.y - Panner.y);
                     Panner = (pos.x, pos.y);
-                    Instructions = Instructions.Select(inst =>
-                    {
-                        inst.EndPosition = (inst.EndPosition.x + diff.x, inst.EndPosition.y + diff.y);
-                        if (inst is BaseControlPointPathInstruction controlPointInstruction)
-                        {
-                            controlPointInstruction.ControlPoints = controlPointInstruction.ControlPoints.Select(p => (p.x + diff.x, p.y + diff.y)).ToList();
-                            controlPointInstruction.UpdateReflectionForInstructions();
-                        }
-                        return inst;
-                    }).ToList();
+                    UpdatePoints(((double x, double y) point) => (point.x + diff.x, point.y + diff.y));
                     UpdateData();
                     break;
                 case EditMode.Add:
@@ -165,21 +156,104 @@ namespace KristofferStrube.Blazor.SVGEditor
                         case -1:
                             var moveDiff = (x: pos.x - Panner.x, y: pos.y - Panner.y);
                             Panner = (pos.x, pos.y);
-                            Instructions = Instructions.Select(inst =>
+                            UpdatePoints(((double x, double y) point) => (point.x + moveDiff.x, point.y + moveDiff.y));
+                            BBox.x += moveDiff.x;
+                            BBox.y += moveDiff.y;
+                            break;
+                        case 0:
+                            switch ((width: BBox.width + BBox.x - pos.x, height: BBox.height + BBox.y - pos.y))
                             {
-                                inst.EndPosition = (inst.EndPosition.x + moveDiff.x, inst.EndPosition.y + moveDiff.y);
-                                if (inst is BaseControlPointPathInstruction controlPointInstruction)
-                                {
-                                    controlPointInstruction.ControlPoints = controlPointInstruction.ControlPoints.Select(p => (p.x + moveDiff.x, p.y + moveDiff.y)).ToList();
-                                    controlPointInstruction.UpdateReflectionForInstructions();
-                                }
-                                return inst;
-                            }).ToList();
-                            UpdateData();
+                                case var dim when dim.width < 0 && dim.height < 0:
+                                    CurrentAnchor = 2;
+                                    break;
+                                case var dim when dim.width < 0:
+                                    CurrentAnchor = 1;
+                                    break;
+                                case var dim when dim.height < 0:
+                                    CurrentAnchor = 3;
+                                    break;
+                            }
+                            var topLeftScaler = ((double x, double y) point) => ((point.x - BBox.x - BBox.width) * (BBox.width + BBox.x - pos.x) / BBox.width + BBox.x + BBox.width, (point.y - BBox.y - BBox.height) * (BBox.height + BBox.y - pos.y) / BBox.height + BBox.y + BBox.height);
+                            UpdatePoints(topLeftScaler);
+                            BBox.width += BBox.x - pos.x;
+                            BBox.height += BBox.y - pos.y;
+                            (BBox.x, BBox.y) = pos;
+                            break;
+                        case 1:
+                            switch ((width: pos.x - BBox.x, height: BBox.height + BBox.y - pos.y))
+                            {
+                                case var dim when dim.width < 0 && dim.height < 0:
+                                    CurrentAnchor = 3;
+                                    break;
+                                case var dim when dim.width < 0:
+                                    CurrentAnchor = 0;
+                                    break;
+                                case var dim when dim.height < 0:
+                                    CurrentAnchor = 2;
+                                    break;
+                            }
+                            var topRightScaler = ((double x, double y) point) => ((point.x - BBox.x) * (pos.x - BBox.x) / BBox.width + BBox.x, (point.y - BBox.y - BBox.height) * (BBox.height + BBox.y - pos.y) / BBox.height + BBox.y + BBox.height);
+                            UpdatePoints(topRightScaler);
+                            BBox.width = pos.x - BBox.x;
+                            BBox.height += BBox.y - pos.y;
+                            (BBox.x, BBox.y) = (pos.x - BBox.width, pos.y);
+                            break;
+                        case 2:
+                            switch ((width: pos.x - BBox.x, height: pos.y - BBox.y))
+                            {
+                                case var dim when dim.width < 0 && dim.height < 0:
+                                    CurrentAnchor = 0;
+                                    break;
+                                case var dim when dim.width < 0:
+                                    CurrentAnchor = 3;
+                                    break;
+                                case var dim when dim.height < 0:
+                                    CurrentAnchor = 1;
+                                    break;
+                            }
+                            var bottomRightScaler = ((double x, double y) point) => ((point.x - BBox.x) * (pos.x - BBox.x) / BBox.width + BBox.x, (point.y - BBox.y) * (pos.y - BBox.y) / BBox.height + BBox.y);
+                            UpdatePoints(bottomRightScaler);
+                            BBox.width = pos.x - BBox.x;
+                            BBox.height = pos.y - BBox.y;
+                            (BBox.x, BBox.y) = (pos.x - BBox.width, pos.y - BBox.height);
+                            break;
+                        case 3:
+                            switch ((width: BBox.width + BBox.x - pos.x, height: pos.y - BBox.y))
+                            {
+                                case var dim when dim.width < 0 && dim.height < 0:
+                                    CurrentAnchor = 1;
+                                    break;
+                                case var dim when dim.width < 0:
+                                    CurrentAnchor = 2;
+                                    break;
+                                case var dim when dim.height < 0:
+                                    CurrentAnchor = 0;
+                                    break;
+                            }
+                            var bottomLeftScaler = ((double x, double y) point) => ((point.x - BBox.x - BBox.width) * (BBox.width + BBox.x - pos.x) / BBox.width + BBox.x + BBox.width, (point.y - BBox.y) * (pos.y - BBox.y) / BBox.height + BBox.y);
+                            UpdatePoints(bottomLeftScaler);
+                            BBox.width += BBox.x - pos.x;
+                            BBox.height = pos.y - BBox.y;
+                            (BBox.x, BBox.y) = (pos.x, pos.y - BBox.height);
                             break;
                     }
+                    UpdateData();
                     break;
             }
+        }
+
+        private void UpdatePoints(Func<(double, double), (double, double)> transformer)
+        {
+            Instructions = Instructions.Select(inst =>
+            {
+                inst.EndPosition = transformer(inst.EndPosition);
+                if (inst is BaseControlPointPathInstruction controlPointInstruction)
+                {
+                    controlPointInstruction.ControlPoints = controlPointInstruction.ControlPoints.Select(p => transformer(p)).ToList();
+                    controlPointInstruction.UpdateReflectionForInstructions();
+                }
+                return inst;
+            }).ToList();
         }
 
         public override void HandleMouseUp(MouseEventArgs eventArgs)
