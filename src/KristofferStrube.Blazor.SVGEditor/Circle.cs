@@ -23,18 +23,18 @@ namespace KristofferStrube.Blazor.SVGEditor
         public override Type Editor => typeof(CircleEditor);
 
         public double cx {
-            get { return double.Parse(Element.GetAttribute("cx") ?? "0"); }
-            set { Element.SetAttribute("cx", value.ToString()); Changed.Invoke(this); }
+            get { return (Element.GetAttribute("cx") ?? "0").ParseAsDouble(); }
+            set { Element.SetAttribute("cx", value.AsString()); Changed.Invoke(this); }
         }
         public double cy
         {
-            get { return double.Parse(Element.GetAttribute("cy") ?? "0"); }
-            set { Element.SetAttribute("cy", value.ToString()); Changed.Invoke(this); }
+            get { return (Element.GetAttribute("cy") ?? "0").ParseAsDouble(); }
+            set { Element.SetAttribute("cy", value.AsString()); Changed.Invoke(this); }
         }
         public double r
         {
-            get { return double.Parse(Element.GetAttribute("r") ?? "0"); }
-            set { Element.SetAttribute("r", value.ToString()); Changed.Invoke(this); }
+            get { return (Element.GetAttribute("r") ?? "0").ParseAsDouble(); }
+            set { Element.SetAttribute("r", value.AsString()); Changed.Invoke(this); }
         }
 
         public int? CurrentAnchor { get; set; }

@@ -31,7 +31,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                         var parameters = new List<double>();
                         if (seq != "Z" && seq != "z")
                         {
-                            parameters = seq.Substring(2, seq.Length - 2).Split(" ").Select(p => double.Parse(p, CultureInfo.InvariantCulture)).ToList();
+                            parameters = seq.Substring(2, seq.Length - 2).Split(" ").Select(p => p.ParseAsDouble()).ToList();
                         }
                         switch (instruction)
                         {
@@ -141,5 +141,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         public static string AsString(this List<IPathInstruction> pathData) => string.Join(" ", pathData.Select(p => p.ToString()));
 
         public static string AsString(this double d) => Math.Round(d, 9).ToString(CultureInfo.InvariantCulture);
+
+        public static double ParseAsDouble(this string s) => double.Parse(s, CultureInfo.InvariantCulture);
     }
 }

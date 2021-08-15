@@ -24,23 +24,23 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public double x1
         {
-            get { return double.Parse(Element.GetAttribute("x1") ?? "0"); }
-            set { Element.SetAttribute("x1", value.ToString()); Changed.Invoke(this); }
+            get { return (Element.GetAttribute("x1") ?? "0").ParseAsDouble(); }
+            set { Element.SetAttribute("x1", value.AsString()); Changed.Invoke(this); }
         }
         public double y1
         {
-            get { return double.Parse(Element.GetAttribute("y1") ?? "0"); }
-            set { Element.SetAttribute("y1", value.ToString()); Changed.Invoke(this); }
+            get { return (Element.GetAttribute("y1") ?? "0").ParseAsDouble(); }
+            set { Element.SetAttribute("y1", value.AsString()); Changed.Invoke(this); }
         }
         public double x2
         {
-            get { return double.Parse(Element.GetAttribute("x2") ?? "0"); }
-            set { Element.SetAttribute("x2", value.ToString()); Changed.Invoke(this); }
+            get { return (Element.GetAttribute("x2") ?? "0").ParseAsDouble(); }
+            set { Element.SetAttribute("x2", value.AsString()); Changed.Invoke(this); }
         }
         public double y2
         {
-            get { return double.Parse(Element.GetAttribute("y2") ?? "0"); }
-            set { Element.SetAttribute("y2", value.ToString()); Changed.Invoke(this); }
+            get { return (Element.GetAttribute("y2") ?? "0").ParseAsDouble(); }
+            set { Element.SetAttribute("y2", value.AsString()); Changed.Invoke(this); }
         }
 
         public int? CurrentAnchor { get; set; }

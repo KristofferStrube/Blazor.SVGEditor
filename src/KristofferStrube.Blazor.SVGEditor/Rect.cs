@@ -24,23 +24,23 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public double x
         {
-            get { return double.Parse(Element.GetAttribute("x") ?? "0"); }
-            set { Element.SetAttribute("x", value.ToString()); Changed.Invoke(this); }
+            get { return (Element.GetAttribute("x") ?? "0").ParseAsDouble(); }
+            set { Element.SetAttribute("x", value.AsString()); Changed.Invoke(this); }
         }
         public double y
         {
-            get { return double.Parse(Element.GetAttribute("y") ?? "0"); }
-            set { Element.SetAttribute("y", value.ToString()); Changed.Invoke(this); }
+            get { return (Element.GetAttribute("y") ?? "0").ParseAsDouble(); }
+            set { Element.SetAttribute("y", value.AsString()); Changed.Invoke(this); }
         }
         public double width
         {
-            get { return double.Parse(Element.GetAttribute("width") ?? "0"); }
-            set { Element.SetAttribute("width", value.ToString()); Changed.Invoke(this); }
+            get { return (Element.GetAttribute("width") ?? "0").ParseAsDouble(); }
+            set { Element.SetAttribute("width", value.AsString()); Changed.Invoke(this); }
         }
         public double height
         {
-            get { return double.Parse(Element.GetAttribute("height") ?? "0"); }
-            set { Element.SetAttribute("height", value.ToString()); Changed.Invoke(this); }
+            get { return (Element.GetAttribute("height") ?? "0").ParseAsDouble(); }
+            set { Element.SetAttribute("height", value.AsString()); Changed.Invoke(this); }
         }
 
         public int? CurrentAnchor { get; set; }

@@ -37,7 +37,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             {
                 return new();
             }
-            return points.Split(" ").Select(p => (x: double.Parse(p.Split(",")[0]), y: double.Parse(p.Split(",")[1]))).ToList();
+            return points.Split(" ").Select(p => (x: p.Split(",")[0].ParseAsDouble(), y: p.Split(",")[1].ParseAsDouble())).ToList();
         }
 
         public int? CurrentAnchor { get; set; }
