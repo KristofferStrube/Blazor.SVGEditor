@@ -34,7 +34,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public List<IPathInstruction> Instructions { get; set; }
 
-        private void UpdateData()
+        public void UpdateData()
         {
             if (Instructions.Count > 0)
             {

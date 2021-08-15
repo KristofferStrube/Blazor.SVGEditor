@@ -345,6 +345,21 @@ namespace KristofferStrube.Blazor.SVGEditor
             CurrentShape = null;
         }
 
+        protected void CompleteShapeWithoutClose(ItemClickEventArgs e)
+        {
+            Path path = (Path)CurrentShape;
+            CompleteShape(e);
+            path.Instructions.Remove(path.Instructions.Last());
+            path.UpdateData();
+        }
+
+        protected void DeletePreviousInstruction(ItemClickEventArgs e)
+        {
+            Path path = (Path)CurrentShape;
+            path.Instructions = path.Instructions.Take(0..^2).ToList();
+            path.UpdateData();
+        }
+
         protected void ScaleShape(ItemClickEventArgs e)
         {
             var shape = (Shape)e.Data;
