@@ -1,10 +1,6 @@
 ﻿using AngleSharp.Dom;
 using Microsoft.AspNetCore.Components.Web;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using static System.Text.Json.JsonSerializer;
 
 namespace KristofferStrube.Blazor.SVGEditor
 {
@@ -37,7 +33,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         public bool Selectable => SVG.CurrentShape == null;
         public bool Selected => SVG.CurrentShape == this;
         public string _StateRepresentation { get; set;}
-        public string StateRepresentation => string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y;
+        public string StateRepresentation => string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y + Serialize(BoundingBox);
         public abstract void HandleMouseMove(MouseEventArgs eventArgs);
         public abstract void HandleMouseUp(MouseEventArgs eventArgs);
         public abstract void HandleMouseOut(MouseEventArgs eventArgs);

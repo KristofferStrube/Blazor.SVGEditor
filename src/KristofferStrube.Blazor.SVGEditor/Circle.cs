@@ -37,8 +37,6 @@ namespace KristofferStrube.Blazor.SVGEditor
             set { Element.SetAttribute("r", value.AsString()); Changed.Invoke(this); }
         }
 
-        public int? CurrentAnchor { get; set; }
-
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
             var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));

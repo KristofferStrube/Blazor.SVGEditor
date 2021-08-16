@@ -40,8 +40,6 @@ namespace KristofferStrube.Blazor.SVGEditor
             return points.Split(" ").Select(p => (x: p.Split(",")[0].ParseAsDouble(), y: p.Split(",")[1].ParseAsDouble())).ToList();
         }
 
-        public int? CurrentAnchor { get; set; }
-
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
             var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));

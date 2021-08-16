@@ -43,8 +43,6 @@ namespace KristofferStrube.Blazor.SVGEditor
             set { Element.SetAttribute("ry", value.AsString()); Changed.Invoke(this); }
         }
 
-        public int? CurrentAnchor { get; set; }
-
         private double r { get; set; }
 
         public override void HandleMouseMove(MouseEventArgs eventArgs)

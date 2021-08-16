@@ -41,7 +41,6 @@ namespace KristofferStrube.Blazor.SVGEditor
             }
         }
         public int? CurrentInstruction { get; set; }
-        public int? CurrentAnchor { get; set; }
 
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
