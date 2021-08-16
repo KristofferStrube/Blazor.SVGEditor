@@ -1,0 +1,119 @@
+﻿.buttonColor {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 2px;
+}
+
+.color-picker-modal {
+    z-index: 99;
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.3)
+}
+
+
+
+﻿.color-picker-modal:target {
+    display: block;
+}
+
+
+
+.color-picker-content {
+    height: 320px;
+    width: 608px;
+    margin: auto;
+    border-radius: 3px;
+    -webkit-box-shadow: 0 0 12px #999;
+    -moz-box-shadow: 0 0 12px #999;
+    box-shadow: 0 0 12px #999;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+.color-picker-case {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    width: 32px;
+    height: 32px;
+}
+
+    .color-picker-case:hover {
+        border: 1px solid #FFF;
+        cursor: pointer;
+    }
+
+
+.color-picker-palette {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: 320px;
+}
+
+
+.show {
+    display: block;
+    animation-name: show-animation;
+    animation-duration: 0.5s;
+}
+
+@keyframes show-animation {
+    from {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+.hide {
+    display: none;
+}
+
+.color-picker-header {
+    background-color: #d9d9d9;
+    padding: 3px;
+    color: white;
+}
+
+.color-picker-title {
+    margin: 5px;
+    display: inline-block;
+}
+
+.color-picker-close-button {
+    float: right;
+    margin: 5px;
+    cursor: pointer;
+}
+
+    .color-picker-close-button:hover {
+        color: red;
+    }
+
+
+
+@media (max-width: 767px) {
+    .color-picker-palette {
+        flex-direction: row-reverse;
+        height: 608px;
+    }
+
+    .color-picker-content {
+        width: 320px;
+        height: 608px;
+    }
+}
