@@ -1,4 +1,4 @@
-﻿@inject IJSRuntime JSRuntime
+﻿@inherits ShapeEditor<Circle>
 
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement>
     <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
@@ -23,50 +23,3 @@
         <PrimaryAnchor OnMouseDown="() => AnchorSelect(3)" Position="(SVGElement.cx, SVGElement.cy - SVGElement.r)" />
     }
 </ContextMenuTrigger>
-
-@code {
-    [Parameter]
-    public Circle SVGElement { get; set; }
-
-    public ElementReference ElementReference { get; set; }
-
-    public void KeyUp(KeyboardEventArgs eventArgs)
-    {
-        if (eventArgs.Key == "Delete")
-        {
-            SVGElement.SVG.Remove(SVGElement);
-        }
-    }
-
-    public void AnchorSelect(int anchor)
-    {
-        SVGElement.CurrentAnchor = anchor;
-        SVGElement.EditMode = EditMode.MoveAnchor;
-    }
-
-    public async Task Select(MouseEventArgs eventArgs)
-    {
-        if (SVGElement.SVG.CurrentShape == null || SVGElement.SVG.CurrentShape.EditMode is EditMode.None or EditMode.Scale)
-        {
-            if (SVGElement.SVG.CurrentShape is not null && SVGElement.SVG.CurrentShape != SVGElement)
-            {
-                SVGElement.SVG.CurrentShape.EditMode = EditMode.None;
-            }
-            await JSRuntime.Focus(ElementReference);
-                SVGElement.SVG.CurrentShape = SVGElement;
-            SVGElement.Panner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-            SVGElement.EditMode = EditMode.Move;
-        }
-    }
-
-    protected override bool ShouldRender()
-    {
-        var StateRepresentation = SVGElement.StateRepresentation;
-        if (SVGElement._StateRepresentation != StateRepresentation)
-        {
-            SVGElement._StateRepresentation = StateRepresentation;
-            return true;
-        }
-        return false;
-    }
-}

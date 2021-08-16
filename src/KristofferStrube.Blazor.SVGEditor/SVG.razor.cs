@@ -333,11 +333,6 @@ namespace KristofferStrube.Blazor.SVGEditor
             RerenderAll();
         }
 
-        protected void DeleteShape(ItemClickEventArgs e)
-        {
-            Remove((Shape)e.Data);
-        }
-
         protected void CompleteShape(ItemClickEventArgs e)
         {
             CurrentShape.EditMode = EditMode.None;
@@ -360,9 +355,8 @@ namespace KristofferStrube.Blazor.SVGEditor
             path.UpdateData();
         }
 
-        protected void ScaleShape(ItemClickEventArgs e)
+        protected void ScaleShape(Shape shape)
         {
-            var shape = (Shape)e.Data;
             CurrentShape = shape;
             shape.EditMode = EditMode.Scale;
         }
@@ -374,6 +368,14 @@ namespace KristofferStrube.Blazor.SVGEditor
             CurrentShape = null;
             UpdateInput();
             RerenderAll();
+        }
+
+        public void CopyAndPaste(ISVGElement SVGElement)
+        {
+            var copy = (ISVGElement)Activator.CreateInstance(SVGElement.GetType(), SVGElement.Element.Clone(), this);
+            copy.Changed = UpdateInput;
+            AddElement(copy);
+            CurrentShape = copy;
         }
     }
 }

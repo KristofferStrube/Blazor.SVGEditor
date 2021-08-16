@@ -29,6 +29,8 @@ namespace KristofferStrube.Blazor.SVGEditor
             set { Element.SetAttribute("stroke-width", value); Changed.Invoke(this); }
         }
         public (double x, double y) Panner { get; set; }
+        public int? CurrentAnchor { get; set; }
+        public BoundingBox BoundingBox { get; set; } = new();
         public EditMode EditMode { get; set; }
         public IEnumerable<EditMode> AvailableEditModes { get; set; }
         public Action<ISVGElement> Changed { get; set; }

@@ -22,28 +22,26 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override Type Editor => typeof(RectEditor);
 
-        public double x
+        public double X
         {
             get { return (Element.GetAttribute("x") ?? "0").ParseAsDouble(); }
             set { Element.SetAttribute("x", value.AsString()); Changed.Invoke(this); }
         }
-        public double y
+        public double Y
         {
             get { return (Element.GetAttribute("y") ?? "0").ParseAsDouble(); }
             set { Element.SetAttribute("y", value.AsString()); Changed.Invoke(this); }
         }
-        public double width
+        public double Width
         {
             get { return (Element.GetAttribute("width") ?? "0").ParseAsDouble(); }
             set { Element.SetAttribute("width", value.AsString()); Changed.Invoke(this); }
         }
-        public double height
+        public double Height
         {
             get { return (Element.GetAttribute("height") ?? "0").ParseAsDouble(); }
             set { Element.SetAttribute("height", value.AsString()); Changed.Invoke(this); }
         }
-
-        public int? CurrentAnchor { get; set; }
 
         private (double x, double y)? AddPos { get; set; }
 
@@ -55,34 +53,34 @@ namespace KristofferStrube.Blazor.SVGEditor
                 case EditMode.Add:
                     if (AddPos is null)
                     {
-                        AddPos = (x, y);
+                        AddPos = (X, Y);
                     }
                     if (pos.x < AddPos.Value.x)
                     {
-                        x = pos.x;
-                        width = AddPos.Value.x - pos.x;
+                        X = pos.x;
+                        Width = AddPos.Value.x - pos.x;
                     }
                     else
                     {
-                        x = AddPos.Value.x;
-                        width = pos.x - AddPos.Value.x;
+                        X = AddPos.Value.x;
+                        Width = pos.x - AddPos.Value.x;
                     }
                     if (pos.y < AddPos.Value.y)
                     {
-                        y = pos.y;
-                        height = AddPos.Value.y - pos.y;
+                        Y = pos.y;
+                        Height = AddPos.Value.y - pos.y;
                     }
                     else
                     {
-                        y = AddPos.Value.y;
-                        height = pos.y - AddPos.Value.y;
+                        Y = AddPos.Value.y;
+                        Height = pos.y - AddPos.Value.y;
                     }
                     break;
                 case EditMode.Move:
                     var diff = (x: pos.x - Panner.x, y: pos.y - Panner.y);
                     Panner = (x: pos.x, y: pos.y);
-                    x += diff.x;
-                    y += diff.y;
+                    X += diff.x;
+                    Y += diff.y;
                     break;
                 case EditMode.MoveAnchor:
                     if (CurrentAnchor == null)
@@ -92,24 +90,24 @@ namespace KristofferStrube.Blazor.SVGEditor
                     switch (CurrentAnchor)
                     {
                         case 0:
-                            width -= pos.x - x;
-                            height -= pos.y - y;
-                            x = pos.x;
-                            y = pos.y;
+                            Width -= pos.x - X;
+                            Height -= pos.y - Y;
+                            X = pos.x;
+                            Y = pos.y;
                             break;
                         case 1:
-                            width = pos.x - x;
-                            height -= pos.y - y;
-                            y = pos.y;
+                            Width = pos.x - X;
+                            Height -= pos.y - Y;
+                            Y = pos.y;
                             break;
                         case 2:
-                            width = pos.x - x;
-                            height = pos.y - y;
+                            Width = pos.x - X;
+                            Height = pos.y - Y;
                             break;
                         case 3:
-                            width -= pos.x - x;
-                            height = pos.y - y;
-                            x = pos.x;
+                            Width -= pos.x - X;
+                            Height = pos.y - Y;
+                            X = pos.x;
                             break;
                     }
                     break;
@@ -141,7 +139,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             rect.Fill = "lightgrey";
             rect.EditMode = EditMode.Add;
 
-            (rect.x, rect.y) = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
+            (rect.X, rect.Y) = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
 
             SVG.CurrentShape = rect;
             SVG.AddElement(rect);

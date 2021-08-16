@@ -9,17 +9,16 @@ using AngleSharp;
 using AngleSharp.Html.Parser;
 using BlazorContextMenu;
 using Microsoft.JSInterop;
-using static System.Text.Json.JsonSerializer;
 
 namespace KristofferStrube.Blazor.SVGEditor
 {
-    public partial class PathEditor : ComponentBase
+    public abstract class ShapeEditor<TShape> : ComponentBase where TShape : Shape
     {
         [Parameter]
-        public Path SVGElement { get; set; }
+        public TShape SVGElement { get; set; }
 
         [Inject]
-        public IJSRuntime JSRuntime { get; set; }
+        protected IJSRuntime JSRuntime { get; set; }
 
         public ElementReference ElementReference { get; set; }
 
@@ -29,7 +28,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             {
                 var BBox = await JSRuntime.BBox(ElementReference);
                 var pos = SVGElement.SVG.LocalDetransform((BBox.x - SVGElement.SVG.BBox.x, BBox.y - SVGElement.SVG.BBox.y));
-                SVGElement.BBox = new BoundingBox()
+                SVGElement.BoundingBox = new BoundingBox()
                 {
                     x = pos.x,
                     y = pos.y,
@@ -41,24 +40,26 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public void KeyUp(KeyboardEventArgs eventArgs)
         {
-            if (eventArgs.Key == "Delete")
+            if (eventArgs.CtrlKey)
             {
-                SVGElement.SVG.Remove(SVGElement);
+                if (eventArgs.Key == "v")
+                {
+                    SVGElement.SVG.CopyAndPaste(SVGElement);
+                }
+            }
+            else
+            {
+                if (eventArgs.Key == "Delete")
+                {
+                    SVGElement.SVG.Remove(SVGElement);
+                }
             }
         }
 
-        public void AnchorSelect(int segment, int anchor)
+        public void AnchorSelect(int anchor)
         {
-            if (SVGElement.EditMode is EditMode.Move or EditMode.None)
-            {
-                SVGElement.CurrentInstruction = segment;
-                SVGElement.CurrentAnchor = anchor;
-                SVGElement.EditMode = EditMode.MoveAnchor;
-            }
-            if (SVGElement.EditMode is EditMode.Scale)
-            {
-                SVGElement.CurrentAnchor = anchor;
-            }
+            SVGElement.CurrentAnchor = anchor;
+            SVGElement.EditMode = EditMode.MoveAnchor;
         }
 
         public async Task Select(MouseEventArgs eventArgs)
@@ -69,6 +70,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                 {
                     SVGElement.SVG.CurrentShape.EditMode = EditMode.None;
                 }
+
                 await JSRuntime.Focus(ElementReference);
                 SVGElement.SVG.CurrentShape = SVGElement;
                 SVGElement.Panner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
@@ -85,7 +87,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         protected override bool ShouldRender()
         {
-            var StateRepresentation = SVGElement.StateRepresentation + Serialize(SVGElement.BBox);
+            var StateRepresentation = SVGElement.StateRepresentation;
             if (SVGElement._StateRepresentation != StateRepresentation)
             {
                 SVGElement._StateRepresentation = StateRepresentation;

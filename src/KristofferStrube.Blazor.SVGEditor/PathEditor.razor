@@ -1,4 +1,6 @@
-﻿<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement>
+﻿@inherits ShapeEditor<Path>
+
+<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement>
     <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
         <path tabindex="0"
               @onfocusin="() => SVGElement.SVG.CurrentShape = SVGElement"
@@ -62,6 +64,22 @@
     }
     else if (SVGElement.Selected && SVGElement.EditMode == EditMode.Scale)
     {
-        <BoundingBoxScaler BBox=SVGElement.BBox AnchorOnMouseDown=AnchorSelect />
+        <BoundingBoxScaler BBox=SVGElement.BoundingBox AnchorOnMouseDown=AnchorSelect />
     }
 </ContextMenuTrigger>
+
+@code {
+    public void AnchorSelect(int segment, int anchor)
+    {
+        if (SVGElement.EditMode is EditMode.Move or EditMode.None)
+        {
+            SVGElement.CurrentInstruction = segment;
+            SVGElement.CurrentAnchor = anchor;
+            SVGElement.EditMode = EditMode.MoveAnchor;
+        }
+        if (SVGElement.EditMode is EditMode.Scale)
+        {
+            SVGElement.CurrentAnchor = anchor;
+        }
+    }
+}

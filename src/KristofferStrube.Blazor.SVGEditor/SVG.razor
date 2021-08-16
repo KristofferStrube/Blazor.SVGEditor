@@ -78,7 +78,8 @@
                 <div class="icon">➖</div> Stroke Width
                 <input type="number" @bind-value=shape.StrokeWidth style="width:50px;" />
             </Item>
-            <Item data=shape OnClick="@DeleteShape"><div class="icon">❌</div> Delete</Item>
+            <Item OnClick="() => CopyAndPaste(shape)"><div class="icon">➿</div> Copy & Paste</Item>
+            <Item OnClick="() => Remove(shape)" ><div class="icon">❌</div> Delete</Item>
             <Item>
                 <div class="icon">↕</div> Move
                 <SubMenu>
@@ -90,7 +91,7 @@
             </Item>
             if (shape is Path path)
             {
-                <Item data=path OnClick=@ScaleShape> <div class="icon">↔</div> Scale</Item>
+                <Item data=path OnClick="() => ScaleShape(shape)"> <div class="icon">↔</div> Scale</Item>
             }
         }
     }
