@@ -1,17 +1,16 @@
 ﻿@using BlazorColorPicker
 
 <ContextMenuTrigger MenuId="SVGMenu" style="height:100%;">
-    <svg
-        @ref=ElementReference
-        @onmousemove="Move"
-        @onmousedown="Down"
-        @onmouseup="Up"
-        @onmouseout="Out"
-        @onwheel="Wheel"
-        style="border:1px solid black; cursor:@(Panning ? "move" : "initial");"
-        width="100%"
-        height="100%"
-        @onmousedown:preventDefault="true">
+    <svg @ref=ElementReference
+         @onmousemove="Move"
+         @onmousedown="Down"
+         @onmouseup="Up"
+         @onmouseout="Out"
+         @onwheel="Wheel"
+         style="border:1px solid black; cursor:@(Panning ? "move" : "initial");"
+         width="100%"
+         height="100%"
+         @onmousedown:preventDefault="true">
         <rect width="100%" height="100%" fill="transparent" @onmousedown=@UnSelect></rect>
         <CascadingValue Value=this>
             @foreach (ISVGElement SVGElement in Elements)
@@ -54,46 +53,48 @@
             </SubMenu>
         </Item>
     }
-    @if (context.Data != null)
+    @if (context.Data is Shape shape)
     {
-        if (context.Data is Shape shape)
+        <Item data=shape OnClick="@OpenFillColorPicker">
+            <div class="colorPickerCube" style="background-color:@shape.Fill;"></div> Fill Color
+            <SubMenu>
+                <Item OnClick=@(_ => shape.Fill = "none")><div class="icon">⚪</div> Set To None</Item>
+                <Item OnClick=@(_ => shape.Fill = "transparent")><div class="icon">🔘</div> Set To Transparent</Item>
+                <Item OnClick=@(_ => shape.Fill = "black")><div class="icon">⚫</div> Set To Black</Item>
+            </SubMenu>
+        </Item>
+        <Item data=shape OnClick="@OpenStrokeColorPicker">
+            <div class="colorPickerCube" style="background-color:@shape.Stroke;"></div> Stroke Color
+            <SubMenu>
+                <Item OnClick=@(_ => shape.Stroke = "none")><div class="icon">⚪</div> Set To None</Item>
+                <Item OnClick=@(_ => shape.Stroke = "transparent")><div class="icon">🔘</div> Set To Transparent</Item>
+                <Item OnClick=@(_ => shape.Stroke = "black")><div class="icon">⚫</div> Set To Black</Item>
+            </SubMenu>
+        </Item>
+        <Item @onclick:preventDefault="true">
+            <div class="icon">➖</div> Stroke Width
+            <input type="number" @bind-value=shape.StrokeWidth style="width:50px;" />
+        </Item>
+        <Item>
+            <div class="icon">↕</div> Move
+            <SubMenu>
+                <Item data=shape OnClick="@MoveToBack"><div class="icon">⏫</div> To Back</Item>
+                <Item data=shape OnClick="@MoveBack"><div class="icon">🔼</div> Back</Item>
+                <Item data=shape OnClick="@MoveForward"><div class="icon">🔽</div> Forward</Item>
+                <Item data=shape OnClick="@MoveToFront"><div class="icon">⏬</div> To Front</Item>
+            </SubMenu>
+        </Item>
+        if (shape is Path path)
         {
-            <Item data=shape OnClick="@OpenFillColorPicker">
-                <div class="colorPickerCube" style="background-color:@shape.Fill;"></div> Fill Color
-                <SubMenu>
-                    <Item OnClick=@(_ => shape.Fill = "none")><div class="icon">⚪</div> Set To None</Item>
-                    <Item OnClick=@(_ => shape.Fill = "transparent")><div class="icon">🔘</div> Set To Transparent</Item>
-                    <Item OnClick=@(_ => shape.Fill = "black")><div class="icon">⚫</div> Set To Black</Item>
-                </SubMenu>
-            </Item>
-            <Item data=shape OnClick="@OpenStrokeColorPicker">
-                <div class="colorPickerCube" style="background-color:@shape.Stroke;"></div> Stroke Color
-                <SubMenu>
-                    <Item OnClick=@(_ => shape.Stroke = "none")><div class="icon">⚪</div> Set To None</Item>
-                    <Item OnClick=@(_ => shape.Stroke = "transparent")><div class="icon">🔘</div> Set To Transparent</Item>
-                    <Item OnClick=@(_ => shape.Stroke = "black")><div class="icon">⚫</div> Set To Black</Item>
-                </SubMenu>
-            </Item>
-            <Item @onclick:preventDefault="true">
-                <div class="icon">➖</div> Stroke Width
-                <input type="number" @bind-value=shape.StrokeWidth style="width:50px;" />
-            </Item>
-            <Item OnClick="() => CopyAndPaste(shape)"><div class="icon">➿</div> Copy & Paste</Item>
-            <Item OnClick="() => Remove(shape)" ><div class="icon">❌</div> Delete</Item>
-            <Item>
-                <div class="icon">↕</div> Move
-                <SubMenu>
-                    <Item data=shape OnClick="@MoveToBack"><div class="icon">⏫</div> To Back</Item>
-                    <Item data=shape OnClick="@MoveBack"><div class="icon">🔼</div> Back</Item>
-                    <Item data=shape OnClick="@MoveForward"><div class="icon">🔽</div> Forward</Item>
-                    <Item data=shape OnClick="@MoveToFront"><div class="icon">⏬</div> To Front</Item>
-                </SubMenu>
-            </Item>
-            if (shape is Path path)
-            {
-                <Item data=path OnClick="() => ScaleShape(shape)"> <div class="icon">↔</div> Scale</Item>
-            }
+            <Item data=path OnClick="() => ScaleShape(shape)"> <div class="icon">↔</div> Scale</Item>
         }
+        <Item OnClick="() => Remove(shape)"><div class="icon">❌</div> Delete</Item>
+        <Item OnClick="() => CopyElementAsync(shape)"><div class="icon">✂️</div> Copy</Item>
+        <Item OnClick="() => PasteElementAsync(shape)"><div class="icon">📋</div> Paste</Item>
+    }
+    else
+    {
+        <Item OnClick="() => PasteElementAsync()"><div class="icon">📋</div> Paste</Item>
     }
 </ContextMenu>
 <ColorPicker Title=@ColorPickerTitle IsOpened=@IsColorPickerOpen Closed=@ColorPickerClosed MyColor=@PreviousColor></ColorPicker>

@@ -370,12 +370,24 @@ namespace KristofferStrube.Blazor.SVGEditor
             RerenderAll();
         }
 
-        public void CopyAndPaste(ISVGElement SVGElement)
+        public async Task CopyElementAsync(ISVGElement SVGElement)
         {
-            var copy = (ISVGElement)Activator.CreateInstance(SVGElement.GetType(), SVGElement.Element.Clone(), this);
-            copy.Changed = UpdateInput;
-            AddElement(copy);
-            CurrentShape = copy;
+            await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", SVGElement.Element.ToHtml());
+        }
+
+        public async Task PasteElementAsync(ISVGElement SVGElement = null)
+        {
+            string clipboard = await JSRuntime.InvokeAsync<string>("navigator.clipboard.readText");
+            if (SVGElement != null)
+            {
+                int index = Elements.IndexOf(SVGElement);
+                ElementsAsHtml.Insert(index + 1, clipboard);
+            }
+            else
+            {
+                ElementsAsHtml.Add(clipboard);
+            }
+            InputUpdated(string.Join(" \n", ElementsAsHtml));
         }
     }
 }

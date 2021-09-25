@@ -38,13 +38,17 @@ namespace KristofferStrube.Blazor.SVGEditor
             }
         }
 
-        public void KeyUp(KeyboardEventArgs eventArgs)
+        public async Task KeyUp(KeyboardEventArgs eventArgs)
         {
             if (eventArgs.CtrlKey)
             {
+                if (eventArgs.Key == "c")
+                {
+                    await SVGElement.SVG.CopyElementAsync(SVGElement);
+                }
                 if (eventArgs.Key == "v")
                 {
-                    SVGElement.SVG.CopyAndPaste(SVGElement);
+                    await SVGElement.SVG.PasteElementAsync();
                 }
             }
             else

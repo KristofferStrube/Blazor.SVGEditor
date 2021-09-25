@@ -131,7 +131,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                 case EditMode.Move:
                     var diff = (x: pos.x - Panner.x, y: pos.y - Panner.y);
                     Panner = (pos.x, pos.y);
-                    UpdatePoints(((double x, double y) point) => (point.x + diff.x, point.y + diff.y));
+                    UpdatePoints(((double x, double y) point) => (point.x + diff.x, point.y + diff.y), (1, 1));
                     UpdateData();
                     break;
                 case EditMode.Add:
@@ -153,7 +153,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                         case -1:
                             var moveDiff = (x: pos.x - Panner.x, y: pos.y - Panner.y);
                             Panner = (pos.x, pos.y);
-                            UpdatePoints(((double x, double y) point) => (point.x + moveDiff.x, point.y + moveDiff.y));
+                            UpdatePoints(((double x, double y) point) => (point.x + moveDiff.x, point.y + moveDiff.y), (1, 1));
                             BoundingBox.x += moveDiff.x;
                             BoundingBox.y += moveDiff.y;
                             break;
@@ -171,7 +171,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                                     break;
                             }
                             var topLeftScaler = ((double x, double y) point) => ((point.x - BoundingBox.x - BoundingBox.width) * (BoundingBox.width + BoundingBox.x - pos.x) / BoundingBox.width + BoundingBox.x + BoundingBox.width, (point.y - BoundingBox.y - BoundingBox.height) * (BoundingBox.height + BoundingBox.y - pos.y) / BoundingBox.height + BoundingBox.y + BoundingBox.height);
-                            UpdatePoints(topLeftScaler);
+                            UpdatePoints(topLeftScaler, ((BoundingBox.width + BoundingBox.x - pos.x) / BoundingBox.width, (BoundingBox.height + BoundingBox.y - pos.y) / BoundingBox.height));
                             BoundingBox.width += BoundingBox.x - pos.x;
                             BoundingBox.height += BoundingBox.y - pos.y;
                             (BoundingBox.x, BoundingBox.y) = pos;
@@ -190,7 +190,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                                     break;
                             }
                             var topRightScaler = ((double x, double y) point) => ((point.x - BoundingBox.x) * (pos.x - BoundingBox.x) / BoundingBox.width + BoundingBox.x, (point.y - BoundingBox.y - BoundingBox.height) * (BoundingBox.height + BoundingBox.y - pos.y) / BoundingBox.height + BoundingBox.y + BoundingBox.height);
-                            UpdatePoints(topRightScaler);
+                            UpdatePoints(topRightScaler, (1, 1));
                             BoundingBox.width = pos.x - BoundingBox.x;
                             BoundingBox.height += BoundingBox.y - pos.y;
                             (BoundingBox.x, BoundingBox.y) = (pos.x - BoundingBox.width, pos.y);
@@ -209,7 +209,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                                     break;
                             }
                             var bottomRightScaler = ((double x, double y) point) => ((point.x - BoundingBox.x) * (pos.x - BoundingBox.x) / BoundingBox.width + BoundingBox.x, (point.y - BoundingBox.y) * (pos.y - BoundingBox.y) / BoundingBox.height + BoundingBox.y);
-                            UpdatePoints(bottomRightScaler);
+                            UpdatePoints(bottomRightScaler, (1, 1));
                             BoundingBox.width = pos.x - BoundingBox.x;
                             BoundingBox.height = pos.y - BoundingBox.y;
                             (BoundingBox.x, BoundingBox.y) = (pos.x - BoundingBox.width, pos.y - BoundingBox.height);
@@ -228,7 +228,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                                     break;
                             }
                             var bottomLeftScaler = ((double x, double y) point) => ((point.x - BoundingBox.x - BoundingBox.width) * (BoundingBox.width + BoundingBox.x - pos.x) / BoundingBox.width + BoundingBox.x + BoundingBox.width, (point.y - BoundingBox.y) * (pos.y - BoundingBox.y) / BoundingBox.height + BoundingBox.y);
-                            UpdatePoints(bottomLeftScaler);
+                            UpdatePoints(bottomLeftScaler, (1, 1));
                             BoundingBox.width += BoundingBox.x - pos.x;
                             BoundingBox.height = pos.y - BoundingBox.y;
                             (BoundingBox.x, BoundingBox.y) = (pos.x, pos.y - BoundingBox.height);
@@ -239,7 +239,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             }
         }
 
-        private void UpdatePoints(Func<(double, double), (double, double)> transformer)
+        private void UpdatePoints(Func<(double, double), (double, double)> transformer, (double x, double y) scale)
         {
             Instructions = Instructions.Select(inst =>
             {
@@ -248,6 +248,11 @@ namespace KristofferStrube.Blazor.SVGEditor
                 {
                     controlPointInstruction.ControlPoints = controlPointInstruction.ControlPoints.Select(p => transformer(p)).ToList();
                     controlPointInstruction.UpdateReflectionForInstructions();
+                }
+                else if (inst is EllipticalArcInstruction arcInstruction)
+                {
+                    arcInstruction.rx += arcInstruction.rx * Math.Cos(arcInstruction.xAxisRotation / 180 * Math.PI) * (scale.x - 1);
+                    arcInstruction.ry += arcInstruction.ry * Math.Sin(arcInstruction.xAxisRotation / 180 * Math.PI) * (scale.y - 1);
                 }
                 return inst;
             }).ToList();
