@@ -25,6 +25,10 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
         - Shorthand aswell
     - Elliptical Arc Curve
         - Needs more work for radi interaction
+- G
+    - Handling of children and partial updates
+    - Missing bounding box movement
+    - Missing relative fill and stroke attributes and inheritance
 
 ## Current goals
 - Add support for touch devices

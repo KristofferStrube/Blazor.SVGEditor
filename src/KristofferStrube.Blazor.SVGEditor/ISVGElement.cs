@@ -19,9 +19,9 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public bool Selectable { get; }
 
-        public EditMode EditMode { get; set; }
+        public BoundingBox BoundingBox { get; set; }
 
-        public IEnumerable<EditMode> AvailableEditModes { get; set; }
+        public EditMode EditMode { get; set; }
 
         public (double x, double y) Panner { get; set; }
 
@@ -31,6 +31,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         public void HandleMouseUp(MouseEventArgs eventArgs);
         public void HandleMouseOut(MouseEventArgs eventArgs);
         public Action<ISVGElement> Changed { get; set; }
+        public string ToHtml();
         public void Complete();
     }
 }

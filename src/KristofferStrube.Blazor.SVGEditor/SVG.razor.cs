@@ -47,6 +47,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                 { "POLYLINE", typeof(Polyline) },
                 { "LINE", typeof(Line) },
                 { "PATH", typeof(Path) },
+                { "G", typeof(G)}
             };
 
         protected override async Task OnParametersSetAsync()
@@ -79,7 +80,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             }
             ).ToList();
 
-            ElementsAsHtml = Elements.Select(e => e.Element.ToHtml()).ToList();
+            ElementsAsHtml = Elements.Select(e => e.ToHtml()).ToList();
         }
 
         protected override void OnInitialized()
@@ -94,7 +95,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                         .ToList()
                         .ForEach(element =>
                         {
-                            ElementsAsHtml[Elements.IndexOf(element)] = element.Element.ToHtml();
+                            ElementsAsHtml[Elements.IndexOf(element)] = element.ToHtml();
                         });
                     UpdateInput();
                 });
@@ -120,7 +121,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         internal void AddElement(ISVGElement SVGElement)
         {
             Elements.Add(SVGElement);
-            ElementsAsHtml.Add(SVGElement.Element.ToHtml());
+            ElementsAsHtml.Add(SVGElement.ToHtml());
             UpdateInput();
         }
 
@@ -287,7 +288,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             CurrentShape = null;
             Elements.Remove(shape);
             Elements.Insert(0, shape);
-            ElementsAsHtml = Elements.Select(e => e.Element.ToHtml()).ToList();
+            ElementsAsHtml = Elements.Select(e => e.ToHtml()).ToList();
             UpdateInput();
             RerenderAll();
         }
@@ -301,7 +302,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                 CurrentShape = null;
                 Elements.Remove(shape);
                 Elements.Insert(index - 1, shape);
-                ElementsAsHtml = Elements.Select(e => e.Element.ToHtml()).ToList();
+                ElementsAsHtml = Elements.Select(e => e.ToHtml()).ToList();
                 UpdateInput();
                 RerenderAll();
             }
@@ -316,7 +317,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                 CurrentShape = null;
                 Elements.Remove(shape);
                 Elements.Insert(index + 1, shape);
-                ElementsAsHtml = Elements.Select(e => e.Element.ToHtml()).ToList();
+                ElementsAsHtml = Elements.Select(e => e.ToHtml()).ToList();
                 UpdateInput();
                 RerenderAll();
             }
@@ -328,7 +329,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             CurrentShape = null;
             Elements.Remove(shape);
             Elements.Insert(Elements.Count, shape);
-            ElementsAsHtml = Elements.Select(e => e.Element.ToHtml()).ToList();
+            ElementsAsHtml = Elements.Select(e => e.ToHtml()).ToList();
             UpdateInput();
             RerenderAll();
         }
@@ -372,7 +373,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public async Task CopyElementAsync(ISVGElement SVGElement)
         {
-            await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", SVGElement.Element.ToHtml());
+            await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", SVGElement.ToHtml());
         }
 
         public async Task PasteElementAsync(ISVGElement SVGElement = null)

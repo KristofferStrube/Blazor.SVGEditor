@@ -23,7 +23,6 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public string TagName { get; set; }
 
-        public IEnumerable<EditMode> AvailableEditModes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public (double x, double y) Panner { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public void HandleMouseMove(MouseEventArgs eventArgs)
@@ -54,10 +53,10 @@ namespace KristofferStrube.Blazor.SVGEditor
         bool ISVGElement.Selectable => throw new NotImplementedException();
 
         EditMode ISVGElement.EditMode { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        IEnumerable<EditMode> ISVGElement.AvailableEditModes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         (double x, double y) ISVGElement.Panner { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         string ISVGElement._StateRepresentation { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         Action<ISVGElement> ISVGElement.Changed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public BoundingBox BoundingBox { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
@@ -88,6 +87,11 @@ namespace KristofferStrube.Blazor.SVGEditor
         }
 
         void ISVGElement.Complete()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string ToHtml()
         {
             throw new NotImplementedException();
         }

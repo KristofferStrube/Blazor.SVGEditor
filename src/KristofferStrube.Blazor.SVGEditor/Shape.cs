@@ -1,4 +1,5 @@
-﻿using AngleSharp.Dom;
+﻿using AngleSharp;
+using AngleSharp.Dom;
 using Microsoft.AspNetCore.Components.Web;
 using static System.Text.Json.JsonSerializer;
 
@@ -28,12 +29,12 @@ namespace KristofferStrube.Blazor.SVGEditor
         public int? CurrentAnchor { get; set; }
         public BoundingBox BoundingBox { get; set; } = new();
         public EditMode EditMode { get; set; }
-        public IEnumerable<EditMode> AvailableEditModes { get; set; }
         public Action<ISVGElement> Changed { get; set; }
         public bool Selectable => SVG.CurrentShape == null;
         public bool Selected => SVG.CurrentShape == this;
         public string _StateRepresentation { get; set;}
         public string StateRepresentation => string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y + Serialize(BoundingBox);
+        public string ToHtml() => Element.ToHtml();
         public abstract void HandleMouseMove(MouseEventArgs eventArgs);
         public abstract void HandleMouseUp(MouseEventArgs eventArgs);
         public abstract void HandleMouseOut(MouseEventArgs eventArgs);

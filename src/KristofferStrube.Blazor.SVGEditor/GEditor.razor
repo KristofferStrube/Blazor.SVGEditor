@@ -1,0 +1,15 @@
+﻿<g>
+    @foreach (ISVGElement child in SVGElement.ChildElements)
+    {
+        var Parameters = new Dictionary<string, object> { { "SVGElement", child } };
+        <DynamicComponent Type=child.Editor Parameters=Parameters />
+    }
+</g>
+
+@code {
+    [Parameter]
+    public G SVGElement { get; set; }
+
+    [CascadingParameter]
+    public SVG SVG { get; set; }
+}
