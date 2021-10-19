@@ -1,14 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AngleSharp;
-using AngleSharp.Dom;
+﻿using AngleSharp.Dom;
 using Microsoft.AspNetCore.Components.Web;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace KristofferStrube.Blazor.SVGEditor
 {

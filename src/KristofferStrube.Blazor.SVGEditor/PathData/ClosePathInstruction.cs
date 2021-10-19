@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KristofferStrube.Blazor.SVGEditor
+﻿namespace KristofferStrube.Blazor.SVGEditor
 {
     public class ClosePathInstruction : BasePathInstruction
     {

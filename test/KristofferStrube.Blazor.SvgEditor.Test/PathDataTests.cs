@@ -1,7 +1,5 @@
 using NUnit.Framework;
 using KristofferStrube.Blazor.SVGEditor;
-using System.Collections.Generic;
-using System;
 
 namespace KristofferStrube.Blazor.SvgEditor.Test
 {
