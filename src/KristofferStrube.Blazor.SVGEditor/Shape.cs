@@ -11,7 +11,8 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public abstract Type Editor { get; }
         public SVG SVG { get; set; }
-        public string Fill {
+        public string Fill
+        {
             get => Element.GetAttribute("fill") ?? string.Empty;
             set { Element.SetAttribute("fill", value); Changed.Invoke(this); }
         }
@@ -32,9 +33,14 @@ namespace KristofferStrube.Blazor.SVGEditor
         public Action<ISVGElement> Changed { get; set; }
         public bool Selectable => SVG.CurrentShape == null;
         public bool Selected => SVG.CurrentShape == this;
-        public string _StateRepresentation { get; set;}
-        public string StateRepresentation => string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y + Serialize(BoundingBox);
-        public string ToHtml() => Element.ToHtml();
+        public bool IsChildElement => Element.ParentElement?.TagName is "G" or null;
+        public string _StateRepresentation { get; set; }
+        public virtual string StateRepresentation => string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y + Serialize(BoundingBox);
+        public virtual string ToHtml() => Element.ToHtml();
+        public virtual void ReRender()
+        {
+            _StateRepresentation = null;
+        }
         public abstract void HandleMouseMove(MouseEventArgs eventArgs);
         public abstract void HandleMouseUp(MouseEventArgs eventArgs);
         public abstract void HandleMouseOut(MouseEventArgs eventArgs);

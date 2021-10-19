@@ -53,7 +53,7 @@
             </SubMenu>
         </Item>
     }
-    @if (context.Data is Shape shape)
+    @if (context.Data is Shape shape && !shape.IsChildElement)
     {
         <Item data=shape OnClick="@OpenFillColorPicker">
             <div class="colorPickerCube" style="background-color:@shape.Fill;"></div> Fill Color

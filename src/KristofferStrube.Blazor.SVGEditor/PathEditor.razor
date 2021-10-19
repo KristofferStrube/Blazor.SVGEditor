@@ -1,6 +1,6 @@
 ﻿@inherits ShapeEditor<Path>
 
-<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement>
+<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement StopPropagation=@(!SVGElement.IsChildElement)>
     <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
         <path tabindex="0"
               @onfocusin="() => SVGElement.SVG.CurrentShape = SVGElement"

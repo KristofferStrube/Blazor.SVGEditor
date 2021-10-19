@@ -26,9 +26,8 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
     - Elliptical Arc Curve
         - Needs more work for radi interaction
 - G
-    - Handling of children and partial updates
-    - Missing bounding box movement
-    - Missing relative fill and stroke attributes and inheritance
+    - Missing scaling of children
+    - Missing Construction/deconstruction of groups
 
 ## Current goals
 - Add support for touch devices

@@ -1,43 +1,20 @@
-﻿<g @onfocusin="() => SVGElement.SVG.CurrentShape = SVGElement"
-   @onfocusout="() => SVGElement.SVG.CurrentShape = null"
-   @ref=ElementReference
-   @onmousedown="Select">
-    @foreach (ISVGElement child in SVGElement.ChildElements)
-    {
-        var Parameters = new Dictionary<string, object> { { "SVGElement", child } };
-        <DynamicComponent Type=child.Editor Parameters=Parameters />
-    }
-</g>
+﻿@inherits ShapeEditor<G>
 
-@code {
-    [Parameter]
-    public G SVGElement { get; set; }
-
-    [Inject]
-    protected IJSRuntime JSRuntime { get; set; }
-
-    public ElementReference ElementReference { get; set; }
-
-    public async Task Select(MouseEventArgs eventArgs)
-    {
-        if (SVGElement.SVG.CurrentShape == null || SVGElement.SVG.CurrentShape.EditMode is EditMode.None or EditMode.Scale)
+<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement StopPropagation=@(!SVGElement.IsChildElement)>
+    <g tabindex="0"
+       @onfocusin="() => SVGElement.SVG.CurrentShape = SVGElement"
+       @onfocusout="() => SVGElement.SVG.CurrentShape = null"
+       @ref=ElementReference
+       @onmousedown="Select"
+       @onkeyup="KeyUp">
+        @foreach (ISVGElement child in SVGElement.ChildElements)
         {
-            if (SVGElement.SVG.CurrentShape is not null && SVGElement.SVG.CurrentShape != SVGElement)
-            {
-                SVGElement.SVG.CurrentShape.EditMode = EditMode.None;
-            }
-
-            await JSRuntime.Focus(ElementReference);
-            SVGElement.SVG.CurrentShape = SVGElement;
-            SVGElement.Panner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-            if (SVGElement.SVG.CurrentShape.EditMode == EditMode.None)
-            {
-                SVGElement.EditMode = EditMode.Move;
-            }
-            else
-            {
-                SVGElement.CurrentAnchor = -1;
-            }
+            var Parameters = new Dictionary<string, object> { { "SVGElement", child } };
+            <DynamicComponent Type=child.Editor Parameters=Parameters />
         }
+    </g>
+    @if (SVGElement.Selected)
+    {
+        <BoundingBoxScaler BBox=SVGElement.BoundingBox AnchorOnMouseDown="(_, _) => {}" />
     }
-}
+</ContextMenuTrigger>

@@ -27,5 +27,6 @@ namespace KristofferStrube.Blazor.SVGEditor
         public Action<ISVGElement> Changed { get; set; }
         public string ToHtml();
         public void Complete();
+        public void ReRender();
     }
 }

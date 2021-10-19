@@ -89,5 +89,10 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
             throw new NotImplementedException();
         }
+
+        public void ReRender()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

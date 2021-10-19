@@ -127,7 +127,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public void RerenderAll()
         {
-            Elements.ForEach(e => e._StateRepresentation = null);
+            Elements.ForEach(e => e.ReRender());
         }
 
         public double Scale { get; set; } = 1;
@@ -382,7 +382,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             {
                 ElementsAsHtml.Add(clipboard);
             }
-            InputUpdated(string.Join(" \n", ElementsAsHtml));
+            InputUpdated(string.Join("\n", ElementsAsHtml));
         }
     }
 }

@@ -16,7 +16,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         protected override async Task OnParametersSetAsync()
         {
-            if (SVGElement.EditMode == EditMode.Scale)
+            if (SVGElement.EditMode == EditMode.Scale || (SVGElement is G && SVGElement.Selected ))
             {
                 var BBox = await JSRuntime.BBox(ElementReference);
                 var pos = SVGElement.SVG.LocalDetransform((BBox.x - SVGElement.SVG.BBox.x, BBox.y - SVGElement.SVG.BBox.y));
@@ -32,6 +32,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public async Task KeyUp(KeyboardEventArgs eventArgs)
         {
+            if (SVGElement.IsChildElement) return;
             if (eventArgs.CtrlKey)
             {
                 if (eventArgs.Key == "c")
@@ -47,7 +48,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             {
                 if (eventArgs.Key == "Delete")
                 {
-                    SVGElement.SVG.Remove(SVGElement);
+                    SVGElement.SVG.Remove(SVGElement.SVG.CurrentShape);
                 }
             }
         }
@@ -60,7 +61,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public async Task Select(MouseEventArgs eventArgs)
         {
-            if (SVGElement.Element.ParentElement.TagName == "G") return;
+            if (SVGElement.IsChildElement) return;
             if (SVGElement.SVG.CurrentShape == null || SVGElement.SVG.CurrentShape.EditMode is EditMode.None or EditMode.Scale)
             {
                 if (SVGElement.SVG.CurrentShape is not null && SVGElement.SVG.CurrentShape != SVGElement)

@@ -5,13 +5,12 @@ using AngleSharp;
 
 namespace KristofferStrube.Blazor.SVGEditor
 {
-    public class G : ISVGElement
+    public class G : Shape
     {
         public G(IElement element, SVG svg)
         {
             Element = element;
             SVG = svg;
-
 
             ChildElements = Element.Children.Select(child =>
             {
@@ -37,34 +36,28 @@ namespace KristofferStrube.Blazor.SVGEditor
             Changed.Invoke(this);
         }
 
-        public IElement Element { get; set; }
-        public SVG SVG { get; set; }
+        public override Type Editor => typeof(GEditor);
 
-        public Type Editor => typeof(GEditor);
+        public override string StateRepresentation => string.Join("-", ChildElements.Select(c => c._StateRepresentation)) + string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y + Serialize(BoundingBox);
 
-        public bool Selectable => SVG.CurrentShape == null;
-        public bool Selected => SVG.CurrentShape == this;
-
-        public BoundingBox BoundingBox { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public EditMode EditMode { get; set; }
-        public (double x, double y) Panner { get; set; }
-        public string _StateRepresentation { get; set; }
-        public string StateRepresentation => string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y + Serialize(BoundingBox);
-        public Action<ISVGElement> Changed { get; set; }
         public List<ISVGElement> ChildElements { get; set; } = new List<ISVGElement>();
 
         private List<string> ChildElementsAsHtml { get; set; } = new List<string>();
 
-        public string ToHtml() => "<g>\n" + string.Join("\n", ChildElementsAsHtml) + "\n</g>";
+        public override string ToHtml() => $"<g {string.Join(" ", Element.Attributes.Select(a => $"{a.Name}=\"{a.Value}\""))}>\n" + string.Join("\n", ChildElementsAsHtml) + "\n</g>";
 
-        public void Complete()
+        public override void Complete()
         {
             SVG.Remove(this);
         }
 
-        public int? CurrentAnchor { get; set; }
+        public override void ReRender()
+        {
+            ChildElements.ForEach(c => c.ReRender());
+            _StateRepresentation = null;
+        }
 
-        public void HandleMouseMove(MouseEventArgs eventArgs)
+        public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
             var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             switch (EditMode)
@@ -81,17 +74,19 @@ namespace KristofferStrube.Blazor.SVGEditor
                         child.HandleMouseMove(eventArgs);
                         child.EditMode = EditMode.None;
                     }
-
+                    var diff = (x: pos.x - Panner.x, y: pos.y - Panner.y);
+                    BoundingBox.x += diff.x;
+                    BoundingBox.y += diff.y;
                     Panner = (x: pos.x, y: pos.y);
                     break;
             }
         }
 
-        public void HandleMouseOut(MouseEventArgs eventArgs)
+        public override void HandleMouseOut(MouseEventArgs eventArgs)
         {
         }
 
-        public void HandleMouseUp(MouseEventArgs eventArgs)
+        public override void HandleMouseUp(MouseEventArgs eventArgs)
         {
             switch (EditMode)
             {
