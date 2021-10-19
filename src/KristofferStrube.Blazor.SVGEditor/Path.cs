@@ -302,7 +302,6 @@ namespace KristofferStrube.Blazor.SVGEditor
             Instructions.RemoveAt(Instructions.Count - 1);
             Instructions.Add(new ClosePathInstruction(false, Instructions.Last()));
             UpdateData();
-            SVG.UpdateInput(this);
         }
     }
 }

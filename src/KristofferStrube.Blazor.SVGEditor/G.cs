@@ -46,11 +46,6 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override string ToHtml() => $"<g {string.Join(" ", Element.Attributes.Select(a => $"{a.Name}=\"{a.Value}\""))}>\n" + string.Join("\n", ChildElementsAsHtml) + "\n</g>";
 
-        public override void Complete()
-        {
-            SVG.Remove(this);
-        }
-
         public override void ReRender()
         {
             ChildElements.ForEach(c => c.ReRender());
@@ -94,6 +89,10 @@ namespace KristofferStrube.Blazor.SVGEditor
                     EditMode = EditMode.None;
                     break;
             }
+        }
+        public override void Complete()
+        {
+            SVG.Remove(this);
         }
     }
 }

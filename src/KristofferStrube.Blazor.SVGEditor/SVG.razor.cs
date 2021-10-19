@@ -116,6 +116,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
             Elements.Add(SVGElement);
             ElementsAsHtml.Add(SVGElement.ToHtml());
+            Document.GetElementsByTagName("BODY")[0].AppendElement(SVGElement.Element);
             UpdateInput();
         }
 

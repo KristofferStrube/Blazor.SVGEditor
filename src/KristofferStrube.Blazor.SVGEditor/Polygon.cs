@@ -119,7 +119,6 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
             Points.RemoveAt(Points.Count - 1);
             UpdatePoints();
-            SVG.UpdateInput(this);
         }
     }
 }
