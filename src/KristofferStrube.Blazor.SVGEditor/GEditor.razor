@@ -1,4 +1,7 @@
-﻿<g>
+﻿<g @onfocusin="() => SVGElement.SVG.CurrentShape = SVGElement"
+   @onfocusout="() => SVGElement.SVG.CurrentShape = null"
+   @ref=ElementReference
+   @onmousedown="Select">
     @foreach (ISVGElement child in SVGElement.ChildElements)
     {
         var Parameters = new Dictionary<string, object> { { "SVGElement", child } };
@@ -10,6 +13,31 @@
     [Parameter]
     public G SVGElement { get; set; }
 
-    [CascadingParameter]
-    public SVG SVG { get; set; }
+    [Inject]
+    protected IJSRuntime JSRuntime { get; set; }
+
+    public ElementReference ElementReference { get; set; }
+
+    public async Task Select(MouseEventArgs eventArgs)
+    {
+        if (SVGElement.SVG.CurrentShape == null || SVGElement.SVG.CurrentShape.EditMode is EditMode.None or EditMode.Scale)
+        {
+            if (SVGElement.SVG.CurrentShape is not null && SVGElement.SVG.CurrentShape != SVGElement)
+            {
+                SVGElement.SVG.CurrentShape.EditMode = EditMode.None;
+            }
+
+            await JSRuntime.Focus(ElementReference);
+            SVGElement.SVG.CurrentShape = SVGElement;
+            SVGElement.Panner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+            if (SVGElement.SVG.CurrentShape.EditMode == EditMode.None)
+            {
+                SVGElement.EditMode = EditMode.Move;
+            }
+            else
+            {
+                SVGElement.CurrentAnchor = -1;
+            }
+        }
+    }
 }

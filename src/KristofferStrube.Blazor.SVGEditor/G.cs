@@ -62,8 +62,29 @@ namespace KristofferStrube.Blazor.SVGEditor
             SVG.Remove(this);
         }
 
+        public int? CurrentAnchor { get; set; }
+
         public void HandleMouseMove(MouseEventArgs eventArgs)
         {
+            var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+            switch (EditMode)
+            {
+                case EditMode.Move:
+
+                    foreach (ISVGElement child in ChildElements)
+                    {
+                        child.EditMode = EditMode.Move;
+                        child.Panner = (Panner.x, Panner.y);
+                    }
+                    foreach (ISVGElement child in ChildElements)
+                    {
+                        child.HandleMouseMove(eventArgs);
+                        child.EditMode = EditMode.None;
+                    }
+
+                    Panner = (x: pos.x, y: pos.y);
+                    break;
+            }
         }
 
         public void HandleMouseOut(MouseEventArgs eventArgs)
@@ -72,6 +93,12 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public void HandleMouseUp(MouseEventArgs eventArgs)
         {
+            switch (EditMode)
+            {
+                case EditMode.Move or EditMode.MoveAnchor or EditMode.Add:
+                    EditMode = EditMode.None;
+                    break;
+            }
         }
     }
 }

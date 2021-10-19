@@ -68,6 +68,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public async Task Select(MouseEventArgs eventArgs)
         {
+            if (SVGElement.Element.ParentElement.TagName == "G") return;
             if (SVGElement.SVG.CurrentShape == null || SVGElement.SVG.CurrentShape.EditMode is EditMode.None or EditMode.Scale)
             {
                 if (SVGElement.SVG.CurrentShape is not null && SVGElement.SVG.CurrentShape != SVGElement)
