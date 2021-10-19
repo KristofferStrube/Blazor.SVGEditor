@@ -39,7 +39,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
             var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-            switch (EditMode)
+            switch (SVG.EditMode)
             {
                 case EditMode.Add:
                     if (r == 0)
@@ -89,10 +89,10 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override void HandleMouseUp(MouseEventArgs eventArgs)
         {
-            switch (EditMode)
+            switch (SVG.EditMode)
             {
                 case EditMode.Move or EditMode.MoveAnchor:
-                    EditMode = EditMode.None;
+                    SVG.EditMode = EditMode.None;
                     break;
                 case EditMode.Add:
                     if (r == 0)
@@ -101,7 +101,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                     }
                     else
                     {
-                        EditMode = EditMode.None;
+                        SVG.EditMode = EditMode.None;
                     }
                     break;
             }
@@ -120,12 +120,13 @@ namespace KristofferStrube.Blazor.SVGEditor
             ellipse.Stroke = "black";
             ellipse.StrokeWidth = "1";
             ellipse.Fill = "lightgrey";
-            ellipse.EditMode = EditMode.Add;
+            SVG.EditMode = EditMode.Add;
 
             var startPos = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
             (ellipse.cx, ellipse.cy) = startPos;
 
-            SVG.CurrentShape = ellipse;
+            SVG.SelectedElements.Clear();
+            SVG.SelectedElements.Add(ellipse);
             SVG.AddElement(ellipse);
         }
 

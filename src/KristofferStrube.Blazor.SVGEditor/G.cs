@@ -38,7 +38,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override Type Editor => typeof(GEditor);
 
-        public override string StateRepresentation => string.Join("-", ChildElements.Select(c => c._StateRepresentation)) + string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y + Serialize(BoundingBox);
+        public override string StateRepresentation => string.Join("-", ChildElements.Select(c => c._StateRepresentation)) + string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + SVG.EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y + Serialize(BoundingBox);
 
         public List<ISVGElement> ChildElements { get; set; } = new List<ISVGElement>();
 
@@ -46,33 +46,28 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override string ToHtml() => $"<g {string.Join(" ", Element.Attributes.Select(a => $"{a.Name}=\"{a.Value}\""))}>\n" + string.Join("\n", ChildElementsAsHtml) + "\n</g>";
 
-        public override void ReRender()
+        public override void Rerender()
         {
-            ChildElements.ForEach(c => c.ReRender());
+            ChildElements.ForEach(c => c.Rerender());
             _StateRepresentation = null;
         }
 
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
             var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-            switch (EditMode)
+            switch (SVG.EditMode)
             {
                 case EditMode.Move:
-
                     foreach (ISVGElement child in ChildElements)
                     {
-                        child.EditMode = EditMode.Move;
                         child.Panner = (Panner.x, Panner.y);
-                    }
-                    foreach (ISVGElement child in ChildElements)
-                    {
                         child.HandleMouseMove(eventArgs);
-                        child.EditMode = EditMode.None;
                     }
                     var diff = (x: pos.x - Panner.x, y: pos.y - Panner.y);
                     BoundingBox.x += diff.x;
                     BoundingBox.y += diff.y;
                     Panner = (x: pos.x, y: pos.y);
+                    SVG.EditMode = EditMode.None;
                     break;
             }
         }
@@ -83,10 +78,10 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override void HandleMouseUp(MouseEventArgs eventArgs)
         {
-            switch (EditMode)
+            switch (SVG.EditMode)
             {
                 case EditMode.Move or EditMode.MoveAnchor or EditMode.Add:
-                    EditMode = EditMode.None;
+                    SVG.EditMode = EditMode.None;
                     break;
             }
         }

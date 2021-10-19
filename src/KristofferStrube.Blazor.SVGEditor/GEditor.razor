@@ -2,8 +2,8 @@
 
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement StopPropagation=@(!SVGElement.IsChildElement)>
     <g tabindex="0"
-       @onfocusin="() => SVGElement.SVG.CurrentShape = SVGElement"
-       @onfocusout="() => SVGElement.SVG.CurrentShape = null"
+       @onfocusin="() => SVGElement.SVG.SelectedElements.Add(SVGElement)"
+       @onfocusout="() => SVGElement.SVG.SelectedElements.Clear()"
        @ref=ElementReference
        @onmousedown="Select"
        @onkeyup="KeyUp">

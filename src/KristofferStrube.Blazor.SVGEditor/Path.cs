@@ -37,7 +37,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
             var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-            switch (EditMode)
+            switch (SVG.EditMode)
             {
                 case EditMode.MoveAnchor:
                     if (CurrentAnchor == null)
@@ -253,14 +253,14 @@ namespace KristofferStrube.Blazor.SVGEditor
         public override void HandleMouseUp(MouseEventArgs eventArgs)
         {
             var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-            switch (EditMode)
+            switch (SVG.EditMode)
             {
                 case EditMode.MoveAnchor:
                     CurrentAnchor = null;
-                    EditMode = EditMode.None;
+                    SVG.EditMode = EditMode.None;
                     break;
                 case EditMode.Move:
-                    EditMode = EditMode.None;
+                    SVG.EditMode = EditMode.None;
                     break;
                 case EditMode.Add:
                     var currentInstruction = (CubicBézierCurveInstruction)Instructions.Last();
@@ -291,9 +291,10 @@ namespace KristofferStrube.Blazor.SVGEditor
             path.Stroke = "black";
             path.StrokeWidth = "1";
             path.Fill = "lightgrey";
-            path.EditMode = EditMode.Add;
+            SVG.EditMode = EditMode.Add;
 
-            SVG.CurrentShape = path;
+            SVG.SelectedElements.Clear();
+            SVG.SelectedElements.Add(path);
             SVG.AddElement(path);
         }
 

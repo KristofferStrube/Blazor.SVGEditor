@@ -3,8 +3,8 @@
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement StopPropagation=@(!SVGElement.IsChildElement)>
     <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
         <path tabindex="0"
-              @onfocusin="() => SVGElement.SVG.CurrentShape = SVGElement"
-              @onfocusout="() => SVGElement.SVG.CurrentShape = null"
+              @onfocusin="() => SVGElement.SVG.SelectedElements.Add(SVGElement)"
+              @onfocusout="() => SVGElement.SVG.SelectedElements.Clear()"
               @ref=ElementReference
               d="@SVGElement.Instructions.AsString()"
               fill="@SVGElement.Fill"
@@ -13,7 +13,7 @@
               @onmousedown="Select"
               @onkeyup="KeyUp" />
     </g>
-    @if (SVGElement.Selected && SVGElement.EditMode != EditMode.Add && SVGElement.EditMode != EditMode.Scale)
+    @if (SVGElement.Selected && SVGElement.SVG.EditMode is not (EditMode.Add or EditMode.Scale))
     {
         @for (int i = 0; i < SVGElement.Instructions.Count; i++)
         {
@@ -62,7 +62,7 @@
             }
         }
     }
-    else if (SVGElement.Selected && SVGElement.EditMode == EditMode.Scale)
+    else if (SVGElement.Selected && SVGElement.SVG.EditMode == EditMode.Scale)
     {
         <BoundingBoxScaler BBox=SVGElement.BoundingBox AnchorOnMouseDown=AnchorSelect />
     }
@@ -71,13 +71,13 @@
 @code {
     public void AnchorSelect(int segment, int anchor)
     {
-        if (SVGElement.EditMode is EditMode.Move or EditMode.None)
+        if (SVGElement.SVG.EditMode is EditMode.Move or EditMode.None)
         {
             SVGElement.CurrentInstruction = segment;
             SVGElement.CurrentAnchor = anchor;
-            SVGElement.EditMode = EditMode.MoveAnchor;
+            SVGElement.SVG.EditMode = EditMode.MoveAnchor;
         }
-        if (SVGElement.EditMode is EditMode.Scale)
+        if (SVGElement.SVG.EditMode is EditMode.Scale)
         {
             SVGElement.CurrentAnchor = anchor;
         }

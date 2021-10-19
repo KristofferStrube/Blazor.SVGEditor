@@ -128,7 +128,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public void RerenderAll()
         {
-            Elements.ForEach(e => e.ReRender());
+            Elements.ForEach(e => e.Rerender());
         }
 
         public double Scale { get; set; } = 1;
@@ -139,13 +139,13 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public List<string> ElementsAsHtml { get; set; }
 
-        public ISVGElement CurrentShape { get; set; }
-
         public (double x, double y) LastRightClick { get; set; }
+
+        public List<ISVGElement> SelectedElements { get; set; } = new();
 
         private (double x, double y)? Panner { get; set; }
 
-        protected bool Panning { get; set; }
+        public EditMode EditMode { get; set; } = EditMode.None;
 
         public void Move(MouseEventArgs eventArgs)
         {
@@ -157,7 +157,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             }
             else
             {
-                CurrentShape?.HandleMouseMove(eventArgs);
+                SelectedElements.ForEach(e => e.HandleMouseMove(eventArgs));
             }
         }
 
@@ -166,13 +166,12 @@ namespace KristofferStrube.Blazor.SVGEditor
             if (eventArgs.Button == 1)
             {
                 Panner = (eventArgs.OffsetX, eventArgs.OffsetY);
-                Panning = true;
             }
         }
 
         public void Up(MouseEventArgs eventArgs)
         {
-            CurrentShape?.HandleMouseUp(eventArgs);
+            SelectedElements.ForEach(e => e.HandleMouseUp(eventArgs));
             if (eventArgs.Button == 2)
             {
                 LastRightClick = (eventArgs.OffsetX, eventArgs.OffsetY);
@@ -180,22 +179,22 @@ namespace KristofferStrube.Blazor.SVGEditor
             else if (eventArgs.Button == 1)
             {
                 Panner = null;
-                Panning = false;
+                SelectedElements.Clear();
             }
         }
 
         public void UnSelect(MouseEventArgs eventArgs)
         {
-            if (CurrentShape != null && CurrentShape.EditMode != EditMode.Add)
+            if (EditMode != EditMode.Add)
             {
-                CurrentShape.EditMode = EditMode.None;
-                CurrentShape = null;
+                EditMode = EditMode.None;
+                SelectedElements.Clear();
             }
         }
 
         public void Out(MouseEventArgs eventArgs)
         {
-            CurrentShape?.HandleMouseOut(eventArgs);
+            SelectedElements.ForEach(e => e.HandleMouseOut(eventArgs));
         }
 
         public void Wheel(WheelEventArgs eventArgs)
@@ -280,8 +279,8 @@ namespace KristofferStrube.Blazor.SVGEditor
         protected void MoveToBack(ItemClickEventArgs e)
         {
             var shape = (Shape)e.Data;
-            CurrentShape = null;
-            Elements.Remove(shape);
+            SelectedElements.Clear();
+            Elements.Clear();
             Elements.Insert(0, shape);
             ElementsAsHtml = Elements.Select(e => e.ToHtml()).ToList();
             UpdateInput();
@@ -294,7 +293,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             var index = Elements.IndexOf(shape);
             if (index != 0)
             {
-                CurrentShape = null;
+                SelectedElements.Clear();
                 Elements.Remove(shape);
                 Elements.Insert(index - 1, shape);
                 ElementsAsHtml = Elements.Select(e => e.ToHtml()).ToList();
@@ -309,7 +308,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             var index = Elements.IndexOf(shape);
             if (index != Elements.Count - 1)
             {
-                CurrentShape = null;
+                SelectedElements.Clear();
                 Elements.Remove(shape);
                 Elements.Insert(index + 1, shape);
                 ElementsAsHtml = Elements.Select(e => e.ToHtml()).ToList();
@@ -321,7 +320,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         protected void MoveToFront(ItemClickEventArgs e)
         {
             var shape = (Shape)e.Data;
-            CurrentShape = null;
+            SelectedElements.Clear();
             Elements.Remove(shape);
             Elements.Insert(Elements.Count, shape);
             ElementsAsHtml = Elements.Select(e => e.ToHtml()).ToList();
@@ -329,39 +328,44 @@ namespace KristofferStrube.Blazor.SVGEditor
             RerenderAll();
         }
 
-        protected void CompleteShape(ItemClickEventArgs e)
+        protected void CompleteShape(ISVGElement sVGElement)
         {
-            CurrentShape.EditMode = EditMode.None;
-            CurrentShape.Complete();
-            CurrentShape = null;
+            if (SelectedElements.Count == 1)
+            {
+                EditMode = EditMode.None;
+                sVGElement.Complete();
+                SelectedElements.Clear();
+            }
         }
 
-        protected void CompleteShapeWithoutClose(ItemClickEventArgs e)
+        protected void CompleteShapeWithoutClose(Path path)
         {
-            Path path = (Path)CurrentShape;
-            CompleteShape(e);
+            CompleteShape(path);
             path.Instructions.Remove(path.Instructions.Last());
             path.UpdateData();
         }
 
-        protected void DeletePreviousInstruction(ItemClickEventArgs e)
+        protected void DeletePreviousInstruction(Path path)
         {
-            Path path = (Path)CurrentShape;
             path.Instructions = path.Instructions.Take(0..^2).ToList();
             path.UpdateData();
         }
 
         protected void ScaleShape(Shape shape)
         {
-            CurrentShape = shape;
-            shape.EditMode = EditMode.Scale;
+            if (!SelectedElements.Contains(shape))
+            {
+                SelectedElements.Clear();
+                SelectedElements.Add(shape);
+            }
+            EditMode = EditMode.Scale;
         }
 
         public void Remove(ISVGElement SVGElement)
         {
             ElementsAsHtml.RemoveAt(Elements.IndexOf(SVGElement));
-            Elements.Remove(SVGElement);
-            CurrentShape = null;
+            Elements.Clear();
+            SelectedElements.Clear();
             UpdateInput();
             RerenderAll();
         }

@@ -15,8 +15,6 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public BoundingBox BoundingBox { get; set; }
 
-        public EditMode EditMode { get; set; }
-
         public (double x, double y) Panner { get; set; }
 
         public string _StateRepresentation { get; set; }
@@ -27,6 +25,6 @@ namespace KristofferStrube.Blazor.SVGEditor
         public Action<ISVGElement> Changed { get; set; }
         public string ToHtml();
         public void Complete();
-        public void ReRender();
+        public void Rerender();
     }
 }

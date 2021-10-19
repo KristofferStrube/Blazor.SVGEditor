@@ -13,8 +13,6 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public bool Selectable => throw new NotImplementedException();
 
-        public EditMode EditMode { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
         public string TagName { get; set; }
 
         public (double x, double y) Panner { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -45,8 +43,6 @@ namespace KristofferStrube.Blazor.SVGEditor
         bool ISVGElement.Selected => throw new NotImplementedException();
 
         bool ISVGElement.Selectable => throw new NotImplementedException();
-
-        EditMode ISVGElement.EditMode { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         (double x, double y) ISVGElement.Panner { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         string ISVGElement._StateRepresentation { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         Action<ISVGElement> ISVGElement.Changed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -90,7 +86,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             throw new NotImplementedException();
         }
 
-        public void ReRender()
+        public void Rerender()
         {
             throw new NotImplementedException();
         }

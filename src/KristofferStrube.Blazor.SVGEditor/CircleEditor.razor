@@ -3,8 +3,8 @@
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement StopPropagation=@(!SVGElement.IsChildElement)>
     <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
         <circle tabindex="0"
-                @onfocusin="() => SVGElement.SVG.CurrentShape = SVGElement"
-                @onfocusout="() => SVGElement.SVG.CurrentShape = null"
+                @onfocusin="() => SVGElement.SVG.SelectedElements.Add(SVGElement)"
+                @onfocusout="() => SVGElement.SVG.SelectedElements.Clear()"
                 @ref=ElementReference
                 cx=@SVGElement.cx.AsString()
                 cy=@SVGElement.cy.AsString()
@@ -15,7 +15,7 @@
                 @onmousedown="Select"
                 @onkeyup="KeyUp" />
     </g>
-    @if (SVGElement.Selected && SVGElement.EditMode != EditMode.Add)
+    @if (SVGElement.Selected && SVGElement.SVG.EditMode != EditMode.Add)
     {
         <PrimaryAnchor OnMouseDown="() => AnchorSelect(0)" Position="(SVGElement.cx + SVGElement.r, SVGElement.cy)" />
         <PrimaryAnchor OnMouseDown="() => AnchorSelect(1)" Position="(SVGElement.cx - SVGElement.r, SVGElement.cy)" />

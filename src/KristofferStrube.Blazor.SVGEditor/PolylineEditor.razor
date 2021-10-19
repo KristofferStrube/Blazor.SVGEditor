@@ -4,8 +4,8 @@
     <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
         <polyline
             tabindex="0"
-            @onfocusin="() => SVGElement.SVG.CurrentShape = SVGElement"
-            @onfocusout="() => SVGElement.SVG.CurrentShape = null"
+            @onfocusin="() => SVGElement.SVG.SelectedElements.Add(SVGElement)"
+            @onfocusout="() => SVGElement.SVG.SelectedElements.Clear()"
             @ref=ElementReference
             points="@SVGElement.Element.GetAttribute("points")"
             fill="@SVGElement.Fill"
@@ -14,7 +14,7 @@
             @onmousedown="Select"
             @onkeyup="KeyUp" />
     </g>
-    @if (SVGElement.Selected && SVGElement.EditMode != EditMode.Add)
+    @if (SVGElement.Selected && SVGElement.SVG.EditMode is not EditMode.Add)
     {
         @for (int i = 0; i < SVGElement.Points.Count(); i++)
         {

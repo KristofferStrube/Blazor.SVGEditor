@@ -38,7 +38,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
             var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-            switch (EditMode)
+            switch (SVG.EditMode)
             {
                 case EditMode.MoveAnchor:
                     if (CurrentAnchor == null)
@@ -70,7 +70,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         public override void HandleMouseUp(MouseEventArgs eventArgs)
         {
             var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-            switch (EditMode)
+            switch (SVG.EditMode)
             {
                 case EditMode.MoveAnchor:
                     if (pos.x < 50 && pos.y < 50)
@@ -79,16 +79,16 @@ namespace KristofferStrube.Blazor.SVGEditor
                         UpdatePoints();
                     }
                     CurrentAnchor = null;
-                    EditMode = EditMode.None;
+                    SVG.EditMode = EditMode.None;
                     if (Points.Count() == 0)
                     {
                         SVG.Elements.Remove(this);
-                        SVG.CurrentShape = null;
+                        SVG.SelectedElements.Clear();
                         Changed.Invoke(this);
                     }
                     break;
                 case EditMode.Move:
-                    EditMode = EditMode.None;
+                    SVG.EditMode = EditMode.None;
                     break;
                 case EditMode.Add:
                     Points.Add(pos);
@@ -109,9 +109,10 @@ namespace KristofferStrube.Blazor.SVGEditor
             polygon.Stroke = "black";
             polygon.StrokeWidth = "1";
             polygon.Fill = "lightgrey";
-            polygon.EditMode = EditMode.Add;
+            SVG.EditMode = EditMode.Add;
 
-            SVG.CurrentShape = polygon;
+            SVG.SelectedElements.Clear();
+            SVG.SelectedElements.Add(polygon);
             SVG.AddElement(polygon);
         }
 

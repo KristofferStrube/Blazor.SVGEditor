@@ -39,7 +39,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
             var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-            switch (EditMode)
+            switch (SVG.EditMode)
             {
                 case EditMode.Add:
                     (x2, y2) = pos;
@@ -72,10 +72,10 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override void HandleMouseUp(MouseEventArgs eventArgs)
         {
-            switch (EditMode)
+            switch (SVG.EditMode)
             {
                 case EditMode.Move or EditMode.MoveAnchor or EditMode.Add:
-                    EditMode = EditMode.None;
+                    SVG.EditMode = EditMode.None;
                     break;
             }
         }
@@ -92,13 +92,14 @@ namespace KristofferStrube.Blazor.SVGEditor
             line.Changed = SVG.UpdateInput;
             line.Stroke = "black";
             line.StrokeWidth = "3";
-            line.EditMode = EditMode.Add;
+            SVG.EditMode = EditMode.Add;
 
             var start = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
             (line.x1, line.y1) = start;
             (line.x2, line.y2) = start;
 
-            SVG.CurrentShape = line;
+            SVG.SelectedElements.Clear();
+            SVG.SelectedElements.Add(line);
             SVG.AddElement(line);
         }
 

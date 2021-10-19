@@ -7,12 +7,12 @@
          @onmouseup="Up"
          @onmouseout="Out"
          @onwheel="Wheel"
-         style="border:1px solid black; cursor:@(Panning ? "move" : "initial");"
+         style="border:1px solid black; cursor:@(Panner.HasValue ? "move" : "initial");"
          width="100%"
          height="100%"
          @onmousedown:preventDefault="true">
         <rect width="100%" height="100%" fill="transparent" @onmousedown=@UnSelect></rect>
-        <CascadingValue Value=this>
+        <CascadingValue Value=this IsFixed=true>
             @foreach (ISVGElement SVGElement in Elements)
             {
                 var Parameters = new Dictionary<string, object> { { "SVGElement", SVGElement } };
@@ -25,15 +25,15 @@
 <ContextMenu Id="SVGMenu">
     <Item OnClick="() => ContextZoomIn()"><div class="icon">🔍</div> Zoom In</Item>
     <Item OnClick="() => ContextZoomOut()"><div class="icon">🔍</div> Zoom Out</Item>
-    @if (CurrentShape != null && CurrentShape.EditMode == EditMode.Add)
+    @if (SelectedElements.Count == 1 && EditMode == EditMode.Add)
     {
-        <Item OnClick=CompleteShape>
+        <Item OnClick="_ => CompleteShape(SelectedElements[0])">
             <div class="icon">✨</div> Complete New Shape
-            @if (CurrentShape is Path path)
+            @if (SelectedElements[0] is Path path)
             {
                 <SubMenu>
-                    <Item OnClick=CompleteShapeWithoutClose><div class="icon">❗</div> Complete Without Close Instruction</Item>
-                    <Item OnClick=DeletePreviousInstruction><div class="icon">❌</div> Remove Last added Instruction</Item>
+                    <Item OnClick="_ => CompleteShapeWithoutClose(path)"><div class="icon">❗</div> Complete Without Close Instruction</Item>
+                    <Item OnClick="_ => DeletePreviousInstruction(path)"><div class="icon">❌</div> Remove Last added Instruction</Item>
                 </SubMenu>
             }
         </Item>

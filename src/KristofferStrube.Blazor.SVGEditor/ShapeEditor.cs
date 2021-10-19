@@ -16,7 +16,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         protected override async Task OnParametersSetAsync()
         {
-            if (SVGElement.EditMode == EditMode.Scale || (SVGElement is G && SVGElement.Selected ))
+            if (SVGElement.SVG.EditMode == EditMode.Scale || (SVGElement is G && SVGElement.Selected ))
             {
                 var BBox = await JSRuntime.BBox(ElementReference);
                 var pos = SVGElement.SVG.LocalDetransform((BBox.x - SVGElement.SVG.BBox.x, BBox.y - SVGElement.SVG.BBox.y));
@@ -48,7 +48,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             {
                 if (eventArgs.Key == "Delete")
                 {
-                    SVGElement.SVG.Remove(SVGElement.SVG.CurrentShape);
+                    SVGElement.SVG.Remove(SVGElement);
                 }
             }
         }
@@ -56,29 +56,32 @@ namespace KristofferStrube.Blazor.SVGEditor
         public void AnchorSelect(int anchor)
         {
             SVGElement.CurrentAnchor = anchor;
-            SVGElement.EditMode = EditMode.MoveAnchor;
+            SVGElement.SVG.EditMode = EditMode.MoveAnchor;
         }
 
         public async Task Select(MouseEventArgs eventArgs)
         {
             if (SVGElement.IsChildElement) return;
-            if (SVGElement.SVG.CurrentShape == null || SVGElement.SVG.CurrentShape.EditMode is EditMode.None or EditMode.Scale)
+            if (eventArgs.CtrlKey)
             {
-                if (SVGElement.SVG.CurrentShape is not null && SVGElement.SVG.CurrentShape != SVGElement)
-                {
-                    SVGElement.SVG.CurrentShape.EditMode = EditMode.None;
-                }
-
-                await JSRuntime.Focus(ElementReference);
-                SVGElement.SVG.CurrentShape = SVGElement;
+                SVGElement.SVG.SelectedElements.Add(SVGElement);
+                SVGElement.SVG.EditMode = EditMode.None;
+            }
+            else
+            {
                 SVGElement.Panner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-                if (SVGElement.SVG.CurrentShape.EditMode == EditMode.None)
+                SVGElement.SVG.SelectedElements.Clear();
+                SVGElement.SVG.SelectedElements.Add(SVGElement);
+                StateHasChanged();
+                await JSRuntime.Focus(ElementReference);
+                switch (SVGElement.SVG.EditMode)
                 {
-                    SVGElement.EditMode = EditMode.Move;
-                }
-                else
-                {
-                    SVGElement.CurrentAnchor = -1;
+                    case EditMode.None:
+                        SVGElement.SVG.EditMode = EditMode.Move;
+                        break;
+                    case EditMode.Scale:
+                        SVGElement.CurrentAnchor = -1;
+                        break;
                 }
             }
         }
