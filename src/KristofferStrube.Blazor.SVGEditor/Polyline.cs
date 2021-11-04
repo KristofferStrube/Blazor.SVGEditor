@@ -49,8 +49,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                     UpdatePoints();
                     break;
                 case EditMode.Move:
-                    var diff = (x: pos.x - Panner.x, y: pos.y - Panner.y);
-                    Panner = (x: pos.x, y: pos.y);
+                    var diff = (x: pos.x - SVG.MovePanner.x, y: pos.y - SVG.MovePanner.y);
                     Points = Points.Select(point => { point.x += diff.x; point.y += diff.y; return point; }).ToList();
                     UpdatePoints();
                     break;

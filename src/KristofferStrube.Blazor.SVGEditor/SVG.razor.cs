@@ -143,21 +143,25 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public List<ISVGElement> SelectedElements { get; set; } = new();
 
-        private (double x, double y)? Panner { get; set; }
+        public (double x, double y) MovePanner { get; set; }
+
+        private (double x, double y)? TranslatePanner { get; set; }
 
         public EditMode EditMode { get; set; } = EditMode.None;
 
         public void Move(MouseEventArgs eventArgs)
         {
-            if (Panner.HasValue)
+            if (TranslatePanner.HasValue)
             {
                 var newPanner = (x: eventArgs.OffsetX, y: eventArgs.OffsetY);
-                Translate = (Translate.x + newPanner.x - Panner.Value.x, Translate.y + newPanner.y - Panner.Value.y);
-                Panner = newPanner;
+                Translate = (Translate.x + newPanner.x - TranslatePanner.Value.x, Translate.y + newPanner.y - TranslatePanner.Value.y);
+                TranslatePanner = newPanner;
             }
             else
             {
+                var pos = LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
                 SelectedElements.ForEach(e => e.HandleMouseMove(eventArgs));
+                MovePanner = (pos.x, pos.y);
             }
         }
 
@@ -165,7 +169,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
             if (eventArgs.Button == 1)
             {
-                Panner = (eventArgs.OffsetX, eventArgs.OffsetY);
+                TranslatePanner = (eventArgs.OffsetX, eventArgs.OffsetY);
             }
         }
 
@@ -178,7 +182,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             }
             else if (eventArgs.Button == 1)
             {
-                Panner = null;
+                TranslatePanner = null;
                 SelectedElements.Clear();
             }
         }

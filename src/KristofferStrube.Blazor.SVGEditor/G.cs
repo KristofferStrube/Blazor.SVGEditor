@@ -60,14 +60,11 @@ namespace KristofferStrube.Blazor.SVGEditor
                 case EditMode.Move:
                     foreach (ISVGElement child in ChildElements)
                     {
-                        child.Panner = (Panner.x, Panner.y);
                         child.HandleMouseMove(eventArgs);
                     }
-                    var diff = (x: pos.x - Panner.x, y: pos.y - Panner.y);
+                    var diff = (x: pos.x - SVG.MovePanner.x, y: pos.y - SVG.MovePanner.y);
                     BoundingBox.x += diff.x;
                     BoundingBox.y += diff.y;
-                    Panner = (x: pos.x, y: pos.y);
-                    SVG.EditMode = EditMode.None;
                     break;
             }
         }

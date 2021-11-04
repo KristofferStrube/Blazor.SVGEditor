@@ -15,8 +15,6 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public string TagName { get; set; }
 
-        public (double x, double y) Panner { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
         public void HandleMouseMove(MouseEventArgs eventArgs)
         {
             throw new NotImplementedException();
@@ -43,7 +41,6 @@ namespace KristofferStrube.Blazor.SVGEditor
         bool ISVGElement.Selected => throw new NotImplementedException();
 
         bool ISVGElement.Selectable => throw new NotImplementedException();
-        (double x, double y) ISVGElement.Panner { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         string ISVGElement._StateRepresentation { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         Action<ISVGElement> ISVGElement.Changed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public BoundingBox BoundingBox { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }

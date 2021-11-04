@@ -37,8 +37,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                     r = Math.Sqrt(Math.Pow(cx-pos.x,2) + Math.Pow(cy - pos.y, 2));
                     break;
                 case EditMode.Move:
-                    var diff = (x: pos.x - Panner.x, y: pos.y - Panner.y);
-                    Panner = (pos.x, y: pos.y);
+                    var diff = (x: pos.x - SVG.MovePanner.x, y: pos.y - SVG.MovePanner.y);
                     cx += diff.x;
                     cy += diff.y;
                     break;

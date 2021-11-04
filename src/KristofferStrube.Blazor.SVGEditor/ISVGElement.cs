@@ -15,8 +15,6 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public BoundingBox BoundingBox { get; set; }
 
-        public (double x, double y) Panner { get; set; }
-
         public string _StateRepresentation { get; set; }
 
         public void HandleMouseMove(MouseEventArgs eventArgs);

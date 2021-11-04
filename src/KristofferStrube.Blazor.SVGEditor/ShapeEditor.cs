@@ -64,16 +64,22 @@ namespace KristofferStrube.Blazor.SVGEditor
             if (SVGElement.IsChildElement) return;
             if (eventArgs.CtrlKey)
             {
-                SVGElement.SVG.SelectedElements.Add(SVGElement);
+                if (!SVGElement.SVG.SelectedElements.Contains(SVGElement))
+                {
+                    SVGElement.SVG.SelectedElements.Add(SVGElement);
+                }
                 SVGElement.SVG.EditMode = EditMode.None;
             }
             else
             {
-                SVGElement.Panner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-                SVGElement.SVG.SelectedElements.Clear();
-                SVGElement.SVG.SelectedElements.Add(SVGElement);
+                SVGElement.SVG.MovePanner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+                if (!SVGElement.SVG.SelectedElements.Contains(SVGElement))
+                {
+                    SVGElement.SVG.SelectedElements.Clear();
+                    SVGElement.SVG.SelectedElements.Add(SVGElement);
+                    await JSRuntime.Focus(ElementReference);
+                }
                 StateHasChanged();
-                await JSRuntime.Focus(ElementReference);
                 switch (SVGElement.SVG.EditMode)
                 {
                     case EditMode.None:

@@ -121,8 +121,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                     UpdateData();
                     break;
                 case EditMode.Move:
-                    var diff = (x: pos.x - Panner.x, y: pos.y - Panner.y);
-                    Panner = (pos.x, pos.y);
+                    var diff = (x: pos.x - SVG.MovePanner.x, y: pos.y - SVG.MovePanner.y);
                     UpdatePoints(((double x, double y) point) => (point.x + diff.x, point.y + diff.y), (1, 1));
                     UpdateData();
                     break;
@@ -143,8 +142,8 @@ namespace KristofferStrube.Blazor.SVGEditor
                     switch (CurrentAnchor)
                     {
                         case -1:
-                            var moveDiff = (x: pos.x - Panner.x, y: pos.y - Panner.y);
-                            Panner = (pos.x, pos.y);
+                            var moveDiff = (x: pos.x - SVG.MovePanner.x, y: pos.y - SVG.MovePanner.y);
+                            SVG.MovePanner = (pos.x, pos.y);
                             UpdatePoints(((double x, double y) point) => (point.x + moveDiff.x, point.y + moveDiff.y), (1, 1));
                             BoundingBox.x += moveDiff.x;
                             BoundingBox.y += moveDiff.y;

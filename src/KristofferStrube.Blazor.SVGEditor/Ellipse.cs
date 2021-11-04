@@ -62,8 +62,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                     }
                     break;
                 case EditMode.Move:
-                    var diff = (x: pos.x - Panner.x, y: pos.y - Panner.y);
-                    Panner = (pos.x, y: pos.y);
+                    var diff = (x: pos.x - SVG.MovePanner.x, y: pos.y - SVG.MovePanner.y);
                     cx += diff.x;
                     cy += diff.y;
                     break;
