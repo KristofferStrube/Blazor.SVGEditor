@@ -71,15 +71,15 @@
 @code {
     public void AnchorSelect(int segment, int anchor)
     {
+        if (SVGElement.SVG.EditMode is EditMode.Scale or EditMode.Move or EditMode.None)
+        {
+            SVGElement.SVG.CurrentAnchor = anchor;
+            SVGElement.SVG.CurrentAnchorElement = SVGElement;
+        }
         if (SVGElement.SVG.EditMode is EditMode.Move or EditMode.None)
         {
             SVGElement.CurrentInstruction = segment;
-            SVGElement.CurrentAnchor = anchor;
             SVGElement.SVG.EditMode = EditMode.MoveAnchor;
-        }
-        if (SVGElement.SVG.EditMode is EditMode.Scale)
-        {
-            SVGElement.CurrentAnchor = anchor;
         }
     }
 }

@@ -33,6 +33,10 @@ namespace KristofferStrube.Blazor.SVGEditor
         public async Task KeyUp(KeyboardEventArgs eventArgs)
         {
             if (SVGElement.IsChildElement) return;
+            if (eventArgs.Key == "tab")
+            {
+                SVGElement.SVG.SelectedElements.Clear();
+            }
             if (eventArgs.CtrlKey)
             {
                 if (eventArgs.Key == "c")
@@ -55,7 +59,8 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public void AnchorSelect(int anchor)
         {
-            SVGElement.CurrentAnchor = anchor;
+            SVGElement.SVG.CurrentAnchorElement = SVGElement;
+            SVGElement.SVG.CurrentAnchor = anchor;
             SVGElement.SVG.EditMode = EditMode.MoveAnchor;
         }
 
@@ -76,7 +81,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                 if (!SVGElement.SVG.SelectedElements.Contains(SVGElement))
                 {
                     SVGElement.SVG.SelectedElements.Clear();
-                    SVGElement.SVG.SelectedElements.Add(SVGElement);
+                    SVGElement.SVG.EditMode = EditMode.Move;
                     await JSRuntime.Focus(ElementReference);
                 }
                 StateHasChanged();
@@ -86,7 +91,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                         SVGElement.SVG.EditMode = EditMode.Move;
                         break;
                     case EditMode.Scale:
-                        SVGElement.CurrentAnchor = -1;
+                        SVGElement.SVG.CurrentAnchor = -1;
                         break;
                 }
             }

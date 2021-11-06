@@ -52,11 +52,11 @@ namespace KristofferStrube.Blazor.SVGEditor
                     y2 += diff.y;
                     break;
                 case EditMode.MoveAnchor:
-                    if (CurrentAnchor == null)
+                    if (SVG.CurrentAnchor == null)
                     {
-                        CurrentAnchor = 0;
+                        SVG.CurrentAnchor = 0;
                     }
-                    switch (CurrentAnchor)
+                    switch (SVG.CurrentAnchor)
                     {
                         case 0:
                             (x1, y1) = pos;

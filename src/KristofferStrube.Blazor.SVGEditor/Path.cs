@@ -40,15 +40,15 @@ namespace KristofferStrube.Blazor.SVGEditor
             switch (SVG.EditMode)
             {
                 case EditMode.MoveAnchor:
-                    if (CurrentAnchor == null)
+                    if (SVG.CurrentAnchor == null)
                     {
-                        CurrentAnchor = -1;
+                        SVG.CurrentAnchor = -1;
                     }
                     var inst = Instructions[(int)CurrentInstruction];
                     var diffX = pos.x - inst.EndPosition.x;
                     var diffY = pos.y - inst.EndPosition.y;
                     var prev = inst.PreviousInstruction;
-                    if (CurrentAnchor == -1)
+                    if (SVG.CurrentAnchor == -1)
                     {
                         inst.EndPosition = (pos.x, pos.y);
                         switch (inst)
@@ -90,19 +90,19 @@ namespace KristofferStrube.Blazor.SVGEditor
                     }
                     else if (inst is BaseControlPointPathInstruction controlPointInstruction)
                     {
-                        if (CurrentAnchor == -2)
+                        if (SVG.CurrentAnchor == -2)
                         {
                             controlPointInstruction.ReflectedPreviousInstructionsLastControlPoint = (pos.x, pos.y);
                         }
                         else
                         {
-                            controlPointInstruction.ControlPoints[(int)CurrentAnchor] = (pos.x, pos.y);
+                            controlPointInstruction.ControlPoints[(int)SVG.CurrentAnchor] = (pos.x, pos.y);
                             controlPointInstruction.UpdateReflectionForInstructions();
                         }
                     }
                     else if (inst is EllipticalArcInstruction ellipticalArcInstruction)
                     {
-                        switch (CurrentAnchor)
+                        switch (SVG.CurrentAnchor)
                         {
                             case 0:
                                 ellipticalArcInstruction.ControlPointYPos = (pos.x, pos.y);
@@ -139,7 +139,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                     UpdateData();
                     break;
                 case EditMode.Scale:
-                    switch (CurrentAnchor)
+                    switch (SVG.CurrentAnchor)
                     {
                         case -1:
                             var moveDiff = (x: pos.x - SVG.MovePanner.x, y: pos.y - SVG.MovePanner.y);
@@ -152,13 +152,13 @@ namespace KristofferStrube.Blazor.SVGEditor
                             switch ((width: BoundingBox.width + BoundingBox.x - pos.x, height: BoundingBox.height + BoundingBox.y - pos.y))
                             {
                                 case var dim when dim.width < 0 && dim.height < 0:
-                                    CurrentAnchor = 2;
+                                    SVG.CurrentAnchor = 2;
                                     break;
                                 case var dim when dim.width < 0:
-                                    CurrentAnchor = 1;
+                                    SVG.CurrentAnchor = 1;
                                     break;
                                 case var dim when dim.height < 0:
-                                    CurrentAnchor = 3;
+                                    SVG.CurrentAnchor = 3;
                                     break;
                             }
                             var topLeftScaler = ((double x, double y) point) => ((point.x - BoundingBox.x - BoundingBox.width) * (BoundingBox.width + BoundingBox.x - pos.x) / BoundingBox.width + BoundingBox.x + BoundingBox.width, (point.y - BoundingBox.y - BoundingBox.height) * (BoundingBox.height + BoundingBox.y - pos.y) / BoundingBox.height + BoundingBox.y + BoundingBox.height);
@@ -171,13 +171,13 @@ namespace KristofferStrube.Blazor.SVGEditor
                             switch ((width: pos.x - BoundingBox.x, height: BoundingBox.height + BoundingBox.y - pos.y))
                             {
                                 case var dim when dim.width < 0 && dim.height < 0:
-                                    CurrentAnchor = 3;
+                                    SVG.CurrentAnchor = 3;
                                     break;
                                 case var dim when dim.width < 0:
-                                    CurrentAnchor = 0;
+                                    SVG.CurrentAnchor = 0;
                                     break;
                                 case var dim when dim.height < 0:
-                                    CurrentAnchor = 2;
+                                    SVG.CurrentAnchor = 2;
                                     break;
                             }
                             var topRightScaler = ((double x, double y) point) => ((point.x - BoundingBox.x) * (pos.x - BoundingBox.x) / BoundingBox.width + BoundingBox.x, (point.y - BoundingBox.y - BoundingBox.height) * (BoundingBox.height + BoundingBox.y - pos.y) / BoundingBox.height + BoundingBox.y + BoundingBox.height);
@@ -190,13 +190,13 @@ namespace KristofferStrube.Blazor.SVGEditor
                             switch ((width: pos.x - BoundingBox.x, height: pos.y - BoundingBox.y))
                             {
                                 case var dim when dim.width < 0 && dim.height < 0:
-                                    CurrentAnchor = 0;
+                                    SVG.CurrentAnchor = 0;
                                     break;
                                 case var dim when dim.width < 0:
-                                    CurrentAnchor = 3;
+                                    SVG.CurrentAnchor = 3;
                                     break;
                                 case var dim when dim.height < 0:
-                                    CurrentAnchor = 1;
+                                    SVG.CurrentAnchor = 1;
                                     break;
                             }
                             var bottomRightScaler = ((double x, double y) point) => ((point.x - BoundingBox.x) * (pos.x - BoundingBox.x) / BoundingBox.width + BoundingBox.x, (point.y - BoundingBox.y) * (pos.y - BoundingBox.y) / BoundingBox.height + BoundingBox.y);
@@ -209,13 +209,13 @@ namespace KristofferStrube.Blazor.SVGEditor
                             switch ((width: BoundingBox.width + BoundingBox.x - pos.x, height: pos.y - BoundingBox.y))
                             {
                                 case var dim when dim.width < 0 && dim.height < 0:
-                                    CurrentAnchor = 1;
+                                    SVG.CurrentAnchor = 1;
                                     break;
                                 case var dim when dim.width < 0:
-                                    CurrentAnchor = 2;
+                                    SVG.CurrentAnchor = 2;
                                     break;
                                 case var dim when dim.height < 0:
-                                    CurrentAnchor = 0;
+                                    SVG.CurrentAnchor = 0;
                                     break;
                             }
                             var bottomLeftScaler = ((double x, double y) point) => ((point.x - BoundingBox.x - BoundingBox.width) * (BoundingBox.width + BoundingBox.x - pos.x) / BoundingBox.width + BoundingBox.x + BoundingBox.width, (point.y - BoundingBox.y) * (pos.y - BoundingBox.y) / BoundingBox.height + BoundingBox.y);
@@ -255,7 +255,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             switch (SVG.EditMode)
             {
                 case EditMode.MoveAnchor:
-                    CurrentAnchor = null;
+                    SVG.CurrentAnchor = null;
                     SVG.EditMode = EditMode.None;
                     break;
                 case EditMode.Move:
@@ -272,7 +272,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                     UpdateData();
                     break;
                 case EditMode.Scale:
-                    CurrentAnchor = null;
+                    SVG.CurrentAnchor = null;
                     break;
             }
         }

@@ -42,11 +42,11 @@ namespace KristofferStrube.Blazor.SVGEditor
                     cy += diff.y;
                     break;
                 case EditMode.MoveAnchor:
-                    if (CurrentAnchor == null)
+                    if (SVG.CurrentAnchor == null)
                     {
-                        CurrentAnchor = 0;
+                        SVG.CurrentAnchor = 0;
                     }
-                    switch (CurrentAnchor)
+                    switch (SVG.CurrentAnchor)
                     {
                         case 0:
                         case 1:

@@ -26,7 +26,6 @@ namespace KristofferStrube.Blazor.SVGEditor
             get => Element.GetAttribute("stroke-width") ?? string.Empty;
             set { Element.SetAttribute("stroke-width", value); Changed.Invoke(this); }
         }
-        public int? CurrentAnchor { get; set; }
         public BoundingBox BoundingBox { get; set; } = new();
         public Action<ISVGElement> Changed { get; set; }
         public bool Selectable => SVG.SelectedElements.Count == 0;

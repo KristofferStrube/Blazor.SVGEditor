@@ -41,11 +41,11 @@ namespace KristofferStrube.Blazor.SVGEditor
             switch (SVG.EditMode)
             {
                 case EditMode.MoveAnchor:
-                    if (CurrentAnchor == null)
+                    if (SVG.CurrentAnchor == null)
                     {
-                        CurrentAnchor = 0;
+                        SVG.CurrentAnchor = 0;
                     }
-                    Points[(int)CurrentAnchor] = (pos.x, pos.y);
+                    Points[(int)SVG.CurrentAnchor] = (pos.x, pos.y);
                     UpdatePoints();
                     break;
                 case EditMode.Move:
@@ -74,10 +74,10 @@ namespace KristofferStrube.Blazor.SVGEditor
                 case EditMode.MoveAnchor:
                     if (pos.x < 50 && pos.y < 50)
                     {
-                        Points.RemoveAt((int)CurrentAnchor);
+                        Points.RemoveAt((int)SVG.CurrentAnchor);
                         UpdatePoints();
                     }
-                    CurrentAnchor = null;
+                    SVG.CurrentAnchor = null;
                     SVG.EditMode = EditMode.None;
                     if (Points.Count() == 0)
                     {

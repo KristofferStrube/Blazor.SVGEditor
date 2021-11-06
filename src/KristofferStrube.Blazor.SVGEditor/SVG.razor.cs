@@ -145,6 +145,9 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public (double x, double y) MovePanner { get; set; }
 
+        public int? CurrentAnchor { get; set; }
+        public ISVGElement? CurrentAnchorElement { get; set; }
+
         private (double x, double y)? TranslatePanner { get; set; }
 
         public EditMode EditMode { get; set; } = EditMode.None;
@@ -159,9 +162,17 @@ namespace KristofferStrube.Blazor.SVGEditor
             }
             else
             {
-                var pos = LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-                SelectedElements.ForEach(e => e.HandleMouseMove(eventArgs));
-                MovePanner = (pos.x, pos.y);
+                if (CurrentAnchorElement is ISVGElement element)
+                {
+                    var pos = LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+                    element.HandleMouseMove(eventArgs);
+                }
+                else
+                {
+                    var pos = LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+                    SelectedElements.ForEach(e => e.HandleMouseMove(eventArgs));
+                    MovePanner = (pos.x, pos.y);
+                }
             }
         }
 
@@ -175,6 +186,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public void Up(MouseEventArgs eventArgs)
         {
+            CurrentAnchorElement = null;
             SelectedElements.ForEach(e => e.HandleMouseUp(eventArgs));
             if (eventArgs.Button == 2)
             {
@@ -189,7 +201,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public void UnSelect(MouseEventArgs eventArgs)
         {
-            if (EditMode != EditMode.Add)
+            if (EditMode != EditMode.Add && !eventArgs.CtrlKey)
             {
                 EditMode = EditMode.None;
                 SelectedElements.Clear();
