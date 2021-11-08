@@ -88,6 +88,11 @@
         {
             <Item data=path OnClick="() => ScaleShape(shape)"> <div class="icon">↔</div> Scale</Item>
         }
+        <Item OnClick="() => Group(shape)"><div class="icon">🔗</div> Group</Item>
+        if (shape is G g)
+        {
+            <Item OnClick="() => Ungroup(g)"><div class="icon">📤</div> Ungroup</Item>
+        }
         <Item OnClick="() => Remove(shape)"><div class="icon">❌</div> Delete</Item>
         <Item OnClick="() => CopyElementAsync(shape)"><div class="icon">✂️</div> Copy</Item>
         <Item OnClick="() => PasteElementAsync(shape)"><div class="icon">📋</div> Paste</Item>

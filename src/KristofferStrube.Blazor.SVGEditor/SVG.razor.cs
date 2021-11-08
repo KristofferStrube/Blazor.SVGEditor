@@ -411,6 +411,37 @@ namespace KristofferStrube.Blazor.SVGEditor
             {
                 ElementsAsHtml.Add(clipboard);
             }
+            SelectedElements.Clear();
+            InputUpdated(string.Join("\n", ElementsAsHtml));
+        }
+
+        public void Group(Shape shape)
+        {
+            if (SelectedElements.Count == 0)
+            {
+                var pos = Elements.IndexOf(shape);
+                ElementsAsHtml[pos] = "<g>" + shape.ToHtml() + "</g>";
+            }
+            else
+            {
+                var frontElement = SelectedElements.MaxBy(e => Elements.IndexOf(e));
+                ElementsAsHtml[Elements.IndexOf(frontElement)] = "<g>\n" + string.Join("\n", SelectedElements.OrderBy(e => Elements.IndexOf(e)).Select(e => e.ToHtml()))+ "\n</g>";
+                foreach (var element in SelectedElements.Where(e => e != frontElement))
+                {
+                    var pos = Elements.IndexOf(element);
+                    Elements.RemoveAt(pos);
+                    ElementsAsHtml.RemoveAt(pos);
+                }
+            }
+            SelectedElements.Clear();
+            InputUpdated(string.Join("\n", ElementsAsHtml));
+        }
+
+        public async Task Ungroup(G g)
+        {
+            var pos = Elements.IndexOf(g);
+            ElementsAsHtml[pos] = string.Join("\n", g.ChildElements.Select(e => e.ToHtml()));
+            SelectedElements.Clear();
             InputUpdated(string.Join("\n", ElementsAsHtml));
         }
     }

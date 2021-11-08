@@ -16,7 +16,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         protected override async Task OnParametersSetAsync()
         {
-            if (SVGElement.SVG.EditMode == EditMode.Scale || (SVGElement is G && SVGElement.Selected ))
+            if (SVGElement.SVG.EditMode == EditMode.Scale || (SVGElement is G && SVGElement.Selected))
             {
                 var BBox = await JSRuntime.BBox(ElementReference);
                 var pos = SVGElement.SVG.LocalDetransform((BBox.x - SVGElement.SVG.BBox.x, BBox.y - SVGElement.SVG.BBox.y));
@@ -38,7 +38,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             }
         }
 
-        public void UnfocusElement() => SVGElement.SVG.SelectedElements.Clear();
+        public void UnfocusElement() {}
 
         public async Task KeyUp(KeyboardEventArgs eventArgs)
         {
@@ -90,9 +90,9 @@ namespace KristofferStrube.Blazor.SVGEditor
                 SVGElement.SVG.MovePanner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
                 if (!SVGElement.SVG.SelectedElements.Contains(SVGElement))
                 {
+                    SVGElement.SVG.EditMode = EditMode.Move;
                     SVGElement.SVG.SelectedElements.Clear();
                     SVGElement.SVG.SelectedElements.Add(SVGElement);
-                    SVGElement.SVG.EditMode = EditMode.Move;
                     await JSRuntime.Focus(ElementReference);
                 }
                 StateHasChanged();
