@@ -1,0 +1,48 @@
+﻿@page "/SnapToInteger"
+
+<textarea @bind="Input" @bind:event="oninput" style="width:100%;height:150px;" />
+<div style="height:80vh">
+    <SVG @ref=SVG Input=@Input InputUpdated="(string s) => { Input = s; StateHasChanged(); }" SnapToInteger=true />
+</div>
+
+@code {
+    protected string Input = @"<rect stroke=""black"" stroke-width=""0"" fill=""#C5CAE8"" x=""225"" y=""276"" width=""29"" height=""102""></rect> 
+<rect stroke=""black"" stroke-width=""0"" fill=""#C5CAE8"" x=""294"" y=""278"" width=""29"" height=""102""></rect> 
+<g >
+<path stroke=""black"" stroke-width=""0"" fill=""#C5CAE8"" d=""M 196 211 C 134 207 114 194 93 160 C 86 164 84 170 77 175 C 109 218 149 226 190 226 Z""></path>
+<path stroke=""black"" stroke-width=""0"" fill=""#C5CAE8"" d=""M 85 170 C 90 163 78 159 70 156 C 60 154 46 150 44 157 C 40 164 53 170 63 172 C 71 174 81 176 85 170 Z""></path>
+<path stroke=""black"" stroke-width=""0"" fill=""#C5CAE8"" d=""M 77 167 C 89 164 84 154 80 148 C 77 140 74 132 64 134 C 55 138 58 145 62 151 C 65 158 69 171 76 168 Z""></path>
+<path stroke=""black"" stroke-width=""0"" fill=""#C5CAE8"" d=""M 84 166 C 95 169 94 158 96 149 C 99 141 98 130 91 128 C 84 127 80 138 78 144 C 76 151 75 163 84 166 Z""></path>
+<circle stroke=""#283593"" stroke-width=""0"" fill=""#5C6BC0"" cx=""83"" cy=""166"" r=""15.71511508""></circle>
+<circle stroke=""#283593"" stroke-width=""0"" fill=""#283593"" cx=""194"" cy=""218"" r=""17""></circle>
+</g> 
+<g >
+<path stroke=""black"" stroke-width=""0"" fill=""#C5CAE8"" d=""M 360 209 C 415 204 432 191 451 157 C 457 161 459 166 466 171 C 437 216 401 224 365 224 Z""></path>
+<path stroke=""black"" stroke-width=""0"" fill=""#C5CAE8"" d=""M 454 162 C 444 165 445 153 443 145 C 440 137 441 126 448 124 C 454 123 458 134 460 140 C 462 147 463 159 455 161 Z""></path>
+<path stroke=""black"" stroke-width=""0"" fill=""#C5CAE8"" d=""M 465 159 C 456 156 460 145 463 139 C 465 132 468 124 477 126 C 484 129 481 137 478 143 C 476 149 472 162 466 159 Z""></path>
+<path stroke=""black"" stroke-width=""0"" fill=""#C5CAE8"" d=""M 466 162 C 463 155 471 151 477 149 C 484 147 494 143 496 150 C 499 156 489 161 482 164 C 476 166 469 167 466 162 Z""></path>
+<circle stroke=""#283593"" stroke-width=""0"" fill=""#5C6BC0"" cx=""461"" cy=""162"" r=""15.71511508""></circle>
+<circle stroke=""#283593"" stroke-width=""0"" fill=""#283593"" cx=""350"" cy=""218"" r=""17""></circle>
+</g> 
+<polygon stroke=""black"" stroke-width=""0"" fill=""#C5CAE8"" points=""230,138 216,100 226,95 244,131""></polygon> 
+<circle stroke=""#283593"" stroke-width=""0"" fill=""#283593"" cx=""240"" cy=""138"" r=""22""></circle> 
+<circle stroke=""#283593"" stroke-width=""4"" fill=""#5C6BC0"" cx=""273"" cy=""217"" r=""82""></circle> 
+<circle stroke=""#283593"" stroke-width=""0"" fill=""#5C6BC0"" cx=""217"" cy=""91"" r=""14""></circle> 
+<path stroke=""#283593"" stroke-width=""3"" fill=""#FAFAFA"" d=""M 204 211 C 249 213 306 214 342 213 C 344 223 342 233 336 241 C 299 241 242 240 206 238 C 202 230 200 219 204 211 Z""></path> 
+<ellipse stroke=""black"" stroke-width=""0"" fill=""#283593"" cx=""235"" cy=""225"" rx=""5"" ry=""9""></ellipse> 
+<ellipse stroke=""black"" stroke-width=""0"" fill=""#283593"" cx=""310"" cy=""227"" rx=""5"" ry=""9""></ellipse> 
+<ellipse stroke=""black"" stroke-width=""0"" fill=""#7986CC"" cx=""309"" cy=""227"" rx=""4"" ry=""6.348964137""></ellipse> 
+<ellipse stroke=""black"" stroke-width=""0"" fill=""#7986CC"" cx=""234"" cy=""225"" rx=""4"" ry=""6""></ellipse> 
+<path stroke=""black"" stroke-width=""0"" fill=""#283593"" d=""M 291 368 C 294 388 293 409 292 430 C 322 431 352 431 382 431 C 361 422 340 412 319 402 C 323 391 325 380 326 368 Z""></path> 
+<path stroke=""black"" stroke-width=""0"" fill=""#283593"" d=""M 257 368 C 253 388 254 409 256 430 C 225 430 194 431 163 431 C 185 421 206 412 228 402 C 224 390 223 381 223 369 Z""></path> 
+<path stroke=""black"" stroke-width=""0"" fill=""#7986CC"" d=""M 258 367 C 258 407 256 416 260 434 C 184 435 214 434 200 413 C 216 405 226 406 217 366 Z""></path> 
+<path stroke=""black"" stroke-width=""0"" fill=""#7986CC"" d=""M 290 367 C 290 407 292 416 289 434 C 365 434 334 433 348 413 C 332 405 322 406 331 366 Z""></path> 
+<path stroke=""black"" stroke-width=""0"" fill=""#7986CC"" d=""M 204 256 C 251 258 295 258 342 257 C 340 263 337 265 332 271 C 292 270 255 272 212 269 C 207 264 206 262 204 257 Z""></path> 
+<rect stroke=""black"" stroke-width=""0"" fill=""#283593"" x=""261"" y=""254"" width=""23"" height=""20""></rect> 
+<polygon stroke=""black"" stroke-width=""0"" fill=""#9EA8DB"" points=""265,239 272,232 280,239""></polygon>";
+
+    protected bool backgroundColorPickerOpened = false;
+    protected bool strokeColorPickerOpened = false;
+
+    protected SVG SVG { get; set; }
+} 
