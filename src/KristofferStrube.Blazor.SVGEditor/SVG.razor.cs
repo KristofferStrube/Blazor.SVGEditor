@@ -380,7 +380,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         public void Remove(ISVGElement SVGElement)
         {
             ElementsAsHtml.RemoveAt(Elements.IndexOf(SVGElement));
-            Elements.Clear();
+            Elements.Remove(SVGElement);
             SelectedElements.Clear();
             UpdateInput();
             RerenderAll();
