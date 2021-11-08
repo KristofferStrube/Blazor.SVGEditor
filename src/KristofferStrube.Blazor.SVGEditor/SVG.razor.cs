@@ -304,7 +304,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
             var shape = (Shape)e.Data;
             SelectedElements.Clear();
-            Elements.Clear();
+            Elements.Remove(shape);
             Elements.Insert(0, shape);
             ElementsAsHtml = Elements.Select(e => e.ToHtml()).ToList();
             UpdateInput();
