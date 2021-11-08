@@ -19,6 +19,9 @@ namespace KristofferStrube.Blazor.SVGEditor
         [Parameter]
         public Action<string> InputUpdated { get; set; }
 
+        [Parameter]
+        public bool SnapToInteger { get; set; } = false;
+
         private ElementReference ElementReference { get; set; }
 
         internal IDocument Document { get; set; }
@@ -242,7 +245,12 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public (double x, double y) LocalDetransform((double x, double y) pos)
         {
-            return ((pos.x - Translate.x) / Scale, (pos.y - Translate.y) / Scale);
+            var res = (x: (pos.x - Translate.x) / Scale, y: (pos.y - Translate.y) / Scale);
+            if (SnapToInteger)
+            {
+                return ((int)res.x, (int)res.y);
+            }
+            return res;
         }
 
         private void ZoomIn(double x, double y, double ZoomFactor = 1.1)
