@@ -3,9 +3,9 @@
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement StopPropagation=@(!SVGElement.IsChildElement)>
     <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
         <polyline
-            tabindex="0"
-            @onfocusin="() => SVGElement.SVG.SelectedElements.Add(SVGElement)"
-            @onfocusout="() => SVGElement.SVG.SelectedElements.Clear()"
+            tabindex="@(SVGElement.IsChildElement ? -1 : 0)"
+            @onfocusin="FocusElement"
+            @onfocusout="UnfocusElement"
             @ref=ElementReference
             points="@SVGElement.Element.GetAttribute("points")"
             fill="@SVGElement.Fill"

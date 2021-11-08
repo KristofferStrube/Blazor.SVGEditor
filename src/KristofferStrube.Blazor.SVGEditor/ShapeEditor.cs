@@ -30,6 +30,16 @@ namespace KristofferStrube.Blazor.SVGEditor
             }
         }
 
+        public void FocusElement()
+        {
+            if (!SVGElement.SVG.SelectedElements.Contains(SVGElement))
+            {
+                SVGElement.SVG.SelectedElements.Add(SVGElement);
+            }
+        }
+
+        public void UnfocusElement() => SVGElement.SVG.SelectedElements.Clear();
+
         public async Task KeyUp(KeyboardEventArgs eventArgs)
         {
             if (SVGElement.IsChildElement) return;
@@ -81,6 +91,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                 if (!SVGElement.SVG.SelectedElements.Contains(SVGElement))
                 {
                     SVGElement.SVG.SelectedElements.Clear();
+                    SVGElement.SVG.SelectedElements.Add(SVGElement);
                     SVGElement.SVG.EditMode = EditMode.Move;
                     await JSRuntime.Focus(ElementReference);
                 }

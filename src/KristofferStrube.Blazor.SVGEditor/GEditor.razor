@@ -1,9 +1,9 @@
 ﻿@inherits ShapeEditor<G>
 
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement StopPropagation=@(!SVGElement.IsChildElement)>
-    <g tabindex="0"
-       @onfocusin="() => SVGElement.SVG.SelectedElements.Add(SVGElement)"
-       @onfocusout="() => SVGElement.SVG.SelectedElements.Clear()"
+    <g tabindex="@(SVGElement.IsChildElement ? -1 : 0)"
+       @onfocusin="FocusElement"
+       @onfocusout="UnfocusElement"
        @ref=ElementReference
        @onmousedown="Select"
        @onkeyup="KeyUp">

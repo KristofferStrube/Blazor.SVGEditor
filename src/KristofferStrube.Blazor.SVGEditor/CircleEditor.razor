@@ -2,9 +2,9 @@
 
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement StopPropagation=@(!SVGElement.IsChildElement)>
     <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
-        <circle tabindex="0"
-                @onfocusin="() => SVGElement.SVG.SelectedElements.Add(SVGElement)"
-                @onfocusout="() => SVGElement.SVG.SelectedElements.Clear()"
+        <circle tabindex="@(SVGElement.IsChildElement ? -1 : 0)"
+                @onfocusin="FocusElement"
+                @onfocusout="UnfocusElement"
                 @ref=ElementReference
                 cx=@SVGElement.cx.AsString()
                 cy=@SVGElement.cy.AsString()
