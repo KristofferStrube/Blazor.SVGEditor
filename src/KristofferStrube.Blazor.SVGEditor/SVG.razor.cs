@@ -146,6 +146,19 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public List<ISVGElement> SelectedElements { get; set; } = new();
 
+        public ISVGElement FocusedElement { get; set; }
+
+        private List<ISVGElement> MarkedElements
+        {
+            get { 
+                if (FocusedElement != null)
+                {
+                    return SelectedElements.Append(FocusedElement).ToList();
+                }
+                return SelectedElements;
+            }
+        }
+
         public (double x, double y) MovePanner { get; set; }
 
         public int? CurrentAnchor { get; set; }
@@ -208,6 +221,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             {
                 EditMode = EditMode.None;
                 SelectedElements.Clear();
+                FocusedElement = null;
             }
         }
 
@@ -417,16 +431,16 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public void Group(Shape shape)
         {
-            if (SelectedElements.Count == 0)
+            if (MarkedElements.Count == 1)
             {
                 var pos = Elements.IndexOf(shape);
                 ElementsAsHtml[pos] = "<g>" + shape.ToHtml() + "</g>";
             }
             else
             {
-                var frontElement = SelectedElements.MaxBy(e => Elements.IndexOf(e));
-                ElementsAsHtml[Elements.IndexOf(frontElement)] = "<g>\n" + string.Join("\n", SelectedElements.OrderBy(e => Elements.IndexOf(e)).Select(e => e.ToHtml()))+ "\n</g>";
-                foreach (var element in SelectedElements.Where(e => e != frontElement))
+                var frontElement = MarkedElements.MaxBy(e => Elements.IndexOf(e));
+                ElementsAsHtml[Elements.IndexOf(frontElement)] = "<g>\n" + string.Join("\n", MarkedElements.OrderBy(e => Elements.IndexOf(e)).Select(e => e.ToHtml())) + "\n</g>";
+                foreach (var element in MarkedElements.Where(e => e != frontElement))
                 {
                     var pos = Elements.IndexOf(element);
                     Elements.RemoveAt(pos);

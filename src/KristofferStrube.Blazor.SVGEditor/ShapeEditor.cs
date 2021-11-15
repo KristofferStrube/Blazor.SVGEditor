@@ -32,21 +32,19 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public void FocusElement()
         {
-            if (!SVGElement.SVG.SelectedElements.Contains(SVGElement))
-            {
-                SVGElement.SVG.SelectedElements.Add(SVGElement);
-            }
+            SVGElement.SVG.SelectedElements.Clear();
+            SVGElement.SVG.SelectedElements.Add(SVGElement);
+            SVGElement.SVG.FocusedElement = SVGElement;
         }
 
-        public void UnfocusElement() {}
+        public void UnfocusElement()
+        {
+            SVGElement.SVG.SelectedElements.Remove(SVGElement);
+        }
 
         public async Task KeyUp(KeyboardEventArgs eventArgs)
         {
             if (SVGElement.IsChildElement) return;
-            if (eventArgs.Key == "tab")
-            {
-                SVGElement.SVG.SelectedElements.Clear();
-            }
             if (eventArgs.CtrlKey)
             {
                 if (eventArgs.Key == "c")
@@ -79,7 +77,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             if (SVGElement.IsChildElement) return;
             if (eventArgs.CtrlKey)
             {
-                if (!SVGElement.SVG.SelectedElements.Contains(SVGElement))
+                if (!SVGElement.Selected)
                 {
                     SVGElement.SVG.SelectedElements.Add(SVGElement);
                 }
@@ -88,7 +86,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             else
             {
                 SVGElement.SVG.MovePanner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-                if (!SVGElement.SVG.SelectedElements.Contains(SVGElement))
+                if (!SVGElement.Selected)
                 {
                     SVGElement.SVG.EditMode = EditMode.Move;
                     SVGElement.SVG.SelectedElements.Clear();
