@@ -21,7 +21,8 @@ namespace KristofferStrube.Blazor.SVGEditor
         public void HandleMouseUp(MouseEventArgs eventArgs);
         public void HandleMouseOut(MouseEventArgs eventArgs);
         public Action<ISVGElement> Changed { get; set; }
-        public string ToHtml();
+        public void UpdateHtml();
+        public string StoredHtml { get; set; }
         public void Complete();
         public void Rerender();
     }

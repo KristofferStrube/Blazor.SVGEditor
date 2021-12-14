@@ -33,7 +33,8 @@ namespace KristofferStrube.Blazor.SVGEditor
         public bool IsChildElement => Element.ParentElement?.TagName is "G" or null;
         public string _StateRepresentation { get; set; }
         public virtual string StateRepresentation => string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + SVG.EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y + Serialize(BoundingBox);
-        public virtual string ToHtml() => Element.ToHtml();
+        public virtual void UpdateHtml() => StoredHtml = Element.ToHtml();
+        public string StoredHtml { get; set; }
         public virtual void Rerender()
         {
             _StateRepresentation = null;

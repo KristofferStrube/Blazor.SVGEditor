@@ -77,7 +77,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             }
             ).ToList();
 
-            ElementsAsHtml = Elements.Select(e => e.ToHtml()).ToList();
+            Elements.ForEach(e => e.UpdateHtml());
         }
 
         protected override void OnInitialized()
@@ -90,10 +90,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                     updates
                         .Distinct()
                         .ToList()
-                        .ForEach(element =>
-                        {
-                            ElementsAsHtml[Elements.IndexOf(element)] = element.ToHtml();
-                        });
+                        .ForEach(element => element.UpdateHtml());
                     UpdateInput();
                 });
         }
@@ -118,14 +115,14 @@ namespace KristofferStrube.Blazor.SVGEditor
         internal void AddElement(ISVGElement SVGElement)
         {
             Elements.Add(SVGElement);
-            ElementsAsHtml.Add(SVGElement.ToHtml());
+            SVGElement.UpdateHtml();
             Document.GetElementsByTagName("BODY")[0].AppendElement(SVGElement.Element);
             UpdateInput();
         }
 
         public void UpdateInput()
         {
-            _Input = string.Join(" \n", ElementsAsHtml);
+            _Input = string.Join(" \n", Elements.Select(e => e.StoredHtml));
             InputUpdated(_Input);
         }
 
@@ -139,8 +136,6 @@ namespace KristofferStrube.Blazor.SVGEditor
         public (double x, double y) Translate = (0, 0);
 
         public List<ISVGElement> Elements { get; set; }
-
-        public List<string> ElementsAsHtml { get; set; }
 
         public (double x, double y) LastRightClick { get; set; }
 
@@ -320,7 +315,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             SelectedElements.Clear();
             Elements.Remove(shape);
             Elements.Insert(0, shape);
-            ElementsAsHtml = Elements.Select(e => e.ToHtml()).ToList();
+            Elements.ForEach(e => e.UpdateHtml());
             UpdateInput();
             RerenderAll();
         }
@@ -334,7 +329,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                 SelectedElements.Clear();
                 Elements.Remove(shape);
                 Elements.Insert(index - 1, shape);
-                ElementsAsHtml = Elements.Select(e => e.ToHtml()).ToList();
+                Elements.ForEach(e => e.UpdateHtml());
                 UpdateInput();
                 RerenderAll();
             }
@@ -349,7 +344,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                 SelectedElements.Clear();
                 Elements.Remove(shape);
                 Elements.Insert(index + 1, shape);
-                ElementsAsHtml = Elements.Select(e => e.ToHtml()).ToList();
+                Elements.ForEach(e => e.UpdateHtml());
                 UpdateInput();
                 RerenderAll();
             }
@@ -361,7 +356,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             SelectedElements.Clear();
             Elements.Remove(shape);
             Elements.Insert(Elements.Count, shape);
-            ElementsAsHtml = Elements.Select(e => e.ToHtml()).ToList();
+            Elements.ForEach(e => e.UpdateHtml());
             UpdateInput();
             RerenderAll();
         }
@@ -401,7 +396,6 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public void Remove(ISVGElement SVGElement)
         {
-            ElementsAsHtml.RemoveAt(Elements.IndexOf(SVGElement));
             Elements.Remove(SVGElement);
             SelectedElements.Clear();
             UpdateInput();
@@ -410,53 +404,56 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public async Task CopyElementAsync(ISVGElement SVGElement)
         {
-            await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", SVGElement.ToHtml());
+            await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", SVGElement.StoredHtml);
         }
 
         public async Task PasteElementAsync(ISVGElement SVGElement = null)
         {
             string clipboard = await JSRuntime.InvokeAsync<string>("navigator.clipboard.readText");
+            var elementsAsHtml = Elements.Select(e => e.StoredHtml).ToList();
             if (SVGElement != null)
             {
                 int index = Elements.IndexOf(SVGElement);
-                ElementsAsHtml.Insert(index + 1, clipboard);
+                elementsAsHtml.Insert(index + 1, clipboard);
             }
             else
             {
-                ElementsAsHtml.Add(clipboard);
+                elementsAsHtml.Add(clipboard);
             }
             SelectedElements.Clear();
-            InputUpdated(string.Join("\n", ElementsAsHtml));
+            InputUpdated(string.Join("\n", elementsAsHtml));
         }
 
         public void Group(Shape shape)
         {
+            var elementsAsHtml = Elements.Select(e => e.StoredHtml).ToList();
             if (MarkedElements.Count == 1)
             {
                 var pos = Elements.IndexOf(shape);
-                ElementsAsHtml[pos] = "<g>" + shape.ToHtml() + "</g>";
+                elementsAsHtml[pos] = "<g>" + shape.StoredHtml + "</g>";
             }
             else
             {
                 var frontElement = MarkedElements.MaxBy(e => Elements.IndexOf(e));
-                ElementsAsHtml[Elements.IndexOf(frontElement)] = "<g>\n" + string.Join("\n", MarkedElements.OrderBy(e => Elements.IndexOf(e)).Select(e => e.ToHtml())) + "\n</g>";
+                elementsAsHtml[Elements.IndexOf(frontElement)] = "<g>\n" + string.Join("\n", MarkedElements.OrderBy(e => Elements.IndexOf(e)).Select(e => e.StoredHtml)) + "\n</g>";
                 foreach (var element in MarkedElements.Where(e => e != frontElement))
                 {
                     var pos = Elements.IndexOf(element);
                     Elements.RemoveAt(pos);
-                    ElementsAsHtml.RemoveAt(pos);
+                    elementsAsHtml.RemoveAt(pos);
                 }
             }
             SelectedElements.Clear();
-            InputUpdated(string.Join("\n", ElementsAsHtml));
+            InputUpdated(string.Join("\n", elementsAsHtml));
         }
 
         public async Task Ungroup(G g)
         {
+            var elementsAsHtml = Elements.Select(e => e.StoredHtml).ToList();
             var pos = Elements.IndexOf(g);
-            ElementsAsHtml[pos] = string.Join("\n", g.ChildElements.Select(e => e.ToHtml()));
+            elementsAsHtml[pos] = string.Join("\n", g.ChildElements.Select(e => e.StoredHtml));
             SelectedElements.Clear();
-            InputUpdated(string.Join("\n", ElementsAsHtml));
+            InputUpdated(string.Join("\n", elementsAsHtml));
         }
     }
 }

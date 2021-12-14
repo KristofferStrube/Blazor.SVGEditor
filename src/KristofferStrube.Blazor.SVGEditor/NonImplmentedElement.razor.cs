@@ -44,6 +44,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         string ISVGElement._StateRepresentation { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         Action<ISVGElement> ISVGElement.Changed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public BoundingBox BoundingBox { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string StoredHtml { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
@@ -78,12 +79,17 @@ namespace KristofferStrube.Blazor.SVGEditor
             throw new NotImplementedException();
         }
 
-        public string ToHtml()
+        public string UpdateHtml()
         {
             throw new NotImplementedException();
         }
 
         public void Rerender()
+        {
+            throw new NotImplementedException();
+        }
+
+        void ISVGElement.UpdateHtml()
         {
             throw new NotImplementedException();
         }

@@ -26,13 +26,11 @@ namespace KristofferStrube.Blazor.SVGEditor
                 ChildSVGElement.Changed = UpdateInput;
                 return ChildSVGElement;
             }).ToList();
-
-            ChildElementsAsHtml = Element.Children.Select(child => child.ToHtml()).ToList();
         }
 
         private void UpdateInput(ISVGElement child)
         {
-            ChildElementsAsHtml[ChildElements.IndexOf(child)] = child.ToHtml();
+            child.UpdateHtml();
             Changed.Invoke(this);
         }
 
@@ -42,9 +40,11 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public List<ISVGElement> ChildElements { get; set; } = new List<ISVGElement>();
 
-        private List<string> ChildElementsAsHtml { get; set; } = new List<string>();
-
-        public override string ToHtml() => $"<g {string.Join(" ", Element.Attributes.Select(a => $"{a.Name}=\"{a.Value}\""))}>\n" + string.Join("\n", ChildElementsAsHtml) + "\n</g>";
+        public override void UpdateHtml()
+        {
+            ChildElements.ForEach(e => e.UpdateHtml());
+            StoredHtml = $"<g {string.Join(" ", Element.Attributes.Select(a => $"{a.Name}=\"{a.Value}\""))}>\n" + string.Join("\n", ChildElements.Select(e => e.StoredHtml)) + "\n</g>";
+        }
 
         public override void Rerender()
         {
