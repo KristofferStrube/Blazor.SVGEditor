@@ -288,5 +288,14 @@ namespace KristofferStrube.Blazor.SvgEditor.Test
             Assert.AreEqual((15 + Math.Sqrt(Math.Pow(5, 2) + Math.Pow(10, 2)), 20), ellipticalArc.ControlPointXPos);
             Assert.AreEqual(input, PathData.Parse(input).AsString());
         }
+
+        [Test]
+        public void ImplicitZeroNumberInterpretation()
+        {
+            var input = "M 0 0 l.457.318";
+            var inst = PathData.Parse(input)[1];
+            Assert.AreEqual(0.457, inst.EndPosition.x);
+            Assert.AreEqual(0.318, inst.EndPosition.y);
+        }
     }
 }

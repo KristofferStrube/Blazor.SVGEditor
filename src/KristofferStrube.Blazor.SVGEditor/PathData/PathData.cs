@@ -10,8 +10,10 @@ namespace KristofferStrube.Blazor.SVGEditor
             var strippedInput = input.Replace(",", " ").Replace("-", " -");
             List<string> instructions = new() { "M", "m", "Z", "z", "L", "l", "H", "h", "V", "v", "C", "c", "S", "s", "Q", "q", "T", "t", "A", "a" };
             var standardizedInput = instructions.Aggregate(strippedInput, (accu, curr) => accu.Replace(curr, $",{curr} ")).TrimStart(' ');
+            // This part makes numbers that have implicit 0 in front of a dot into it's real number like .142 into 0.142. Related to https://github.com/KristofferStrube/Blazor.SVGEditor/issues/1
+            var zeroFixed = Regex.Replace(standardizedInput, @"(?:0|.[1-9][0-9]*)(:\.[0-9]{1,2})?", " 0$0");
             // This part looks for any number of spaces and replaces them with a single space.
-            var removesDoubleSpaces = Regex.Replace(standardizedInput, @"\s+", " ");
+            var removesDoubleSpaces = Regex.Replace(zeroFixed, @"\s+", " ");
             var splitInstructionSequences = removesDoubleSpaces.Split(",");
             var list = Enumerable.Range(1, splitInstructionSequences.Length - 1).Aggregate<int, List<IPathInstruction>>(
                 new List<IPathInstruction>(),
