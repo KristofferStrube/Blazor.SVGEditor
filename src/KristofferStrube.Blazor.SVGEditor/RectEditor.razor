@@ -2,20 +2,24 @@
 
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement StopPropagation=@(!SVGElement.IsChildElement)>
     <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
-        <rect
-            tabindex="@(SVGElement.IsChildElement ? -1 : 0)"
-            @onfocusin="FocusElement"
-            @onfocusout="UnfocusElement"
-            @ref=ElementReference
-            x=@SVGElement.X.AsString()
-            y=@SVGElement.Y.AsString()
-            width=@SVGElement.Width.AsString()
-            height=@SVGElement.Height.AsString()
-            stroke="@SVGElement.Stroke"
-            stroke-width="@SVGElement.StrokeWidth"
-            fill="@SVGElement.Fill"
-            @onmousedown="Select"
-            @onkeyup="KeyUp" />
+        <rect tabindex="@(SVGElement.IsChildElement ? -1 : 0)"
+              @onfocusin="FocusElement"
+              @onfocusout="UnfocusElement"
+              @ref=ElementReference
+              x=@SVGElement.X.AsString()
+              y=@SVGElement.Y.AsString()
+              width=@SVGElement.Width.AsString()
+              height=@SVGElement.Height.AsString()
+              stroke="@SVGElement.Stroke"
+              stroke-width="@SVGElement.StrokeWidth"
+              fill="@SVGElement.Fill"
+              @onmousedown="Select"
+              @onkeyup="KeyUp">
+            @if (SVGElement.Playing)
+            {
+                @((MarkupString)SVGElement.Element.InnerHtml)
+            }
+        </rect>
     </g>
     @if (SVGElement.Selected && SVGElement.SVG.EditMode is not EditMode.Add)
     {

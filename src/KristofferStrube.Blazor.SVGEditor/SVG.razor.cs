@@ -28,12 +28,17 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public Shape ColorPickerShape { get; set; }
 
+        protected Animate ColorPickerAnimate { get; set; }
+
+        protected int ColorPickerAnimateFrame { get; set; }
+
         public string ColorPickerAttribute { get; set; }
 
         public string ColorPickerTitle => $"Pick {ColorPickerAttribute} Color";
 
-        public bool IsColorPickerOpen => ColorPickerShape is not null;
+        public bool IsColorPickerOpen => ColorPickerShape is not null || ColorPickerAnimate is not null;
 
+        // TODO: Fix to include Animate Frame Color
         public string PreviousColor => ColorPickerShape is not null ? (ColorPickerAttribute == "Fill" ? ColorPickerShape.Fill : ColorPickerShape.Stroke) : String.Empty;
 
         public Dictionary<string, Type> SupportedTypes { get; set; } = new Dictionary<string, Type> {
@@ -145,7 +150,8 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         private List<ISVGElement> MarkedElements
         {
-            get { 
+            get
+            {
                 if (FocusedElement != null)
                 {
                     return SelectedElements.Append(FocusedElement).ToList();
@@ -284,16 +290,17 @@ namespace KristofferStrube.Blazor.SVGEditor
             Translate = (Translate.x + (x - Translate.x) * (1 - Scale / prevScale), Translate.y + (y - Translate.y) * (1 - Scale / prevScale));
         }
 
-        protected void OpenFillColorPicker(ItemClickEventArgs e)
+        protected void OpenColorPicker(Shape shape, string attribute)
         {
-            ColorPickerShape = (Shape)e.Data;
-            ColorPickerAttribute = "Fill";
+            ColorPickerShape = shape;
+            ColorPickerAttribute = attribute;
         }
 
-        protected void OpenStrokeColorPicker(ItemClickEventArgs e)
+        protected void OpenAnimateColorPicker(Animate fillAnimate, string attribute, int frame)
         {
-            ColorPickerShape = (Shape)e.Data;
-            ColorPickerAttribute = "Stroke";
+            ColorPickerAnimate = fillAnimate;
+            ColorPickerAnimateFrame = frame;
+            ColorPickerAttribute = attribute;
         }
 
         protected void ColorPickerClosed(string value)
@@ -306,12 +313,17 @@ namespace KristofferStrube.Blazor.SVGEditor
             {
                 ColorPickerShape.Stroke = value;
             }
+            else if (ColorPickerAttribute is "FillAnimate" or "StrokeAnimate")
+            {
+                ColorPickerAnimate.Values[ColorPickerAnimateFrame] = value;
+                ColorPickerAnimate.UpdateValues();
+            }
             ColorPickerShape = null;
+            ColorPickerAnimate = null;
         }
 
-        protected void MoveToBack(ItemClickEventArgs e)
+        protected void MoveToBack(Shape shape)
         {
-            var shape = (Shape)e.Data;
             SelectedElements.Clear();
             Elements.Remove(shape);
             Elements.Insert(0, shape);
@@ -320,9 +332,8 @@ namespace KristofferStrube.Blazor.SVGEditor
             RerenderAll();
         }
 
-        protected void MoveBack(ItemClickEventArgs e)
+        protected void MoveBack(Shape shape)
         {
-            var shape = (Shape)e.Data;
             var index = Elements.IndexOf(shape);
             if (index != 0)
             {
@@ -335,9 +346,8 @@ namespace KristofferStrube.Blazor.SVGEditor
             }
         }
 
-        protected void MoveForward(ItemClickEventArgs e)
+        protected void MoveForward(Shape shape)
         {
-            var shape = (Shape)e.Data;
             var index = Elements.IndexOf(shape);
             if (index != Elements.Count - 1)
             {
@@ -350,9 +360,8 @@ namespace KristofferStrube.Blazor.SVGEditor
             }
         }
 
-        protected void MoveToFront(ItemClickEventArgs e)
+        protected void MoveToFront(Shape shape)
         {
-            var shape = (Shape)e.Data;
             SelectedElements.Clear();
             Elements.Remove(shape);
             Elements.Insert(Elements.Count, shape);
@@ -454,6 +463,12 @@ namespace KristofferStrube.Blazor.SVGEditor
             elementsAsHtml[pos] = string.Join("\n", g.ChildElements.Select(e => e.StoredHtml));
             SelectedElements.Clear();
             InputUpdated(string.Join("\n", elementsAsHtml));
+        }
+
+        protected void ToggleAnimation(Shape shape)
+        {
+            shape.Playing = !shape.Playing;
+            shape.Rerender();
         }
     }
 }

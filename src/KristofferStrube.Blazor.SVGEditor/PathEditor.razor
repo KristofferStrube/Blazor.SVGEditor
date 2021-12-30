@@ -11,7 +11,12 @@
               stroke="@SVGElement.Stroke"
               stroke-width="@SVGElement.StrokeWidth"
               @onmousedown="Select"
-              @onkeyup="KeyUp" />
+              @onkeyup="KeyUp">
+            @if (SVGElement.Playing)
+            {
+                @((MarkupString)SVGElement.Element.InnerHtml)
+            }
+        </path>
     </g>
     @if (SVGElement.Selected && SVGElement.SVG.EditMode is not (EditMode.Add or EditMode.Scale))
     {

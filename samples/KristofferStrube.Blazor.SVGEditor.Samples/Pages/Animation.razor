@@ -1,0 +1,89 @@
+﻿@page "/Animation"
+
+<PageTitle>Animation</PageTitle>
+
+<textarea @bind="Input" @bind:event="oninput" style="width:100%;height:150px;" />
+<div style="height:80vh">
+    <SVG Input=@Input InputUpdated="(string s) => { Input = s; StateHasChanged(); }" SnapToInteger=true />
+</div>
+
+@code {
+    protected string Input = @"<rect fill=""black"" x=""77"" y=""21"" width=""757"" height=""479""></rect>
+<path stroke=""black"" stroke-width=""0"" fill=""grey"" d=""M 470 280 m 23 0 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z"">
+<animate begin=""1s"" attributename=""fill"" values=""white;yellow;orange;yellow;#FE5722"" dur=""3s"" repeatcount=""indefinite""></animate>
+<animate begin=""1s"" attributename=""d"" values=""
+M 470 280 m 23 100 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z;
+M 470 280 m 23 0 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z;
+M 470 280 m 17 0 c -7 0 2 -9 2 -2 z m 2 -2 c -7 0 2 -9 2 -2 z m 2 -2 c -7 0 2 -9 2 -2 z m 2 -2 c -3 -5 7 -5 4 0 z m 4 0 c 0 -7 9 2 2 2 z m 2 2 c 0 -7 9 2 2 2 z m 2 2 c 0 -7 9 2 2 2 z;
+M 470 280 m 5 0 c -7 0 2 -9 2 -2 z m 6 -6 c -7 0 2 -9 2 -2 z m 6 -4 c -7 0 2 -9 2 -2 z m 6 -2 c -3 -5 7 -5 4 0 z m 8 0 c 0 -7 9 2 2 2 z m 6 4 c 0 -7 9 2 2 2 z m 6 6 c 0 -7 9 2 2 2 z;
+M 470 280 m -40 0 c -7 0 2 -9 2 -2 z m 21 -21 c -7 0 2 -9 2 -2 z m 21 -12 c -7 0 2 -9 2 -2 z m 21 -6 c -3 -5 7 -5 4 0 z m 23 4 c 0 -7 9 2 2 2 z m 23 16 c 0 -7 9 2 2 2 z m 23 19 c 0 -7 9 2 2 2 z;
+M 470 280 m -40 0 c -36 0 1 -36 2 -2 z m 21 -21 c -36 1 2 -36 2 -2 z m 21 -12 c -36 0 3 -36 2 -2 z m 21 -6 c -26 -25 28 -22 4 0 z m 23 4 c -4 -36 44 3 2 2 z m 23 16 c -4 -34 37 4 2 2 z m 23 19 c -2 -35 37 6 2 2 z;
+"" dur=""3s"" repeatcount=""indefinite""></animate>
+</path> 
+<path stroke=""black"" stroke-width=""0"" fill=""grey"" d=""M 390 280 m 23 0 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z"">
+<animate begin=""1s"" attributename=""fill"" values=""white;yellow;orange;yellow;#FE5722"" dur=""3s"" repeatcount=""indefinite""></animate>
+<animate begin=""1s"" attributename=""d"" values=""
+M 390 280 m 23 100 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z;
+M 390 280 m 23 0 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z;
+M 390 280 m 17 0 c -7 0 2 -9 2 -2 z m 2 -2 c -7 0 2 -9 2 -2 z m 2 -2 c -7 0 2 -9 2 -2 z m 2 -2 c -3 -5 7 -5 4 0 z m 4 0 c 0 -7 9 2 2 2 z m 2 2 c 0 -7 9 2 2 2 z m 2 2 c 0 -7 9 2 2 2 z;
+M 390 280 m 5 0 c -7 0 2 -9 2 -2 z m 6 -6 c -7 0 2 -9 2 -2 z m 6 -4 c -7 0 2 -9 2 -2 z m 6 -2 c -3 -5 7 -5 4 0 z m 8 0 c 0 -7 9 2 2 2 z m 6 4 c 0 -7 9 2 2 2 z m 6 6 c 0 -7 9 2 2 2 z;
+M 390 280 m -40 0 c -7 0 2 -9 2 -2 z m 21 -21 c -7 0 2 -9 2 -2 z m 21 -12 c -7 0 2 -9 2 -2 z m 21 -6 c -3 -5 7 -5 4 0 z m 23 4 c 0 -7 9 2 2 2 z m 23 16 c 0 -7 9 2 2 2 z m 23 19 c 0 -7 9 2 2 2 z;
+M 390 280 m -40 0 c -36 0 1 -36 2 -2 z m 21 -21 c -36 1 2 -36 2 -2 z m 21 -12 c -36 0 3 -36 2 -2 z m 21 -6 c -26 -25 28 -22 4 0 z m 23 4 c -4 -36 44 3 2 2 z m 23 16 c -4 -34 37 4 2 2 z m 23 19 c -2 -35 37 6 2 2 z;
+"" dur=""3s"" repeatcount=""indefinite""></animate>
+</path> 
+<path stroke=""black"" stroke-width=""0"" fill=""grey"" d=""M 450 260 m 23 0 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z"">
+<animate begin=""2s"" attributename=""fill"" values=""white;yellow;orange;yellow;#03A9F5"" dur=""3s"" repeatcount=""indefinite""></animate>
+<animate begin=""2s"" attributename=""d"" values=""
+M 450 260 m 23 100 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z;
+M 450 260 m 23 0 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z;
+M 450 260 m 17 0 c -7 0 2 -9 2 -2 z m 2 -2 c -7 0 2 -9 2 -2 z m 2 -2 c -7 0 2 -9 2 -2 z m 2 -2 c -3 -5 7 -5 4 0 z m 4 0 c 0 -7 9 2 2 2 z m 2 2 c 0 -7 9 2 2 2 z m 2 2 c 0 -7 9 2 2 2 z;
+M 450 260 m 5 0 c -7 0 2 -9 2 -2 z m 6 -6 c -7 0 2 -9 2 -2 z m 6 -4 c -7 0 2 -9 2 -2 z m 6 -2 c -3 -5 7 -5 4 0 z m 8 0 c 0 -7 9 2 2 2 z m 6 4 c 0 -7 9 2 2 2 z m 6 6 c 0 -7 9 2 2 2 z;
+M 450 260 m -40 0 c -7 0 2 -9 2 -2 z m 21 -21 c -7 0 2 -9 2 -2 z m 21 -12 c -7 0 2 -9 2 -2 z m 21 -6 c -3 -5 7 -5 4 0 z m 23 4 c 0 -7 9 2 2 2 z m 23 16 c 0 -7 9 2 2 2 z m 23 19 c 0 -7 9 2 2 2 z;
+M 450 260 m -40 0 c -36 0 1 -36 2 -2 z m 21 -21 c -36 1 2 -36 2 -2 z m 21 -12 c -36 0 3 -36 2 -2 z m 21 -6 c -26 -25 28 -22 4 0 z m 23 4 c -4 -36 44 3 2 2 z m 23 16 c -4 -34 37 4 2 2 z m 23 19 c -2 -35 37 6 2 2 z;
+"" dur=""3s"" repeatcount=""indefinite""></animate>
+</path> 
+<path stroke=""black"" stroke-width=""0"" fill=""grey"" d=""M 410 260 m 23 0 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z"">
+<animate begin=""2s"" attributename=""fill"" values=""white;yellow;orange;yellow;#03A9F5"" dur=""3s"" repeatcount=""indefinite""></animate>
+<animate begin=""2s"" attributename=""d"" values=""
+M 410 260 m 23 100 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z;
+M 410 260 m 23 0 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z;
+M 410 260 m 17 0 c -7 0 2 -9 2 -2 z m 2 -2 c -7 0 2 -9 2 -2 z m 2 -2 c -7 0 2 -9 2 -2 z m 2 -2 c -3 -5 7 -5 4 0 z m 4 0 c 0 -7 9 2 2 2 z m 2 2 c 0 -7 9 2 2 2 z m 2 2 c 0 -7 9 2 2 2 z;
+M 410 260 m 5 0 c -7 0 2 -9 2 -2 z m 6 -6 c -7 0 2 -9 2 -2 z m 6 -4 c -7 0 2 -9 2 -2 z m 6 -2 c -3 -5 7 -5 4 0 z m 8 0 c 0 -7 9 2 2 2 z m 6 4 c 0 -7 9 2 2 2 z m 6 6 c 0 -7 9 2 2 2 z;
+M 410 260 m -40 0 c -7 0 2 -9 2 -2 z m 21 -21 c -7 0 2 -9 2 -2 z m 21 -12 c -7 0 2 -9 2 -2 z m 21 -6 c -3 -5 7 -5 4 0 z m 23 4 c 0 -7 9 2 2 2 z m 23 16 c 0 -7 9 2 2 2 z m 23 19 c 0 -7 9 2 2 2 z;
+M 410 260 m -40 0 c -36 0 1 -36 2 -2 z m 21 -21 c -36 1 2 -36 2 -2 z m 21 -12 c -36 0 3 -36 2 -2 z m 21 -6 c -26 -25 28 -22 4 0 z m 23 4 c -4 -36 44 3 2 2 z m 23 16 c -4 -34 37 4 2 2 z m 23 19 c -2 -35 37 6 2 2 z;
+"" dur=""3s"" repeatcount=""indefinite""></animate>
+</path> 
+<path stroke=""black"" stroke-width=""0"" fill=""grey"" d=""M 376 222 m 23 0 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z"">
+<animate attributename=""fill"" values=""white;yellow;orange;yellow;#F44236"" dur=""3s"" repeatcount=""indefinite""></animate>
+<animate attributename=""d"" values=""
+M 376 222 m 23 100 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z;
+M 376 222 m 23 0 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z;
+M 376 222 m 17 0 c -7 0 2 -9 2 -2 z m 2 -2 c -7 0 2 -9 2 -2 z m 2 -2 c -7 0 2 -9 2 -2 z m 2 -2 c -3 -5 7 -5 4 0 z m 4 0 c 0 -7 9 2 2 2 z m 2 2 c 0 -7 9 2 2 2 z m 2 2 c 0 -7 9 2 2 2 z;
+M 376 222 m 5 0 c -7 0 2 -9 2 -2 z m 6 -6 c -7 0 2 -9 2 -2 z m 6 -4 c -7 0 2 -9 2 -2 z m 6 -2 c -3 -5 7 -5 4 0 z m 8 0 c 0 -7 9 2 2 2 z m 6 4 c 0 -7 9 2 2 2 z m 6 6 c 0 -7 9 2 2 2 z;
+M 376 222 m -40 0 c -7 0 2 -9 2 -2 z m 21 -21 c -7 0 2 -9 2 -2 z m 21 -12 c -7 0 2 -9 2 -2 z m 21 -6 c -3 -5 7 -5 4 0 z m 23 4 c 0 -7 9 2 2 2 z m 23 16 c 0 -7 9 2 2 2 z m 23 19 c 0 -7 9 2 2 2 z;
+M 376 222 m -40 0 c -36 0 1 -36 2 -2 z m 21 -21 c -36 1 2 -36 2 -2 z m 21 -12 c -36 0 3 -36 2 -2 z m 21 -6 c -26 -25 28 -22 4 0 z m 23 4 c -4 -36 44 3 2 2 z m 23 16 c -4 -34 37 4 2 2 z m 23 19 c -2 -35 37 6 2 2 z;
+"" dur=""3s"" repeatcount=""indefinite""></animate>
+</path> 
+<path stroke=""black"" stroke-width=""0"" fill=""grey"" d=""M 430 222 m 23 0 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z"">
+<animate attributename=""fill"" values=""white;yellow;orange;yellow;#EA1E63"" dur=""3s"" repeatcount=""indefinite""></animate>
+<animate attributename=""d"" values=""
+M 430 222 m 23 100 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z;
+M 430 222 m 23 0 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z;
+M 430 222 m 17 0 c -7 0 2 -9 2 -2 z m 2 -2 c -7 0 2 -9 2 -2 z m 2 -2 c -7 0 2 -9 2 -2 z m 2 -2 c -3 -5 7 -5 4 0 z m 4 0 c 0 -7 9 2 2 2 z m 2 2 c 0 -7 9 2 2 2 z m 2 2 c 0 -7 9 2 2 2 z;
+M 430 222 m 5 0 c -7 0 2 -9 2 -2 z m 6 -6 c -7 0 2 -9 2 -2 z m 6 -4 c -7 0 2 -9 2 -2 z m 6 -2 c -3 -5 7 -5 4 0 z m 8 0 c 0 -7 9 2 2 2 z m 6 4 c 0 -7 9 2 2 2 z m 6 6 c 0 -7 9 2 2 2 z;
+M 430 222 m -40 0 c -7 0 2 -9 2 -2 z m 21 -21 c -7 0 2 -9 2 -2 z m 21 -12 c -7 0 2 -9 2 -2 z m 21 -6 c -3 -5 7 -5 4 0 z m 23 4 c 0 -7 9 2 2 2 z m 23 16 c 0 -7 9 2 2 2 z m 23 19 c 0 -7 9 2 2 2 z;
+M 430 222 m -40 0 c -36 0 1 -36 2 -2 z m 21 -21 c -36 1 2 -36 2 -2 z m 21 -12 c -36 0 3 -36 2 -2 z m 21 -6 c -26 -25 28 -22 4 0 z m 23 4 c -4 -36 44 3 2 2 z m 23 16 c -4 -34 37 4 2 2 z m 23 19 c -2 -35 37 6 2 2 z;
+"" dur=""3s"" repeatcount=""indefinite""></animate>
+</path> 
+<path stroke=""black"" stroke-width=""0"" fill=""grey"" d=""M 484 222 m 23 0 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z"">
+<animate attributename=""fill"" values=""white;yellow;orange;yellow;#F44236"" dur=""3s"" repeatcount=""indefinite""></animate>
+<animate attributename=""d"" values=""
+M 484 222 m 23 100 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z;
+M 484 222 m 23 0 c -6 0 0 -9 0 -2 z m 0 0 c -6 0 2 -7 2 0 z m 1 0 c -7 0 1 -9 1 -2 z m -2 -2 c -3 -5 8 -5 5 0 z m 2 0 c 0 -7 8 2 2 2 z m 0 2 c 0 -7 8 0 2 0 z m 2 -2 c 0 -7 6 2 0 2 z;
+M 484 222 m 17 0 c -7 0 2 -9 2 -2 z m 2 -2 c -7 0 2 -9 2 -2 z m 2 -2 c -7 0 2 -9 2 -2 z m 2 -2 c -3 -5 7 -5 4 0 z m 4 0 c 0 -7 9 2 2 2 z m 2 2 c 0 -7 9 2 2 2 z m 2 2 c 0 -7 9 2 2 2 z;
+M 484 222 m 5 0 c -7 0 2 -9 2 -2 z m 6 -6 c -7 0 2 -9 2 -2 z m 6 -4 c -7 0 2 -9 2 -2 z m 6 -2 c -3 -5 7 -5 4 0 z m 8 0 c 0 -7 9 2 2 2 z m 6 4 c 0 -7 9 2 2 2 z m 6 6 c 0 -7 9 2 2 2 z;
+M 484 222 m -40 0 c -7 0 2 -9 2 -2 z m 21 -21 c -7 0 2 -9 2 -2 z m 21 -12 c -7 0 2 -9 2 -2 z m 21 -6 c -3 -5 7 -5 4 0 z m 23 4 c 0 -7 9 2 2 2 z m 23 16 c 0 -7 9 2 2 2 z m 23 19 c 0 -7 9 2 2 2 z;
+M 484 222 m -40 0 c -36 0 1 -36 2 -2 z m 21 -21 c -36 1 2 -36 2 -2 z m 21 -12 c -36 0 3 -36 2 -2 z m 21 -6 c -26 -25 28 -22 4 0 z m 23 4 c -4 -36 44 3 2 2 z m 23 16 c -4 -34 37 4 2 2 z m 23 19 c -2 -35 37 6 2 2 z;
+"" dur=""3s"" repeatcount=""indefinite""></animate>
+</path>";
+} 

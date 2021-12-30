@@ -7,11 +7,8 @@ namespace KristofferStrube.Blazor.SVGEditor
 {
     public class G : Shape
     {
-        public G(IElement element, SVG svg)
+        public G(IElement element, SVG svg) : base(element, svg)
         {
-            Element = element;
-            SVG = svg;
-
             ChildElements = Element.Children.Select(child =>
             {
                 ISVGElement ChildSVGElement;

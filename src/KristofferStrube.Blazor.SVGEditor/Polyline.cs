@@ -5,10 +5,8 @@ namespace KristofferStrube.Blazor.SVGEditor
 {
     public class Polyline : Shape
     {
-        public Polyline(IElement element, SVG svg)
+        public Polyline(IElement element, SVG svg) : base(element, svg)
         {
-            Element = element;
-            SVG = svg;
             Points = StringToPoints(Element.GetAttribute("points") ?? string.Empty);
         }
 

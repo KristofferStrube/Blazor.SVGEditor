@@ -5,10 +5,8 @@ namespace KristofferStrube.Blazor.SVGEditor
 {
     public class Path : Shape
     {
-        public Path(IElement element, SVG svg)
+        public Path(IElement element, SVG svg) : base(element, svg)
         {
-            Element = element;
-            SVG = svg;
             try
             {
                 Instructions = PathData.Parse(Element.GetAttribute("d") ?? string.Empty);

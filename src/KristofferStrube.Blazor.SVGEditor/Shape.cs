@@ -7,6 +7,29 @@ namespace KristofferStrube.Blazor.SVGEditor
 {
     public abstract class Shape : ISVGElement
     {
+        public Shape(IElement element, SVG svg)
+        {
+            Element = element;
+            SVG = svg;
+
+            Element.Children
+                .ToList()
+                .ForEach(child =>
+                {
+                    if (child.GetAttribute("attributeName") is string attributeName)
+                    {
+                        var animate = new Animate(this, child);
+                        switch (attributeName)
+                        {
+                            case "fill": { FillAnimate = animate; break; }
+                            case "stroke": { StrokeAnimate = animate; break; }
+                            case "stroke-width": { StrokeWidthAnimate = animate; break; }
+                        }
+                    }
+                }
+                );
+        }
+
         public IElement Element { get; set; }
 
         public abstract Type Editor { get; }
@@ -26,6 +49,12 @@ namespace KristofferStrube.Blazor.SVGEditor
             get => Element.GetAttribute("stroke-width") ?? string.Empty;
             set { Element.SetAttribute("stroke-width", value); Changed.Invoke(this); }
         }
+        public Animate FillAnimate { get; set; }
+        public Animate StrokeAnimate { get; set; }
+        public Animate StrokeWidthAnimate { get; set; }
+        public bool Playing { get; set; }
+        public bool HasAnimation => FillAnimate is not null || StrokeAnimate is not null || StrokeWidthAnimate is not null;
+        
         public BoundingBox BoundingBox { get; set; } = new();
         public Action<ISVGElement> Changed { get; set; }
         public bool Selectable => SVG.SelectedElements.Count == 0;

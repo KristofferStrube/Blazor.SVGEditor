@@ -5,11 +5,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 {
     public class Line : Shape
     {
-        public Line(IElement element, SVG svg)
-        {
-            Element = element;
-            SVG = svg;
-        }
+        public Line(IElement element, SVG svg) : base(element, svg) { }
 
         public override Type Editor => typeof(LineEditor);
 

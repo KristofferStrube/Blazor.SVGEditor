@@ -5,10 +5,8 @@ namespace KristofferStrube.Blazor.SVGEditor
 {
     public class Polygon : Shape
     {
-        public Polygon(IElement element, SVG svg)
+        public Polygon(IElement element, SVG svg) : base(element, svg)
         {
-            Element = element;
-            SVG = svg;
             Points = StringToPoints(Element.GetAttribute("points") ?? string.Empty);
         }
 

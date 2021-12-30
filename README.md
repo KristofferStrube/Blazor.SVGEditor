@@ -28,6 +28,10 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
 - G
     - Missing scaling of children
     - Missing Construction/deconstruction of groups
+- Animate
+    - Support for showing all Animate tags when Playing
+    - Support for editing Fill animation values
+    - Support for editing Stroke animation values
 
 ## Current goals
 - Add support for touch devices

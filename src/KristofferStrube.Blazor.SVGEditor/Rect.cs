@@ -5,11 +5,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 {
     public class Rect : Shape
     {
-        public Rect(IElement element, SVG svg)
-        {
-            Element = element;
-            SVG = svg;
-        }
+        public Rect(IElement element, SVG svg) : base(element, svg) { }
 
         public override Type Editor => typeof(RectEditor);
 

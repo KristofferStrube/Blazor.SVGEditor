@@ -5,11 +5,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 {
     public class Ellipse : Shape
     {
-        public Ellipse(IElement element, SVG svg)
-        {
-            Element = element;
-            SVG = svg;
-        }
+        public Ellipse(IElement element, SVG svg) : base(element, svg) { }
 
         public override Type Editor => typeof(EllipseEditor);
 

@@ -4,7 +4,7 @@
 
 <textarea @bind="Input" @bind:event="oninput" style="width:100%;height:150px;" />
 <div style="height:80vh">
-    <SVG @ref=SVG Input=@Input InputUpdated="(string s) => { Input = s; StateHasChanged(); }" SnapToInteger=true />
+    <SVG Input=@Input InputUpdated="(string s) => { Input = s; StateHasChanged(); }" SnapToInteger=true />
 </div>
 
 @code {
@@ -42,9 +42,4 @@
 <path stroke=""black"" stroke-width=""0"" fill=""#7986CC"" d=""M 204 256 C 251 258 295 258 342 257 C 340 263 337 265 332 271 C 292 270 255 272 212 269 C 207 264 206 262 204 257 Z""></path> 
 <rect stroke=""black"" stroke-width=""0"" fill=""#283593"" x=""261"" y=""254"" width=""23"" height=""20""></rect> 
 <polygon stroke=""black"" stroke-width=""0"" fill=""#9EA8DB"" points=""265,239 272,232 280,239""></polygon>";
-
-    protected bool backgroundColorPickerOpened = false;
-    protected bool strokeColorPickerOpened = false;
-
-    protected SVG SVG { get; set; }
 } 
