@@ -75,6 +75,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         public async Task Select(MouseEventArgs eventArgs)
         {
             if (SVGElement.IsChildElement) return;
+            if (SVGElement.SVG.EditMode is EditMode.Add) return;
             if (eventArgs.CtrlKey)
             {
                 if (!SVGElement.Selected)
