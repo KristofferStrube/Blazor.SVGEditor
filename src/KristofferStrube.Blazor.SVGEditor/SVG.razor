@@ -1,7 +1,7 @@
 ﻿@using BlazorColorPicker
 
 <ContextMenuTrigger MenuId="SVGMenu" style="height:100%;">
-    <svg @ref=ElementReference
+    <svg @ref=SVGElementReference
          @onmousemove="Move"
          @onmousedown="Down"
          @onmouseup="Up"
@@ -137,13 +137,13 @@
         {
             <Item OnClick="() => Ungroup(g)"><div class="icon">📤</div> Ungroup</Item>
         }
-        <Item OnClick="() => Remove(shape)"><div class="icon">❌</div> Delete</Item>
-        <Item OnClick="() => CopyElementAsync(shape)"><div class="icon">✂️</div> Copy</Item>
-        <Item OnClick="() => PasteElementAsync(shape)"><div class="icon">📋</div> Paste</Item>
+        <Item OnClick="() => Remove()"><div class="icon">❌</div> Delete</Item>
+        <Item OnClick="() => CopyElementsAsync()"><div class="icon">✂️</div> Copy</Item>
+        <Item OnClick="() => PasteElementsAsync(shape)"><div class="icon">📋</div> Paste</Item>
     }
     else
     {
-        <Item OnClick="() => PasteElementAsync()"><div class="icon">📋</div> Paste</Item>
+        <Item OnClick="() => PasteElementsAsync()"><div class="icon">📋</div> Paste</Item>
     }
 </ContextMenu>
 <ColorPicker Title=@ColorPickerTitle IsOpened=@IsColorPickerOpen Closed=@ColorPickerClosed MyColor=@PreviousColor></ColorPicker>

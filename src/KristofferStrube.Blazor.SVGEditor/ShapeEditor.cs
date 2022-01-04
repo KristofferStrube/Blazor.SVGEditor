@@ -9,16 +9,13 @@ namespace KristofferStrube.Blazor.SVGEditor
         [Parameter]
         public TShape SVGElement { get; set; }
 
-        [Inject]
-        protected IJSRuntime JSRuntime { get; set; }
-
         public ElementReference ElementReference { get; set; }
 
         protected override async Task OnParametersSetAsync()
         {
             if (SVGElement.SVG.EditMode == EditMode.Scale || (SVGElement is G && SVGElement.Selected))
             {
-                var BBox = await JSRuntime.BBox(ElementReference);
+                var BBox = await SVGElement.SVG.GetBBox(ElementReference);
                 var pos = SVGElement.SVG.LocalDetransform((BBox.x - SVGElement.SVG.BBox.x, BBox.y - SVGElement.SVG.BBox.y));
                 SVGElement.BoundingBox = new BoundingBox()
                 {
@@ -32,14 +29,12 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public void FocusElement()
         {
-            SVGElement.SVG.SelectedElements.Clear();
-            SVGElement.SVG.SelectedElements.Add(SVGElement);
             SVGElement.SVG.FocusedElement = SVGElement;
         }
 
         public void UnfocusElement()
         {
-            SVGElement.SVG.SelectedElements.Remove(SVGElement);
+            SVGElement.SVG.FocusedElement = null;
         }
 
         public async Task KeyUp(KeyboardEventArgs eventArgs)
@@ -49,18 +44,18 @@ namespace KristofferStrube.Blazor.SVGEditor
             {
                 if (eventArgs.Key == "c")
                 {
-                    await SVGElement.SVG.CopyElementAsync(SVGElement);
+                    await SVGElement.SVG.CopyElementsAsync();
                 }
-                if (eventArgs.Key == "v")
+                else if (eventArgs.Key == "v")
                 {
-                    await SVGElement.SVG.PasteElementAsync();
+                    await SVGElement.SVG.PasteElementsAsync(SVGElement);
                 }
             }
             else
             {
                 if (eventArgs.Key == "Delete")
                 {
-                    SVGElement.SVG.Remove(SVGElement);
+                    SVGElement.SVG.Remove();
                 }
             }
         }
@@ -81,6 +76,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                 if (!SVGElement.Selected)
                 {
                     SVGElement.SVG.SelectedElements.Add(SVGElement);
+                    await SVGElement.SVG.Focus(ElementReference);
                 }
                 SVGElement.SVG.EditMode = EditMode.None;
             }
@@ -92,7 +88,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                     SVGElement.SVG.EditMode = EditMode.Move;
                     SVGElement.SVG.SelectedElements.Clear();
                     SVGElement.SVG.SelectedElements.Add(SVGElement);
-                    await JSRuntime.Focus(ElementReference);
+                    await SVGElement.SVG.Focus(ElementReference);
                 }
                 StateHasChanged();
                 switch (SVGElement.SVG.EditMode)

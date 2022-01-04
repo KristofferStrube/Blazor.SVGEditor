@@ -11,8 +11,6 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public bool Selected { get; }
 
-        public bool Selectable { get; }
-
         public BoundingBox BoundingBox { get; set; }
 
         public string _StateRepresentation { get; set; }

@@ -127,7 +127,6 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override void Complete()
         {
-            SVG.Remove(this);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         [Parameter]
         public bool SnapToInteger { get; set; } = false;
 
-        private ElementReference ElementReference { get; set; }
+        private ElementReference SVGElementReference { get; set; }
 
         internal IDocument Document { get; set; }
 
@@ -105,9 +105,12 @@ namespace KristofferStrube.Blazor.SVGEditor
         [Inject]
         protected IJSRuntime JSRuntime { get; set; }
 
+        protected IJSObjectReference JSModule { get; set; }
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            BBox = await JSRuntime.BBox(ElementReference);
+            JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/KristofferStrube.Blazor.SVGEditor/KristofferStrube.Blazor.SVGEditor.js");
+            BBox = await GetBBox(SVGElementReference);
         }
 
         private Subject<ISVGElement> ElementSubject = new();
@@ -148,11 +151,11 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public ISVGElement FocusedElement { get; set; }
 
-        private List<ISVGElement> MarkedElements
+        public List<ISVGElement> MarkedElements
         {
             get
             {
-                if (FocusedElement != null)
+                if (FocusedElement != null && !SelectedElements.Contains(FocusedElement))
                 {
                     return SelectedElements.Append(FocusedElement).ToList();
                 }
@@ -187,7 +190,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                 else
                 {
                     var pos = LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-                    SelectedElements.ForEach(e => e.HandleMouseMove(eventArgs));
+                    MarkedElements.ForEach(e => e.HandleMouseMove(eventArgs));
                     MovePanner = (pos.x, pos.y);
                 }
             }
@@ -403,20 +406,20 @@ namespace KristofferStrube.Blazor.SVGEditor
             EditMode = EditMode.Scale;
         }
 
-        public void Remove(ISVGElement SVGElement)
+        public void Remove()
         {
-            Elements.Remove(SVGElement);
+            MarkedElements.ForEach(e => Elements.Remove(e));
             SelectedElements.Clear();
             UpdateInput();
             RerenderAll();
         }
 
-        public async Task CopyElementAsync(ISVGElement SVGElement)
+        public async Task CopyElementsAsync()
         {
-            await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", SVGElement.StoredHtml);
+            await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", string.Join("\n", MarkedElements.Select(e => e.StoredHtml)));
         }
 
-        public async Task PasteElementAsync(ISVGElement SVGElement = null)
+        public async Task PasteElementsAsync(ISVGElement SVGElement = null)
         {
             string clipboard = await JSRuntime.InvokeAsync<string>("navigator.clipboard.readText");
             var elementsAsHtml = Elements.Select(e => e.StoredHtml).ToList();
@@ -469,6 +472,21 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
             shape.Playing = !shape.Playing;
             shape.Rerender();
+        }
+
+        public async Task Focus(ElementReference elementReference)
+        {
+            await JSModule.InvokeVoidAsync("focus", elementReference);
+        }
+
+        public async Task UnFocus(ElementReference elementReference)
+        {
+            await JSModule.InvokeVoidAsync("unFocus", elementReference);
+        }
+
+        public async Task<BoundingBox> GetBBox(ElementReference elementReference)
+        {
+            return await JSModule.InvokeAsync<BoundingBox>("BBox", elementReference);
         }
     }
 }

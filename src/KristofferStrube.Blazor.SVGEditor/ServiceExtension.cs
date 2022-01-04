@@ -10,18 +10,6 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
             return serviceCollection.AddBlazorContextMenu();
         }
-
-        public static async Task Focus(this IJSRuntime jSRuntime, ElementReference elementReference)
-        {
-            var module = await jSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/KristofferStrube.Blazor.SVGEditor/KristofferStrube.Blazor.SVGEditor.js");
-            await module.InvokeVoidAsync("focus", elementReference);
-        }
-
-        public static async Task<BoundingBox> BBox(this IJSRuntime jSRuntime, ElementReference elementReference)
-        {
-            var module = await jSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/KristofferStrube.Blazor.SVGEditor/KristofferStrube.Blazor.SVGEditor.js");
-            return await module.InvokeAsync<BoundingBox>("BBox", elementReference);
-        }
     }
 
     public class BoundingBox

@@ -57,8 +57,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         
         public BoundingBox BoundingBox { get; set; } = new();
         public Action<ISVGElement> Changed { get; set; }
-        public bool Selectable => SVG.SelectedElements.Count == 0;
-        public bool Selected => SVG.SelectedElements.Contains(this);
+        public bool Selected => SVG.MarkedElements.Contains(this);
         public bool IsChildElement => Element.ParentElement?.TagName is "G" or null;
         public string _StateRepresentation { get; set; }
         public virtual string StateRepresentation => string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + SVG.EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y + Serialize(BoundingBox);
