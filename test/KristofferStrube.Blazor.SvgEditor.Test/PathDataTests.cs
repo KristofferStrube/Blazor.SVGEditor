@@ -289,13 +289,34 @@ namespace KristofferStrube.Blazor.SvgEditor.Test
             Assert.AreEqual(input, PathData.Parse(input).AsString());
         }
 
-        // [Test] Does not work yet
+        [Test]
         public void ImplicitZeroNumberInterpretation()
         {
             var input = "M 0 0 l.457.318";
             var inst = PathData.Parse(input)[1];
             Assert.AreEqual(0.457, inst.EndPosition.x);
             Assert.AreEqual(0.318, inst.EndPosition.y);
+            Assert.AreEqual("l 0.457 0.318", inst.ToString());
+        }
+
+        [Test]
+        public void ImplicitNegativeStartZeroNumberInterpretation()
+        {
+            var input = "M 0 0 l-.004.007";
+            var inst = PathData.Parse(input)[1];
+            Assert.AreEqual(-0.004, inst.EndPosition.x);
+            Assert.AreEqual(0.007, inst.EndPosition.y);
+            Assert.AreEqual("l -0.004 0.007", inst.ToString());
+        }
+
+        [Test]
+        public void ImplicitNegativeMiddleZeroNumberInterpretation()
+        {
+            var input = "M 0 0 l.004-.007";
+            var inst = PathData.Parse(input)[1];
+            Assert.AreEqual(0.004, inst.EndPosition.x);
+            Assert.AreEqual(-0.007, inst.EndPosition.y);
+            Assert.AreEqual("l 0.004 -0.007", inst.ToString());
         }
     }
 }

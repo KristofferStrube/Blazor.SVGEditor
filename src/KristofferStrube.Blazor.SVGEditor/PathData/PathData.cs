@@ -10,15 +10,14 @@ namespace KristofferStrube.Blazor.SVGEditor
             var strippedInput = input.Replace(",", " ").Replace("-", " -");
             List<string> instructions = new() { "M", "m", "Z", "z", "L", "l", "H", "h", "V", "v", "C", "c", "S", "s", "Q", "q", "T", "t", "A", "a" };
             var standardizedInput = instructions.Aggregate(strippedInput, (accu, curr) => accu.Replace(curr, $",{curr} ")).TrimStart(' ');
-            // This part makes numbers that have implicit 0 in front of a dot into it's real number like .142 into 0.142. Related to https://github.com/KristofferStrube/Blazor.SVGEditor/issues/1
             var removesDoubleSpaces = Regex.Replace(standardizedInput, @"\s+", " ");
-            var splitInstructionSequences = removesDoubleSpaces.Split(",");
-            var list = Enumerable.Range(1, splitInstructionSequences.Length - 1).Aggregate<int, List<IPathInstruction>>(
+            var splitInstructionSequences = removesDoubleSpaces.Split(",").Select(seq => NormalizeArgumentSequenceWithSpaceZeroDot(seq));
+            var list = Enumerable.Range(1, splitInstructionSequences.Count() - 1).Aggregate<int, List<IPathInstruction>>(
                 new List<IPathInstruction>(),
                 (list, curr) =>
                     {
                         var previous = curr == 1 ? null : list.Last();
-                        var seq = splitInstructionSequences[curr].TrimEnd(' ');
+                        var seq = splitInstructionSequences.ElementAt(curr).TrimEnd(' ');
                         var instruction = seq.Substring(0, 1);
                         if (curr == 1 && instruction is not ("M" or "m"))
                             throw new ArgumentException($"The first sequence is not a move (\"m\" or \"M\") in {strippedInput}");
@@ -137,5 +136,28 @@ namespace KristofferStrube.Blazor.SVGEditor
         public static string AsString(this double d) => Math.Round(d, 9).ToString(CultureInfo.InvariantCulture);
 
         public static double ParseAsDouble(this string s) => double.Parse(s, CultureInfo.InvariantCulture);
+
+        // Correct strings like "l-.004.007" and "l -0.004 0.007"
+        // Supplied by https://github.com/ercgeek in comment https://github.com/KristofferStrube/Blazor.SVGEditor/issues/1#issuecomment-1006024496
+        // Should try to refactor this in the future to use a more compact Regex or other performant method
+        private static string NormalizeArgumentSequenceWithSpaceZeroDot(string seq)
+        {
+            var tokens = seq.Split(' ');
+            for (int i = 0; i < tokens.Length; i++)
+            {
+                int numberOfPeriods = tokens[i].Count(f => (f == '.'));
+                if (numberOfPeriods > 1)
+                {
+                    int startIndex = tokens[i].IndexOf('.') + 1;
+                    for (int j = 1; j < numberOfPeriods; j++)
+                    {
+                        int index = tokens[i].IndexOf('.', startIndex);
+                        tokens[i] = tokens[i].Insert(index, " 0");
+                        startIndex = index + 3;
+                    }
+                }
+            }
+            return string.Join(" ", tokens);
+        }
     }
 }
