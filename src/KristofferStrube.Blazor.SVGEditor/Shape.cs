@@ -1,5 +1,6 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
+using KristofferStrube.Blazor.SVGEditor.Extensions;
 using Microsoft.AspNetCore.Components.Web;
 using static System.Text.Json.JsonSerializer;
 
@@ -36,17 +37,17 @@ namespace KristofferStrube.Blazor.SVGEditor
         public SVG SVG { get; set; }
         public string Fill
         {
-            get => Element.GetAttribute("fill") ?? string.Empty;
+            get => Element.GetAttributeOrEmpty("fill");
             set { Element.SetAttribute("fill", value); Changed.Invoke(this); }
         }
         public string Stroke
         {
-            get => Element.GetAttribute("stroke") ?? string.Empty;
+            get => Element.GetAttributeOrEmpty("stroke");
             set { Element.SetAttribute("stroke", value); Changed.Invoke(this); }
         }
         public string StrokeWidth
         {
-            get => Element.GetAttribute("stroke-width") ?? string.Empty;
+            get => Element.GetAttributeOrEmpty("stroke-width");
             set { Element.SetAttribute("stroke-width", value); Changed.Invoke(this); }
         }
         public Animate FillAnimate { get; set; }

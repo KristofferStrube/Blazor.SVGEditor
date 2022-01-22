@@ -1,4 +1,5 @@
 ﻿using AngleSharp.Dom;
+using KristofferStrube.Blazor.SVGEditor.Extensions;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace KristofferStrube.Blazor.SVGEditor
@@ -9,7 +10,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
             try
             {
-                Instructions = PathData.Parse(Element.GetAttribute("d") ?? string.Empty);
+                Instructions = PathData.Parse(Element.GetAttributeOrEmpty("d"));
             }
             catch (Exception e)
             {

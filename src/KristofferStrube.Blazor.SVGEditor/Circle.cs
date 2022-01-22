@@ -1,4 +1,5 @@
 ﻿using AngleSharp.Dom;
+using KristofferStrube.Blazor.SVGEditor.Extensions;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace KristofferStrube.Blazor.SVGEditor
@@ -10,17 +11,17 @@ namespace KristofferStrube.Blazor.SVGEditor
         public override Type Editor => typeof(CircleEditor);
 
         public double cx {
-            get { return (Element.GetAttribute("cx") ?? "0").ParseAsDouble(); }
+            get { return Element.GetAttributeOrZero("cx"); }
             set { Element.SetAttribute("cx", value.AsString()); Changed.Invoke(this); }
         }
         public double cy
         {
-            get { return (Element.GetAttribute("cy") ?? "0").ParseAsDouble(); }
+            get { return Element.GetAttributeOrZero("cy"); }
             set { Element.SetAttribute("cy", value.AsString()); Changed.Invoke(this); }
         }
         public double r
         {
-            get { return (Element.GetAttribute("r") ?? "0").ParseAsDouble(); }
+            get { return Element.GetAttributeOrZero("r"); }
             set { Element.SetAttribute("r", value.AsString()); Changed.Invoke(this); }
         }
 

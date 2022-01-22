@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <RunAOTCompilation>true</RunAOTCompilation>
     <ImplicitUsings>true</ImplicitUsings>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   

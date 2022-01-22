@@ -166,7 +166,9 @@ namespace KristofferStrube.Blazor.SVGEditor
         public (double x, double y) MovePanner { get; set; }
 
         public int? CurrentAnchor { get; set; }
+#nullable enable
         public ISVGElement? CurrentAnchorElement { get; set; }
+#nullable disable
 
         private (double x, double y)? TranslatePanner { get; set; }
 
@@ -459,7 +461,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             InputUpdated(string.Join("\n", elementsAsHtml));
         }
 
-        public async Task Ungroup(G g)
+        public void Ungroup(G g)
         {
             var elementsAsHtml = Elements.Select(e => e.StoredHtml).ToList();
             var pos = Elements.IndexOf(g);

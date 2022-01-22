@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using KristofferStrube.Blazor.SVGEditor;
 using KristofferStrube.Blazor.SVGEditor.Samples;
+using KristofferStrube.Blazor.SVGEditor.Extensions;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

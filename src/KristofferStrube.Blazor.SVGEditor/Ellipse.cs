@@ -1,4 +1,5 @@
 ﻿using AngleSharp.Dom;
+using KristofferStrube.Blazor.SVGEditor.Extensions;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace KristofferStrube.Blazor.SVGEditor
@@ -11,22 +12,22 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public double cx
         {
-            get { return (Element.GetAttribute("cx") ?? "0").ParseAsDouble(); }
+            get { return Element.GetAttributeOrZero("cx"); }
             set { Element.SetAttribute("cx", value.AsString()); Changed.Invoke(this); }
         }
         public double cy
         {
-            get { return (Element.GetAttribute("cy") ?? "0").ParseAsDouble(); }
+            get { return Element.GetAttributeOrZero("cy"); }
             set { Element.SetAttribute("cy", value.AsString()); Changed.Invoke(this); }
         }
         public double rx
         {
-            get { return (Element.GetAttribute("rx") ?? "0").ParseAsDouble(); }
+            get { return Element.GetAttributeOrZero("rx"); }
             set { Element.SetAttribute("rx", value.AsString()); Changed.Invoke(this); }
         }
         public double ry
         {
-            get { return (Element.GetAttribute("ry") ?? "0").ParseAsDouble(); }
+            get { return Element.GetAttributeOrZero("ry"); }
             set { Element.SetAttribute("ry", value.AsString()); Changed.Invoke(this); }
         }
 

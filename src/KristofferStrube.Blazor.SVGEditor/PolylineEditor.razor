@@ -7,7 +7,7 @@
             @onfocusin="FocusElement"
             @onfocusout="UnfocusElement"
             @ref=ElementReference
-            points="@SVGElement.Element.GetAttribute("points")"
+            points="@SVGElement.Element.GetAttributeOrEmpty("points")"
             fill="@SVGElement.Fill"
             stroke="@SVGElement.Stroke"
             stroke-width="@SVGElement.StrokeWidth"

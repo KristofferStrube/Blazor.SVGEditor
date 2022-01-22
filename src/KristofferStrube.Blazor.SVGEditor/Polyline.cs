@@ -1,4 +1,5 @@
 ﻿using AngleSharp.Dom;
+using KristofferStrube.Blazor.SVGEditor.Extensions;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace KristofferStrube.Blazor.SVGEditor
@@ -7,7 +8,7 @@ namespace KristofferStrube.Blazor.SVGEditor
     {
         public Polyline(IElement element, SVG svg) : base(element, svg)
         {
-            Points = StringToPoints(Element.GetAttribute("points") ?? string.Empty);
+            Points = StringToPoints(Element.GetAttributeOrEmpty("points"));
         }
 
         public override Type Editor => typeof(PolylineEditor);

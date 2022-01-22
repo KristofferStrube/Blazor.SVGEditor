@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using KristofferStrube.Blazor.SVGEditor.Extensions;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace KristofferStrube.Blazor.SVGEditor
@@ -134,8 +135,6 @@ namespace KristofferStrube.Blazor.SVGEditor
         public static string AsString(this List<IPathInstruction> pathData) => string.Join(" ", pathData.Select(p => p.ToString()));
 
         public static string AsString(this double d) => Math.Round(d, 9).ToString(CultureInfo.InvariantCulture);
-
-        public static double ParseAsDouble(this string s) => double.Parse(s, CultureInfo.InvariantCulture);
 
         // Correct strings like "l-.004.007" and "l -0.004 0.007"
         // Supplied by https://github.com/ercgeek in comment https://github.com/KristofferStrube/Blazor.SVGEditor/issues/1#issuecomment-1006024496
