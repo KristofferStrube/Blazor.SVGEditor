@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using KristofferStrube.Blazor.SVGEditor;
+using KristofferStrube.Blazor.SVGEditor.PathDataSequences;
 
 namespace KristofferStrube.Blazor.SvgEditor.Test
 {
@@ -262,8 +262,8 @@ namespace KristofferStrube.Blazor.SvgEditor.Test
             Assert.AreEqual(30, inst.EndPosition.y);
             Assert.IsInstanceOf(typeof(EllipticalArcInstruction), inst);
             var ellipticalArc = (EllipticalArcInstruction)inst;
-            Assert.AreEqual(1, ellipticalArc.rx);
-            Assert.AreEqual(1, ellipticalArc.ry);
+            Assert.AreEqual(1, ellipticalArc.Rx);
+            Assert.AreEqual(1, ellipticalArc.Ry);
             Assert.AreEqual((15, 20 - Math.Sqrt(Math.Pow(5, 2) + Math.Pow(10, 2))), ellipticalArc.ControlPointYPos);
             Assert.AreEqual((15, 20 + Math.Sqrt(Math.Pow(5, 2) + Math.Pow(10, 2))), ellipticalArc.ControlPointYNeg);
             Assert.AreEqual((15 - Math.Sqrt(Math.Pow(5, 2) + Math.Pow(10, 2)), 20), ellipticalArc.ControlPointXNeg);
@@ -280,8 +280,8 @@ namespace KristofferStrube.Blazor.SvgEditor.Test
             Assert.AreEqual(30, inst.EndPosition.y);
             Assert.IsInstanceOf(typeof(EllipticalArcInstruction), inst);
             var ellipticalArc = (EllipticalArcInstruction)inst;
-            Assert.AreEqual(1, ellipticalArc.rx);
-            Assert.AreEqual(1, ellipticalArc.ry);
+            Assert.AreEqual(1, ellipticalArc.Rx);
+            Assert.AreEqual(1, ellipticalArc.Ry);
             Assert.AreEqual((15, 20 - Math.Sqrt(Math.Pow(5, 2) + Math.Pow(10, 2))), ellipticalArc.ControlPointYPos);
             Assert.AreEqual((15, 20 + Math.Sqrt(Math.Pow(5, 2) + Math.Pow(10, 2))), ellipticalArc.ControlPointYNeg);
             Assert.AreEqual((15 - Math.Sqrt(Math.Pow(5, 2) + Math.Pow(10, 2)), 20), ellipticalArc.ControlPointXNeg);

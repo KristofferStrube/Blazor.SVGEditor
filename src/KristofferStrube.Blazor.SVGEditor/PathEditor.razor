@@ -1,4 +1,5 @@
-﻿@inherits ShapeEditor<Path>
+﻿@using KristofferStrube.Blazor.SVGEditor.PathDataSequences
+@inherits ShapeEditor<Path>
 
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement StopPropagation=@(!SVGElement.IsChildElement)>
     <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
@@ -43,7 +44,7 @@
                 <PrimaryAnchor OnMouseDown="() => AnchorSelect(j, 1)" Position=ellipticalArc.ControlPointYNeg />
                 <PrimaryAnchor OnMouseDown="() => AnchorSelect(j, 2)" Position=ellipticalArc.ControlPointXPos />
                 <PrimaryAnchor OnMouseDown="() => AnchorSelect(j, 3)" Position=ellipticalArc.ControlPointXNeg />
-                <ellipse transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) rotate(@(ellipticalArc.xAxisRotation.AsString()) @((ellipticalArc.Center.x*SVGElement.SVG.Scale).AsString()) @((ellipticalArc.Center.y*SVGElement.SVG.Scale).AsString()))" cx="@((ellipticalArc.Center.x*SVGElement.SVG.Scale).AsString())" cy="@((ellipticalArc.Center.y*SVGElement.SVG.Scale).AsString())" rx="@((ellipticalArc.EllipseRadi.Rx*SVGElement.SVG.Scale).AsString())" ry="@((ellipticalArc.EllipseRadi.Ry*SVGElement.SVG.Scale).AsString())" style="pointer-events: none;" fill="none" stroke-dasharray="4" stroke="grey" stroke-width="2"></ellipse>
+                <ellipse transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) rotate(@(ellipticalArc.XAxisRotation.AsString()) @((ellipticalArc.Center.x*SVGElement.SVG.Scale).AsString()) @((ellipticalArc.Center.y*SVGElement.SVG.Scale).AsString()))" cx="@((ellipticalArc.Center.x*SVGElement.SVG.Scale).AsString())" cy="@((ellipticalArc.Center.y*SVGElement.SVG.Scale).AsString())" rx="@((ellipticalArc.EllipseRadi.Rx*SVGElement.SVG.Scale).AsString())" ry="@((ellipticalArc.EllipseRadi.Ry*SVGElement.SVG.Scale).AsString())" style="pointer-events: none;" fill="none" stroke-dasharray="4" stroke="grey" stroke-width="2"></ellipse>
             }
             if (SVGElement.Instructions[i] is BaseControlPointPathInstruction ControlPointInstruction)
             {

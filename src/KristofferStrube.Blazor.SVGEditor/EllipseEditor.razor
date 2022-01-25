@@ -6,10 +6,10 @@
                  @onfocusin="FocusElement"
                  @onfocusout="UnfocusElement"
                  @ref=ElementReference
-                 cx=@SVGElement.cx.AsString()
-                 cy=@SVGElement.cy.AsString()
-                 rx=@SVGElement.rx.AsString()
-                 ry=@SVGElement.ry.AsString()
+                 cx=@SVGElement.Cx.AsString()
+                 cy=@SVGElement.Cy.AsString()
+                 rx=@SVGElement.Rx.AsString()
+                 ry=@SVGElement.Ry.AsString()
                  stroke="@SVGElement.Stroke"
                  stroke-width="@SVGElement.StrokeWidth"
                  fill="@SVGElement.Fill"
@@ -23,9 +23,9 @@
     </g>
     @if (SVGElement.Selected && SVGElement.SVG.EditMode != EditMode.Add)
     {
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(0)" Position="(SVGElement.cx + SVGElement.rx, SVGElement.cy)" />
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(1)" Position="(SVGElement.cx - SVGElement.rx, SVGElement.cy)" />
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(2)" Position="(SVGElement.cx, SVGElement.cy + SVGElement.ry)" />
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(3)" Position="(SVGElement.cx, SVGElement.cy - SVGElement.ry)" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(0)" Position="(SVGElement.Cx + SVGElement.Rx, SVGElement.Cy)" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(1)" Position="(SVGElement.Cx - SVGElement.Rx, SVGElement.Cy)" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(2)" Position="(SVGElement.Cx, SVGElement.Cy + SVGElement.Ry)" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(3)" Position="(SVGElement.Cx, SVGElement.Cy - SVGElement.Ry)" />
     }
 </ContextMenuTrigger>

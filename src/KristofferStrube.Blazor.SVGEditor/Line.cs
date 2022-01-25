@@ -10,43 +10,41 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override Type Editor => typeof(LineEditor);
 
-        public double x1
+        public double X1
         {
-            get { return Element.GetAttributeOrZero("x1"); }
+            get => Element.GetAttributeOrZero("x1");
             set { Element.SetAttribute("x1", value.AsString()); Changed.Invoke(this); }
         }
-        public double y1
+        public double Y1
         {
-            get { return Element.GetAttributeOrZero("y1"); }
+            get => Element.GetAttributeOrZero("y1");
             set { Element.SetAttribute("y1", value.AsString()); Changed.Invoke(this); }
         }
-        public double x2
+        public double X2
         {
-            get { return Element.GetAttributeOrZero("x2"); }
+            get => Element.GetAttributeOrZero("x2");
             set { Element.SetAttribute("x2", value.AsString()); Changed.Invoke(this); }
         }
-        public double y2
+        public double Y2
         {
-            get { return Element.GetAttributeOrZero("y2"); }
+            get => Element.GetAttributeOrZero("y2");
             set { Element.SetAttribute("y2", value.AsString()); Changed.Invoke(this); }
         }
 
-        private (double x, double y) AddPos { get; set; }
-
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
-            var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+            (double x, double y) = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             switch (SVG.EditMode)
             {
                 case EditMode.Add:
-                    (x2, y2) = pos;
+                    (X2, Y2) = (x, y);
                     break;
                 case EditMode.Move:
-                    var diff = (x: pos.x - SVG.MovePanner.x, y: pos.y - SVG.MovePanner.y);
-                    x1 += diff.x;
-                    y1 += diff.y;
-                    x2 += diff.x;
-                    y2 += diff.y;
+                    (double x, double y) diff = (x: x - SVG.MovePanner.x, y: y - SVG.MovePanner.y);
+                    X1 += diff.x;
+                    Y1 += diff.y;
+                    X2 += diff.x;
+                    Y2 += diff.y;
                     break;
                 case EditMode.MoveAnchor:
                     if (SVG.CurrentAnchor == null)
@@ -56,10 +54,10 @@ namespace KristofferStrube.Blazor.SVGEditor
                     switch (SVG.CurrentAnchor)
                     {
                         case 0:
-                            (x1, y1) = pos;
+                            (X1, Y1) = (x, y);
                             break;
                         case 1:
-                            (x2, y2) = pos;
+                            (X2, Y2) = (x, y);
                             break;
                     }
                     break;
@@ -82,17 +80,19 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public static void AddNew(SVG SVG)
         {
-            var element = SVG.Document.CreateElement("LINE");
+            IElement element = SVG.Document.CreateElement("LINE");
 
-            var line = new Line(element, SVG);
-            line.Changed = SVG.UpdateInput;
-            line.Stroke = "black";
-            line.StrokeWidth = "3";
+            Line line = new(element, SVG)
+            {
+                Changed = SVG.UpdateInput,
+                Stroke = "black",
+                StrokeWidth = "3"
+            };
             SVG.EditMode = EditMode.Add;
 
-            var start = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
-            (line.x1, line.y1) = start;
-            (line.x2, line.y2) = start;
+            (double x, double y) start = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
+            (line.X1, line.Y1) = start;
+            (line.X2, line.Y2) = start;
 
             SVG.SelectedElements.Clear();
             SVG.SelectedElements.Add(line);

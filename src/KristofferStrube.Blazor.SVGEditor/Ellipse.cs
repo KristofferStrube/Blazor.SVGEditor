@@ -10,58 +10,58 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override Type Editor => typeof(EllipseEditor);
 
-        public double cx
+        public double Cx
         {
-            get { return Element.GetAttributeOrZero("cx"); }
+            get => Element.GetAttributeOrZero("cx");
             set { Element.SetAttribute("cx", value.AsString()); Changed.Invoke(this); }
         }
-        public double cy
+        public double Cy
         {
-            get { return Element.GetAttributeOrZero("cy"); }
+            get => Element.GetAttributeOrZero("cy");
             set { Element.SetAttribute("cy", value.AsString()); Changed.Invoke(this); }
         }
-        public double rx
+        public double Rx
         {
-            get { return Element.GetAttributeOrZero("rx"); }
+            get => Element.GetAttributeOrZero("rx");
             set { Element.SetAttribute("rx", value.AsString()); Changed.Invoke(this); }
         }
-        public double ry
+        public double Ry
         {
-            get { return Element.GetAttributeOrZero("ry"); }
+            get => Element.GetAttributeOrZero("ry");
             set { Element.SetAttribute("ry", value.AsString()); Changed.Invoke(this); }
         }
 
-        private double r { get; set; }
+        private double _r;
 
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
-            var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+            (double x, double y) = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             switch (SVG.EditMode)
             {
                 case EditMode.Add:
-                    if (r == 0)
+                    if (_r == 0)
                     {
-                        rx = Math.Sqrt(Math.Pow(cx - pos.x, 2) + Math.Pow(cy - pos.y, 2));
-                        ry = Math.Sqrt(Math.Pow(cx - pos.x, 2) + Math.Pow(cy - pos.y, 2));
+                        Rx = Math.Sqrt(Math.Pow(Cx - x, 2) + Math.Pow(Cy - y, 2));
+                        Ry = Math.Sqrt(Math.Pow(Cx - x, 2) + Math.Pow(Cy - y, 2));
                     }
                     else
                     {
-                        if (Math.Abs(pos.x - cx) < Math.Abs(pos.y - cy))
+                        if (Math.Abs(x - Cx) < Math.Abs(y - Cy))
                         {
-                            rx = r;
-                            ry = Math.Abs(pos.y - cy);
+                            Rx = _r;
+                            Ry = Math.Abs(y - Cy);
                         }
                         else
                         {
-                            rx = Math.Abs(pos.x - cx);
-                            ry = r;
+                            Rx = Math.Abs(x - Cx);
+                            Ry = _r;
                         }
                     }
                     break;
                 case EditMode.Move:
-                    var diff = (x: pos.x - SVG.MovePanner.x, y: pos.y - SVG.MovePanner.y);
-                    cx += diff.x;
-                    cy += diff.y;
+                    (double x, double y) diff = (x: x - SVG.MovePanner.x, y: y - SVG.MovePanner.y);
+                    Cx += diff.x;
+                    Cy += diff.y;
                     break;
                 case EditMode.MoveAnchor:
                     if (SVG.CurrentAnchor == null)
@@ -72,11 +72,11 @@ namespace KristofferStrube.Blazor.SVGEditor
                     {
                         case 0:
                         case 1:
-                            rx = Math.Abs(pos.x - cx);
+                            Rx = Math.Abs(x - Cx);
                             break;
                         case 2:
                         case 3:
-                            ry = Math.Abs(pos.y - cy);
+                            Ry = Math.Abs(y - Cy);
                             break;
                     }
                     break;
@@ -91,9 +91,9 @@ namespace KristofferStrube.Blazor.SVGEditor
                     SVG.EditMode = EditMode.None;
                     break;
                 case EditMode.Add:
-                    if (r == 0)
+                    if (_r == 0)
                     {
-                        r = rx;
+                        _r = Rx;
                     }
                     else
                     {
@@ -109,17 +109,19 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public static void AddNew(SVG SVG)
         {
-            var element = SVG.Document.CreateElement("ELLIPSE");
+            IElement element = SVG.Document.CreateElement("ELLIPSE");
 
-            var ellipse = new Ellipse(element, SVG);
-            ellipse.Changed = SVG.UpdateInput;
-            ellipse.Stroke = "black";
-            ellipse.StrokeWidth = "1";
-            ellipse.Fill = "lightgrey";
+            Ellipse ellipse = new(element, SVG)
+            {
+                Changed = SVG.UpdateInput,
+                Stroke = "black",
+                StrokeWidth = "1",
+                Fill = "lightgrey"
+            };
             SVG.EditMode = EditMode.Add;
 
-            var startPos = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
-            (ellipse.cx, ellipse.cy) = startPos;
+            (double x, double y) startPos = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
+            (ellipse.Cx, ellipse.Cy) = startPos;
 
             SVG.SelectedElements.Clear();
             SVG.SelectedElements.Add(ellipse);

@@ -21,11 +21,11 @@ namespace KristofferStrube.Blazor.SVGEditor
             Changed.Invoke(this);
         }
 
-        public string PointsToString(List<(double x, double y)> points)
+        public static string PointsToString(List<(double x, double y)> points)
         {
             return string.Join(" ", points.Select(point => $"{point.x.AsString()},{point.y.AsString()}"));
         }
-        public List<(double x, double y)> StringToPoints(string points)
+        public static List<(double x, double y)> StringToPoints(string points)
         {
             if (points == string.Empty)
             {
@@ -36,7 +36,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
-            var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+            (double x, double y) = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             switch (SVG.EditMode)
             {
                 case EditMode.MoveAnchor:
@@ -44,22 +44,22 @@ namespace KristofferStrube.Blazor.SVGEditor
                     {
                         SVG.CurrentAnchor = 0;
                     }
-                    Points[(int)SVG.CurrentAnchor] = (pos.x, pos.y);
+                    Points[(int)SVG.CurrentAnchor] = (x, y);
                     UpdatePoints();
                     break;
                 case EditMode.Move:
-                    var diff = (x: pos.x - SVG.MovePanner.x, y: pos.y - SVG.MovePanner.y);
+                    (double x, double y) diff = (x: x - SVG.MovePanner.x, y: y - SVG.MovePanner.y);
                     Points = Points.Select(point => { point.x += diff.x; point.y += diff.y; return point; }).ToList();
                     UpdatePoints();
                     break;
                 case EditMode.Add:
                     if (Points.Count == 0)
                     {
-                        var startPos = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
+                        (double x, double y) startPos = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
                         Points.Add((startPos.x, startPos.y));
-                        Points.Add(pos);
+                        Points.Add((x, y));
                     }
-                    Points[^1] = pos;
+                    Points[^1] = (x, y);
                     UpdatePoints();
                     break;
             }
@@ -67,18 +67,13 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override void HandleMouseUp(MouseEventArgs eventArgs)
         {
-            var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+            (double x, double y) = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             switch (SVG.EditMode)
             {
                 case EditMode.MoveAnchor:
-                    if (pos.x < 50 && pos.y < 50)
-                    {
-                        Points.RemoveAt((int)SVG.CurrentAnchor);
-                        UpdatePoints();
-                    }
                     SVG.CurrentAnchor = null;
                     SVG.EditMode = EditMode.None;
-                    if (Points.Count() == 0)
+                    if (Points.Count == 0)
                     {
                         SVG.Elements.Remove(this);
                         SVG.SelectedElements.Clear();
@@ -89,7 +84,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                     SVG.EditMode = EditMode.None;
                     break;
                 case EditMode.Add:
-                    Points.Add(pos);
+                    Points.Add((x, y));
                     break;
             }
         }
@@ -100,13 +95,15 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public static void AddNew(SVG SVG)
         {
-            var element = SVG.Document.CreateElement("POLYLINE");
+            IElement element = SVG.Document.CreateElement("POLYLINE");
 
-            var polyline = new Polyline(element, SVG);
-            polyline.Changed = SVG.UpdateInput;
-            polyline.Stroke = "black";
-            polyline.StrokeWidth = "3";
-            polyline.Fill = "none";
+            Polyline polyline = new(element, SVG)
+            {
+                Changed = SVG.UpdateInput,
+                Stroke = "black",
+                StrokeWidth = "3",
+                Fill = "none"
+            };
             SVG.EditMode = EditMode.Add;
 
             SVG.SelectedElements.Clear();

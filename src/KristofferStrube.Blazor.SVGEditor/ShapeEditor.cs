@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
 
 namespace KristofferStrube.Blazor.SVGEditor
 {
@@ -15,12 +14,12 @@ namespace KristofferStrube.Blazor.SVGEditor
         {
             if (SVGElement.SVG.EditMode == EditMode.Scale || (SVGElement is G && SVGElement.Selected))
             {
-                var BBox = await SVGElement.SVG.GetBBox(ElementReference);
-                var pos = SVGElement.SVG.LocalDetransform((BBox.x - SVGElement.SVG.BBox.x, BBox.y - SVGElement.SVG.BBox.y));
+                BoundingBox BBox = await SVGElement.SVG.GetBBox(ElementReference);
+                (double x, double y) = SVGElement.SVG.LocalDetransform((BBox.x - SVGElement.SVG.BBox.x, BBox.y - SVGElement.SVG.BBox.y));
                 SVGElement.BoundingBox = new BoundingBox()
                 {
-                    x = pos.x,
-                    y = pos.y,
+                    x = x,
+                    y = y,
                     height = BBox.height / SVGElement.SVG.Scale,
                     width = BBox.width / SVGElement.SVG.Scale
                 };
@@ -39,7 +38,11 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public async Task KeyUp(KeyboardEventArgs eventArgs)
         {
-            if (SVGElement.IsChildElement) return;
+            if (SVGElement.IsChildElement)
+            {
+                return;
+            }
+
             if (eventArgs.CtrlKey)
             {
                 if (eventArgs.Key == "c")
@@ -69,8 +72,16 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public async Task Select(MouseEventArgs eventArgs)
         {
-            if (SVGElement.IsChildElement) return;
-            if (SVGElement.SVG.EditMode is EditMode.Add) return;
+            if (SVGElement.IsChildElement)
+            {
+                return;
+            }
+
+            if (SVGElement.SVG.EditMode is EditMode.Add)
+            {
+                return;
+            }
+
             if (eventArgs.CtrlKey)
             {
                 if (!SVGElement.Selected)
@@ -105,7 +116,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         protected override bool ShouldRender()
         {
-            var StateRepresentation = SVGElement.StateRepresentation;
+            string StateRepresentation = SVGElement.StateRepresentation;
             if (SVGElement._StateRepresentation != StateRepresentation)
             {
                 SVGElement._StateRepresentation = StateRepresentation;

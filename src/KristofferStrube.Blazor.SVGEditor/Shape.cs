@@ -19,7 +19,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                 {
                     if (child.GetAttribute("attributeName") is string attributeName)
                     {
-                        var animate = new Animate(this, child);
+                        Animate animate = new(this, child);
                         switch (attributeName)
                         {
                             case "fill": { FillAnimate = animate; break; }
@@ -55,14 +55,18 @@ namespace KristofferStrube.Blazor.SVGEditor
         public Animate StrokeWidthAnimate { get; set; }
         public bool Playing { get; set; }
         public bool HasAnimation => FillAnimate is not null || StrokeAnimate is not null || StrokeWidthAnimate is not null;
-        
+
         public BoundingBox BoundingBox { get; set; } = new();
         public Action<ISVGElement> Changed { get; set; }
         public bool Selected => SVG.MarkedElements.Contains(this);
         public bool IsChildElement => Element.ParentElement?.TagName is "G" or null;
         public string _StateRepresentation { get; set; }
         public virtual string StateRepresentation => string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + SVG.EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y + Serialize(BoundingBox);
-        public virtual void UpdateHtml() => StoredHtml = Element.ToHtml();
+        public virtual void UpdateHtml()
+        {
+            StoredHtml = Element.ToHtml();
+        }
+
         public string StoredHtml { get; set; }
         public virtual void Rerender()
         {

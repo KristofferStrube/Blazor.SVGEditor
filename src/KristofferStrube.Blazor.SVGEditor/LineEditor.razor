@@ -6,10 +6,10 @@
               @onfocusin="FocusElement"
               @onfocusout="UnfocusElement"
               @ref=ElementReference
-              x1=@SVGElement.x1.AsString()
-              y1=@SVGElement.y1.AsString()
-              x2=@SVGElement.x2.AsString()
-              y2=@SVGElement.y2.AsString()
+              x1=@SVGElement.X1.AsString()
+              y1=@SVGElement.Y1.AsString()
+              x2=@SVGElement.X2.AsString()
+              y2=@SVGElement.Y2.AsString()
               stroke="@SVGElement.Stroke"
               stroke-width="@SVGElement.StrokeWidth"
               fill="@SVGElement.Fill"
@@ -23,7 +23,7 @@
     </g>
     @if (SVGElement.Selected && SVGElement.SVG.EditMode != EditMode.Add)
     {
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(0)" Position="(SVGElement.x1, SVGElement.y1)" />
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(1)" Position="(SVGElement.x2, SVGElement.y2)" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(0)" Position="(SVGElement.X1, SVGElement.Y1)" />
+        <PrimaryAnchor OnMouseDown="() => AnchorSelect(1)" Position="(SVGElement.X2, SVGElement.Y2)" />
     }
 </ContextMenuTrigger>

@@ -10,33 +10,34 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override Type Editor => typeof(CircleEditor);
 
-        public double cx {
-            get { return Element.GetAttributeOrZero("cx"); }
+        public double Cx
+        {
+            get => Element.GetAttributeOrZero("cx");
             set { Element.SetAttribute("cx", value.AsString()); Changed.Invoke(this); }
         }
-        public double cy
+        public double Cy
         {
-            get { return Element.GetAttributeOrZero("cy"); }
+            get => Element.GetAttributeOrZero("cy");
             set { Element.SetAttribute("cy", value.AsString()); Changed.Invoke(this); }
         }
-        public double r
+        public double R
         {
-            get { return Element.GetAttributeOrZero("r"); }
+            get => Element.GetAttributeOrZero("r");
             set { Element.SetAttribute("r", value.AsString()); Changed.Invoke(this); }
         }
 
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
-            var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+            (double x, double y) = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             switch (SVG.EditMode)
             {
                 case EditMode.Add:
-                    r = Math.Sqrt(Math.Pow(cx-pos.x,2) + Math.Pow(cy - pos.y, 2));
+                    R = Math.Sqrt(Math.Pow(Cx - x, 2) + Math.Pow(Cy - y, 2));
                     break;
                 case EditMode.Move:
-                    var diff = (x: pos.x - SVG.MovePanner.x, y: pos.y - SVG.MovePanner.y);
-                    cx += diff.x;
-                    cy += diff.y;
+                    (double x, double y) diff = (x: x - SVG.MovePanner.x, y: y - SVG.MovePanner.y);
+                    Cx += diff.x;
+                    Cy += diff.y;
                     break;
                 case EditMode.MoveAnchor:
                     if (SVG.CurrentAnchor == null)
@@ -47,11 +48,11 @@ namespace KristofferStrube.Blazor.SVGEditor
                     {
                         case 0:
                         case 1:
-                            r = Math.Abs(pos.x - cx);
+                            R = Math.Abs(x - Cx);
                             break;
                         case 2:
                         case 3:
-                            r = Math.Abs(pos.y - cy);
+                            R = Math.Abs(y - Cy);
                             break;
                     }
                     break;
@@ -74,17 +75,19 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public static void AddNew(SVG SVG)
         {
-            var element = SVG.Document.CreateElement("CIRCLE");
+            IElement element = SVG.Document.CreateElement("CIRCLE");
 
-            var circle = new Circle(element, SVG);
-            circle.Changed = SVG.UpdateInput;
-            circle.Stroke = "black";
-            circle.StrokeWidth = "1";
-            circle.Fill = "lightgrey";
+            Circle circle = new(element, SVG)
+            {
+                Changed = SVG.UpdateInput,
+                Stroke = "black",
+                StrokeWidth = "1",
+                Fill = "lightgrey"
+            };
             SVG.EditMode = EditMode.Add;
 
-            var startPos = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
-            (circle.cx, circle.cy) = startPos;
+            (double x, double y) startPos = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
+            (circle.Cx, circle.Cy) = startPos;
 
             SVG.SelectedElements.Clear();
             SVG.SelectedElements.Add(circle);

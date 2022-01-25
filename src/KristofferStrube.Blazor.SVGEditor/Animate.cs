@@ -14,10 +14,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         public Shape Shape { get; set; }
         public IElement Element { get; set; }
 
-        public int FrameCount
-        {
-            get => Values.Count;
-        }
+        public int FrameCount => Values.Count;
 
         public void UpdateValues()
         {
@@ -28,13 +25,17 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public List<string> Values { get; set; }
 
-        private List<string> StringToValues(string attribute)
+        private static List<string> StringToValues(string attribute)
         {
-            if (attribute == null) return new List<string>();
+            if (attribute == null)
+            {
+                return new List<string>();
+            }
+
             return attribute.Split(";").Select(e => e.Trim()).ToList();
         }
 
-        private string ValuesToString(List<string> values)
+        private static string ValuesToString(List<string> values)
         {
             return string.Join(";", values);
         }

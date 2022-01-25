@@ -1,7 +1,6 @@
-using Microsoft.AspNetCore.Components.Web;
 using AngleSharp.Dom;
+using Microsoft.AspNetCore.Components.Web;
 using static System.Text.Json.JsonSerializer;
-using AngleSharp;
 
 namespace KristofferStrube.Blazor.SVGEditor
 {
@@ -18,7 +17,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                 }
                 else
                 {
-                    ChildSVGElement = new NonImplmentedElement();
+                    throw new NotImplementedException($"Tag not supported:\n {child.OuterHtml}");
                 }
                 ChildSVGElement.Changed = UpdateInput;
                 return ChildSVGElement;
@@ -51,7 +50,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
-            var pos = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+            (double x, double y) = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             switch (SVG.EditMode)
             {
                 case EditMode.Move:
@@ -59,7 +58,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                     {
                         child.HandleMouseMove(eventArgs);
                     }
-                    var diff = (x: pos.x - SVG.MovePanner.x, y: pos.y - SVG.MovePanner.y);
+                    (double x, double y) diff = (x: x - SVG.MovePanner.x, y: y - SVG.MovePanner.y);
                     BoundingBox.x += diff.x;
                     BoundingBox.y += diff.y;
                     break;
