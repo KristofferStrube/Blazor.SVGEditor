@@ -8,7 +8,7 @@ namespace KristofferStrube.Blazor.SVGEditor
     {
         public Polyline(IElement element, SVG svg) : base(element, svg)
         {
-            Points = StringToPoints(Element.GetAttributeOrEmpty("points"));
+            Points = Element.GetAttributeOrEmpty("points").ToPoints();
         }
 
         public override Type Editor => typeof(PolylineEditor);
@@ -24,14 +24,6 @@ namespace KristofferStrube.Blazor.SVGEditor
         public static string PointsToString(List<(double x, double y)> points)
         {
             return string.Join(" ", points.Select(point => $"{point.x.AsString()},{point.y.AsString()}"));
-        }
-        public static List<(double x, double y)> StringToPoints(string points)
-        {
-            if (points == string.Empty)
-            {
-                return new();
-            }
-            return points.Split(" ").Select(p => (x: p.Split(",")[0].ParseAsDouble(), y: p.Split(",")[1].ParseAsDouble())).ToList();
         }
 
         public override void HandleMouseMove(MouseEventArgs eventArgs)
