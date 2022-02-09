@@ -24,6 +24,8 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public List<IPathInstruction> Instructions { get; set; }
 
+        public override List<(double x, double y)> SelectionPoints => throw new NotImplementedException();
+
         public void UpdateData()
         {
             if (Instructions.Count > 0)
@@ -145,11 +147,11 @@ namespace KristofferStrube.Blazor.SVGEditor
                             (double x, double y) moveDiff = (x: x - SVG.MovePanner.x, y: y - SVG.MovePanner.y);
                             SVG.MovePanner = (x, y);
                             UpdatePoints(((double x, double y) point) => (point.x + moveDiff.x, point.y + moveDiff.y), (1, 1));
-                            BoundingBox.x += moveDiff.x;
-                            BoundingBox.y += moveDiff.y;
+                            BoundingBox.X += moveDiff.x;
+                            BoundingBox.Y += moveDiff.y;
                             break;
                         case 0:
-                            switch ((width: BoundingBox.width + BoundingBox.x - x, height: BoundingBox.height + BoundingBox.y - y))
+                            switch ((width: BoundingBox.Width + BoundingBox.X - x, height: BoundingBox.Height + BoundingBox.Y - y))
                             {
                                 case var dim when dim.width < 0 && dim.height < 0:
                                     SVG.CurrentAnchor = 2;
@@ -161,14 +163,14 @@ namespace KristofferStrube.Blazor.SVGEditor
                                     SVG.CurrentAnchor = 3;
                                     break;
                             }
-                            Func<(double x, double y), (double, double)> topLeftScaler = ((double x, double y) point) => ((point.x - BoundingBox.x - BoundingBox.width) * (BoundingBox.width + BoundingBox.x - x) / BoundingBox.width + BoundingBox.x + BoundingBox.width, (point.y - BoundingBox.y - BoundingBox.height) * (BoundingBox.height + BoundingBox.y - y) / BoundingBox.height + BoundingBox.y + BoundingBox.height);
-                            UpdatePoints(topLeftScaler, ((BoundingBox.width + BoundingBox.x - x) / BoundingBox.width, (BoundingBox.height + BoundingBox.y - y) / BoundingBox.height));
-                            BoundingBox.width += BoundingBox.x - x;
-                            BoundingBox.height += BoundingBox.y - y;
-                            (BoundingBox.x, BoundingBox.y) = (x, y);
+                            Func<(double x, double y), (double, double)> topLeftScaler = ((double x, double y) point) => ((point.x - BoundingBox.X - BoundingBox.Width) * (BoundingBox.Width + BoundingBox.X - x) / BoundingBox.Width + BoundingBox.X + BoundingBox.Width, (point.y - BoundingBox.Y - BoundingBox.Height) * (BoundingBox.Height + BoundingBox.Y - y) / BoundingBox.Height + BoundingBox.Y + BoundingBox.Height);
+                            UpdatePoints(topLeftScaler, ((BoundingBox.Width + BoundingBox.X - x) / BoundingBox.Width, (BoundingBox.Height + BoundingBox.Y - y) / BoundingBox.Height));
+                            BoundingBox.Width += BoundingBox.X - x;
+                            BoundingBox.Height += BoundingBox.Y - y;
+                            (BoundingBox.X, BoundingBox.Y) = (x, y);
                             break;
                         case 1:
-                            switch ((width: x - BoundingBox.x, height: BoundingBox.height + BoundingBox.y - y))
+                            switch ((width: x - BoundingBox.X, height: BoundingBox.Height + BoundingBox.Y - y))
                             {
                                 case var dim when dim.width < 0 && dim.height < 0:
                                     SVG.CurrentAnchor = 3;
@@ -180,14 +182,14 @@ namespace KristofferStrube.Blazor.SVGEditor
                                     SVG.CurrentAnchor = 2;
                                     break;
                             }
-                            Func<(double x, double y), (double, double)> topRightScaler = ((double x, double y) point) => ((point.x - BoundingBox.x) * (x - BoundingBox.x) / BoundingBox.width + BoundingBox.x, (point.y - BoundingBox.y - BoundingBox.height) * (BoundingBox.height + BoundingBox.y - y) / BoundingBox.height + BoundingBox.y + BoundingBox.height);
+                            Func<(double x, double y), (double, double)> topRightScaler = ((double x, double y) point) => ((point.x - BoundingBox.X) * (x - BoundingBox.X) / BoundingBox.Width + BoundingBox.X, (point.y - BoundingBox.Y - BoundingBox.Height) * (BoundingBox.Height + BoundingBox.Y - y) / BoundingBox.Height + BoundingBox.Y + BoundingBox.Height);
                             UpdatePoints(topRightScaler, (1, 1));
-                            BoundingBox.width = x - BoundingBox.x;
-                            BoundingBox.height += BoundingBox.y - y;
-                            (BoundingBox.x, BoundingBox.y) = (x - BoundingBox.width, y);
+                            BoundingBox.Width = x - BoundingBox.X;
+                            BoundingBox.Height += BoundingBox.Y - y;
+                            (BoundingBox.X, BoundingBox.Y) = (x - BoundingBox.Width, y);
                             break;
                         case 2:
-                            switch ((width: x - BoundingBox.x, height: y - BoundingBox.y))
+                            switch ((width: x - BoundingBox.X, height: y - BoundingBox.Y))
                             {
                                 case var dim when dim.width < 0 && dim.height < 0:
                                     SVG.CurrentAnchor = 0;
@@ -199,14 +201,14 @@ namespace KristofferStrube.Blazor.SVGEditor
                                     SVG.CurrentAnchor = 1;
                                     break;
                             }
-                            Func<(double x, double y), (double, double)> bottomRightScaler = ((double x, double y) point) => ((point.x - BoundingBox.x) * (x - BoundingBox.x) / BoundingBox.width + BoundingBox.x, (point.y - BoundingBox.y) * (y - BoundingBox.y) / BoundingBox.height + BoundingBox.y);
+                            Func<(double x, double y), (double, double)> bottomRightScaler = ((double x, double y) point) => ((point.x - BoundingBox.X) * (x - BoundingBox.X) / BoundingBox.Width + BoundingBox.X, (point.y - BoundingBox.Y) * (y - BoundingBox.Y) / BoundingBox.Height + BoundingBox.Y);
                             UpdatePoints(bottomRightScaler, (1, 1));
-                            BoundingBox.width = x - BoundingBox.x;
-                            BoundingBox.height = y - BoundingBox.y;
-                            (BoundingBox.x, BoundingBox.y) = (x - BoundingBox.width, y - BoundingBox.height);
+                            BoundingBox.Width = x - BoundingBox.X;
+                            BoundingBox.Height = y - BoundingBox.Y;
+                            (BoundingBox.X, BoundingBox.Y) = (x - BoundingBox.Width, y - BoundingBox.Height);
                             break;
                         case 3:
-                            switch ((width: BoundingBox.width + BoundingBox.x - x, height: y - BoundingBox.y))
+                            switch ((width: BoundingBox.Width + BoundingBox.X - x, height: y - BoundingBox.Y))
                             {
                                 case var dim when dim.width < 0 && dim.height < 0:
                                     SVG.CurrentAnchor = 1;
@@ -218,11 +220,11 @@ namespace KristofferStrube.Blazor.SVGEditor
                                     SVG.CurrentAnchor = 0;
                                     break;
                             }
-                            Func<(double x, double y), (double, double)> bottomLeftScaler = ((double x, double y) point) => ((point.x - BoundingBox.x - BoundingBox.width) * (BoundingBox.width + BoundingBox.x - x) / BoundingBox.width + BoundingBox.x + BoundingBox.width, (point.y - BoundingBox.y) * (y - BoundingBox.y) / BoundingBox.height + BoundingBox.y);
+                            Func<(double x, double y), (double, double)> bottomLeftScaler = ((double x, double y) point) => ((point.x - BoundingBox.X - BoundingBox.Width) * (BoundingBox.Width + BoundingBox.X - x) / BoundingBox.Width + BoundingBox.X + BoundingBox.Width, (point.y - BoundingBox.Y) * (y - BoundingBox.Y) / BoundingBox.Height + BoundingBox.Y);
                             UpdatePoints(bottomLeftScaler, (1, 1));
-                            BoundingBox.width += BoundingBox.x - x;
-                            BoundingBox.height = y - BoundingBox.y;
-                            (BoundingBox.x, BoundingBox.y) = (x, y - BoundingBox.height);
+                            BoundingBox.Width += BoundingBox.X - x;
+                            BoundingBox.Height = y - BoundingBox.Y;
+                            (BoundingBox.X, BoundingBox.Y) = (x, y - BoundingBox.Height);
                             break;
                     }
                     UpdateData();

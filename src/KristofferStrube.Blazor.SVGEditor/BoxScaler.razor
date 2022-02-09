@@ -1,0 +1,28 @@
+﻿@if (X != 0 && Y != 0 && Height != 0 && Width != 0)
+{
+    <rect x=@X.AsString() y=@Y.AsString() width=@Width.AsString() height=@Height.AsString() fill="grey" fill-opacity="0.2" stroke="grey" stroke-dasharray="4" stroke-width="1" style="pointer-events:none;" />
+
+    <PrimaryAnchor OnMouseDown="() => AnchorOnMouseDown(-1, 0)" Position="(Box.X, Box.Y)" />
+    <PrimaryAnchor OnMouseDown="() => AnchorOnMouseDown(-1, 1)" Position="(Box.X+Box.Width, Box.Y)" />
+    <PrimaryAnchor OnMouseDown="() => AnchorOnMouseDown(-1, 2)" Position="(Box.X+Box.Width, Box.Y+Box.Height)" />
+    <PrimaryAnchor OnMouseDown="() => AnchorOnMouseDown(-1, 3)" Position="(Box.X, Box.Y+Box.Height)" />
+}
+
+@code {
+    [Parameter]
+    public Box Box { get; set; }
+
+    [Parameter]
+    public Action<int, int> AnchorOnMouseDown { get; set; }
+
+    [CascadingParameter]
+    protected SVG SVG { get; set; }
+
+    private double X => SVG.LocalTransform((Box.X, Box.Y)).x + (Box.Width >= 0 ? 0 : -Width);
+
+    private double Y => SVG.LocalTransform((Box.X, Box.Y)).y + (Box.Height >= 0 ? 0 : -Height);
+
+    private double Height => Math.Abs(Box.Height * SVG.Scale);
+
+    private double Width => Math.Abs(Box.Width * SVG.Scale);
+}

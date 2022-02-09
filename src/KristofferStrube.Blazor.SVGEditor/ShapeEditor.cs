@@ -10,18 +10,18 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public ElementReference ElementReference { get; set; }
 
-        protected override async Task OnParametersSetAsync()
+        protected override async Task OnAfterRenderAsync(bool _)
         {
             if (SVGElement.SVG.EditMode == EditMode.Scale || (SVGElement is G && SVGElement.Selected))
             {
-                BoundingBox BBox = await SVGElement.SVG.GetBBox(ElementReference);
-                (double x, double y) = SVGElement.SVG.LocalDetransform((BBox.x - SVGElement.SVG.BBox.x, BBox.y - SVGElement.SVG.BBox.y));
-                SVGElement.BoundingBox = new BoundingBox()
+                Box BBox = await SVGElement.SVG.GetBoundingBox(ElementReference);
+                (double x, double y) = SVGElement.SVG.LocalDetransform((BBox.X - SVGElement.SVG.BBox.X, BBox.Y - SVGElement.SVG.BBox.Y));
+                SVGElement.BoundingBox = new Box()
                 {
-                    x = x,
-                    y = y,
-                    height = BBox.height / SVGElement.SVG.Scale,
-                    width = BBox.width / SVGElement.SVG.Scale
+                    X = x,
+                    Y = y,
+                    Height = BBox.Height / SVGElement.SVG.Scale,
+                    Width = BBox.Width / SVGElement.SVG.Scale
                 };
             }
         }
@@ -102,14 +102,17 @@ namespace KristofferStrube.Blazor.SVGEditor
                     await SVGElement.SVG.Focus(ElementReference);
                 }
                 StateHasChanged();
-                switch (SVGElement.SVG.EditMode)
+                if (eventArgs.Button == 0)
                 {
-                    case EditMode.None:
-                        SVGElement.SVG.EditMode = EditMode.Move;
-                        break;
-                    case EditMode.Scale:
-                        SVGElement.SVG.CurrentAnchor = -1;
-                        break;
+                    switch (SVGElement.SVG.EditMode)
+                    {
+                        case EditMode.None:
+                            SVGElement.SVG.EditMode = EditMode.Move;
+                            break;
+                        case EditMode.Scale:
+                            SVGElement.SVG.CurrentAnchor = -1;
+                            break;
+                    }
                 }
             }
         }
@@ -117,9 +120,9 @@ namespace KristofferStrube.Blazor.SVGEditor
         protected override bool ShouldRender()
         {
             string StateRepresentation = SVGElement.StateRepresentation;
-            if (SVGElement._StateRepresentation != StateRepresentation)
+            if (SVGElement._stateRepresentation != StateRepresentation)
             {
-                SVGElement._StateRepresentation = StateRepresentation;
+                SVGElement._stateRepresentation = StateRepresentation;
                 return true;
             }
             return false;

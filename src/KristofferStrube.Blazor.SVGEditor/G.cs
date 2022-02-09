@@ -32,9 +32,11 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public override Type Editor => typeof(GEditor);
 
-        public override string StateRepresentation => string.Join("-", ChildElements.Select(c => c._StateRepresentation)) + string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + SVG.EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y + Serialize(BoundingBox);
+        public override string StateRepresentation => string.Join("-", ChildElements.Select(c => c.StateRepresentation)) + string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + SVG.EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y + Serialize(BoundingBox);
 
         public List<ISVGElement> ChildElements { get; set; } = new List<ISVGElement>();
+
+        public override List<(double x, double y)> SelectionPoints => throw new NotImplementedException();
 
         public override void UpdateHtml()
         {
@@ -45,7 +47,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         public override void Rerender()
         {
             ChildElements.ForEach(c => c.Rerender());
-            _StateRepresentation = null;
+            _stateRepresentation = null;
         }
 
         public override void HandleMouseMove(MouseEventArgs eventArgs)
@@ -59,8 +61,8 @@ namespace KristofferStrube.Blazor.SVGEditor
                         child.HandleMouseMove(eventArgs);
                     }
                     (double x, double y) diff = (x: x - SVG.MovePanner.x, y: y - SVG.MovePanner.y);
-                    BoundingBox.x += diff.x;
-                    BoundingBox.y += diff.y;
+                    BoundingBox.X += diff.x;
+                    BoundingBox.Y += diff.y;
                     break;
             }
         }

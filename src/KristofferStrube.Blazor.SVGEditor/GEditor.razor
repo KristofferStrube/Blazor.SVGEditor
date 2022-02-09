@@ -16,6 +16,6 @@
     @if (SVGElement.Selected)
     {
         // We parse an Action that does nothing because we havn't implemented scaling for groups yet.
-        <BoundingBoxScaler BBox=SVGElement.BoundingBox AnchorOnMouseDown="(_, _) => {}" />
+        <BoxScaler Box=SVGElement.BoundingBox AnchorOnMouseDown="(_, _) => {}" />
     }
 </ContextMenuTrigger>

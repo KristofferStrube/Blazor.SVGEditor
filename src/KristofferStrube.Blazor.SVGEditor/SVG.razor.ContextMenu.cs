@@ -119,10 +119,11 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         protected void ScaleShape(Shape shape)
         {
-            if (!SelectedElements.Contains(shape))
+            SelectedElements.Clear();
+            SelectedElements.Add(shape);
+            if (FocusedElement != shape)
             {
-                SelectedElements.Clear();
-                SelectedElements.Add(shape);
+                FocusedElement = null;
             }
             EditMode = EditMode.Scale;
         }

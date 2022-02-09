@@ -33,6 +33,8 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         private (double x, double y)? AddPos { get; set; }
 
+        public override List<(double x, double y)> SelectionPoints => new() { (X, Y), (X + Width, Y), (X + Width, Y + Height), (X, Y + Height) };
+
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
             (double x, double y) = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));

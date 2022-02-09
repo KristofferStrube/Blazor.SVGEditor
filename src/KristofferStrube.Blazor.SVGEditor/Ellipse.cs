@@ -31,6 +31,8 @@ namespace KristofferStrube.Blazor.SVGEditor
             set { Element.SetAttribute("ry", value.AsString()); Changed.Invoke(this); }
         }
 
+        public override List<(double x, double y)> SelectionPoints => throw new NotImplementedException();
+
         private double _r;
 
         public override void HandleMouseMove(MouseEventArgs eventArgs)

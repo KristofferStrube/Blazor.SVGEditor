@@ -11,9 +11,11 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public bool Selected { get; }
 
-        public BoundingBox BoundingBox { get; set; }
+        public Box BoundingBox { get; set; }
 
-        public string _StateRepresentation { get; set; }
+        public string StateRepresentation { get; }
+
+        public IEnumerable<(double x, double y)> SelectionPoints { get; }
 
         public void HandleMouseMove(MouseEventArgs eventArgs);
         public void HandleMouseUp(MouseEventArgs eventArgs);

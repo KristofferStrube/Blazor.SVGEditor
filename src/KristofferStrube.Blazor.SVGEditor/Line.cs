@@ -31,6 +31,8 @@ namespace KristofferStrube.Blazor.SVGEditor
             set { Element.SetAttribute("y2", value.AsString()); Changed.Invoke(this); }
         }
 
+        public override List<(double x, double y)> SelectionPoints => throw new NotImplementedException();
+
         public override void HandleMouseMove(MouseEventArgs eventArgs)
         {
             (double x, double y) = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));

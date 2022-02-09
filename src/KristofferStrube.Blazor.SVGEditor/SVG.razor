@@ -18,8 +18,12 @@
                 var Parameters = new Dictionary<string, object> { { "SVGElement", SVGElement } };
                 <DynamicComponent Type=@SVGElement.Editor Parameters=@Parameters />
             }
+            <foreignObject x="5" y="0" height="22" width="150" style="font-size:20px;pointer-events:none;">Scale 1:@(Math.Round(Scale, 3).AsString())</foreignObject>
+            @if (SelectionBox is not null)
+            {
+                <BoxScaler Box=SelectionBox />
+            }
         </CascadingValue>
-        <foreignObject x="5" y="0" height="22" width="150" style="font-size:20px;">Scale 1:@(Math.Round(Scale, 3).AsString())</foreignObject>
     </svg>
 </ContextMenuTrigger>
 <ContextMenu Id="SVGMenu">

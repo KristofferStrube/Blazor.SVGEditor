@@ -8,6 +8,8 @@ namespace KristofferStrube.Blazor.SVGEditor
 {
     public abstract class Shape : ISVGElement
     {
+        internal string _stateRepresentation;
+
         public Shape(IElement element, SVG svg)
         {
             Element = element;
@@ -56,22 +58,25 @@ namespace KristofferStrube.Blazor.SVGEditor
         public bool Playing { get; set; }
         public bool HasAnimation => FillAnimate is not null || StrokeAnimate is not null || StrokeWidthAnimate is not null;
 
-        public BoundingBox BoundingBox { get; set; } = new();
+        public Box BoundingBox { get; set; } = new();
         public Action<ISVGElement> Changed { get; set; }
-        public bool Selected => SVG.MarkedElements.Contains(this);
+        public bool Selected => SVG.VisibleSelectionElements.Contains(this);
         public bool IsChildElement => Element.ParentElement?.TagName is "G" or null;
-        public string _StateRepresentation { get; set; }
         public virtual string StateRepresentation => string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + SVG.EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y + Serialize(BoundingBox);
+
+        public string StoredHtml { get; set; }
         public virtual void UpdateHtml()
         {
             StoredHtml = Element.ToHtml();
         }
 
-        public string StoredHtml { get; set; }
         public virtual void Rerender()
         {
-            _StateRepresentation = null;
+            _stateRepresentation = null;
         }
+
+        public abstract IEnumerable<(double x, double y)> SelectionPoints { get; }
+
         public abstract void HandleMouseMove(MouseEventArgs eventArgs);
         public abstract void HandleMouseUp(MouseEventArgs eventArgs);
         public abstract void HandleMouseOut(MouseEventArgs eventArgs);
