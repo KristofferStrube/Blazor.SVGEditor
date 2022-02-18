@@ -38,3 +38,57 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
 - Show text in SVG.
 - Implement text edit in SVG.
 - Support more browsers using style attribute.
+
+```mermaid
+  graph LR;
+      subgraph Shapes
+      Circle
+      Ellipse
+      Line
+      Path
+      Polygon
+      Polyline
+      Rect
+      G
+      end
+      subgraph Path Instructions
+      ClosePathInstruction
+      CubicBézierCurveInstruction
+      EllipticalArcInstruction
+      HorizontalLineInstruction
+      LineInstruction
+      MoveInstruction
+      QuadraticBézierCurveInstruction
+      ShorthandCubicBézierCurveInstruction
+      ShorthandQuadraticBézierCurveInstruction
+      VerticalLineInstruction
+      end
+      ISVGElement[[ISVGElement]]
+      Shape[[Shape]]
+      BasePathInstruction[[BasePathInstruction]]
+      BaseControlPointPathInstruction[[BaseControlPointPathInstruction]]
+      IPathInstruction[[IPathInstruction]]
+      Shape-.->ISVGElement;
+      SVG------ISVGElement
+      G---ISVGElement;
+      Path-.->Shape;
+      Path-----IPathInstruction
+      G-.->Shape;
+      Circle-.->Shape;
+      Ellipse-.->Shape;
+      Line-.->Shape;
+      Polygon-.->Shape;
+      Polyline-.->Shape;
+      Rect-.->Shape;
+      ClosePathInstruction-->BasePathInstruction
+      CubicBézierCurveInstruction-->BaseControlPointPathInstruction
+      EllipticalArcInstruction-->BasePathInstruction
+      HorizontalLineInstruction-->BasePathInstruction
+      LineInstruction-->BasePathInstruction
+      MoveInstruction-->BasePathInstruction
+      QuadraticBézierCurveInstruction-->BaseControlPointPathInstruction
+      ShorthandCubicBézierCurveInstruction-->BaseControlPointPathInstruction
+      ShorthandQuadraticBézierCurveInstruction-->BaseControlPointPathInstruction
+      BaseControlPointPathInstruction-->BasePathInstruction
+      BasePathInstruction-->IPathInstruction
+```
