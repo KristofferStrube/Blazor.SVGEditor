@@ -159,7 +159,6 @@ public static class PathData
             {
                 list[i].NextInstruction = list[i + 1];
             }
-
         }
         return list;
     }
@@ -169,7 +168,7 @@ public static class PathData
         return string.Join(" ", pathData.Select(p => p.ToString()));
     }
 
-    // Correct strings like "l-.004.007" and "l -0.004 0.007"
+    // Correct strings like "l-.004.007" to "l -0.004 0.007"
     // Supplied by https://github.com/ercgeek in comment https://github.com/KristofferStrube/Blazor.SVGEditor/issues/1#issuecomment-1006024496
     // Should try to refactor this in the future to use a more compact Regex or other performant method
     private static string NormalizeArgumentSequenceWithSpaceZeroDot(string seq)

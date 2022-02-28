@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components.Web;
-using System.Collections;
 
 namespace KristofferStrube.Blazor.SVGEditor
 {
@@ -53,7 +52,7 @@ namespace KristofferStrube.Blazor.SVGEditor
         public void Up(MouseEventArgs eventArgs)
         {
             CurrentAnchorElement = null;
-            if (BoxSelectionElements is { Count: > 0})
+            if (BoxSelectionElements is { Count: > 0 })
             {
                 SelectedElements = BoxSelectionElements;
                 FocusedElement = null;
@@ -104,7 +103,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             return Elements.Where(e => e.SelectionPoints.All(p => PointWitinBox(p, box))).ToList();
         }
 
-        private bool PointWitinBox((double x, double y) point, Box box)
+        private static bool PointWitinBox((double x, double y) point, Box box)
         {
             return point.x >= box.X && point.y >= box.Y & point.x <= box.X + box.Width && point.y <= box.Y + box.Height;
         }

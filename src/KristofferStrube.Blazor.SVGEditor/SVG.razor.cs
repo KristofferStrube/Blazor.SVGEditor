@@ -151,13 +151,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             }
         }
 
-        public List<ISVGElement> VisibleSelectionElements
-        {
-            get
-            {
-                return BoxSelectionElements is not null ? BoxSelectionElements.ToList() : MarkedElements;
-            }
-        }
+        public List<ISVGElement> VisibleSelectionElements => BoxSelectionElements is not null ? BoxSelectionElements.ToList() : MarkedElements;
 
         public (double x, double y) MovePanner { get; set; }
 
@@ -168,7 +162,9 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         private (double x, double y)? TranslatePanner { get; set; }
 
+#nullable enable
         protected Box? SelectionBox { get; set; }
+#nullable disable
 
         public EditMode EditMode { get; set; } = EditMode.None;
 
