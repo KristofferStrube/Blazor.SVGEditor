@@ -19,6 +19,9 @@ namespace KristofferStrube.Blazor.SVGEditor
         [Parameter]
         public bool SnapToInteger { get; set; } = false;
 
+        [Parameter]
+        public SelectionMode SelectionMode { get; set; } = SelectionMode.WindowSelection;
+
         private ElementReference SVGElementReference { get; set; }
 
         internal IDocument Document { get; set; }

@@ -8,4 +8,10 @@
         MoveAnchor,
         Scale,
     }
+
+    public enum SelectionMode
+    {
+        WindowSelection,
+        CrossingSelection,
+    }
 }

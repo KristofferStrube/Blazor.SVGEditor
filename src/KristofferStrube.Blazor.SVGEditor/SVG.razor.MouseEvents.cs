@@ -25,7 +25,11 @@ namespace KristofferStrube.Blazor.SVGEditor
                     {
                         SelectionBox.Width = x - SelectionBox.X;
                         SelectionBox.Height = y - SelectionBox.Y;
-                        BoxSelectionElements = WindowSelection(SelectionBox);
+                        BoxSelectionElements = SelectionMode switch
+                        {
+                            SelectionMode.WindowSelection => WindowSelection(SelectionBox),
+                            SelectionMode.CrossingSelection => CrossingSelection(SelectionBox)
+                        };
                     }
                     else
                     {
@@ -103,9 +107,20 @@ namespace KristofferStrube.Blazor.SVGEditor
             return Elements.Where(e => e.SelectionPoints.All(p => PointWitinBox(p, box))).ToList();
         }
 
+        private List<ISVGElement> CrossingSelection(Box box)
+        {
+            return Elements.Where(e => e.SelectionPoints.Any(p => PointWitinBox(p, box))).ToList();
+        }
+
         private static bool PointWitinBox((double x, double y) point, Box box)
         {
-            return point.x >= box.X && point.y >= box.Y & point.x <= box.X + box.Width && point.y <= box.Y + box.Height;
+            return (box.Width, box.Height) switch
+            {
+                ( >= 0, >= 0) => point.x >= box.X && point.y >= box.Y & point.x <= box.X + box.Width && point.y <= box.Y + box.Height,
+                ( >= 0, < 0) => point.x >= box.X && point.y <= box.Y & point.x <= box.X + box.Width && point.y >= box.Y + box.Height,
+                ( < 0, >= 0) => point.x <= box.X && point.y >= box.Y & point.x >= box.X + box.Width && point.y <= box.Y + box.Height,
+                ( < 0, < 0) => point.x <= box.X && point.y <= box.Y & point.x >= box.X + box.Width && point.y >= box.Y + box.Height,
+            };
         }
     }
 }
