@@ -32,15 +32,12 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
     - Support for editing Fill animation values
     - Support for editing Stroke animation values
 
-
 ## Current goals
 - Add support for touch devices
 - Support errors better to recover instead of crashing on malformed SVG
 - Show text in SVG.
 - Implement text edit in SVG.
 - Support more browsers using style attribute.
-
-
 
 ```mermaid
   graph LR;
@@ -92,6 +89,7 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
       QuadraticBézierCurveInstruction-->BaseControlPointPathInstruction
       ShorthandCubicBézierCurveInstruction-->BaseControlPointPathInstruction
       ShorthandQuadraticBézierCurveInstruction-->BaseControlPointPathInstruction
+      VerticalLineInstruction-->BasePathInstruction
       BaseControlPointPathInstruction-->BasePathInstruction
       BasePathInstruction-->IPathInstruction
 ```
