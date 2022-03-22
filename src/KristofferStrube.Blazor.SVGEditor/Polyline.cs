@@ -15,7 +15,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public List<(double x, double y)> Points { get; set; }
 
-        public override List<(double x, double y)> SelectionPoints => throw new NotImplementedException();
+        public override IEnumerable<(double x, double y)> SelectionPoints => Points;
 
         private void UpdatePoints()
         {

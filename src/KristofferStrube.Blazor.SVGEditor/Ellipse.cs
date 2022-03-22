@@ -31,7 +31,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             set { Element.SetAttribute("ry", value.AsString()); Changed.Invoke(this); }
         }
 
-        public override List<(double x, double y)> SelectionPoints => throw new NotImplementedException();
+        public override List<(double x, double y)> SelectionPoints => new() { (Cx + Rx, Cy + Ry), (Cx + Rx, Cy - Ry), (Cx - Rx, Cy + Ry), (Cx - Rx, Cy - Ry) };
 
         private double _r;
 

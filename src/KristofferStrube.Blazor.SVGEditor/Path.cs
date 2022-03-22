@@ -24,7 +24,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public List<IPathInstruction> Instructions { get; set; }
 
-        public override List<(double x, double y)> SelectionPoints => throw new NotImplementedException();
+        public override IEnumerable<(double x, double y)> SelectionPoints => Instructions.Count > 0 ? Instructions.Where(inst => inst is not MoveInstruction).Select(inst => inst.StartPosition) : Enumerable.Empty<(double x, double y)>();
 
         public void UpdateData()
         {

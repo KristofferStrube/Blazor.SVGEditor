@@ -36,7 +36,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public List<ISVGElement> ChildElements { get; set; } = new List<ISVGElement>();
 
-        public override List<(double x, double y)> SelectionPoints => throw new NotImplementedException();
+        public override IEnumerable<(double x, double y)> SelectionPoints => ChildElements.SelectMany(child => child.SelectionPoints);
 
         public override void UpdateHtml()
         {
