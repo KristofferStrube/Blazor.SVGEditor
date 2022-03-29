@@ -1,126 +1,125 @@
 ﻿using Microsoft.AspNetCore.Components.Web;
 
-namespace KristofferStrube.Blazor.SVGEditor
+namespace KristofferStrube.Blazor.SVGEditor;
+
+public partial class SVG
 {
-    public partial class SVG
+    private void Move(MouseEventArgs eventArgs)
     {
-        public void Move(MouseEventArgs eventArgs)
+        if (TranslatePanner.HasValue)
         {
-            if (TranslatePanner.HasValue)
+            (double x, double y) newPanner = (x: eventArgs.OffsetX, y: eventArgs.OffsetY);
+            Translate = (Translate.x + newPanner.x - TranslatePanner.Value.x, Translate.y + newPanner.y - TranslatePanner.Value.y);
+            TranslatePanner = newPanner;
+        }
+        else
+        {
+            (double x, double y) = LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+            if (CurrentAnchorElement is ISVGElement element)
             {
-                (double x, double y) newPanner = (x: eventArgs.OffsetX, y: eventArgs.OffsetY);
-                Translate = (Translate.x + newPanner.x - TranslatePanner.Value.x, Translate.y + newPanner.y - TranslatePanner.Value.y);
-                TranslatePanner = newPanner;
+                element.HandleMouseMove(eventArgs);
             }
             else
             {
-                (double x, double y) = LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-                if (CurrentAnchorElement is ISVGElement element)
+                if (MarkedElements.Count == 0 && SelectionBox is not null)
                 {
-                    element.HandleMouseMove(eventArgs);
+                    SelectionBox.Width = x - SelectionBox.X;
+                    SelectionBox.Height = y - SelectionBox.Y;
+                    BoxSelectionElements = SelectionMode switch
+                    {
+                        SelectionMode.WindowSelection => WindowSelection(SelectionBox),
+                        _ => CrossingSelection(SelectionBox)
+                    };
                 }
                 else
                 {
-                    if (MarkedElements.Count == 0 && SelectionBox is not null)
-                    {
-                        SelectionBox.Width = x - SelectionBox.X;
-                        SelectionBox.Height = y - SelectionBox.Y;
-                        BoxSelectionElements = SelectionMode switch
-                        {
-                            SelectionMode.WindowSelection => WindowSelection(SelectionBox),
-                            SelectionMode.CrossingSelection => CrossingSelection(SelectionBox)
-                        };
-                    }
-                    else
-                    {
-                        MarkedElements.ForEach(e => e.HandleMouseMove(eventArgs));
-                        MovePanner = (x, y);
-                    }
+                    MarkedElements.ForEach(e => e.HandleMouseMove(eventArgs));
+                    MovePanner = (x, y);
                 }
             }
         }
+    }
 
-        public void Down(MouseEventArgs eventArgs)
+    public void Down(MouseEventArgs eventArgs)
+    {
+        if (eventArgs.Button == 1)
         {
-            if (eventArgs.Button == 1)
-            {
-                TranslatePanner = (eventArgs.OffsetX, eventArgs.OffsetY);
-            }
-            else
-            {
-                (double x, double y) = LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-                SelectionBox = new Box() { X = x, Y = y };
-            }
+            TranslatePanner = (eventArgs.OffsetX, eventArgs.OffsetY);
         }
+        else
+        {
+            (double x, double y) = LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+            SelectionBox = new Box() { X = x, Y = y };
+        }
+    }
 
-        public void Up(MouseEventArgs eventArgs)
+    public void Up(MouseEventArgs eventArgs)
+    {
+        CurrentAnchorElement = null;
+        if (BoxSelectionElements is { Count: > 0 })
         {
-            CurrentAnchorElement = null;
-            if (BoxSelectionElements is { Count: > 0 })
-            {
-                SelectedElements = BoxSelectionElements;
-                FocusedElement = null;
-            }
-            BoxSelectionElements = null;
-            SelectionBox = null;
-            SelectedElements.ForEach(e => e.HandleMouseUp(eventArgs));
-            if (eventArgs.Button == 2)
-            {
-                LastRightClick = (eventArgs.OffsetX, eventArgs.OffsetY);
-            }
-            else if (eventArgs.Button == 1)
-            {
-                TranslatePanner = null;
-                SelectedElements.Clear();
-            }
+            SelectedElements = BoxSelectionElements;
+            FocusedElement = null;
         }
+        BoxSelectionElements = null;
+        SelectionBox = null;
+        SelectedElements.ForEach(e => e.HandleMouseUp(eventArgs));
+        if (eventArgs.Button == 2)
+        {
+            LastRightClick = (eventArgs.OffsetX, eventArgs.OffsetY);
+        }
+        else if (eventArgs.Button == 1)
+        {
+            TranslatePanner = null;
+            SelectedElements.Clear();
+        }
+    }
 
-        public void UnSelect(MouseEventArgs eventArgs)
+    public void UnSelect(MouseEventArgs eventArgs)
+    {
+        if (EditMode != EditMode.Add && !eventArgs.CtrlKey)
         {
-            if (EditMode != EditMode.Add && !eventArgs.CtrlKey)
-            {
-                EditMode = EditMode.None;
-                SelectedElements.Clear();
-                FocusedElement = null;
-            }
+            EditMode = EditMode.None;
+            SelectedElements.Clear();
+            FocusedElement = null;
         }
+    }
 
-        public void Out(MouseEventArgs eventArgs)
-        {
-            SelectedElements.ForEach(e => e.HandleMouseOut(eventArgs));
-        }
+    public void Out(MouseEventArgs eventArgs)
+    {
+        SelectedElements.ForEach(e => e.HandleMouseOut(eventArgs));
+    }
 
-        public void Wheel(WheelEventArgs eventArgs)
+    public void Wheel(WheelEventArgs eventArgs)
+    {
+        if (eventArgs.DeltaY < 0)
         {
-            if (eventArgs.DeltaY < 0)
-            {
-                ZoomIn(eventArgs.OffsetX, eventArgs.OffsetY);
-            }
-            else if (eventArgs.DeltaY > 0)
-            {
-                ZoomOut(eventArgs.OffsetX, eventArgs.OffsetY);
-            }
+            ZoomIn(eventArgs.OffsetX, eventArgs.OffsetY);
         }
+        else if (eventArgs.DeltaY > 0)
+        {
+            ZoomOut(eventArgs.OffsetX, eventArgs.OffsetY);
+        }
+    }
 
-        private List<ISVGElement> WindowSelection(Box box)
-        {
-            return Elements.Where(e => e.SelectionPoints.All(p => PointWitinBox(p, box))).ToList();
-        }
+    private List<ISVGElement> WindowSelection(Box box)
+    {
+        return Elements.Where(e => e.SelectionPoints.All(p => PointWitinBox(p, box))).ToList();
+    }
 
-        private List<ISVGElement> CrossingSelection(Box box)
-        {
-            return Elements.Where(e => e.SelectionPoints.Any(p => PointWitinBox(p, box))).ToList();
-        }
+    private List<ISVGElement> CrossingSelection(Box box)
+    {
+        return Elements.Where(e => e.SelectionPoints.Any(p => PointWitinBox(p, box))).ToList();
+    }
 
-        private static bool PointWitinBox((double x, double y) point, Box box)
+    private static bool PointWitinBox((double x, double y) point, Box box)
+    {
+        return (box.Width, box.Height) switch
         {
-            return (box.Width, box.Height) switch
-            {
-                ( >= 0, >= 0) => point.x >= box.X && point.y >= box.Y & point.x <= box.X + box.Width && point.y <= box.Y + box.Height,
-                ( >= 0, < 0) => point.x >= box.X && point.y <= box.Y & point.x <= box.X + box.Width && point.y >= box.Y + box.Height,
-                ( < 0, >= 0) => point.x <= box.X && point.y >= box.Y & point.x >= box.X + box.Width && point.y <= box.Y + box.Height,
-                ( < 0, < 0) => point.x <= box.X && point.y <= box.Y & point.x >= box.X + box.Width && point.y >= box.Y + box.Height,
-            };
-        }
+            ( >= 0, >= 0) => point.x >= box.X && point.y >= box.Y & point.x <= box.X + box.Width && point.y <= box.Y + box.Height,
+            ( >= 0, < 0) => point.x >= box.X && point.y <= box.Y & point.x <= box.X + box.Width && point.y >= box.Y + box.Height,
+            ( < 0, >= 0) => point.x <= box.X && point.y >= box.Y & point.x >= box.X + box.Width && point.y <= box.Y + box.Height,
+            _ => point.x <= box.X && point.y <= box.Y & point.x >= box.X + box.Width && point.y >= box.Y + box.Height,
+        };
     }
 }

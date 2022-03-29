@@ -1,36 +1,34 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace KristofferStrube.Blazor.SVGEditor
+namespace KristofferStrube.Blazor.SVGEditor;
+
+public partial class SVG
 {
-    public partial class SVG
+    [Inject]
+    protected IJSRuntime JSRuntime { get; set; }
+
+    private IJSObjectReference _jSModule;
+    public Box BBox { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        [Inject]
-        protected IJSRuntime JSRuntime { get; set; }
+        _jSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/KristofferStrube.Blazor.SVGEditor/KristofferStrube.Blazor.SVGEditor.js");
+        BBox = await GetBoundingBox(SVGElementReference);
+    }
 
-        protected IJSObjectReference JSModule { get; set; }
+    public async Task Focus(ElementReference elementReference)
+    {
+        await _jSModule.InvokeVoidAsync("focus", elementReference);
+    }
 
-        public Box BBox { get; set; }
+    public async Task UnFocus(ElementReference elementReference)
+    {
+        await _jSModule.InvokeVoidAsync("unFocus", elementReference);
+    }
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/KristofferStrube.Blazor.SVGEditor/KristofferStrube.Blazor.SVGEditor.js");
-            BBox = await GetBoundingBox(SVGElementReference);
-        }
-
-        public async Task Focus(ElementReference elementReference)
-        {
-            await JSModule.InvokeVoidAsync("focus", elementReference);
-        }
-
-        public async Task UnFocus(ElementReference elementReference)
-        {
-            await JSModule.InvokeVoidAsync("unFocus", elementReference);
-        }
-
-        public async Task<Box> GetBoundingBox(ElementReference elementReference)
-        {
-            return await JSModule.InvokeAsync<Box>("BBox", elementReference);
-        }
+    public async Task<Box> GetBoundingBox(ElementReference elementReference)
+    {
+        return await _jSModule.InvokeAsync<Box>("BBox", elementReference);
     }
 }

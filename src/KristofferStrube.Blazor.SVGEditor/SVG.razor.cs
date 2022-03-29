@@ -4,208 +4,200 @@ using Microsoft.AspNetCore.Components;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-namespace KristofferStrube.Blazor.SVGEditor
+namespace KristofferStrube.Blazor.SVGEditor;
+
+public partial class SVG : ComponentBase
 {
-    public partial class SVG : ComponentBase
+    private string _input;
+    private ElementReference SVGElementReference;
+    private Shape ColorPickerShape;
+    private Animate ColorPickerAnimate;
+    private int ColorPickerAnimateFrame;
+    private string ColorPickerAttribute;
+    private List<ISVGElement> Elements;
+    private (double x, double y)? TranslatePanner;
+    private readonly Subject<ISVGElement> ElementSubject = new();
+#nullable enable
+    private List<ISVGElement>? BoxSelectionElements;
+    private Box? SelectionBox;
+#nullable disable
+    private string ColorPickerTitle => $"Pick {ColorPickerAttribute} Color";
+    private bool IsColorPickerOpen => ColorPickerShape is not null || ColorPickerAnimate is not null;
+
+
+    [Parameter]
+    public string Input { get; set; }
+
+    [Parameter]
+    public Action<string> InputUpdated { get; set; }
+
+    [Parameter]
+    public bool SnapToInteger { get; set; } = false;
+
+    [Parameter]
+    public SelectionMode SelectionMode { get; set; } = SelectionMode.WindowSelection;
+
+    internal IDocument Document { get; set; }
+    public double Scale { get; set; } = 1;
+
+    public (double x, double y) Translate = (0, 0);
+
+    public (double x, double y) LastRightClick { get; set; }
+
+    public List<ISVGElement> SelectedElements { get; set; } = new();
+
+    public ISVGElement FocusedElement { get; set; }
+
+    public (double x, double y) MovePanner { get; set; }
+
+    public int? CurrentAnchor { get; set; }
+#nullable enable
+    public ISVGElement? CurrentAnchorElement { get; set; }
+#nullable disable
+
+    public EditMode EditMode { get; set; } = EditMode.None;
+
+    public List<ISVGElement> MarkedElements =>
+        FocusedElement != null && !SelectedElements.Contains(FocusedElement) ?
+        SelectedElements.Append(FocusedElement).ToList() :
+        SelectedElements;
+
+    public List<ISVGElement> VisibleSelectionElements => 
+        BoxSelectionElements is not null ?
+        BoxSelectionElements.ToList() :
+        MarkedElements;
+
+    // TODO: Fix to include Animate Frame Color
+    public string PreviousColor =>
+        ColorPickerShape is not null ?
+        (ColorPickerAttribute == "Fill" ?
+            ColorPickerShape.Fill :
+            ColorPickerShape.Stroke
+        )
+        : string.Empty;
+
+    public Dictionary<string, Type> SupportedTypes { get; set; } = new Dictionary<string, Type> {
+            { "RECT", typeof(Rect) },
+            { "CIRCLE", typeof(Circle) },
+            { "ELLIPSE", typeof(Ellipse) },
+            { "POLYGON", typeof(Polygon) },
+            { "POLYLINE", typeof(Polyline) },
+            { "LINE", typeof(Line) },
+            { "PATH", typeof(Path) },
+            { "G", typeof(G)}
+        };
+
+    protected override async Task OnParametersSetAsync()
     {
-        [Parameter]
-        public string Input { get; set; }
-
-        private string _input;
-
-        [Parameter]
-        public Action<string> InputUpdated { get; set; }
-
-        [Parameter]
-        public bool SnapToInteger { get; set; } = false;
-
-        [Parameter]
-        public SelectionMode SelectionMode { get; set; } = SelectionMode.WindowSelection;
-
-        private ElementReference SVGElementReference { get; set; }
-
-        internal IDocument Document { get; set; }
-
-        public Shape ColorPickerShape { get; set; }
-
-        protected Animate ColorPickerAnimate { get; set; }
-
-        protected int ColorPickerAnimateFrame { get; set; }
-
-        public string ColorPickerAttribute { get; set; }
-
-        public string ColorPickerTitle => $"Pick {ColorPickerAttribute} Color";
-
-        public bool IsColorPickerOpen => ColorPickerShape is not null || ColorPickerAnimate is not null;
-
-        // TODO: Fix to include Animate Frame Color
-        public string PreviousColor => ColorPickerShape is not null ? (ColorPickerAttribute == "Fill" ? ColorPickerShape.Fill : ColorPickerShape.Stroke) : string.Empty;
-
-        public Dictionary<string, Type> SupportedTypes { get; set; } = new Dictionary<string, Type> {
-                { "RECT", typeof(Rect) },
-                { "CIRCLE", typeof(Circle) },
-                { "ELLIPSE", typeof(Ellipse) },
-                { "POLYGON", typeof(Polygon) },
-                { "POLYLINE", typeof(Polyline) },
-                { "LINE", typeof(Line) },
-                { "PATH", typeof(Path) },
-                { "G", typeof(G)}
-            };
-
-        protected override async Task OnParametersSetAsync()
+        if (Input == _input)
         {
-            if (Input == _input)
+            return;
+        }
+        _input = Input;
+
+        IConfiguration config = Configuration.Default;
+
+        IBrowsingContext context = BrowsingContext.New(config);
+
+        Document = await context.OpenAsync(req => req.Content(Input));
+
+        Elements = Document.GetElementsByTagName("BODY")[0].Children.Select(child =>
+        {
+            ISVGElement SVGElement;
+            if (SupportedTypes.ContainsKey(child.TagName))
             {
-                return;
+                SVGElement = (ISVGElement)Activator.CreateInstance(SupportedTypes[child.TagName], child, this);
             }
-            _input = Input;
-
-            IConfiguration config = Configuration.Default;
-
-            IBrowsingContext context = BrowsingContext.New(config);
-
-            Document = await context.OpenAsync(req => req.Content(Input));
-
-            Elements = Document.GetElementsByTagName("BODY")[0].Children.Select(child =>
+            else
             {
-                ISVGElement SVGElement;
-                if (SupportedTypes.ContainsKey(child.TagName))
-                {
-                    SVGElement = (ISVGElement)Activator.CreateInstance(SupportedTypes[child.TagName], child, this);
-                }
-                else
-                {
-                    throw new NotImplementedException($"Tag not supported:\n {child.OuterHtml}");
-                }
-                SVGElement.Changed = UpdateInput;
-                return SVGElement;
+                throw new NotImplementedException($"Tag not supported:\n {child.OuterHtml}");
             }
-            ).ToList();
-
-            Elements.ForEach(e => e.UpdateHtml());
+            SVGElement.Changed = UpdateInput;
+            return SVGElement;
         }
+        ).ToList();
 
-        protected override void OnInitialized()
-        {
-            ElementSubject
-                .Buffer(TimeSpan.FromMilliseconds(33))
-                .Where(updates => updates.Count > 0)
-                .Subscribe(updates =>
-                {
-                    updates
-                        .Distinct()
-                        .ToList()
-                        .ForEach(element => element.UpdateHtml());
-                    UpdateInput();
-                });
-        }
+        Elements.ForEach(e => e.UpdateHtml());
+    }
 
-        private readonly Subject<ISVGElement> ElementSubject = new();
-
-        internal void UpdateInput(ISVGElement SVGElement)
-        {
-            ElementSubject.OnNext(SVGElement);
-        }
-
-        internal void AddElement(ISVGElement SVGElement)
-        {
-            Elements.Add(SVGElement);
-            SVGElement.UpdateHtml();
-            Document.GetElementsByTagName("BODY")[0].AppendElement(SVGElement.Element);
-            UpdateInput();
-        }
-
-        public void UpdateInput()
-        {
-            _input = string.Join(" \n", Elements.Select(e => e.StoredHtml));
-            InputUpdated(_input);
-        }
-
-        public void RerenderAll()
-        {
-            Elements.ForEach(e => e.Rerender());
-        }
-
-        public double Scale { get; set; } = 1;
-
-        public (double x, double y) Translate = (0, 0);
-
-        public List<ISVGElement> Elements { get; set; }
-
-        public (double x, double y) LastRightClick { get; set; }
-
-        public List<ISVGElement> SelectedElements { get; set; } = new();
-
-        public ISVGElement FocusedElement { get; set; }
-
-#nullable enable
-        public List<ISVGElement>? BoxSelectionElements { get; set; }
-#nullable disable
-
-        public List<ISVGElement> MarkedElements
-        {
-            get
+    protected override void OnInitialized()
+    {
+        ElementSubject
+            .Buffer(TimeSpan.FromMilliseconds(33))
+            .Where(updates => updates.Count > 0)
+            .Subscribe(updates =>
             {
-                if (FocusedElement != null && !SelectedElements.Contains(FocusedElement))
-                {
-                    return SelectedElements.Append(FocusedElement).ToList();
-                }
-                return SelectedElements;
-            }
-        }
+                updates
+                    .Distinct()
+                    .ToList()
+                    .ForEach(element => element.UpdateHtml());
+                UpdateInput();
+            });
+    }
 
-        public List<ISVGElement> VisibleSelectionElements => BoxSelectionElements is not null ? BoxSelectionElements.ToList() : MarkedElements;
+    public void UpdateInput(ISVGElement SVGElement)
+    {
+        ElementSubject.OnNext(SVGElement);
+    }
 
-        public (double x, double y) MovePanner { get; set; }
+    public void AddElement(ISVGElement SVGElement)
+    {
+        Elements.Add(SVGElement);
+        SVGElement.UpdateHtml();
+        Document.GetElementsByTagName("BODY")[0].AppendElement(SVGElement.Element);
+        UpdateInput();
+    }
 
-        public int? CurrentAnchor { get; set; }
-#nullable enable
-        public ISVGElement? CurrentAnchorElement { get; set; }
-#nullable disable
+    public void RemoveElement(ISVGElement SVGElement)
+    {
+        Elements.Remove(SVGElement);
+    }
 
-        private (double x, double y)? TranslatePanner { get; set; }
+    private void UpdateInput()
+    {
+        _input = string.Join(" \n", Elements.Select(e => e.StoredHtml));
+        InputUpdated(_input);
+    }
 
-#nullable enable
-        protected Box? SelectionBox { get; set; }
-#nullable disable
+    private void RerenderAll()
+    {
+        Elements.ForEach(e => e.Rerender());
+    }
 
-        public EditMode EditMode { get; set; } = EditMode.None;
+    public (double x, double y) LocalTransform((double x, double y) pos)
+    {
+        return (pos.x * Scale + Translate.x, pos.y * Scale + Translate.y);
+    }
 
-        public (double x, double y) LocalTransform((double x, double y) pos)
+    public (double x, double y) LocalDetransform((double x, double y) pos)
+    {
+        (double x, double y) res = (x: (pos.x - Translate.x) / Scale, y: (pos.y - Translate.y) / Scale);
+        if (SnapToInteger)
         {
-            return (pos.x * Scale + Translate.x, pos.y * Scale + Translate.y);
+            return ((int)res.x, (int)res.y);
         }
+        return res;
+    }
 
-        public (double x, double y) LocalDetransform((double x, double y) pos)
+    private void ZoomIn(double x, double y, double ZoomFactor = 1.1)
+    {
+        double prevScale = Scale;
+        Scale *= ZoomFactor;
+        if (Scale > 0.91 && Scale < 1.09)
         {
-            (double x, double y) res = (x: (pos.x - Translate.x) / Scale, y: (pos.y - Translate.y) / Scale);
-            if (SnapToInteger)
-            {
-                return ((int)res.x, (int)res.y);
-            }
-            return res;
+            Scale = 1;
         }
+        Translate = (Translate.x + (x - Translate.x) * (1 - Scale / prevScale), Translate.y + (y - Translate.y) * (1 - Scale / prevScale));
+    }
 
-        private void ZoomIn(double x, double y, double ZoomFactor = 1.1)
+    private void ZoomOut(double x, double y, double ZoomFactor = 1.1)
+    {
+        double prevScale = Scale;
+        Scale /= ZoomFactor;
+        if (Scale > 0.91 && Scale < 1.09)
         {
-            double prevScale = Scale;
-            Scale *= ZoomFactor;
-            if (Scale > 0.91 && Scale < 1.09)
-            {
-                Scale = 1;
-            }
-            Translate = (Translate.x + (x - Translate.x) * (1 - Scale / prevScale), Translate.y + (y - Translate.y) * (1 - Scale / prevScale));
+            Scale = 1;
         }
-
-        private void ZoomOut(double x, double y, double ZoomFactor = 1.1)
-        {
-            double prevScale = Scale;
-            Scale /= ZoomFactor;
-            if (Scale > 0.91 && Scale < 1.09)
-            {
-                Scale = 1;
-            }
-            Translate = (Translate.x + (x - Translate.x) * (1 - Scale / prevScale), Translate.y + (y - Translate.y) * (1 - Scale / prevScale));
-        }
+        Translate = (Translate.x + (x - Translate.x) * (1 - Scale / prevScale), Translate.y + (y - Translate.y) * (1 - Scale / prevScale));
     }
 }

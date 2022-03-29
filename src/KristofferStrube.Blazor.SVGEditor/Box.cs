@@ -1,13 +1,12 @@
-﻿namespace KristofferStrube.Blazor.SVGEditor
+﻿namespace KristofferStrube.Blazor.SVGEditor;
+
+public class Box
 {
-    public class Box
-    {
-        public double X { get; set; }
+    public double X { get; set; }
 
-        public double Y { get; set; }
+    public double Y { get; set; }
 
-        public double Width { get; set; }
+    public double Width { get; set; }
 
-        public double Height { get; set; }
-    }
+    public double Height { get; set; }
 }
