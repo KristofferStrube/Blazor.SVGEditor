@@ -67,14 +67,14 @@
                     @for (int i = 0; i < fillAnimate.FrameCount; i++)
                     {
                         var j = i;
-                        <Item OnClick="@(_ => OpenAnimateColorPicker(fillAnimate, "FillAnimate", j))"><div class="colorPickerCube" style="background-color:@fillAnimate.Values[j];"></div> Frame @j Fill</Item>
+                        <Item OnClick="@(_ => OpenAnimateColorPicker(fillAnimate, AttributeNames.FillAnimate, j))"><div class="colorPickerCube" style="background-color:@fillAnimate.Values[j];"></div> Frame @j Fill</Item>
                     }
                 </SubMenu>
             </Item>
         }
         else
         {
-            <Item OnClick="@(_ => OpenColorPicker(shape, "Fill"))">
+            <Item OnClick="() => OpenColorPicker(AttributeNames.Fill)">
                 <div class="colorPickerCube" style="background-color:@shape.Fill;"></div> Fill Color
                 <SubMenu>
                     <Item OnClick=@(_ => shape.Fill = "none")><div class="icon">⚪</div> Set To None</Item>
@@ -92,14 +92,14 @@
                     @for (int i = 0; i < strokeAnimate.FrameCount; i++)
                     {
                         var j = i;
-                        <Item OnClick="@(_ => OpenAnimateColorPicker(strokeAnimate, "StrokeAnimate", j))"><div class="colorPickerCube" style="background-color:@strokeAnimate.Values[j];"></div> Frame @j Stroke</Item>
+                        <Item OnClick="@(_ => OpenAnimateColorPicker(strokeAnimate, AttributeNames.StrokeAnimate, j))"><div class="colorPickerCube" style="background-color:@strokeAnimate.Values[j];"></div> Frame @j Stroke</Item>
                     }
                 </SubMenu>
             </Item>
         }
         else
         {
-            <Item OnClick="@(_ => OpenColorPicker(shape, "Stroke"))">
+            <Item OnClick="() => OpenColorPicker(AttributeNames.Stroke)">
                 <div class="colorPickerCube" style="background-color:@shape.Stroke;"></div> Stroke Color
                 <SubMenu>
                     <Item OnClick=@(_ => shape.Stroke = "none")><div class="icon">⚪</div> Set To None</Item>
@@ -116,11 +116,11 @@
         {
             @if (shape.Playing)
             {
-                <Item OnClick="() => ToggleAnimation(shape)"><div class="icon">🛑</div> Stop Animation</Item>
+                <Item OnClick="StopAnimation"><div class="icon">🛑</div> Stop Animation</Item>
             }
             else
             {
-                <Item OnClick="() => ToggleAnimation(shape)"><div class="icon">▶</div> Play Animation</Item>
+                <Item OnClick="PlayAnimation"><div class="icon">▶</div> Play Animation</Item>
             }
         }
         <Item>

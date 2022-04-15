@@ -14,3 +14,11 @@ public enum SelectionMode
     WindowSelection,
     CrossingSelection,
 }
+
+public enum AttributeNames
+{
+    Fill,
+    FillAnimate,
+    Stroke,
+    StrokeAnimate,
+}

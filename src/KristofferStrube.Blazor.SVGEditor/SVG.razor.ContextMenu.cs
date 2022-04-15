@@ -14,13 +14,13 @@ public partial class SVG
         ZoomOut(LastRightClick.x, LastRightClick.y, 1.5);
     }
 
-    private void OpenColorPicker(Shape shape, string attribute)
+    private void OpenColorPicker(AttributeNames attribute)
     {
-        ColorPickerShape = shape;
+        ColorPickerShapes = MarkedElements.Where(e => e is Shape).Select(e => (Shape)e).ToList();
         ColorPickerAttribute = attribute;
     }
 
-    private void OpenAnimateColorPicker(Animate fillAnimate, string attribute, int frame)
+    private void OpenAnimateColorPicker(Animate fillAnimate, AttributeNames attribute, int frame)
     {
         ColorPickerAnimate = fillAnimate;
         ColorPickerAnimateFrame = frame;
@@ -29,20 +29,20 @@ public partial class SVG
 
     private void ColorPickerClosed(string value)
     {
-        if (ColorPickerAttribute == "Fill")
+        if (ColorPickerAttribute == AttributeNames.Fill)
         {
-            ColorPickerShape.Fill = value;
+            ColorPickerShapes.ForEach(shape => shape.Fill = value);
         }
-        else if (ColorPickerAttribute == "Stroke")
+        else if (ColorPickerAttribute == AttributeNames.Stroke)
         {
-            ColorPickerShape.Stroke = value;
+            ColorPickerShapes.ForEach(shape => shape.Stroke = value);
         }
-        else if (ColorPickerAttribute is "FillAnimate" or "StrokeAnimate")
+        else if (ColorPickerAttribute is AttributeNames.FillAnimate or AttributeNames.StrokeAnimate)
         {
             ColorPickerAnimate.Values[ColorPickerAnimateFrame] = value;
             ColorPickerAnimate.UpdateValues();
         }
-        ColorPickerShape = null;
+        ColorPickerShapes = null;
         ColorPickerAnimate = null;
     }
 
@@ -190,9 +190,27 @@ public partial class SVG
         InputUpdated(string.Join("\n", elementsAsHtml));
     }
 
-    protected static void ToggleAnimation(Shape shape)
+    protected void StopAnimation()
     {
-        shape.Playing = !shape.Playing;
-        shape.Rerender();
+        MarkedElements
+            .Where(e => e is Shape)
+            .ToList()
+            .ForEach(e =>
+            {
+                ((Shape)e).Playing = false;
+                e.Rerender();
+            });
+    }
+
+    protected void PlayAnimation()
+    {
+        MarkedElements
+            .Where(e => e is Shape)
+            .ToList()
+            .ForEach(e =>
+            {
+                ((Shape)e).Playing = true;
+                e.Rerender();
+            });
     }
 }

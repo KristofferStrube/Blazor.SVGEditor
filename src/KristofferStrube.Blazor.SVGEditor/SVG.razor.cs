@@ -10,10 +10,10 @@ public partial class SVG : ComponentBase
 {
     private string _input;
     private ElementReference SVGElementReference;
-    private Shape ColorPickerShape;
+    private List<Shape> ColorPickerShapes;
     private Animate ColorPickerAnimate;
     private int ColorPickerAnimateFrame;
-    private string ColorPickerAttribute;
+    private AttributeNames ColorPickerAttribute;
     private List<ISVGElement> Elements;
     private (double x, double y)? TranslatePanner;
     private readonly Subject<ISVGElement> ElementSubject = new();
@@ -22,7 +22,7 @@ public partial class SVG : ComponentBase
     private Box? SelectionBox;
 #nullable disable
     private string ColorPickerTitle => $"Pick {ColorPickerAttribute} Color";
-    private bool IsColorPickerOpen => ColorPickerShape is not null || ColorPickerAnimate is not null;
+    private bool IsColorPickerOpen => ColorPickerShapes is not null || ColorPickerAnimate is not null;
 
 
     [Parameter]
@@ -62,19 +62,20 @@ public partial class SVG : ComponentBase
         SelectedElements.Append(FocusedElement).ToList() :
         SelectedElements;
 
-    public List<ISVGElement> VisibleSelectionElements => 
+    public List<ISVGElement> VisibleSelectionElements =>
         BoxSelectionElements is not null ?
         BoxSelectionElements.ToList() :
         MarkedElements;
 
-    // TODO: Fix to include Animate Frame Color
     public string PreviousColor =>
-        ColorPickerShape is not null ?
-        (ColorPickerAttribute == "Fill" ?
-            ColorPickerShape.Fill :
-            ColorPickerShape.Stroke
-        )
-        : string.Empty;
+        ColorPickerShapes is null or { Count: 0 } ?
+        string.Empty :
+        ColorPickerAttribute switch
+        {
+            AttributeNames.Fill or AttributeNames.FillAnimate => ColorPickerShapes.GroupBy(shape => shape.Fill).MaxBy(group => group.Count()).Key,
+            AttributeNames.Stroke or AttributeNames.StrokeAnimate => ColorPickerShapes.GroupBy(shape => shape.Stroke).MaxBy(group => group.Count()).Key,
+            _ => string.Empty
+        };
 
     public Dictionary<string, Type> SupportedTypes { get; set; } = new Dictionary<string, Type> {
             { "RECT", typeof(Rect) },
