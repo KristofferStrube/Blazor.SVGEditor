@@ -15,17 +15,17 @@ public partial class SVG
         else
         {
             (double x, double y) = LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-            if (CurrentAnchorElement is ISVGElement element)
+            if (CurrentAnchorShape is Shape shape)
             {
-                element.HandleMouseMove(eventArgs);
+                shape.HandleMouseMove(eventArgs);
             }
             else
             {
-                if (MarkedElements.Count == 0 && SelectionBox is not null)
+                if (MarkedShapes.Count == 0 && SelectionBox is not null)
                 {
                     SelectionBox.Width = x - SelectionBox.X;
                     SelectionBox.Height = y - SelectionBox.Y;
-                    BoxSelectionElements = SelectionMode switch
+                    BoxSelectionShapes = SelectionMode switch
                     {
                         SelectionMode.WindowSelection => WindowSelection(SelectionBox),
                         _ => CrossingSelection(SelectionBox)
@@ -33,7 +33,7 @@ public partial class SVG
                 }
                 else
                 {
-                    MarkedElements.ForEach(e => e.HandleMouseMove(eventArgs));
+                    MarkedShapes.ForEach(e => e.HandleMouseMove(eventArgs));
                     MovePanner = (x, y);
                 }
             }
@@ -55,15 +55,15 @@ public partial class SVG
 
     public void Up(MouseEventArgs eventArgs)
     {
-        CurrentAnchorElement = null;
-        if (BoxSelectionElements is { Count: > 0 })
+        CurrentAnchorShape = null;
+        if (BoxSelectionShapes is { Count: > 0 })
         {
-            SelectedElements = BoxSelectionElements;
-            FocusedElement = null;
+            SelectedShapes = BoxSelectionShapes;
+            FocusedShapes = null;
         }
-        BoxSelectionElements = null;
+        BoxSelectionShapes = null;
         SelectionBox = null;
-        SelectedElements.ForEach(e => e.HandleMouseUp(eventArgs));
+        SelectedShapes.ForEach(e => e.HandleMouseUp(eventArgs));
         if (eventArgs.Button == 2)
         {
             LastRightClick = (eventArgs.OffsetX, eventArgs.OffsetY);
@@ -71,7 +71,7 @@ public partial class SVG
         else if (eventArgs.Button == 1)
         {
             TranslatePanner = null;
-            SelectedElements.Clear();
+            SelectedShapes.Clear();
         }
     }
 
@@ -80,14 +80,14 @@ public partial class SVG
         if (EditMode != EditMode.Add && !eventArgs.CtrlKey)
         {
             EditMode = EditMode.None;
-            SelectedElements.Clear();
-            FocusedElement = null;
+            SelectedShapes.Clear();
+            FocusedShapes = null;
         }
     }
 
     public void Out(MouseEventArgs eventArgs)
     {
-        SelectedElements.ForEach(e => e.HandleMouseOut(eventArgs));
+        SelectedShapes.ForEach(e => e.HandleMouseOut(eventArgs));
     }
 
     public void Wheel(WheelEventArgs eventArgs)
@@ -102,14 +102,14 @@ public partial class SVG
         }
     }
 
-    private List<ISVGElement> WindowSelection(Box box)
+    private List<Shape> WindowSelection(Box box)
     {
-        return Elements.Where(e => e.SelectionPoints.All(p => PointWitinBox(p, box))).ToList();
+        return Elements.Where(e => e is Shape).Select(e => (Shape)e).Where(s => s.SelectionPoints.All(p => PointWitinBox(p, box))).ToList();
     }
 
-    private List<ISVGElement> CrossingSelection(Box box)
+    private List<Shape> CrossingSelection(Box box)
     {
-        return Elements.Where(e => e.SelectionPoints.Any(p => PointWitinBox(p, box))).ToList();
+        return Elements.Where(e => e is Shape).Select(e => (Shape)e).Where(s => s.SelectionPoints.Any(p => PointWitinBox(p, box))).ToList();
     }
 
     private static bool PointWitinBox((double x, double y) point, Box box)

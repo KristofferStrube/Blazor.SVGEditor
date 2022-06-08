@@ -16,11 +16,11 @@ public partial class SVG
 
     private void OpenColorPicker(AttributeNames attribute)
     {
-        ColorPickerShapes = MarkedElements.Where(e => e is Shape).Select(e => (Shape)e).ToList();
+        ColorPickerShapes = MarkedShapes.Where(e => e is Shape).Select(e => (Shape)e).ToList();
         ColorPickerAttribute = attribute;
     }
 
-    private void OpenAnimateColorPicker(Animate fillAnimate, AttributeNames attribute, int frame)
+    private void OpenAnimateColorPicker(BaseAnimate fillAnimate, AttributeNames attribute, int frame)
     {
         ColorPickerAnimate = fillAnimate;
         ColorPickerAnimateFrame = frame;
@@ -48,7 +48,7 @@ public partial class SVG
 
     private void MoveToBack(Shape shape)
     {
-        SelectedElements.Clear();
+        SelectedShapes.Clear();
         Elements.Remove(shape);
         Elements.Insert(0, shape);
         Elements.ForEach(e => e.UpdateHtml());
@@ -61,7 +61,7 @@ public partial class SVG
         int index = Elements.IndexOf(shape);
         if (index != 0)
         {
-            SelectedElements.Clear();
+            SelectedShapes.Clear();
             Elements.Remove(shape);
             Elements.Insert(index - 1, shape);
             Elements.ForEach(e => e.UpdateHtml());
@@ -75,7 +75,7 @@ public partial class SVG
         int index = Elements.IndexOf(shape);
         if (index != Elements.Count - 1)
         {
-            SelectedElements.Clear();
+            SelectedShapes.Clear();
             Elements.Remove(shape);
             Elements.Insert(index + 1, shape);
             Elements.ForEach(e => e.UpdateHtml());
@@ -86,7 +86,7 @@ public partial class SVG
 
     private void MoveToFront(Shape shape)
     {
-        SelectedElements.Clear();
+        SelectedShapes.Clear();
         Elements.Remove(shape);
         Elements.Insert(Elements.Count, shape);
         Elements.ForEach(e => e.UpdateHtml());
@@ -96,11 +96,11 @@ public partial class SVG
 
     private void CompleteShape(ISVGElement sVGElement)
     {
-        if (SelectedElements.Count == 1)
+        if (SelectedShapes.Count == 1)
         {
             EditMode = EditMode.None;
             sVGElement.Complete();
-            SelectedElements.Clear();
+            SelectedShapes.Clear();
         }
     }
 
@@ -119,26 +119,26 @@ public partial class SVG
 
     private void ScaleShape(Shape shape)
     {
-        SelectedElements.Clear();
-        SelectedElements.Add(shape);
-        if (FocusedElement != shape)
+        SelectedShapes.Clear();
+        SelectedShapes.Add(shape);
+        if (FocusedShapes != shape)
         {
-            FocusedElement = null;
+            FocusedShapes = null;
         }
         EditMode = EditMode.Scale;
     }
 
     public void Remove()
     {
-        MarkedElements.ForEach(e => Elements.Remove(e));
-        SelectedElements.Clear();
+        MarkedShapes.ForEach(e => Elements.Remove(e));
+        SelectedShapes.Clear();
         UpdateInput();
         RerenderAll();
     }
 
     public async Task CopyElementsAsync()
     {
-        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", string.Join("\n", MarkedElements.Select(e => e.StoredHtml)));
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", string.Join("\n", MarkedShapes.Select(e => e.StoredHtml)));
     }
 
     public async Task PasteElementsAsync(ISVGElement SVGElement = null)
@@ -154,30 +154,30 @@ public partial class SVG
         {
             elementsAsHtml.Add(clipboard);
         }
-        SelectedElements.Clear();
+        SelectedShapes.Clear();
         InputUpdated(string.Join("\n", elementsAsHtml));
     }
 
     public void Group(Shape shape)
     {
         List<string> elementsAsHtml = Elements.Select(e => e.StoredHtml).ToList();
-        if (MarkedElements.Count == 1)
+        if (MarkedShapes.Count == 1)
         {
             int pos = Elements.IndexOf(shape);
             elementsAsHtml[pos] = "<g>" + shape.StoredHtml + "</g>";
         }
         else
         {
-            ISVGElement frontElement = MarkedElements.MaxBy(e => Elements.IndexOf(e));
-            elementsAsHtml[Elements.IndexOf(frontElement)] = "<g>\n" + string.Join("\n", MarkedElements.OrderBy(e => Elements.IndexOf(e)).Select(e => e.StoredHtml)) + "\n</g>";
-            foreach (ISVGElement element in MarkedElements.Where(e => e != frontElement))
+            ISVGElement frontElement = MarkedShapes.MaxBy(e => Elements.IndexOf(e));
+            elementsAsHtml[Elements.IndexOf(frontElement)] = "<g>\n" + string.Join("\n", MarkedShapes.OrderBy(e => Elements.IndexOf(e)).Select(e => e.StoredHtml)) + "\n</g>";
+            foreach (ISVGElement element in MarkedShapes.Where(e => e != frontElement))
             {
                 int pos = Elements.IndexOf(element);
                 Elements.RemoveAt(pos);
                 elementsAsHtml.RemoveAt(pos);
             }
         }
-        SelectedElements.Clear();
+        SelectedShapes.Clear();
         InputUpdated(string.Join("\n", elementsAsHtml));
     }
 
@@ -185,32 +185,37 @@ public partial class SVG
     {
         List<string> elementsAsHtml = Elements.Select(e => e.StoredHtml).ToList();
         int pos = Elements.IndexOf(g);
-        elementsAsHtml[pos] = string.Join("\n", g.ChildElements.Select(e => e.StoredHtml));
-        SelectedElements.Clear();
+        elementsAsHtml[pos] = string.Join("\n", g.ChildShapes.Select(e => e.StoredHtml));
+        SelectedShapes.Clear();
         InputUpdated(string.Join("\n", elementsAsHtml));
     }
 
     protected void StopAnimation()
     {
-        MarkedElements
+        MarkedShapes
             .Where(e => e is Shape)
             .ToList()
-            .ForEach(e =>
+            .ForEach(s =>
             {
-                ((Shape)e).Playing = false;
-                e.Rerender();
+                s.AnimationElements.ForEach(a => {
+                    a.Playing = false;
+                });
+                s.Rerender();
             });
     }
 
     protected void PlayAnimation()
     {
-        MarkedElements
+        MarkedShapes
             .Where(e => e is Shape)
             .ToList()
-            .ForEach(e =>
+            .ForEach(s =>
             {
-                ((Shape)e).Playing = true;
-                e.Rerender();
+                s.AnimationElements.ForEach(a => {
+                    a.Playing = true;
+                });
+                s.Rerender();
             });
+        StateHasChanged();
     }
 }

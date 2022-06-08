@@ -126,8 +126,8 @@ public class Ellipse : Shape
         (double x, double y) startPos = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
         (ellipse.Cx, ellipse.Cy) = startPos;
 
-        SVG.SelectedElements.Clear();
-        SVG.SelectedElements.Add(ellipse);
+        SVG.SelectedShapes.Clear();
+        SVG.SelectedShapes.Add(ellipse);
         SVG.AddElement(ellipse);
     }
 

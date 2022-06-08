@@ -7,10 +7,15 @@
        @ref=ElementReference
        @onmousedown="Select"
        @onkeyup="KeyUp">
-        @foreach (ISVGElement child in SVGElement.ChildElements)
+        @foreach (ISVGElement child in SVGElement.ChildShapes)
         {
             var Parameters = new Dictionary<string, object> { { "SVGElement", child } };
             <DynamicComponent Type=child.Editor Parameters=Parameters />
+        }
+        @foreach (BaseAnimate animate in SVGElement.AnimationElements)
+        {
+            var Parameters = new Dictionary<string, object> { { "SVGElement", animate } };
+            <DynamicComponent Type=animate.Editor Parameters=Parameters />
         }
     </g>
     @if (SVGElement.Selected)

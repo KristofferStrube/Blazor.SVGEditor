@@ -13,9 +13,10 @@
               stroke-width="@SVGElement.StrokeWidth"
               @onmousedown="Select"
               @onkeyup="KeyUp">
-            @if (SVGElement.Playing)
+            @foreach(BaseAnimate animate in SVGElement.AnimationElements)
             {
-                @((MarkupString)SVGElement.Element.InnerHtml)
+                var Parameters = new Dictionary<string, object> { { "SVGElement", animate } };
+                <DynamicComponent Type=animate.Editor Parameters=Parameters />
             }
         </path>
     </g>
@@ -80,7 +81,7 @@
         if (SVGElement.SVG.EditMode is EditMode.Scale or EditMode.Move or EditMode.None)
         {
             SVGElement.SVG.CurrentAnchor = anchor;
-            SVGElement.SVG.CurrentAnchorElement = SVGElement;
+            SVGElement.SVG.CurrentAnchorShape = SVGElement;
         }
         if (SVGElement.SVG.EditMode is EditMode.Move or EditMode.None)
         {

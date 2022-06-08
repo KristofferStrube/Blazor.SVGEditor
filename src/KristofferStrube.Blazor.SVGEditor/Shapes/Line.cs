@@ -97,8 +97,8 @@ public class Line : Shape
         (line.X1, line.Y1) = start;
         (line.X2, line.Y2) = start;
 
-        SVG.SelectedElements.Clear();
-        SVG.SelectedElements.Add(line);
+        SVG.SelectedShapes.Clear();
+        SVG.SelectedShapes.Add(line);
         SVG.AddElement(line);
     }
 

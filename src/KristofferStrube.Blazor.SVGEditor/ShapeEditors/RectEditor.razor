@@ -15,9 +15,10 @@
               fill="@SVGElement.Fill"
               @onmousedown="Select"
               @onkeyup="KeyUp">
-            @if (SVGElement.Playing)
+            @foreach(BaseAnimate animate in SVGElement.AnimationElements)
             {
-                @((MarkupString)SVGElement.Element.InnerHtml)
+                var Parameters = new Dictionary<string, object> { { "SVGElement", animate } };
+                <DynamicComponent Type=animate.Editor Parameters=Parameters />
             }
         </rect>
     </g>

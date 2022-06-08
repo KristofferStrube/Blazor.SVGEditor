@@ -1,6 +1,4 @@
-﻿@using BlazorColorPicker
-
-<ContextMenuTrigger MenuId="SVGMenu" style="height:100%;">
+﻿<ContextMenuTrigger MenuId="SVGMenu" style="height:100%;">
     <svg @ref=SVGElementReference
          @onmousemove="Move"
          @onmousedown="Down"
@@ -16,7 +14,7 @@
             @foreach (ISVGElement SVGElement in Elements)
             {
                 var Parameters = new Dictionary<string, object> { { "SVGElement", SVGElement } };
-                <DynamicComponent Type=@SVGElement.Editor Parameters=@Parameters />
+                <DynamicComponent Type=@SVGElement.Editor Parameters=Parameters />
             }
             <foreignObject x="5" y="0" height="22" width="150" style="font-size:20px;pointer-events:none;">Scale 1:@(Math.Round(Scale, 3).AsString())</foreignObject>
             @if (SelectionBox is not null)
@@ -29,11 +27,11 @@
 <ContextMenu Id="SVGMenu">
     <Item OnClick="() => ContextZoomIn()"><div class="icon">🔍</div> Zoom In</Item>
     <Item OnClick="() => ContextZoomOut()"><div class="icon">🔍</div> Zoom Out</Item>
-    @if (SelectedElements.Count == 1 && EditMode == EditMode.Add)
+    @if (SelectedShapes.Count == 1 && EditMode == EditMode.Add)
     {
-        <Item OnClick="_ => CompleteShape(SelectedElements[0])">
+        <Item OnClick="_ => CompleteShape(SelectedShapes[0])">
             <div class="icon">✨</div> Complete New Shape
-            @if (SelectedElements[0] is Path path)
+            @if (SelectedShapes[0] is Path path)
             {
                 <SubMenu>
                     <Item OnClick="_ => CompleteShapeWithoutClose(path)"><div class="icon">❗</div> Complete Without Close Instruction</Item>
@@ -59,62 +57,13 @@
     }
     @if (context.Data is Shape shape && !shape.IsChildElement)
     {
-        @if (shape.FillAnimate is Animate fillAnimate)
-        {
-            <Item>
-                <div class="icon">🎨</div> Fill Animated Color
-                <SubMenu>
-                    @for (int i = 0; i < fillAnimate.FrameCount; i++)
-                    {
-                        var j = i;
-                        <Item OnClick="@(_ => OpenAnimateColorPicker(fillAnimate, AttributeNames.FillAnimate, j))"><div class="colorPickerCube" style="background-color:@fillAnimate.Values[j];"></div> Frame @j Fill</Item>
-                    }
-                </SubMenu>
-            </Item>
-        }
-        else
-        {
-            <Item OnClick="() => OpenColorPicker(AttributeNames.Fill)">
-                <div class="colorPickerCube" style="background-color:@shape.Fill;"></div> Fill Color
-                <SubMenu>
-                    <Item OnClick=@(_ => shape.Fill = "none")><div class="icon">⚪</div> Set To None</Item>
-                    <Item OnClick=@(_ => shape.Fill = "transparent")><div class="icon">🔘</div> Set To Transparent</Item>
-                    <Item OnClick=@(_ => shape.Fill = "black")><div class="icon">⚫</div> Set To Black</Item>
-                </SubMenu>
-            </Item>
-        }
-
-        @if (shape.StrokeAnimate is Animate strokeAnimate)
-        {
-            <Item>
-                <div class="icon">🎨</div> Stroke Animated Color
-                <SubMenu>
-                    @for (int i = 0; i < strokeAnimate.FrameCount; i++)
-                    {
-                        var j = i;
-                        <Item OnClick="@(_ => OpenAnimateColorPicker(strokeAnimate, AttributeNames.StrokeAnimate, j))"><div class="colorPickerCube" style="background-color:@strokeAnimate.Values[j];"></div> Frame @j Stroke</Item>
-                    }
-                </SubMenu>
-            </Item>
-        }
-        else
-        {
-            <Item OnClick="() => OpenColorPicker(AttributeNames.Stroke)">
-                <div class="colorPickerCube" style="background-color:@shape.Stroke;"></div> Stroke Color
-                <SubMenu>
-                    <Item OnClick=@(_ => shape.Stroke = "none")><div class="icon">⚪</div> Set To None</Item>
-                    <Item OnClick=@(_ => shape.Stroke = "transparent")><div class="icon">🔘</div> Set To Transparent</Item>
-                    <Item OnClick=@(_ => shape.Stroke = "black")><div class="icon">⚫</div> Set To Black</Item>
-                </SubMenu>
-            </Item>
-        }
         <Item @onclick:preventDefault="true">
             <div class="icon">➖</div> Stroke Width
             <input type="number" @bind-value=shape.StrokeWidth style="width:50px;" />
         </Item>
         @if (shape.HasAnimation)
         {
-            @if (shape.Playing)
+            @if (shape.AnimationElements.Any(a => a.Playing))
             {
                 <Item OnClick="StopAnimation"><div class="icon">🛑</div> Stop Animation</Item>
             }

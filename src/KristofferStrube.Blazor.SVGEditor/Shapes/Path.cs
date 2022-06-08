@@ -297,8 +297,8 @@ public class Path : Shape
         };
         SVG.EditMode = EditMode.Add;
 
-        SVG.SelectedElements.Clear();
-        SVG.SelectedElements.Add(path);
+        SVG.SelectedShapes.Clear();
+        SVG.SelectedShapes.Add(path);
         SVG.AddElement(path);
     }
 

@@ -11,14 +11,14 @@ public partial class SVG : ComponentBase
     private string _input;
     private ElementReference SVGElementReference;
     private List<Shape> ColorPickerShapes;
-    private Animate ColorPickerAnimate;
+    private BaseAnimate ColorPickerAnimate;
     private int ColorPickerAnimateFrame;
     private AttributeNames ColorPickerAttribute;
     private List<ISVGElement> Elements;
     private (double x, double y)? TranslatePanner;
     private readonly Subject<ISVGElement> ElementSubject = new();
 #nullable enable
-    private List<ISVGElement>? BoxSelectionElements;
+    private List<Shape>? BoxSelectionShapes;
     private Box? SelectionBox;
 #nullable disable
     private string ColorPickerTitle => $"Pick {ColorPickerAttribute} Color";
@@ -44,28 +44,28 @@ public partial class SVG : ComponentBase
 
     public (double x, double y) LastRightClick { get; set; }
 
-    public List<ISVGElement> SelectedElements { get; set; } = new();
+    public List<Shape> SelectedShapes { get; set; } = new();
 
-    public ISVGElement FocusedElement { get; set; }
+    public Shape FocusedShapes { get; set; }
 
     public (double x, double y) MovePanner { get; set; }
 
     public int? CurrentAnchor { get; set; }
 #nullable enable
-    public ISVGElement? CurrentAnchorElement { get; set; }
+    public Shape? CurrentAnchorShape { get; set; }
 #nullable disable
 
     public EditMode EditMode { get; set; } = EditMode.None;
 
-    public List<ISVGElement> MarkedElements =>
-        FocusedElement != null && !SelectedElements.Contains(FocusedElement) ?
-        SelectedElements.Append(FocusedElement).ToList() :
-        SelectedElements;
+    public List<Shape> MarkedShapes =>
+        FocusedShapes != null && !SelectedShapes.Contains(FocusedShapes) ?
+        SelectedShapes.Append(FocusedShapes).ToList() :
+        SelectedShapes;
 
-    public List<ISVGElement> VisibleSelectionElements =>
-        BoxSelectionElements is not null ?
-        BoxSelectionElements.ToList() :
-        MarkedElements;
+    public List<Shape> VisibleSelectionShapes =>
+        BoxSelectionShapes is not null ?
+        BoxSelectionShapes.ToList() :
+        MarkedShapes;
 
     public string PreviousColor =>
         ColorPickerShapes is null or { Count: 0 } ?
@@ -85,7 +85,8 @@ public partial class SVG : ComponentBase
             { "POLYLINE", typeof(Polyline) },
             { "LINE", typeof(Line) },
             { "PATH", typeof(Path) },
-            { "G", typeof(G)}
+            { "G", typeof(G) },
+            { "ANIMATE", typeof(BaseAnimate) },
         };
 
     protected override async Task OnParametersSetAsync()

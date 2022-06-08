@@ -133,8 +133,8 @@ public class Rect : Shape
 
         (rect.X, rect.Y) = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
 
-        SVG.SelectedElements.Clear();
-        SVG.SelectedElements.Add(rect);
+        SVG.SelectedShapes.Clear();
+        SVG.SelectedShapes.Add(rect);
         SVG.AddElement(rect);
     }
 

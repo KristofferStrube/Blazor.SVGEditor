@@ -9,19 +9,19 @@ public class G : Shape
 {
     public G(IElement element, SVG svg) : base(element, svg)
     {
-        ChildElements = Element.Children.Select(child =>
+        ChildShapes = Element.Children.Select(child =>
         {
-            ISVGElement ChildSVGElement;
+            Shape ChildShape;
             if (SVG.SupportedTypes.ContainsKey(child.TagName))
             {
-                ChildSVGElement = (ISVGElement)Activator.CreateInstance(SVG.SupportedTypes[child.TagName], child, SVG);
+                ChildShape = (Shape)Activator.CreateInstance(SVG.SupportedTypes[child.TagName], child, SVG);
             }
             else
             {
                 throw new NotImplementedException($"Tag not supported:\n {child.OuterHtml}");
             }
-            ChildSVGElement.Changed = UpdateInput;
-            return ChildSVGElement;
+            ChildShape.Changed = UpdateInput;
+            return ChildShape;
         }).ToList();
     }
 
@@ -33,21 +33,21 @@ public class G : Shape
 
     public override Type Editor => typeof(GEditor);
 
-    public override string StateRepresentation => string.Join("-", ChildElements.Select(c => c.StateRepresentation)) + string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + SVG.EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y + Serialize(BoundingBox);
+    public override string StateRepresentation => string.Join("-", ChildShapes.Select(c => c.StateRepresentation)) + string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + SVG.EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y + Serialize(BoundingBox);
 
-    public List<ISVGElement> ChildElements { get; set; } = new List<ISVGElement>();
+    public List<Shape> ChildShapes { get; set; } = new List<Shape>();
 
-    public override IEnumerable<(double x, double y)> SelectionPoints => ChildElements.SelectMany(child => child.SelectionPoints);
+    public override IEnumerable<(double x, double y)> SelectionPoints => ChildShapes.SelectMany(child => child.SelectionPoints);
 
     public override void UpdateHtml()
     {
-        ChildElements.ForEach(e => e.UpdateHtml());
-        StoredHtml = $"<g {string.Join(" ", Element.Attributes.Select(a => $"{a.Name}=\"{a.Value}\""))}>\n" + string.Join("\n", ChildElements.Select(e => e.StoredHtml)) + "\n</g>";
+        ChildShapes.ForEach(e => e.UpdateHtml());
+        StoredHtml = $"<g {string.Join(" ", Element.Attributes.Select(a => $"{a.Name}=\"{a.Value}\""))}>\n" + string.Join("\n", ChildShapes.Select(e => e.StoredHtml)) + "\n</g>";
     }
 
     public override void Rerender()
     {
-        ChildElements.ForEach(c => c.Rerender());
+        ChildShapes.ForEach(c => c.Rerender());
         _stateRepresentation = null;
     }
 
@@ -57,7 +57,7 @@ public class G : Shape
         switch (SVG.EditMode)
         {
             case EditMode.Move:
-                foreach (ISVGElement child in ChildElements)
+                foreach (Shape child in ChildShapes)
                 {
                     child.HandleMouseMove(eventArgs);
                 }

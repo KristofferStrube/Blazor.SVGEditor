@@ -92,8 +92,8 @@ public class Circle : Shape
         (double x, double y) startPos = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
         (circle.Cx, circle.Cy) = startPos;
 
-        SVG.SelectedElements.Clear();
-        SVG.SelectedElements.Add(circle);
+        SVG.SelectedShapes.Clear();
+        SVG.SelectedShapes.Add(circle);
         SVG.AddElement(circle);
     }
 

@@ -71,7 +71,7 @@ public class Polygon : Shape
                 if (Points.Count == 0)
                 {
                     SVG.RemoveElement(this);
-                    SVG.SelectedElements.Clear();
+                    SVG.SelectedShapes.Clear();
                     Changed.Invoke(this);
                 }
                 break;
@@ -101,8 +101,8 @@ public class Polygon : Shape
         };
         SVG.EditMode = EditMode.Add;
 
-        SVG.SelectedElements.Clear();
-        SVG.SelectedElements.Add(polygon);
+        SVG.SelectedShapes.Clear();
+        SVG.SelectedShapes.Add(polygon);
         SVG.AddElement(polygon);
     }
 

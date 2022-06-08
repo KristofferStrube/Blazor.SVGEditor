@@ -1,0 +1,46 @@
+﻿@inject ISVGAnimationService SVGAnimationService
+
+<animate @ref=AnimateElement begin="indefinite" attributename="fill" values="white;yellow;orange;yellow;#FE5722" dur="3s" repeatcount="indefinite"></animate>
+@code {
+    private SVGAnimationElement SVGAnimation;
+    private bool Active;
+
+    [Parameter]
+    public BaseAnimate SVGElement { get; set; }
+
+    private ElementReference AnimateElement { get; set; }
+
+    protected override bool ShouldRender()
+    {
+        string StateRepresentation = SVGElement.StateRepresentation;
+        if (SVGElement._stateRepresentation != StateRepresentation)
+        {
+            SVGElement._stateRepresentation = StateRepresentation;
+            return true;
+        }
+        return false;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            SVGAnimation = await SVGAnimationService.GreateSVGAnimationElement(AnimateElement);
+            StateHasChanged();
+        }
+        if (SVGElement.Playing && !Active)
+        {
+            await SVGAnimation.BeginElementAsync();
+            Console.WriteLine(await SVGAnimation.GetStartTimeAsync());
+            Active = true;
+            StateHasChanged();
+        }
+        else if (!SVGElement.Playing && Active)
+        {
+            await SVGAnimation.EndElementAsync();
+            Console.WriteLine(await SVGAnimation.GetCurrentTimeAsync());
+            Active = false;
+            StateHasChanged();
+        }
+    }
+}

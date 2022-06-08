@@ -8,6 +8,11 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public abstract class Shape : ISVGElement
 {
+    private Dictionary<string, Type> _animateTypes = new()
+    {
+        { "fill", typeof(AnimateFill) }
+    };
+
     internal string _stateRepresentation;
 
     public Shape(IElement element, SVG svg)
@@ -15,28 +20,28 @@ public abstract class Shape : ISVGElement
         Element = element;
         SVG = svg;
 
-        Element.Children
-            .ToList()
-            .ForEach(child =>
-            {
-                if (child.GetAttribute("attributeName") is string attributeName)
+        AnimationElements = Element.Children
+            .Where(child => child.TagName == "ANIMATE" && child.HasAttribute("attributename"))
+            .Select(child =>
                 {
-                    Animate animate = new(this, child);
-                    switch (attributeName)
+                    var attributeName = child.GetAttribute("attributename");
+                    if (_animateTypes.ContainsKey(attributeName))
                     {
-                        case "fill": { FillAnimate = animate; break; }
-                        case "stroke": { StrokeAnimate = animate; break; }
-                        case "stroke-width": { StrokeWidthAnimate = animate; break; }
+                        return (BaseAnimate)Activator.CreateInstance(_animateTypes[attributeName], child, SVG);
+                    }
+                    else
+                    {
+                        return new AnimateDefault(child, SVG);
                     }
                 }
-            }
-            );
+            )
+            .ToList();
     }
 
-    public IElement Element { get; set; }
-
+    public IElement Element { get; init; }
+    public SVG SVG { get; init; }
     public abstract Type Editor { get; }
-    public SVG SVG { get; set; }
+
     public string Fill
     {
         get => Element.GetAttributeOrEmpty("fill");
@@ -52,15 +57,11 @@ public abstract class Shape : ISVGElement
         get => Element.GetAttributeOrEmpty("stroke-width");
         set { Element.SetAttribute("stroke-width", value); Changed.Invoke(this); }
     }
-    public Animate FillAnimate { get; set; }
-    public Animate StrokeAnimate { get; set; }
-    public Animate StrokeWidthAnimate { get; set; }
-    public bool Playing { get; set; }
-    public bool HasAnimation => FillAnimate is not null || StrokeAnimate is not null || StrokeWidthAnimate is not null;
-
+    public List<BaseAnimate> AnimationElements { get; set; }
+    public bool HasAnimation => AnimationElements is { Count: > 0 };
     public Box BoundingBox { get; set; } = new();
     public Action<ISVGElement> Changed { get; set; }
-    public bool Selected => SVG.VisibleSelectionElements.Contains(this);
+    public bool Selected => SVG.VisibleSelectionShapes.Contains(this);
     public bool IsChildElement => Element.ParentElement?.TagName is "G" or null;
     public virtual string StateRepresentation => string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + SVG.EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y + Serialize(BoundingBox);
 
