@@ -1,0 +1,20 @@
+﻿@if (SVGElement.Playing)
+{
+    @((MarkupString)SVGElement.Element.ToHtml())
+}
+
+@code {
+    [Parameter]
+    public BaseAnimate SVGElement { get; set; }
+
+    protected override bool ShouldRender()
+    {
+        string StateRepresentation = SVGElement.StateRepresentation;
+        if (SVGElement._stateRepresentation != StateRepresentation)
+        {
+            SVGElement._stateRepresentation = StateRepresentation;
+            return true;
+        }
+        return false;
+    }
+}

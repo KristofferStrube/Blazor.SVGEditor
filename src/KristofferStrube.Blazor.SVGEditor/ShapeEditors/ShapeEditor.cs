@@ -123,6 +123,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             if (SVGElement._stateRepresentation != StateRepresentation)
             {
                 SVGElement._stateRepresentation = StateRepresentation;
+                StateHasChanged();
                 return true;
             }
             return false;

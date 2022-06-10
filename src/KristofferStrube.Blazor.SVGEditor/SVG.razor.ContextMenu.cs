@@ -20,11 +20,12 @@ public partial class SVG
         ColorPickerAttribute = attribute;
     }
 
-    private void OpenAnimateColorPicker(BaseAnimate fillAnimate, AttributeNames attribute, int frame)
+    public void OpenAnimateColorPicker(BaseAnimate animate, AttributeNames attribute, int frame)
     {
-        ColorPickerAnimate = fillAnimate;
+        ColorPickerAnimate = animate;
         ColorPickerAnimateFrame = frame;
         ColorPickerAttribute = attribute;
+        StateHasChanged();
     }
 
     private void ColorPickerClosed(string value)
@@ -200,7 +201,6 @@ public partial class SVG
                 s.AnimationElements.ForEach(a => {
                     a.Playing = false;
                 });
-                s.Rerender();
             });
     }
 
@@ -214,8 +214,6 @@ public partial class SVG
                 s.AnimationElements.ForEach(a => {
                     a.Playing = true;
                 });
-                s.Rerender();
             });
-        StateHasChanged();
     }
 }

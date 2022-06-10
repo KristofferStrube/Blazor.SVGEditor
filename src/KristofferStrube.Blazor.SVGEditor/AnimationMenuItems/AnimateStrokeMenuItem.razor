@@ -1,0 +1,15 @@
+﻿<Item>
+    <div class="icon">🎨</div> Stroke Color
+    <SubMenu>
+        @for (int i = 0; i < Animate.FrameCount; i++)
+        {
+            var j = i;
+            <Item OnClick="@(_ => Animate.SVG.OpenAnimateColorPicker(Animate, AttributeNames.StrokeAnimate, j))"><div class="colorPickerCube" style="background-color:@Animate.Values[j];"></div> Frame @j Fill</Item>
+        }
+    </SubMenu>
+</Item>
+
+@code {
+    [Parameter]
+    public BaseAnimate Animate { get; set; }
+}

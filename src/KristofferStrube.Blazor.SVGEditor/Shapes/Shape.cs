@@ -63,7 +63,14 @@ public abstract class Shape : ISVGElement
     public Action<ISVGElement> Changed { get; set; }
     public bool Selected => SVG.VisibleSelectionShapes.Contains(this);
     public bool IsChildElement => Element.ParentElement?.TagName is "G" or null;
-    public virtual string StateRepresentation => string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + SVG.EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y + Serialize(BoundingBox);
+    public virtual string StateRepresentation =>
+        string.Join("-", Element.Attributes.Select(a => a.Value)) +
+        Selected.ToString() +
+        SVG.EditMode.ToString() +
+        SVG.Scale + SVG.Translate.x +
+        SVG.Translate.y +
+        Serialize(BoundingBox) +
+        String.Join("-", AnimationElements.Select(a => a.StateRepresentation));
 
     public string StoredHtml { get; set; }
     public virtual void UpdateHtml()

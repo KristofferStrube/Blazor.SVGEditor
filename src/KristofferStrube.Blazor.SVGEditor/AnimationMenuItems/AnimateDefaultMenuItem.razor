@@ -1,0 +1,23 @@
+﻿<Item>
+    <div class="icon">🌟</div> @Animate.AttributeName
+    <SubMenu>
+        <Item>
+            <input style="width:100%" value="@Animate.ValuesAsString" @onchange="InputChange" />
+        </Item>
+    </SubMenu>
+</Item>
+
+@code {
+    [Parameter]
+    public BaseAnimate Animate { get; set; }
+
+    private void InputChange(ChangeEventArgs eventArgs)
+    {
+        if (eventArgs.Value is string value)
+        {
+            if (value == Animate.ValuesAsString) return;
+            Animate.Values = BaseAnimate.StringToValues(value);
+            Animate.UpdateValues();
+        }
+    }
+}

@@ -5,10 +5,10 @@ using KristofferStrube.Blazor.SVGEditor.Extensions;
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
-public class AnimateFill : BaseAnimate
+public class AnimateStroke : BaseAnimate
 {
-    public AnimateFill(IElement element, SVG svg) : base(element, svg) { }
+    public AnimateStroke(IElement element, SVG svg) : base(element, svg) { }
 
     public override Type Editor => typeof(AnimateDefaultEditor);
-    public override Type MenuItem => typeof(AnimateFillMenuItem);
+    public override Type MenuItem => typeof(AnimateStrokeMenuItem);
 }

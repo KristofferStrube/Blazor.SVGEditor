@@ -11,9 +11,6 @@ public abstract class BaseAnimate : ISVGElement
         Element = element;
         SVG = svg;
         Values = StringToValues(Element.GetAttribute("values"));
-        Dur = Element.GetAttribute("dur") is string s ? s.Replace("s", "").ParseAsDouble() : 0;
-        AttributeName = Element.GetAttributeOrEmpty("attributename");
-        ValuesAsString = Element.GetAttributeOrEmpty("values");
     }
 
     internal string _stateRepresentation;
@@ -21,13 +18,14 @@ public abstract class BaseAnimate : ISVGElement
     public IElement Element { get; init; }
     public SVG SVG { get; init; }
     public abstract Type Editor { get; }
-    public string StateRepresentation => Playing.ToString() + SVG.EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y;
+    public abstract Type MenuItem { get; }
+    public string StateRepresentation => Playing.ToString() + Dur + AttributeName + ValuesAsString;
     public bool Playing { get; set; }
     public List<string> Values { get; set; }
     public int FrameCount => Values.Count;
-    public double Dur { get; set; }
-    public string AttributeName { get; set; }
-    public string ValuesAsString { get; set; }
+    public double Dur => Element.GetAttribute("dur") is string s ? s.Replace("s", "").ParseAsDouble() : 0;
+    public string AttributeName => Element.GetAttributeOrEmpty("attributename");
+    public string ValuesAsString => Element.GetAttributeOrEmpty("values");
     public Action<ISVGElement> Changed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public string StoredHtml { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
@@ -36,7 +34,7 @@ public abstract class BaseAnimate : ISVGElement
         Element.SetAttribute("values", ValuesToString(Values));
     }
 
-    private static List<string> StringToValues(string attribute)
+    public static List<string> StringToValues(string attribute)
     {
         if (attribute == null)
         {

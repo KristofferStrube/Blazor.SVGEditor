@@ -1,4 +1,39 @@
-﻿@code {
+﻿@inject ISVGAnimationService SVGAnimationService
+<animate @ref=AnimateElement begin="indefinite" attributeName="@SVGElement.AttributeName" values="@SVGElement.ValuesAsString" dur="@SVGElement.Dur.AsString()s" repeatCount="indefinite"></animate>
+@code {
+    private SVGAnimationElement SVGAnimation;
+    private ElementReference AnimateElement;
+    private bool Active = false;
+
     [Parameter]
     public BaseAnimate SVGElement { get; set; }
+
+    protected override bool ShouldRender()
+    {
+        string StateRepresentation = SVGElement.StateRepresentation;
+        if (SVGElement._stateRepresentation != StateRepresentation)
+        {
+            SVGElement._stateRepresentation = StateRepresentation;
+            return true;
+        }
+        return false;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            SVGAnimation = await SVGAnimationService.GreateSVGAnimationElement(AnimateElement);
+        }
+        if (SVGElement.Playing && !Active)
+        {
+            await SVGAnimation.BeginElementAsync();
+            Active = true;
+        }
+        else if (!SVGElement.Playing && Active)
+        {
+            await SVGAnimation.EndElementAsync();
+            Active = false;
+        }
+    }
 }
