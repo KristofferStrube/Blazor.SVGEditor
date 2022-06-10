@@ -10,7 +10,9 @@ public abstract class Shape : ISVGElement
 {
     private Dictionary<string, Type> _animateTypes = new()
     {
-        { "fill", typeof(AnimateFill) }
+        { "fill", typeof(AnimateFill) },
+        { "stroke", typeof(AnimateStroke) },
+        { "d", typeof(AnimateD) },
     };
 
     internal string _stateRepresentation;

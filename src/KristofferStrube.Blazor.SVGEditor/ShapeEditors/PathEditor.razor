@@ -7,13 +7,13 @@
               @onfocusin="FocusElement"
               @onfocusout="UnfocusElement"
               @ref=ElementReference
-              d="@SVGElement.Instructions.AsString()"
+              d="@SVGElement.d"
               fill="@SVGElement.Fill"
               stroke="@SVGElement.Stroke"
               stroke-width="@SVGElement.StrokeWidth"
               @onmousedown="Select"
               @onkeyup="KeyUp">
-            @foreach(BaseAnimate animate in SVGElement.AnimationElements)
+            @foreach (BaseAnimate animate in SVGElement.AnimationElements)
             {
                 var Parameters = new Dictionary<string, object> { { "SVGElement", animate } };
                 <DynamicComponent Type=animate.Editor Parameters=Parameters />

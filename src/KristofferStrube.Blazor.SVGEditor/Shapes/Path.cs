@@ -35,6 +35,23 @@ public class Path : Shape
             Changed.Invoke(this);
         }
     }
+
+    public string d
+    {
+        get
+        {
+            var animateD = AnimationElements.FirstOrDefault(a => a is AnimateD);
+            if (animateD is not null && animateD.CurrentFrame is int frame)
+            {
+                return animateD.Values[frame];
+            }
+            else
+            {
+                return Instructions.AsString();
+            }
+        }
+    }
+
     public int? CurrentInstruction;
 
     public override void HandleMouseMove(MouseEventArgs eventArgs)

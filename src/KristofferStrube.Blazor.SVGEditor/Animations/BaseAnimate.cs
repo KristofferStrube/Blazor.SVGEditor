@@ -19,10 +19,11 @@ public abstract class BaseAnimate : ISVGElement
     public SVG SVG { get; init; }
     public abstract Type Editor { get; }
     public abstract Type MenuItem { get; }
-    public string StateRepresentation => Playing.ToString() + Dur + AttributeName + ValuesAsString;
+    public string StateRepresentation => Playing.ToString() + Dur + AttributeName + ValuesAsString + CurrentFrame.ToString();
     public bool Playing { get; set; }
     public List<string> Values { get; set; }
     public int FrameCount => Values.Count;
+    public int? CurrentFrame { get; set; }
     public double Begin => Element.GetAttribute("begin") is string s ? s.Replace("s", "").ParseAsDouble() : 0;
     public double Dur => Element.GetAttribute("dur") is string s ? s.Replace("s", "").ParseAsDouble() : 0;
     public string AttributeName => Element.GetAttributeOrEmpty("attributename");
