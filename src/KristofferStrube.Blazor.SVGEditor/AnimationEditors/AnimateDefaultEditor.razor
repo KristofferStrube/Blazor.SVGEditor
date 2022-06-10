@@ -27,7 +27,8 @@
         }
         if (SVGElement.Playing && !Active)
         {
-            await SVGAnimation.BeginElementAsync();
+            var currentTime = await SVGAnimation.GetCurrentTimeAsync();
+            await SVGAnimation.BeginElementAtAsync((float)((SVGElement.Begin - (currentTime % SVGElement.Dur)) % SVGElement.Dur));
             Active = true;
         }
         else if (!SVGElement.Playing && Active)
