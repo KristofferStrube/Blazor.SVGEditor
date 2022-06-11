@@ -1,5 +1,6 @@
 ﻿using AngleSharp.Dom;
 using KristofferStrube.Blazor.SVGEditor.Extensions;
+using System.Text;
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
@@ -9,7 +10,23 @@ public abstract class BaseAnimate : ISVGElement
     {
         Element = element;
         SVG = svg;
-        Values = StringToValues(Element.GetAttribute("values"));
+        if (Element.HasAttribute("values"))
+        {
+            Values = StringToValues(Element.GetAttribute("values"));
+        }
+        else
+        {
+            var valuesSB = new StringBuilder();
+            if (Element.HasAttribute("from"))
+            {
+                valuesSB.Append(Element.GetAttribute("from"));
+            }
+            if (Element.HasAttribute("to"))
+            {
+                valuesSB.Append(Element.GetAttribute("to"));
+            }
+            Values = StringToValues(valuesSB.ToString());
+        }
     }
 
     internal string _stateRepresentation;
