@@ -86,7 +86,6 @@ public partial class SVG : ComponentBase
             { "LINE", typeof(Line) },
             { "PATH", typeof(Path) },
             { "G", typeof(G) },
-            { "ANIMATE", typeof(BaseAnimate) },
         };
 
     protected override async Task OnParametersSetAsync()

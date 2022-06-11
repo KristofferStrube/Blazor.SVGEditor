@@ -1,5 +1,4 @@
 ﻿using AngleSharp.Dom;
-using KristofferStrube.Blazor.SVGEditor.AnimationEditors;
 using KristofferStrube.Blazor.SVGEditor.Extensions;
 
 namespace KristofferStrube.Blazor.SVGEditor;
@@ -17,6 +16,7 @@ public abstract class BaseAnimate : ISVGElement
 
     public IElement Element { get; init; }
     public SVG SVG { get; init; }
+    public ISVGElement Parent { get; set; }
     public abstract Type Editor { get; }
     public abstract Type MenuItem { get; }
     public string StateRepresentation => Playing.ToString() + Dur + AttributeName + ValuesAsString + CurrentFrame.ToString();
@@ -35,6 +35,8 @@ public abstract class BaseAnimate : ISVGElement
     {
         Element.SetAttribute("values", ValuesToString(Values));
     }
+
+    public abstract bool IsEditing(string property);
 
     public static List<string> StringToValues(string attribute)
     {

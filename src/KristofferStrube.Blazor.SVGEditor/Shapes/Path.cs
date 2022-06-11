@@ -31,24 +31,17 @@ public class Path : Shape
     {
         if (Instructions.Count > 0)
         {
-            Element.SetAttribute("d", Instructions.AsString());
-            Changed.Invoke(this);
-        }
-    }
-
-    public string d
-    {
-        get
-        {
-            var animateD = AnimationElements.FirstOrDefault(a => a is AnimateD);
-            if (animateD is not null && animateD.CurrentFrame is int frame)
+            var editingAnimation = AnimationElements.FirstOrDefault(a => a.IsEditing("d"));
+            if (editingAnimation is not null)
             {
-                return animateD.Values[frame];
+                editingAnimation.Values[editingAnimation.CurrentFrame.Value] = Instructions.AsString();
+                editingAnimation.UpdateValues();
             }
             else
             {
-                return Instructions.AsString();
+                Element.SetAttribute("d", Instructions.AsString());
             }
+            Changed.Invoke(this);
         }
     }
 

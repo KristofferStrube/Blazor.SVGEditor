@@ -8,7 +8,7 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public abstract class Shape : ISVGElement
 {
-    private Dictionary<string, Type> _animateTypes = new()
+    private readonly Dictionary<string, Type> _animateTypes = new()
     {
         { "fill", typeof(AnimateFill) },
         { "stroke", typeof(AnimateStroke) },
@@ -26,10 +26,12 @@ public abstract class Shape : ISVGElement
             .Where(child => child.TagName == "ANIMATE" && child.HasAttribute("attributename"))
             .Select(child =>
                 {
-                    var attributeName = child.GetAttribute("attributename");
+                    string attributeName = child.GetAttribute("attributename");
                     if (_animateTypes.ContainsKey(attributeName))
                     {
-                        return (BaseAnimate)Activator.CreateInstance(_animateTypes[attributeName], child, SVG);
+                        BaseAnimate animation = (BaseAnimate)Activator.CreateInstance(_animateTypes[attributeName], child, SVG);
+                        animation.Parent = this;
+                        return animation;
                     }
                     else
                     {
@@ -72,7 +74,7 @@ public abstract class Shape : ISVGElement
         SVG.Scale + SVG.Translate.x +
         SVG.Translate.y +
         Serialize(BoundingBox) +
-        String.Join("-", AnimationElements.Select(a => a.StateRepresentation));
+        string.Join("-", AnimationElements.Select(a => a.StateRepresentation));
 
     public string StoredHtml { get; set; }
     public virtual void UpdateHtml()

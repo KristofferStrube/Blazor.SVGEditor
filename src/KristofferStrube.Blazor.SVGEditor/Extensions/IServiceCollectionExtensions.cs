@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using KristofferStrube.Blazor.SVGAnimation;
+﻿using KristofferStrube.Blazor.SVGAnimation;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace KristofferStrube.Blazor.SVGEditor.Extensions
 {
