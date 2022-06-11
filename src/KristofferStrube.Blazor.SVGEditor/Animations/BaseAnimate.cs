@@ -41,19 +41,72 @@ public abstract class BaseAnimate : ISVGElement
     public List<string> Values { get; set; }
     public int FrameCount => Values.Count;
     public int? CurrentFrame { get; set; }
-    public double Begin => Element.GetAttribute("begin") is string s ? s.Replace("s", "").ParseAsDouble() : 0;
-    public double Dur => Element.GetAttribute("dur") is string s ? s.Replace("s", "").ParseAsDouble() : 0;
-    public string AttributeName => Element.GetAttributeOrEmpty("attributename");
+    public double Begin
+    {
+        get
+        {
+            return Element.GetAttribute("begin") is string s ? s.Replace("s", "").ParseAsDouble() : 0;
+        }
+        set
+        {
+            Element.SetAttribute("begin", $"{value.AsString()}s");
+        }
+    }
+    public double Dur
+    {
+        get
+        {
+            return Element.GetAttribute("dur") is string s ? s.Replace("s", "").ParseAsDouble() : 0;
+        }
+        set
+        {
+            Element.SetAttribute("dur", $"{value.AsString()}s");
+        }
+    }
+    public string AttributeName
+    {
+        get
+        {
+            return Element.GetAttributeOrEmpty("attributename");
+        }
+        init
+        {
+            Element.SetAttribute("attributename", value);
+        }
+    }
     public string ValuesAsString => Element.GetAttributeOrEmpty("values");
     public Action<ISVGElement> Changed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public string StoredHtml { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     public void UpdateValues()
     {
-        Element.SetAttribute("values", ValuesToString(Values));
+        if (Element.HasAttribute("values"))
+        {
+            Element.SetAttribute("values", ValuesToString(Values));
+        }
+        else if (Element.HasAttribute("from") || Element.HasAttribute("to"))
+        {
+            int i = 0;
+            if (Element.HasAttribute("from"))
+            {
+                Element.SetAttribute("from", Values[i]);
+                i++;
+            }
+            if (Element.HasAttribute("to"))
+            {
+                Element.SetAttribute("to", Values[i]);
+            }
+        }
+        else
+        {
+            Element.SetAttribute("values", ValuesToString(Values));
+        }
+        Parent.UpdateHtml();
     }
 
     public abstract bool IsEditing(string property);
+
+    public abstract void AddFrame();
 
     public static List<string> StringToValues(string attribute)
     {

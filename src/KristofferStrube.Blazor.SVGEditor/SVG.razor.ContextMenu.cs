@@ -42,6 +42,7 @@ public partial class SVG
         {
             ColorPickerAnimate.Values[ColorPickerAnimateFrame] = value;
             ColorPickerAnimate.UpdateValues();
+            ColorPickerAnimate.Parent.Changed(ColorPickerAnimate.Parent);
         }
         ColorPickerShapes = null;
         ColorPickerAnimate = null;

@@ -1,18 +1,19 @@
 ﻿<Item>
-    <div class="icon">🎢</div> d
+    <div class="icon">🎢</div> Path Data
     <SubMenu>
         @for (int i = 0; i < Animate.FrameCount; i++)
         {
             var j = i;
             @if (Animate.CurrentFrame == j)
             {
-                <Item CssClass="dark" OnClick="() => Animate.SetParentD(null)"><div class="icon">✅</div> Frame @j Path Done</Item>
+                <Item CssClass="dark" OnClick="() => Animate.SetParentD(null)"><div class="icon">✅</div> Frame @j Data</Item>
             }
             else
             {
-                <Item OnClick="() => Animate.SetParentD(j)"><div class="icon">👁‍🗨</div> Frame @j Path</Item>
+                <Item OnClick="() => Animate.SetParentD(j)"><div class="icon">👁‍🗨</div> Frame @j Data</Item>
             }
         }
+        <Item OnClick="_ => Animate.AddFrame()"><div class="icon">➕</div> Add Frame</Item>
     </SubMenu>
 </Item>
 

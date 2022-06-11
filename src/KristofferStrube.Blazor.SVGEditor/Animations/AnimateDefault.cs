@@ -15,4 +15,11 @@ public class AnimateDefault : BaseAnimate
     {
         return false;
     }
+
+    public override void AddFrame()
+    {
+        Values.Add("");
+        UpdateValues();
+        Parent.Changed(Parent);
+    }
 }

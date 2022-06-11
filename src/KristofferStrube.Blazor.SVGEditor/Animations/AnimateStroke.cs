@@ -15,4 +15,32 @@ public class AnimateStroke : BaseAnimate
     {
         return property == "stroke" && CurrentFrame.HasValue;
     }
+
+    public override void AddFrame()
+    {
+        Values.Add(Parent is Shape s ? s.Stroke : "black");
+        UpdateValues();
+        Parent.Changed(Parent);
+    }
+
+    public static void AddNew(SVG SVG, Shape parent)
+    {
+        IElement element = SVG.Document.CreateElement("ANIMATE");
+
+        AnimateStroke animate = new(element, SVG)
+        {
+            AttributeName = "stroke",
+            Parent = parent,
+            Values = new(),
+            Begin = 0,
+            Dur = 5,
+        };
+        animate.AddFrame();
+        animate.UpdateValues();
+        SVG.EditMode = EditMode.None;
+        SVG.SelectedShapes.Clear();
+
+        SVG.AddElement(animate, parent);
+        parent.AnimationElements.Add(animate);
+    }
 }

@@ -141,11 +141,19 @@ public partial class SVG : ComponentBase
         ElementSubject.OnNext(SVGElement);
     }
 
-    public void AddElement(ISVGElement SVGElement)
+    public void AddElement(ISVGElement SVGElement, ISVGElement parent = null)
     {
-        Elements.Add(SVGElement);
-        SVGElement.UpdateHtml();
-        Document.GetElementsByTagName("BODY")[0].AppendElement(SVGElement.Element);
+        if (parent is null)
+        {
+            Elements.Add(SVGElement);
+            SVGElement.UpdateHtml();
+            Document.GetElementsByTagName("BODY")[0].AppendElement(SVGElement.Element);
+        }
+        else
+        {
+            parent.Element.AppendChild(SVGElement.Element);
+            parent.Changed.Invoke(parent);
+        }
         UpdateInput();
     }
 

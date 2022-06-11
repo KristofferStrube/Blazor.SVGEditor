@@ -6,6 +6,7 @@
             var j = i;
             <Item OnClick="@(_ => Animate.SVG.OpenAnimateColorPicker(Animate, AttributeNames.StrokeAnimate, j))"><div class="colorPickerCube" style="background-color:@Animate.Values[j];"></div> Frame @j Fill</Item>
         }
+        <Item OnClick="_ => Animate.AddFrame()"><div class="icon">➕</div> Add Frame</Item>
     </SubMenu>
 </Item>
 
