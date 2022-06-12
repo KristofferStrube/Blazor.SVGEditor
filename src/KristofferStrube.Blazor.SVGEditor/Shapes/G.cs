@@ -42,7 +42,8 @@ public class G : Shape
     public override void UpdateHtml()
     {
         ChildShapes.ForEach(e => e.UpdateHtml());
-        StoredHtml = $"<g {string.Join(" ", Element.Attributes.Select(a => $"{a.Name}=\"{a.Value}\""))}>\n" + string.Join("\n", ChildShapes.Select(e => e.StoredHtml)) + "\n</g>";
+        AnimationElements.ForEach(a => a.UpdateHtml());
+        StoredHtml = $"<g{string.Join("", Element.Attributes.Select(a => $" {a.Name}=\"{a.Value}\""))}>\n" + string.Join("", ChildShapes.Select(e => e.StoredHtml + "\n")) + string.Join("", AnimationElements.Select(a => a.StoredHtml + "\n")) + "</g>";
     }
 
     public override void Rerender()

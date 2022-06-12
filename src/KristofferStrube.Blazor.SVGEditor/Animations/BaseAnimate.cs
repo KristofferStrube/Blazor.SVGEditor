@@ -1,4 +1,5 @@
-﻿using AngleSharp.Dom;
+﻿using AngleSharp;
+using AngleSharp.Dom;
 using KristofferStrube.Blazor.SVGEditor.Extensions;
 using System.Text;
 
@@ -76,7 +77,7 @@ public abstract class BaseAnimate : ISVGElement
     }
     public string ValuesAsString => Element.GetAttributeOrEmpty("values");
     public Action<ISVGElement> Changed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public string StoredHtml { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public string StoredHtml { get; set; }
 
     public void UpdateValues()
     {
@@ -125,7 +126,7 @@ public abstract class BaseAnimate : ISVGElement
 
     public void UpdateHtml()
     {
-        throw new NotImplementedException();
+        StoredHtml = Element.ToHtml();
     }
 
     public void Complete()
