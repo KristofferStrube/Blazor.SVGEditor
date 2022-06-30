@@ -13,7 +13,7 @@
               stroke="@SVGElement.Stroke"
               stroke-width="@SVGElement.StrokeWidth"
               fill="@SVGElement.Fill"
-              @onmousedown="Select"
+              @onpointerdown="Select"
               @onkeyup="KeyUp">
             @foreach(BaseAnimate animate in SVGElement.AnimationElements)
             {
@@ -24,9 +24,9 @@
     </g>
     @if (SVGElement.Selected && SVGElement.SVG.EditMode is not EditMode.Add)
     {
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(0)" Position="(SVGElement.X, SVGElement.Y)" />
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(1)" Position="(SVGElement.X + SVGElement.Width, SVGElement.Y)" />
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(2)" Position="(SVGElement.X + SVGElement.Width, SVGElement.Y + SVGElement.Height)" />
-        <PrimaryAnchor OnMouseDown="() => AnchorSelect(3)" Position="(SVGElement.X, SVGElement.Y + SVGElement.Height)" />
+        <PrimaryAnchor OnPointerDown="() => AnchorSelect(0)" Position="(SVGElement.X, SVGElement.Y)" />
+        <PrimaryAnchor OnPointerDown="() => AnchorSelect(1)" Position="(SVGElement.X + SVGElement.Width, SVGElement.Y)" />
+        <PrimaryAnchor OnPointerDown="() => AnchorSelect(2)" Position="(SVGElement.X + SVGElement.Width, SVGElement.Y + SVGElement.Height)" />
+        <PrimaryAnchor OnPointerDown="() => AnchorSelect(3)" Position="(SVGElement.X, SVGElement.Y + SVGElement.Height)" />
     }
 </ContextMenuTrigger>

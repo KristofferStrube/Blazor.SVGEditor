@@ -10,7 +10,7 @@
                  fill="@SVGElement.Fill"
                  stroke="@SVGElement.Stroke"
                  stroke-width="@SVGElement.StrokeWidth"
-                 @onmousedown="Select"
+                 @onpointerdown="Select"
                  @onkeyup="KeyUp">
             @foreach(BaseAnimate animate in SVGElement.AnimationElements)
             {
@@ -24,7 +24,7 @@
         @for (int i = 0; i < SVGElement.Points.Count(); i++)
         {
             var j = i;
-            <PrimaryAnchor OnMouseDown="() => AnchorSelect(j)" Position=SVGElement.Points[i] />
+            <PrimaryAnchor OnPointerDown="() => AnchorSelect(j)" Position=SVGElement.Points[i] />
         }
     }
 </ContextMenuTrigger>

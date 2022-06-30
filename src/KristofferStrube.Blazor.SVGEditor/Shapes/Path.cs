@@ -47,7 +47,7 @@ public class Path : Shape
 
     public int? CurrentInstruction;
 
-    public override void HandleMouseMove(MouseEventArgs eventArgs)
+    public override void HandlePointerMove(PointerEventArgs eventArgs)
     {
         (double x, double y) = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
         switch (SVG.EditMode)
@@ -262,7 +262,7 @@ public class Path : Shape
         }).ToList();
     }
 
-    public override void HandleMouseUp(MouseEventArgs eventArgs)
+    public override void HandlePointerUp(PointerEventArgs eventArgs)
     {
         (double x, double y) = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
         switch (SVG.EditMode)
@@ -290,7 +290,7 @@ public class Path : Shape
         }
     }
 
-    public override void HandleMouseOut(MouseEventArgs eventArgs)
+    public override void HandlePointerOut(PointerEventArgs eventArgs)
     {
     }
 

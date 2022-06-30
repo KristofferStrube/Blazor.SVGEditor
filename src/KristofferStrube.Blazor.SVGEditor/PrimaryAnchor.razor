@@ -1,9 +1,9 @@
-﻿<circle cx=@X cy=@Y r="5" stroke-width="2" stroke="black" fill="transparent" @onmousedown=OnMouseDown />
+﻿<circle cx=@X cy=@Y r="5" stroke-width="2" stroke="black" fill="transparent" @onpointerdown=OnPointerDown />
 <circle cx=@X cy=@Y r="5" stroke-width="0.5" stroke="white" fill="transparent" style="pointer-events:none;" />
 
 @code {
     [Parameter]
-    public EventCallback<MouseEventArgs> OnMouseDown { get; set; }
+    public EventCallback<PointerEventArgs> OnPointerDown { get; set; }
 
     [Parameter]
     public (double x, double y) Position { get; set; }

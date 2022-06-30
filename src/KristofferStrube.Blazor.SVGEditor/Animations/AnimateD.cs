@@ -26,6 +26,7 @@ public class AnimateD : BaseAnimate
             {
                 path.Instructions = PathData.Parse(path.Element.GetAttributeOrEmpty("d"));
             }
+            path.Changed?.Invoke(path);
         }
     }
 

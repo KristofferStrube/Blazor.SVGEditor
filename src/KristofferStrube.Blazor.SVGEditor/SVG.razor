@@ -1,15 +1,16 @@
 ﻿<ContextMenuTrigger MenuId="SVGMenu" style="height:100%;">
     <svg @ref=SVGElementReference
-         @onmousemove="Move"
-         @onmousedown="Down"
-         @onmouseup="Up"
-         @onmouseout="Out"
+         @onpointermove="Move"
+         @onpointerdown="Down"
+         @onpointerup="Up"
+         @onpointerout="Out"
          @onwheel="Wheel"
-         style="border:1px solid black; cursor:@(TranslatePanner.HasValue ? "move" : "initial");"
+         style="border:1px solid black; cursor:@(TranslatePanner.HasValue ? "move" : "initial");user-select:none;touch-action:pinch-zoom;"
          width="100%"
          height="100%"
-         @onmousedown:preventDefault="true">
-        <rect width="100%" height="100%" fill="transparent" @onmousedown=@UnSelect></rect>
+         @onpointerdown:preventDefault="true"
+         @onpointerdown:stopPropagation="true">
+        <rect width="100%" height="100%" fill="transparent" @onpointerdown=@UnSelect></rect>
         <CascadingValue Value=this IsFixed=true>
             @foreach (ISVGElement SVGElement in Elements)
             {
@@ -25,8 +26,6 @@
     </svg>
 </ContextMenuTrigger>
 <ContextMenu Id="SVGMenu">
-    <Item OnClick="() => ContextZoomIn()"><div class="icon">🔍</div> Zoom In</Item>
-    <Item OnClick="() => ContextZoomOut()"><div class="icon">🔍</div> Zoom Out</Item>
     @if (SelectedShapes.Count == 1 && EditMode == EditMode.Add)
     {
         <Item OnClick="_ => CompleteShape(SelectedShapes[0])">
@@ -104,7 +103,7 @@
                     {
                         <Item OnClick="PlayAnimation"><div class="icon">▶</div> Play Animations</Item>
                     }
-                    @foreach(BaseAnimate animate in shape.AnimationElements)
+                    @foreach (BaseAnimate animate in shape.AnimationElements)
                     {
                         var Parameters = new Dictionary<string, object> { { "Animate", animate } };
                         <DynamicComponent Type=animate.MenuItem Parameters=Parameters />

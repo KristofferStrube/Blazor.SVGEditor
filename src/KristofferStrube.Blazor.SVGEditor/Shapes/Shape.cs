@@ -90,8 +90,8 @@ public abstract class Shape : ISVGElement
 
     public abstract IEnumerable<(double x, double y)> SelectionPoints { get; }
 
-    public abstract void HandleMouseMove(MouseEventArgs eventArgs);
-    public abstract void HandleMouseUp(MouseEventArgs eventArgs);
-    public abstract void HandleMouseOut(MouseEventArgs eventArgs);
+    public abstract void HandlePointerMove(PointerEventArgs eventArgs);
+    public abstract void HandlePointerUp(PointerEventArgs eventArgs);
+    public abstract void HandlePointerOut(PointerEventArgs eventArgs);
     public abstract void Complete();
 }

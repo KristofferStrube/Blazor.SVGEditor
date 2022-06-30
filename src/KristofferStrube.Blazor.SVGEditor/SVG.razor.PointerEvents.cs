@@ -4,7 +4,7 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public partial class SVG
 {
-    private void Move(MouseEventArgs eventArgs)
+    private void Move(PointerEventArgs eventArgs)
     {
         if (TranslatePanner.HasValue)
         {
@@ -17,7 +17,7 @@ public partial class SVG
             (double x, double y) = LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             if (CurrentAnchorShape is Shape shape)
             {
-                shape.HandleMouseMove(eventArgs);
+                shape.HandlePointerMove(eventArgs);
             }
             else
             {
@@ -33,14 +33,14 @@ public partial class SVG
                 }
                 else
                 {
-                    MarkedShapes.ForEach(e => e.HandleMouseMove(eventArgs));
+                    MarkedShapes.ForEach(e => e.HandlePointerMove(eventArgs));
                     MovePanner = (x, y);
                 }
             }
         }
     }
 
-    public void Down(MouseEventArgs eventArgs)
+    public void Down(PointerEventArgs eventArgs)
     {
         if (eventArgs.Button == 1)
         {
@@ -53,7 +53,7 @@ public partial class SVG
         }
     }
 
-    public void Up(MouseEventArgs eventArgs)
+    public void Up(PointerEventArgs eventArgs)
     {
         CurrentAnchorShape = null;
         if (BoxSelectionShapes is { Count: > 0 })
@@ -63,7 +63,7 @@ public partial class SVG
         }
         BoxSelectionShapes = null;
         SelectionBox = null;
-        SelectedShapes.ForEach(e => e.HandleMouseUp(eventArgs));
+        SelectedShapes.ForEach(e => e.HandlePointerUp(eventArgs));
         if (eventArgs.Button == 2)
         {
             LastRightClick = (eventArgs.OffsetX, eventArgs.OffsetY);
@@ -75,7 +75,7 @@ public partial class SVG
         }
     }
 
-    public void UnSelect(MouseEventArgs eventArgs)
+    public void UnSelect(PointerEventArgs eventArgs)
     {
         if (EditMode != EditMode.Add && !eventArgs.CtrlKey)
         {
@@ -85,9 +85,9 @@ public partial class SVG
         }
     }
 
-    public void Out(MouseEventArgs eventArgs)
+    public void Out(PointerEventArgs eventArgs)
     {
-        SelectedShapes.ForEach(e => e.HandleMouseOut(eventArgs));
+        SelectedShapes.ForEach(e => e.HandlePointerOut(eventArgs));
     }
 
     public void Wheel(WheelEventArgs eventArgs)
