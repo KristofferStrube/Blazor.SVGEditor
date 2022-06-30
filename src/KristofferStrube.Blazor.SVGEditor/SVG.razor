@@ -17,7 +17,7 @@
                 var Parameters = new Dictionary<string, object> { { "SVGElement", SVGElement } };
                 <DynamicComponent Type=@SVGElement.Editor Parameters=Parameters />
             }
-            <foreignObject x="5" y="0" height="22" width="150" style="font-size:20px;pointer-events:none;user-select:none;touch-action:none;">Scale 1:@(Math.Round(Scale, 3).AsString())</foreignObject>
+            <foreignObject class="unselectable" x="5" y="0" height="22" width="150" style="font-size:20px;pointer-events:none;touch-action:none;">Scale 1:@(Math.Round(Scale, 3).AsString())</foreignObject>
             @if (SelectionBox is not null)
             {
                 <BoxScaler Box=SelectionBox />
