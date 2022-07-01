@@ -12,7 +12,11 @@
               stroke="@SVGElement.Stroke"
               stroke-width="@SVGElement.StrokeWidth"
               @onpointerdown="Select"
-              @onkeyup="KeyUp">
+              @onkeyup="KeyUp"
+              @onpointerdown:preventDefault="true"
+              @onselectstart:preventDefault="true"
+              @onselectstart:stopPropagation="true"
+              class="unselectable">
             @foreach (BaseAnimate animate in SVGElement.AnimationElements)
             {
                 var Parameters = new Dictionary<string, object> { { "SVGElement", animate } };

@@ -30,4 +30,5 @@ path:focus, rect:focus, circle:focus, ellipse:focus, polygon:focus, polyline:foc
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    touch-action: none;
 }
