@@ -1,28 +1,27 @@
 ﻿using AngleSharp.Dom;
 
-namespace KristofferStrube.Blazor.SVGEditor.Extensions
+namespace KristofferStrube.Blazor.SVGEditor.Extensions;
+
+internal static class IElementExtensions
 {
-    internal static class IElementExtensions
+    internal static double GetAttributeOrZero(this IElement element, string attribute)
     {
-        internal static double GetAttributeOrZero(this IElement element, string attribute)
+        string attributeValue = element.GetAttribute(attribute);
+        if (string.IsNullOrWhiteSpace(attributeValue))
         {
-            string attributeValue = element.GetAttribute(attribute);
-            if (string.IsNullOrWhiteSpace(attributeValue))
-            {
-                return 0;
-            }
-
-            return attributeValue.ParseAsDouble();
+            return 0;
         }
-        internal static string GetAttributeOrEmpty(this IElement element, string attribute)
+
+        return attributeValue.ParseAsDouble();
+    }
+    internal static string GetAttributeOrEmpty(this IElement element, string attribute)
+    {
+        string attributeValue = element.GetAttribute(attribute);
+        if (string.IsNullOrWhiteSpace(attributeValue))
         {
-            string attributeValue = element.GetAttribute(attribute);
-            if (string.IsNullOrWhiteSpace(attributeValue))
-            {
-                return string.Empty;
-            }
-
-            return attributeValue;
+            return string.Empty;
         }
+
+        return attributeValue;
     }
 }

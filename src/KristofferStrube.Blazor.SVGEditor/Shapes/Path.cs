@@ -1,4 +1,5 @@
 ﻿using AngleSharp.Dom;
+using AngleSharp.Svg.Dom;
 using KristofferStrube.Blazor.SVGEditor.Extensions;
 using KristofferStrube.Blazor.SVGEditor.PathDataSequences;
 using KristofferStrube.Blazor.SVGEditor.ShapeEditors;
@@ -61,6 +62,7 @@ public class Path : Shape
                 double diffX = x - inst.EndPosition.x;
                 double diffY = y - inst.EndPosition.y;
                 IPathInstruction prev = inst.PreviousInstruction;
+
                 if (SVG.CurrentAnchor == -1)
                 {
                     inst.EndPosition = (x, y);
@@ -110,8 +112,8 @@ public class Path : Shape
                     else
                     {
                         controlPointInstruction.ControlPoints[(int)SVG.CurrentAnchor] = (x, y);
-                        controlPointInstruction.UpdateReflectionForInstructions();
                     }
+                    controlPointInstruction.UpdateReflectionForInstructions();
                 }
                 else if (inst is EllipticalArcInstruction ellipticalArcInstruction)
                 {
@@ -268,6 +270,43 @@ public class Path : Shape
         switch (SVG.EditMode)
         {
             case EditMode.MoveAnchor:
+                if (Instructions[CurrentInstruction.Value] is CubicBézierCurveInstruction cubicCurve)
+                {
+                    if (cubicCurve.ControlPoints[0].WithinRangeOf(cubicCurve.ControlPoints[1], 5 / SVG.Scale))
+                    {
+                        var newQuadraticCurve = new QuadraticBézierCurveInstruction(
+                            cubicCurve.ControlPoints[0].x,
+                            cubicCurve.ControlPoints[0].y,
+                            cubicCurve.EndPosition.x,
+                            cubicCurve.EndPosition.y,
+                            false,
+                            cubicCurve.PreviousInstruction
+                            );
+                        newQuadraticCurve.ExplicitSymbol = cubicCurve.ExplicitSymbol;
+                        newQuadraticCurve.NextInstruction = cubicCurve.NextInstruction;
+                        cubicCurve.NextInstruction.PreviousInstruction = newQuadraticCurve;
+                        Instructions[CurrentInstruction.Value] = newQuadraticCurve;
+                        UpdateData();
+                    }
+                }
+                else if (Instructions[CurrentInstruction.Value] is ShorthandCubicBézierCurveInstruction shorthandCubicCurve)
+                {
+                    if (shorthandCubicCurve.ReflectedPreviousInstructionsLastControlPoint.WithinRangeOf(shorthandCubicCurve.ControlPoints[0], 5 / SVG.Scale))
+                    {
+                        var newShorthandQuadraticCurve = new ShorthandQuadraticBézierCurveInstruction(
+                            shorthandCubicCurve.EndPosition.x,
+                            shorthandCubicCurve.EndPosition.y,
+                            false,
+                            shorthandCubicCurve.PreviousInstruction
+                            );
+                        newShorthandQuadraticCurve.ExplicitSymbol = shorthandCubicCurve.ExplicitSymbol;
+                        newShorthandQuadraticCurve.NextInstruction = shorthandCubicCurve.NextInstruction;
+                        shorthandCubicCurve.NextInstruction.PreviousInstruction = newShorthandQuadraticCurve;
+                        Instructions[CurrentInstruction.Value] = newShorthandQuadraticCurve;
+                        newShorthandQuadraticCurve.UpdateReflectionForInstructions();
+                        UpdateData();
+                    }
+                }
                 SVG.CurrentAnchor = null;
                 SVG.EditMode = EditMode.None;
                 break;

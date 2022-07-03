@@ -1,16 +1,14 @@
 ﻿using KristofferStrube.Blazor.SVGAnimation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace KristofferStrube.Blazor.SVGEditor.Extensions
-{
-    public static class IServiceCollectionExtensions
+namespace KristofferStrube.Blazor.SVGEditor.Extensions;
 
+public static class IServiceCollectionExtensions
+{
+    public static IServiceCollection AddSVGEditor(this IServiceCollection serviceCollection)
     {
-        public static IServiceCollection AddSVGEditor(this IServiceCollection serviceCollection)
-        {
-            return serviceCollection
-                .AddBlazorContextMenu()
-                .AddSVGAnimationService();
-        }
+        return serviceCollection
+            .AddBlazorContextMenu()
+            .AddSVGAnimationService();
     }
 }

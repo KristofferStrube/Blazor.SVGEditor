@@ -1,12 +1,18 @@
-﻿<circle cx=@X cy=@Y r="5" stroke-width="2" stroke="black" fill="transparent" @onpointerdown=OnPointerDown />
+﻿<circle cx=@X cy=@Y r="5" stroke-width="@CircleThickness.AsString()" stroke="@Color" fill="transparent" @onpointerdown=OnPointerDown />
 <circle cx=@X cy=@Y r="5" stroke-width="0.5" stroke="white" fill="transparent" style="pointer-events:none;" />
 
 @code {
     [Parameter]
     public EventCallback<PointerEventArgs> OnPointerDown { get; set; }
 
-    [Parameter]
+    [Parameter, EditorRequired]
     public (double x, double y) Position { get; set; }
+
+    [Parameter, EditorRequired]
+    public string Color { get; set; }
+
+    [Parameter]
+    public double CircleThickness { get; set; } = 2;
 
     [CascadingParameter]
     protected SVG SVG { get; set; }

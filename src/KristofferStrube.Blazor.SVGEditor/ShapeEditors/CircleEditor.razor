@@ -23,9 +23,9 @@
     </g>
     @if (SVGElement.Selected && SVGElement.SVG.EditMode != EditMode.Add)
     {
-        <PrimaryAnchor OnPointerDown="() => AnchorSelect(0)" Position="(SVGElement.Cx + SVGElement.R, SVGElement.Cy)" />
-        <PrimaryAnchor OnPointerDown="() => AnchorSelect(1)" Position="(SVGElement.Cx - SVGElement.R, SVGElement.Cy)" />
-        <PrimaryAnchor OnPointerDown="() => AnchorSelect(2)" Position="(SVGElement.Cx, SVGElement.Cy + SVGElement.R)" />
-        <PrimaryAnchor OnPointerDown="() => AnchorSelect(3)" Position="(SVGElement.Cx, SVGElement.Cy - SVGElement.R)" />
+        <Anchor Color="black" OnPointerDown="() => AnchorSelect(0)" Position="(SVGElement.Cx + SVGElement.R, SVGElement.Cy)" />
+        <Anchor Color="black" OnPointerDown="() => AnchorSelect(1)" Position="(SVGElement.Cx - SVGElement.R, SVGElement.Cy)" />
+        <Anchor Color="black" OnPointerDown="() => AnchorSelect(2)" Position="(SVGElement.Cx, SVGElement.Cy + SVGElement.R)" />
+        <Anchor Color="black" OnPointerDown="() => AnchorSelect(3)" Position="(SVGElement.Cx, SVGElement.Cy - SVGElement.R)" />
     }
 </ContextMenuTrigger>
