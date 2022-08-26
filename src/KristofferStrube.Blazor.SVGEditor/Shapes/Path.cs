@@ -240,10 +240,6 @@ public class Path : Shape
                         (BoundingBox.X, BoundingBox.Y) = (x, y - BoundingBox.Height);
                         break;
                 }
-                if (SVG.SnapToInteger)
-                {
-                    SnapToInteger();
-                }
                 UpdateData();
                 break;
         }
@@ -336,6 +332,10 @@ public class Path : Shape
                 break;
             case EditMode.Scale:
                 SVG.CurrentAnchor = null;
+                if (SVG.SnapToInteger)
+                {
+                    SnapToInteger();
+                }
                 break;
         }
     }
