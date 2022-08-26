@@ -1,12 +1,15 @@
-﻿<line x1=@SVG.LocalTransform(From).x.AsString() y1=@SVG.LocalTransform(From).y.AsString() x2=@SVG.LocalTransform(To).x.AsString() y2=@SVG.LocalTransform(To).y.AsString() style="pointer-events: none;" stroke-dasharray="4" stroke="grey" stroke-width="2" />
+﻿<line x1=@SVG.LocalTransform(From).x.AsString() y1=@SVG.LocalTransform(From).y.AsString() x2=@SVG.LocalTransform(To).x.AsString() y2=@SVG.LocalTransform(To).y.AsString() style="pointer-events: none;" stroke-dasharray="4" stroke="@Color" stroke-width="2" />
 <line x1=@SVG.LocalTransform(From).x.AsString() y1=@SVG.LocalTransform(From).y.AsString() x2=@SVG.LocalTransform(To).x.AsString() y2=@SVG.LocalTransform(To).y.AsString() style="pointer-events: none;" stroke-dasharray="4" stroke-dashoffset="4" stroke="white" stroke-width="2" />
 
 @code {
-    [Parameter]
+    [Parameter, EditorRequired]
     public (double x, double y) From { get; set; }
 
-    [Parameter]
+    [Parameter, EditorRequired]
     public (double x, double y) To { get; set; }
+
+    [Parameter, EditorRequired]
+    public string Color { get; set; }
 
     [CascadingParameter]
     protected SVG SVG { get; set; }

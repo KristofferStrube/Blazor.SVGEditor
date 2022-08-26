@@ -13,7 +13,10 @@ public abstract class BaseControlPointPathInstruction : BasePathInstruction
         set
         {
             _reflectedPreviousInstructionsLastControlPoint = value;
-            if (PreviousInstruction is BaseControlPointPathInstruction controlPointInstruction)
+            if (((this is ShorthandCubicBézierCurveInstruction && PreviousInstruction is CubicBézierCurveInstruction or ShorthandCubicBézierCurveInstruction) ||
+                (this is ShorthandQuadraticBézierCurveInstruction && PreviousInstruction is QuadraticBézierCurveInstruction or ShorthandQuadraticBézierCurveInstruction)) &&
+                 PreviousInstruction is BaseControlPointPathInstruction controlPointInstruction
+            )
             {
                 if (controlPointInstruction.ControlPoints.Count != 0)
                 {
@@ -24,6 +27,10 @@ public abstract class BaseControlPointPathInstruction : BasePathInstruction
                     controlPointInstruction.ReflectedPreviousInstructionsLastControlPoint = (StartPosition.x * 2 - value.x, StartPosition.y * 2 - value.y);
                 }
             }
+            else
+            {
+                _reflectedPreviousInstructionsLastControlPoint = StartPosition;
+            }
             UpdateReflectionForInstructions();
         }
     }
@@ -31,7 +38,7 @@ public abstract class BaseControlPointPathInstruction : BasePathInstruction
     public void UpdateReflectionForInstructions()
     {
         UpdateReflectedPreviousInstructionsLastControlPoint();
-        if (NextInstruction is not null and BaseControlPointPathInstruction reflectedControlPointInstruction)
+        if (NextInstruction is BaseControlPointPathInstruction reflectedControlPointInstruction)
         {
             reflectedControlPointInstruction.UpdateReflectionForInstructions();
         }
@@ -39,7 +46,10 @@ public abstract class BaseControlPointPathInstruction : BasePathInstruction
 
     private void UpdateReflectedPreviousInstructionsLastControlPoint()
     {
-        if (PreviousInstruction is BaseControlPointPathInstruction controlPointInstruction)
+        if (((this is ShorthandCubicBézierCurveInstruction && PreviousInstruction is CubicBézierCurveInstruction or ShorthandCubicBézierCurveInstruction) ||
+                (this is ShorthandQuadraticBézierCurveInstruction && PreviousInstruction is QuadraticBézierCurveInstruction or ShorthandQuadraticBézierCurveInstruction)) &&
+                 PreviousInstruction is BaseControlPointPathInstruction controlPointInstruction
+            )
         {
             if (controlPointInstruction.ControlPoints.Count != 0)
             {
