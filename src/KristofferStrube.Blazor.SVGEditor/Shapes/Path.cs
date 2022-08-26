@@ -285,6 +285,7 @@ public class Path : Shape
                         newQuadraticCurve.ExplicitSymbol = cubicCurve.ExplicitSymbol;
                         newQuadraticCurve.NextInstruction = cubicCurve.NextInstruction;
                         cubicCurve.NextInstruction.PreviousInstruction = newQuadraticCurve;
+                        cubicCurve.PreviousInstruction.NextInstruction = newQuadraticCurve;
                         Instructions[CurrentInstruction.Value] = newQuadraticCurve;
                         UpdateData();
                     }
@@ -302,6 +303,7 @@ public class Path : Shape
                         newShorthandQuadraticCurve.ExplicitSymbol = shorthandCubicCurve.ExplicitSymbol;
                         newShorthandQuadraticCurve.NextInstruction = shorthandCubicCurve.NextInstruction;
                         shorthandCubicCurve.NextInstruction.PreviousInstruction = newShorthandQuadraticCurve;
+                        shorthandCubicCurve.PreviousInstruction.NextInstruction = newShorthandQuadraticCurve;
                         Instructions[CurrentInstruction.Value] = newShorthandQuadraticCurve;
                         newShorthandQuadraticCurve.UpdateReflectionForInstructions();
                         UpdateData();
