@@ -225,4 +225,26 @@ public partial class SVG
                 s.SnapToInteger();
             });
     }
+
+    protected void CompactPaths()
+    {
+        MarkedShapes
+            .ForEach(s =>
+            {
+                if (s is Path p)
+                {
+                    p.ConvertToRelative();
+                }
+                else if (s is G g)
+                {
+                    g.ChildShapes.ForEach(c =>
+                    {
+                        if (c is Path p)
+                        {
+                            p.ConvertToRelative();
+                        }
+                    });
+                }
+            });
+    }
 }

@@ -377,4 +377,13 @@ public class Path : Shape
         }
         UpdateData();
     }
+
+    public void ConvertToRelative()
+    {
+        foreach (var inst in Instructions)
+        {
+            inst.Relative = true;
+        }
+        UpdateData();
+    }
 }
