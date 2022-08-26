@@ -141,4 +141,12 @@ public class Rect : Shape
     public override void Complete()
     {
     }
+
+    public override void SnapToInteger()
+    {
+        X = (int)X;
+        Y = (int)Y;
+        Width = (int)Width;
+        Height = (int)Height;
+    }
 }

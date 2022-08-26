@@ -216,4 +216,13 @@ public partial class SVG
                 });
             });
     }
+
+    protected void SnapShapesToInteger()
+    {
+        MarkedShapes
+            .ForEach(s =>
+            {
+                s.SnapToInteger();
+            });
+    }
 }

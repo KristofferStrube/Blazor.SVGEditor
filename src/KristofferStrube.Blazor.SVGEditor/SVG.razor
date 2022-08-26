@@ -131,6 +131,12 @@
         <Item OnClick="() => Remove()"><div class="icon">❌</div> Delete</Item>
         <Item OnClick="() => CopyElementsAsync()"><div class="icon">✂️</div> Copy</Item>
         <Item OnClick="() => PasteElementsAsync(shape)"><div class="icon">📋</div> Paste</Item>
+        <Item>
+            <div class="icon">📈</div> Optimize
+            <SubMenu>
+                <Item OnClick="() => SnapShapesToInteger()"><div class="icon">🔢</div> Snap To Integer</Item>
+            </SubMenu>
+        </Item>
     }
     else
     {

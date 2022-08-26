@@ -134,4 +134,12 @@ public class Ellipse : Shape
     public override void Complete()
     {
     }
+
+    public override void SnapToInteger()
+    {
+        Cx = (int)Cx;
+        Cy = (int)Cy;
+        Rx = (int)Rx;
+        Ry = (int)Ry;
+    }
 }

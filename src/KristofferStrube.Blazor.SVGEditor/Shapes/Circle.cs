@@ -100,4 +100,11 @@ public class Circle : Shape
     public override void Complete()
     {
     }
+
+    public override void SnapToInteger()
+    {
+        Cx = (int)Cx;
+        Cy = (int)Cy;
+        R = (int)R;
+    }
 }

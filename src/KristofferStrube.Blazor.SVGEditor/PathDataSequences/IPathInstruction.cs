@@ -10,5 +10,6 @@ public interface IPathInstruction
     public string AbsoluteInstruction { get; }
     public string RelativeInstruction { get; }
     public string ToString();
+    public void SnapToInteger();
     public bool Relative { get; set; }
 }

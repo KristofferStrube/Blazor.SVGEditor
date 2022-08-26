@@ -85,4 +85,12 @@ public class G : Shape
     public override void Complete()
     {
     }
+
+    public override void SnapToInteger()
+    {
+        foreach(var child in ChildShapes)
+        {
+            child.SnapToInteger();
+        }
+    }
 }

@@ -15,5 +15,11 @@ public abstract class BasePathInstruction : IPathInstruction
     public abstract string AbsoluteInstruction { get; }
     public abstract string RelativeInstruction { get; }
     public abstract override string ToString();
+
+    public virtual void SnapToInteger()
+    {
+        EndPosition = ((int)EndPosition.x, (int)EndPosition.y);
+    }
+
     public bool Relative { get; set; }
 }

@@ -111,4 +111,10 @@ public class Polyline : Shape
         Points.RemoveAt(Points.Count - 1);
         UpdatePoints();
     }
+
+    public override void SnapToInteger()
+    {
+        Points = Points.Select(point => ((double)(int)point.x, (double)(int)point.y)).ToList();
+        UpdatePoints();
+    }
 }

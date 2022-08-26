@@ -150,4 +150,12 @@ public class EllipticalArcInstruction : BasePathInstruction
 $"{RelativeInstruction} {Rx.AsString()} {Ry.AsString()} {XAxisRotation.AsString()} {(LargeArcFlag ? '1' : '0')} {(SweepFlag ? '1' : '0')} {(X - StartPosition.x).AsString()} {(Y - StartPosition.y).AsString()}" :
 $"{AbsoluteInstruction} {Rx.AsString()} {Ry.AsString()} {XAxisRotation.AsString()} {(LargeArcFlag ? '1' : '0')} {(SweepFlag ? '1' : '0')} {X.AsString()} {Y.AsString()}";
     }
+
+    public override void SnapToInteger()
+    {
+        base.SnapToInteger();
+        Rx = (int)Rx;
+        Ry = (int)Ry;
+        XAxisRotation = (int)XAxisRotation;
+    }
 }

@@ -240,6 +240,10 @@ public class Path : Shape
                         (BoundingBox.X, BoundingBox.Y) = (x, y - BoundingBox.Height);
                         break;
                 }
+                if (SVG.SnapToInteger)
+                {
+                    SnapToInteger();
+                }
                 UpdateData();
                 break;
         }
@@ -321,6 +325,11 @@ public class Path : Shape
                 currentInstruction.EndPosition = (x, y);
                 currentInstruction.ControlPoints[0] = (currentInstruction.StartPosition.x * 2.0 / 3.0 + currentInstruction.EndPosition.x * 1.0 / 3.0, currentInstruction.StartPosition.y * 2.0 / 3.0 + currentInstruction.EndPosition.y * 1.0 / 3.0);
                 currentInstruction.ControlPoints[^1] = (currentInstruction.StartPosition.x * 1.0 / 3.0 + currentInstruction.EndPosition.x * 2.0 / 3.0, currentInstruction.StartPosition.y * 1.0 / 3.0 + currentInstruction.EndPosition.y * 2.0 / 3.0);
+                if (SVG.SnapToInteger)
+                {
+                    currentInstruction.ControlPoints[0] = ((int)currentInstruction.ControlPoints[0].x, (int)currentInstruction.ControlPoints[0].y);
+                    currentInstruction.ControlPoints[^1] = ((int)currentInstruction.ControlPoints[^1].x, (int)currentInstruction.ControlPoints[^1].y);
+                }
                 currentInstruction.NextInstruction = nextInstruction;
                 Instructions.Add(nextInstruction);
                 UpdateData();
@@ -357,6 +366,15 @@ public class Path : Shape
     {
         Instructions.RemoveAt(Instructions.Count - 1);
         Instructions.Add(new ClosePathInstruction(false, Instructions.Last()));
+        UpdateData();
+    }
+
+    public override void SnapToInteger()
+    {
+        foreach(var inst in Instructions)
+        {
+            inst.SnapToInteger();
+        }
         UpdateData();
     }
 }

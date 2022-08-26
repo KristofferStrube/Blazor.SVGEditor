@@ -67,4 +67,10 @@ public abstract class BaseControlPointPathInstruction : BasePathInstruction
     }
 
     private (double x, double y) _reflectedPreviousInstructionsLastControlPoint;
+
+    public override void SnapToInteger()
+    {
+        base.SnapToInteger();
+        ControlPoints = ControlPoints.Select(c => ((double)(int)c.x, (double)(int)c.y)).ToList();
+    }
 }

@@ -88,6 +88,8 @@ public abstract class Shape : ISVGElement
         _stateRepresentation = null;
     }
 
+    public abstract void SnapToInteger();
+
     public abstract IEnumerable<(double x, double y)> SelectionPoints { get; }
 
     public abstract void HandlePointerMove(PointerEventArgs eventArgs);
