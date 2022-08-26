@@ -16,7 +16,8 @@ public partial class SVG
 
     private void OpenColorPicker(AttributeNames attribute)
     {
-        ColorPickerShapes = MarkedShapes.Where(e => e is Shape).ToList();
+        ColorPickerShapes = MarkedShapes;
+        ColorPickerAttribute = attribute;
         ColorPickerAttribute = attribute;
     }
 
@@ -195,8 +196,6 @@ public partial class SVG
     protected void StopAnimation()
     {
         MarkedShapes
-            .Where(e => e is Shape)
-            .ToList()
             .ForEach(s =>
             {
                 s.AnimationElements.ForEach(a =>
@@ -209,8 +208,6 @@ public partial class SVG
     protected void PlayAnimation()
     {
         MarkedShapes
-            .Where(e => e is Shape)
-            .ToList()
             .ForEach(s =>
             {
                 s.AnimationElements.ForEach(a =>

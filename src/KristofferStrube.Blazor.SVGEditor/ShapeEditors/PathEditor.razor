@@ -41,11 +41,11 @@
                     <StripedLine Color="black" From=cubicCurve.ControlPoints[1] To=cubicCurve.EndPosition />
 
                     var withinRangeOfCubicCurvePoints = cubicCurve.ControlPoints[0].WithinRangeOf(cubicCurve.ControlPoints[1], 5 / SVGElement.SVG.Scale);
-                    <Anchor Color=@(withinRangeOfCubicCurvePoints ? "blue" : "green")
+                    <Anchor Color=@(withinRangeOfCubicCurvePoints ? "blue" : "black")
             CircleThickness=@(withinRangeOfCubicCurvePoints ? 4 : 2)
             OnPointerDown="() => AnchorSelect(j, 0)"
             Position=cubicCurve.ControlPoints[0] />
-                    <Anchor Color=@(withinRangeOfCubicCurvePoints ? "blue" : "green")
+                    <Anchor Color=@(withinRangeOfCubicCurvePoints ? "blue" : "black")
             CircleThickness=@(withinRangeOfCubicCurvePoints ? 4 : 2)
             OnPointerDown="() => AnchorSelect(j, 1)"
             Position=cubicCurve.ControlPoints[1] />
@@ -56,14 +56,17 @@
                     <Anchor Color="black" OnPointerDown="() => AnchorSelect(j, 0)" Position=quadraticCurve.ControlPoints[0] />
                     break;
                 case ShorthandCubicBézierCurveInstruction shorthandCubicCurve:
-                    <StripedLine Color="grey" From=shorthandCubicCurve.StartPosition To=shorthandCubicCurve.ReflectedPreviousInstructionsLastControlPoint />
                     <StripedLine Color="black" From=shorthandCubicCurve.ControlPoints[0] To=shorthandCubicCurve.EndPosition />
 
                     var withinRangeOfShorthandCubicCurvePoints = shorthandCubicCurve.ReflectedPreviousInstructionsLastControlPoint.WithinRangeOf(shorthandCubicCurve.ControlPoints[0], 5 / SVGElement.SVG.Scale);
-                    <Anchor Color=@(withinRangeOfShorthandCubicCurvePoints ? "blue" : "grey")
+                    if (shorthandCubicCurve.PreviousInstruction is not ShorthandQuadraticBézierCurveInstruction)
+                    {
+                        <StripedLine Color="grey" From=shorthandCubicCurve.StartPosition To=shorthandCubicCurve.ReflectedPreviousInstructionsLastControlPoint />
+                        <Anchor Color=@(withinRangeOfShorthandCubicCurvePoints ? "blue" : "grey")
             CircleThickness=@(withinRangeOfShorthandCubicCurvePoints ? 4 : 2)
             OnPointerDown="() => AnchorSelect(j, -2)"
             Position=shorthandCubicCurve.ReflectedPreviousInstructionsLastControlPoint />
+                    }
                     <Anchor Color=@(withinRangeOfShorthandCubicCurvePoints ? "blue" : "black")
             CircleThickness=@(withinRangeOfShorthandCubicCurvePoints ? 4 : 2)
             OnPointerDown="() => AnchorSelect(j, 0)"
