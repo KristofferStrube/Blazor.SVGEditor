@@ -8,7 +8,7 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public abstract class Shape : ISVGElement
 {
-    private readonly Dictionary<string, Type> _animateTypes = new()
+    internal static readonly Dictionary<string, Type> animateTypes = new()
     {
         { "fill", typeof(AnimateFill) },
         { "stroke", typeof(AnimateStroke) },
@@ -27,9 +27,9 @@ public abstract class Shape : ISVGElement
             .Select(child =>
                 {
                     string attributeName = child.GetAttribute("attributename");
-                    if (_animateTypes.ContainsKey(attributeName))
+                    if (animateTypes.ContainsKey(attributeName))
                     {
-                        BaseAnimate animation = (BaseAnimate)Activator.CreateInstance(_animateTypes[attributeName], child, SVG);
+                        BaseAnimate animation = (BaseAnimate)Activator.CreateInstance(animateTypes[attributeName], child, SVG);
                         animation.Parent = this;
                         return animation;
                     }
@@ -42,6 +42,7 @@ public abstract class Shape : ISVGElement
             .ToList();
     }
 
+    public string Id { get; set; }
     public IElement Element { get; init; }
     public SVG SVG { get; init; }
     public abstract Type Editor { get; }

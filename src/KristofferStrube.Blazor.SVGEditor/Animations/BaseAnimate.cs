@@ -32,6 +32,7 @@ public abstract class BaseAnimate : ISVGElement
 
     internal string _stateRepresentation;
 
+    public string Id { get; set; }
     public IElement Element { get; init; }
     public SVG SVG { get; init; }
     public ISVGElement Parent { get; set; }

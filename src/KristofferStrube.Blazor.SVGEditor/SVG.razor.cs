@@ -86,6 +86,7 @@ public partial class SVG : ComponentBase
             { "LINE", typeof(Line) },
             { "PATH", typeof(Path) },
             { "G", typeof(G) },
+            { "DEFS", typeof(Defs) },
         };
 
     protected override async Task OnParametersSetAsync()
@@ -104,17 +105,17 @@ public partial class SVG : ComponentBase
 
         Elements = Document.GetElementsByTagName("BODY")[0].Children.Select(child =>
         {
-            ISVGElement SVGElement;
+            ISVGElement sVGElement;
             if (SupportedTypes.ContainsKey(child.TagName))
             {
-                SVGElement = (ISVGElement)Activator.CreateInstance(SupportedTypes[child.TagName], child, this);
+                sVGElement = (ISVGElement)Activator.CreateInstance(SupportedTypes[child.TagName], child, this);
             }
             else
             {
                 throw new NotImplementedException($"Tag not supported:\n {child.OuterHtml}");
             }
-            SVGElement.Changed = UpdateInput;
-            return SVGElement;
+            sVGElement.Changed = UpdateInput;
+            return sVGElement;
         }
         ).ToList();
 

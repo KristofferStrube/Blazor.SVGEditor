@@ -4,6 +4,7 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public interface ISVGElement
 {
+    public string Id { get; set; }
     public IElement Element { get; init; }
     public Type Editor { get; }
     public string StateRepresentation { get; }
