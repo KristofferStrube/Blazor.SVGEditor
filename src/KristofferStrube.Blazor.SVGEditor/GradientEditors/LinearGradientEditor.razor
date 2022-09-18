@@ -1,4 +1,22 @@
-﻿@((MarkupString)(SVGElement.Element.ToHtml()))
+﻿@if (SVGElement.IsEditing)
+{
+    <linearGradient id="@SVGElement.Id"
+                x1="@(SVGElement.X1*100)%"
+                y1="@(SVGElement.Y1*100)%"
+                x2="@(SVGElement.X2*100)%"
+                y2="@(SVGElement.Y2*100)%"
+                gradientUnits="@(SVGElement.Element.GetAttributeOrEmpty("gradientUnits"))"
+                spreadMethod="@(SVGElement.Element.GetAttributeOrEmpty("spreadMethod"))">
+        @foreach (var stop in SVGElement.Stops)
+        {
+            <StopEditor SVGElement="stop" />
+        }
+    </linearGradient>
+}
+else
+{
+    @((MarkupString)(SVGElement.Element.ToHtml()))
+}
 
 @code {
     [Parameter]

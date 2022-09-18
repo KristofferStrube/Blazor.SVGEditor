@@ -1,6 +1,8 @@
 ﻿using AngleSharp.Dom;
+using AngleSharp.Text;
 using KristofferStrube.Blazor.SVGEditor.Extensions;
 using KristofferStrube.Blazor.SVGEditor.GradientEditors;
+using System.Xml.Linq;
 using static System.Formats.Asn1.AsnWriter;
 
 namespace KristofferStrube.Blazor.SVGEditor;
@@ -12,24 +14,13 @@ public class LinearGradient : ISVGElement
         Element = element;
         SVG = svg;
 
-        GradientUnits = element.GetAttributeOrEmpty("gradientUnits") switch
+        if (Id is not null && Element.ParentElement?.TagName == "DEFS")
         {
-            "userSpaceOnUse" => GradientUnits.UserSpaceOnUse,
-            _ => GradientUnits.ObjectBoundingBox
-        };
-        X1 = element.GetAttributeOrZero("x1");
-        Y1 = element.GetAttributeOrZero("y1");
-        X2 = element.GetAttributeOrZero("x2");
-        Y2 = element.GetAttributeOrZero("y2");
-        SpreadMethod = element.GetAttributeOrEmpty("spreadMethod") switch
-        {
-            "reflect" => SpreadMethod.Reflect,
-            "repeat" => SpreadMethod.Repeat,
-            _ => SpreadMethod.Pad
-        };
+            SVG.Definitions[Id] = this;
+        }
         Stops = Element.Children
             .Where(child => child.TagName == "STOP")
-            .Select(child => new Stop(child, svg))
+            .Select(child => new Stop(child, this, svg))
             .ToList();
         AnimationElements = Element.Children
             .Where(child => child.TagName == "ANIMATE" && child.HasAttribute("attributename"))
@@ -50,7 +41,11 @@ public class LinearGradient : ISVGElement
             )
             .ToList();
     }
-    public string Id { get; set; }
+    public string Id
+    {
+        get => Element.GetAttribute("id");
+        set { Element.SetAttribute("id", value); Changed.Invoke(this); }
+    }
 
     public IElement Element { get; init; }
 
@@ -60,17 +55,126 @@ public class LinearGradient : ISVGElement
 
     public string StateRepresentation => throw new NotImplementedException();
 
-    public GradientUnits GradientUnits { get; set; }
+    public double X1
+    {
+        get
+        {
+            var x1 = Element.GetAttribute("x1");
+            if (x1 is null)
+            {
+                return 0;
+            }
+            else if (x1.Trim().EndsWith("%"))
+            {
+                return double.Parse(x1.Trim()[..^1]) / 100;
+            }
+            else
+            {
+                return double.Parse(x1.Trim());
+            }
+        }
+        set { Element.SetAttribute("x1", $"{value * 100}%"); Changed.Invoke(this); }
+    }
+    public double Y1
+    {
+        get
+        {
+            var y1 = Element.GetAttribute("y1");
+            if (y1 is null)
+            {
+                return 0;
+            }
+            else if (y1.Trim().EndsWith("%"))
+            {
+                return double.Parse(y1.Trim()[..^1]) / 100;
+            }
+            else
+            {
+                return double.Parse(y1.Trim());
+            }
+        }
+        set { Element.SetAttribute("y1", $"{value * 100}%"); Changed.Invoke(this); }
+    }
+    public double X2
+    {
+        get
+        {
+            var x2 = Element.GetAttribute("x2");
+            if (x2 is null)
+            {
+                return 1;
+            }
+            else if (x2.Trim().EndsWith("%"))
+            {
+                return double.Parse(x2.Trim()[..^1]) / 100;
+            }
+            else
+            {
+                return double.Parse(x2.Trim());
+            }
+        }
+        set { Element.SetAttribute("x2", $"{value * 100}%"); Changed.Invoke(this); }
+    }
+    public double Y2
+    {
+        get {
+            var y2 = Element.GetAttribute("y2");
+            if (y2 is null)
+            {
+                return 0;
+            }
+            else if (y2.Trim().EndsWith("%"))
+            {
+                return double.Parse(y2.Trim()[..^1]) / 100;
+            }
+            else
+            {
+                return double.Parse(y2.Trim());
+            }
+        }
+        set { Element.SetAttribute("y2", $"{value*100}%"); Changed.Invoke(this); }
+    }
 
-    public double X1 { get; set; }
-
-    public double Y1 { get; set; }
-
-    public double X2 { get; set; }
-
-    public double Y2 { get; set; }
-
-    public SpreadMethod SpreadMethod { get; set; }
+    public GradientUnits GradientUnits
+    {
+        get
+        {
+            return Element.GetAttributeOrEmpty("gradientUnits") switch
+            {
+                "userSpaceOnUse" => GradientUnits.UserSpaceOnUse,
+                _ => GradientUnits.ObjectBoundingBox
+            };
+        }
+        set
+        {
+            Element.SetAttribute("gradientUnits", value switch
+            {
+                GradientUnits.UserSpaceOnUse => "userSpaceOnUser",
+                _ => "objectBoundingBox"
+            });
+        }
+    }
+    public SpreadMethod SpreadMethod
+    {
+        get
+        {
+            return Element.GetAttributeOrEmpty("spreadMethod") switch
+            {
+                "reflect" => SpreadMethod.Reflect,
+                "repeat" => SpreadMethod.Repeat,
+                _ => SpreadMethod.Pad
+            };
+        }
+        set
+        {
+            Element.SetAttribute("spreadMethod", value switch
+            {
+                SpreadMethod.Reflect => "reflect",
+                SpreadMethod.Repeat => "repeat",
+                _ => "pad"
+            });
+        }
+    }
 
     public List<Stop> Stops { get; set; }
 
@@ -79,6 +183,16 @@ public class LinearGradient : ISVGElement
     public Action<ISVGElement> Changed { get; set; }
 
     public string StoredHtml { get; set; }
+
+    public bool IsEditing { get; set; }
+
+    public Shape EditingShape { get; set; }
+
+    public void Edit(Shape shape)
+    {
+        IsEditing = true;
+        EditingShape = shape;
+    }
 
     public void Complete()
     {

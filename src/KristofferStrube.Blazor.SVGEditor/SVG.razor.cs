@@ -46,6 +46,11 @@ public partial class SVG : ComponentBase
 
     public List<Shape> SelectedShapes { get; set; } = new();
 
+    public Dictionary<string, ISVGElement> Definitions { get; set; } = new();
+
+    public ISVGElement EditGradient { get; set; }
+    public Shape EditGradientShape { get; set; }
+
     public Shape FocusedShapes { get; set; }
 
     public (double x, double y) MovePanner { get; set; }
@@ -102,6 +107,8 @@ public partial class SVG : ComponentBase
         IBrowsingContext context = BrowsingContext.New(config);
 
         Document = await context.OpenAsync(req => req.Content(Input));
+
+        Definitions = new();
 
         Elements = Document.GetElementsByTagName("BODY")[0].Children.Select(child =>
         {

@@ -14,6 +14,18 @@ internal static class IElementExtensions
 
         return attributeValue.ParseAsDouble();
     }
+
+    internal static double GetAttributeOrOne(this IElement element, string attribute)
+    {
+        string attributeValue = element.GetAttribute(attribute);
+        if (string.IsNullOrWhiteSpace(attributeValue))
+        {
+            return 1;
+        }
+
+        return attributeValue.ParseAsDouble();
+    }
+
     internal static string GetAttributeOrEmpty(this IElement element, string attribute)
     {
         string attributeValue = element.GetAttribute(attribute);

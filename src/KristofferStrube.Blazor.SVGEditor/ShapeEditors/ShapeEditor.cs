@@ -12,7 +12,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         protected override async Task OnAfterRenderAsync(bool _)
         {
-            if (SVGElement.SVG.EditMode == EditMode.Scale || (SVGElement is G && SVGElement.Selected))
+            if (SVGElement.Selected)
             {
                 Box BBox = await SVGElement.SVG.GetBoundingBox(ElementReference);
                 (double x, double y) = SVGElement.SVG.LocalDetransform((BBox.X - SVGElement.SVG.BBox.X, BBox.Y - SVGElement.SVG.BBox.Y));

@@ -4,16 +4,6 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public partial class SVG
 {
-    private void ContextZoomIn()
-    {
-        ZoomIn(LastRightClick.x, LastRightClick.y, 1.5);
-    }
-
-    private void ContextZoomOut()
-    {
-        ZoomOut(LastRightClick.x, LastRightClick.y, 1.5);
-    }
-
     private void OpenColorPicker(AttributeNames attribute)
     {
         ColorPickerShapes = MarkedShapes;
