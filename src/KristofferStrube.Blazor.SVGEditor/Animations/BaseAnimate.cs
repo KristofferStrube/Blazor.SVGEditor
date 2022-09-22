@@ -36,7 +36,7 @@ public abstract class BaseAnimate : ISVGElement
     public IElement Element { get; init; }
     public SVG SVG { get; init; }
     public ISVGElement Parent { get; set; }
-    public abstract Type Editor { get; }
+    public abstract Type Presenter { get; }
     public abstract Type MenuItem { get; }
     public string StateRepresentation => Playing.ToString() + Dur + AttributeName + ValuesAsString + CurrentFrame.ToString();
     public bool Playing { get; set; }

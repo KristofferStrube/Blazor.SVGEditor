@@ -51,7 +51,7 @@ public class Defs : ISVGElement
 
     public List<ISVGElement> Children { get; init; } = new();
 
-    public Type Editor => typeof(DefsEditor);
+    public Type Presenter => typeof(DefsEditor);
 
     public string StateRepresentation => throw new NotImplementedException();
 

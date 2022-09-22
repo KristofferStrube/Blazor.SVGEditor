@@ -8,7 +8,7 @@ public class AnimateDefault : BaseAnimate
 {
     public AnimateDefault(IElement element, SVG svg) : base(element, svg) { }
 
-    public override Type Editor => typeof(AnimateFallbackEditor);
+    public override Type Presenter => typeof(AnimateFallbackEditor);
     public override Type MenuItem => typeof(AnimateDefaultMenuItem);
 
     public override bool IsEditing(string property)

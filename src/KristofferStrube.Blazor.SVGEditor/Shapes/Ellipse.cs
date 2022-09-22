@@ -9,7 +9,7 @@ public class Ellipse : Shape
 {
     public Ellipse(IElement element, SVG svg) : base(element, svg) { }
 
-    public override Type Editor => typeof(EllipseEditor);
+    public override Type Presenter => typeof(EllipseEditor);
 
     public double Cx
     {

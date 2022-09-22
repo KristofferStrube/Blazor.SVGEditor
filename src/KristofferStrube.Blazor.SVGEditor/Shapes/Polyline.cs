@@ -12,7 +12,7 @@ public class Polyline : Shape
         Points = Element.GetAttributeOrEmpty("points").ToPoints();
     }
 
-    public override Type Editor => typeof(PolylineEditor);
+    public override Type Presenter => typeof(PolylineEditor);
 
     public List<(double x, double y)> Points { get; set; }
 

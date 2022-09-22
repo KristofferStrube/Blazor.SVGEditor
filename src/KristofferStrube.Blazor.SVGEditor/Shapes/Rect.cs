@@ -9,7 +9,7 @@ public class Rect : Shape
 {
     public Rect(IElement element, SVG svg) : base(element, svg) { }
 
-    public override Type Editor => typeof(RectEditor);
+    public override Type Presenter => typeof(RectEditor);
 
     public double X
     {

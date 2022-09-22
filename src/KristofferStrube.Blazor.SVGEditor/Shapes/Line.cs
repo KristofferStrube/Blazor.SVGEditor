@@ -9,7 +9,7 @@ public class Line : Shape
 {
     public Line(IElement element, SVG svg) : base(element, svg) { }
 
-    public override Type Editor => typeof(LineEditor);
+    public override Type Presenter => typeof(LineEditor);
 
     public double X1
     {

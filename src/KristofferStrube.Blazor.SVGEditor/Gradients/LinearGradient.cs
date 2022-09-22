@@ -51,7 +51,7 @@ public class LinearGradient : ISVGElement
 
     public SVG SVG { get; init; }
 
-    public Type Editor => typeof(LinearGradientEditor);
+    public Type Presenter => typeof(LinearGradientPresenter);
 
     public string StateRepresentation => throw new NotImplementedException();
 
@@ -177,6 +177,8 @@ public class LinearGradient : ISVGElement
     }
 
     public List<Stop> Stops { get; set; }
+
+    public Stop? CurrentStop { get; set; }
 
     public List<BaseAnimate> AnimationElements { get; set; }
 

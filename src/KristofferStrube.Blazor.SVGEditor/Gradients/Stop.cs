@@ -20,7 +20,7 @@ public class Stop : ISVGElement
     public LinearGradient Parent { get; init; }
     public SVG SVG { get; init; }
 
-    public Type Editor => throw new NotImplementedException();
+    public Type Presenter => throw new NotImplementedException();
 
     public string StateRepresentation => throw new NotImplementedException();
 
@@ -42,7 +42,11 @@ public class Stop : ISVGElement
                 return double.Parse(offset.Trim());
             }
         }
-        set { Element.SetAttribute("offset", value.ToString()); Changed.Invoke(this); }
+        set
+        {
+            Element.SetAttribute("offset", (value*100).AsString() + "%");
+            Changed.Invoke(this);
+        }
     }
 
     public string StopColor
@@ -54,12 +58,18 @@ public class Stop : ISVGElement
     public double StopOpacity
     {
         get => Element.GetAttributeOrOne("stop-opacity");
-        set { if (value != 1) Element.SetAttribute("stop-opacity", value.ToString()); Changed.Invoke(this); }
+        set { if (value != 1) Element.SetAttribute("stop-opacity", value.AsString()); Changed.Invoke(this); }
     }
 
     public List<BaseAnimate> AnimationElements { get; set; }
 
-    public Action<ISVGElement> Changed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public Action<ISVGElement> Changed
+    {
+        get => Parent.Changed; set
+        {
+            Parent.Changed = value;
+        }
+    }
     public string StoredHtml { get; set; }
 
     public void Complete()

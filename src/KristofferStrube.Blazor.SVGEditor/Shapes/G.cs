@@ -31,7 +31,7 @@ public class G : Shape
         Changed.Invoke(this);
     }
 
-    public override Type Editor => typeof(GEditor);
+    public override Type Presenter => typeof(GEditor);
 
     public override string StateRepresentation => string.Join("-", ChildShapes.Select(c => c.StateRepresentation)) + string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + SVG.EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y + Serialize(BoundingBox);
 

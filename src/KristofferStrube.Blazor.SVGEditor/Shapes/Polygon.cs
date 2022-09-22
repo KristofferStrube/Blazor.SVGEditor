@@ -12,7 +12,7 @@ public class Polygon : Shape
         Points = Element.GetAttributeOrEmpty("points").ToPoints();
     }
 
-    public override Type Editor => typeof(PolygonEditor);
+    public override Type Presenter => typeof(PolygonEditor);
 
     public List<(double x, double y)> Points { get; set; }
 

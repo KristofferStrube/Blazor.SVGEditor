@@ -14,23 +14,15 @@
             @foreach (ISVGElement SVGElement in Elements)
             {
                 var Parameters = new Dictionary<string, object> { { "SVGElement", SVGElement } };
-                <DynamicComponent Type=@SVGElement.Editor Parameters=Parameters />
+                <DynamicComponent Type=@SVGElement.Presenter Parameters=Parameters />
             }
             <foreignObject class="unselectable" x="5" y="0" height="22" width="150" style="font-size:20px;pointer-events:none;touch-action:none;">Scale 1:@(Math.Round(Scale, 3).AsString())</foreignObject>
             @if (SelectionBox is not null)
             {
                 <BoxScaler Box=SelectionBox />
             }
+            <LinearGradientEditor SVG="this" />
         </CascadingValue>
-        @if (EditGradient is LinearGradient linearGradient)
-        {
-            foreach (var stop in linearGradient.Stops)
-            {
-                <circle r="5" stroke="black" stroke-width="1" fill="none"
-                cx="@((EditGradientShape.BoundingBox.X+(linearGradient.X1+stop.Offset*linearGradient.X2)*EditGradientShape.BoundingBox.Width).AsString())"
-                cy="@((EditGradientShape.BoundingBox.Y+(linearGradient.Y1+stop.Offset*linearGradient.Y2)*EditGradientShape.BoundingBox.Height).AsString())"></circle>
-            }
-        }
     </svg>
 </ContextMenuTrigger>
 <ContextMenu Id="SVGMenu">

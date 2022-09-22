@@ -18,7 +18,7 @@
             @foreach(BaseAnimate animate in SVGElement.AnimationElements)
             {
                 var Parameters = new Dictionary<string, object> { { "SVGElement", animate } };
-                <DynamicComponent Type=animate.Editor Parameters=Parameters />
+                <DynamicComponent Type=animate.Presenter Parameters=Parameters />
             }
         </line>
     </g>

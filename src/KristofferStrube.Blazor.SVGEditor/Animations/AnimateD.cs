@@ -10,7 +10,7 @@ public class AnimateD : BaseAnimate
 {
     public AnimateD(IElement element, SVG svg) : base(element, svg) { }
 
-    public override Type Editor => typeof(AnimateDefaultEditor);
+    public override Type Presenter => typeof(AnimateDefaultEditor);
     public override Type MenuItem => typeof(AnimateDMenuItem);
 
     public void SetParentD(int? frame)

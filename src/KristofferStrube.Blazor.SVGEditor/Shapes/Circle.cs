@@ -9,7 +9,7 @@ public class Circle : Shape
 {
     public Circle(IElement element, SVG svg) : base(element, svg) { }
 
-    public override Type Editor => typeof(CircleEditor);
+    public override Type Presenter => typeof(CircleEditor);
 
     public double Cx
     {

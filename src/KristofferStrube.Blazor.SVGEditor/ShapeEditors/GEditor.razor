@@ -10,12 +10,12 @@
         @foreach (ISVGElement child in SVGElement.ChildShapes)
         {
             var Parameters = new Dictionary<string, object> { { "SVGElement", child } };
-            <DynamicComponent Type=child.Editor Parameters=Parameters />
+            <DynamicComponent Type=child.Presenter Parameters=Parameters />
         }
         @foreach (BaseAnimate animate in SVGElement.AnimationElements)
         {
             var Parameters = new Dictionary<string, object> { { "SVGElement", animate } };
-            <DynamicComponent Type=animate.Editor Parameters=Parameters />
+            <DynamicComponent Type=animate.Presenter Parameters=Parameters />
         }
     </g>
     @if (SVGElement.Selected)

@@ -45,7 +45,7 @@ public abstract class Shape : ISVGElement
     public string Id { get; set; }
     public IElement Element { get; init; }
     public SVG SVG { get; init; }
-    public abstract Type Editor { get; }
+    public abstract Type Presenter { get; }
 
     public string Fill
     {

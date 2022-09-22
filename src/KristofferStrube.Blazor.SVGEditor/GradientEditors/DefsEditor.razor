@@ -2,7 +2,7 @@
     @foreach (ISVGElement child in SVGElement.Children)
     {
         var Parameters = new Dictionary<string, object> { { "SVGElement", child } };
-        <DynamicComponent Type=child.Editor Parameters=Parameters />
+        <DynamicComponent Type=child.Presenter Parameters=Parameters />
     }
 </defs>
 

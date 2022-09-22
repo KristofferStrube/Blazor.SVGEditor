@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.Web;
+using System.Data.SqlTypes;
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
@@ -15,7 +16,18 @@ public partial class SVG
         else
         {
             (double x, double y) = LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-            if (CurrentAnchorShape is Shape shape)
+            if (EditGradient is LinearGradient linearGradient && linearGradient.CurrentStop is Stop stop)
+            {
+                var boundingBox = (x: EditGradientShape.BoundingBox.X, y: EditGradientShape.BoundingBox.Y);
+                var external = sub((x,y), boundingBox);
+                var p1 = (x: linearGradient.X1 * EditGradientShape.BoundingBox.Width, y: linearGradient.Y1 * EditGradientShape.BoundingBox.Height);
+                var p2 = (x: linearGradient.X2 * EditGradientShape.BoundingBox.Width, y: linearGradient.Y2 * EditGradientShape.BoundingBox.Height);
+                var v = sub(p2, p1);
+                var externalPrime = sub(external, p1);
+                var scalar = projectScalar(externalPrime, v);
+                stop.Offset = ((int)(scalar * 100)) / 100.0;
+            }
+            else if (CurrentAnchorShape is Shape shape)
             {
                 shape.HandlePointerMove(eventArgs);
             }
@@ -38,6 +50,21 @@ public partial class SVG
                 }
             }
         }
+    }
+
+    private (double x, double y) sub((double x, double y) u, (double x, double y) v)
+    {
+        return (u.x - v.x, u.y - v.x);
+    }
+
+    private double dot((double x, double y) u, (double x, double y) v)
+    {
+        return u.x * v.x + u.y * v.y;
+    }
+
+    private double projectScalar((double x, double y) u, (double x, double y) v)
+    {
+        return dot(u, v) / dot(v, v);
     }
 
     public void Down(PointerEventArgs eventArgs)
@@ -63,6 +90,10 @@ public partial class SVG
         }
         BoxSelectionShapes = null;
         SelectionBox = null;
+        if (EditGradient is LinearGradient linearGradient)
+        {
+            linearGradient.CurrentStop = null;
+        }
         SelectedShapes.ForEach(e => e.HandlePointerUp(eventArgs));
         if (eventArgs.Button == 2)
         {
@@ -82,6 +113,8 @@ public partial class SVG
             EditMode = EditMode.None;
             SelectedShapes.Clear();
             FocusedShapes = null;
+            EditGradient = null;
+            EditGradientShape = null;
         }
     }
 

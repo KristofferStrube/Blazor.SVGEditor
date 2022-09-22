@@ -22,7 +22,7 @@ public class Path : Shape
         }
     }
 
-    public override Type Editor => typeof(PathEditor);
+    public override Type Presenter => typeof(PathEditor);
 
     public List<IPathInstruction> Instructions { get; set; }
 

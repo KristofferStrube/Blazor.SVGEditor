@@ -8,7 +8,7 @@ public class AnimateFill : BaseAnimate
 {
     public AnimateFill(IElement element, SVG svg) : base(element, svg) { }
 
-    public override Type Editor => typeof(AnimateDefaultEditor);
+    public override Type Presenter => typeof(AnimateDefaultEditor);
     public override Type MenuItem => typeof(AnimateFillMenuItem);
 
     public override bool IsEditing(string property)
