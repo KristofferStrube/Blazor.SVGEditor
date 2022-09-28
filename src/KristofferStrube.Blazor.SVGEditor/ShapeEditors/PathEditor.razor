@@ -30,10 +30,10 @@
             switch (SVGElement.Instructions[i])
             {
                 case EllipticalArcInstruction ellipticalArc:
-                    <Anchor Color="black" OnPointerDown="() => AnchorSelect(j, 0)" Position=ellipticalArc.ControlPointYPos />
-                    <Anchor Color="black" OnPointerDown="() => AnchorSelect(j, 1)" Position=ellipticalArc.ControlPointYNeg />
-                    <Anchor Color="black" OnPointerDown="() => AnchorSelect(j, 2)" Position=ellipticalArc.ControlPointXPos />
-                    <Anchor Color="black" OnPointerDown="() => AnchorSelect(j, 3)" Position=ellipticalArc.ControlPointXNeg />
+                    <Anchor RingColor="black" OnPointerDown="() => AnchorSelect(j, 0)" Position=ellipticalArc.ControlPointYPos />
+                    <Anchor RingColor="black" OnPointerDown="() => AnchorSelect(j, 1)" Position=ellipticalArc.ControlPointYNeg />
+                    <Anchor RingColor="black" OnPointerDown="() => AnchorSelect(j, 2)" Position=ellipticalArc.ControlPointXPos />
+                    <Anchor RingColor="black" OnPointerDown="() => AnchorSelect(j, 3)" Position=ellipticalArc.ControlPointXNeg />
                     <ellipse transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) rotate(@(ellipticalArc.XAxisRotation.AsString()) @((ellipticalArc.Center.x*SVGElement.SVG.Scale).AsString()) @((ellipticalArc.Center.y*SVGElement.SVG.Scale).AsString()))" cx="@((ellipticalArc.Center.x*SVGElement.SVG.Scale).AsString())" cy="@((ellipticalArc.Center.y*SVGElement.SVG.Scale).AsString())" rx="@((ellipticalArc.EllipseRadi.Rx*SVGElement.SVG.Scale).AsString())" ry="@((ellipticalArc.EllipseRadi.Ry*SVGElement.SVG.Scale).AsString())" style="pointer-events: none;" fill="none" stroke-dasharray="4" stroke="grey" stroke-width="2"></ellipse>
                     break;
                 case CubicBézierCurveInstruction cubicCurve:
@@ -41,11 +41,11 @@
                     <StripedLine Color="black" From=cubicCurve.ControlPoints[1] To=cubicCurve.EndPosition />
 
                     var withinRangeOfCubicCurvePoints = cubicCurve.ControlPoints[0].WithinRangeOf(cubicCurve.ControlPoints[1], 5 / SVGElement.SVG.Scale);
-                    <Anchor Color=@(withinRangeOfCubicCurvePoints ? "blue" : "black")
+                    <Anchor RingColor=@(withinRangeOfCubicCurvePoints ? "blue" : "black")
             CircleThickness=@(withinRangeOfCubicCurvePoints ? 4 : 2)
             OnPointerDown="() => AnchorSelect(j, 0)"
             Position=cubicCurve.ControlPoints[0] />
-                    <Anchor Color=@(withinRangeOfCubicCurvePoints ? "blue" : "black")
+                    <Anchor RingColor=@(withinRangeOfCubicCurvePoints ? "blue" : "black")
             CircleThickness=@(withinRangeOfCubicCurvePoints ? 4 : 2)
             OnPointerDown="() => AnchorSelect(j, 1)"
             Position=cubicCurve.ControlPoints[1] />
@@ -53,7 +53,7 @@
                 case QuadraticBézierCurveInstruction quadraticCurve:
                     <StripedLine Color="black" From=quadraticCurve.StartPosition To=quadraticCurve.ControlPoints[0] />
                     <StripedLine Color="black" From=quadraticCurve.ControlPoints[0] To=quadraticCurve.EndPosition />
-                    <Anchor Color="black" OnPointerDown="() => AnchorSelect(j, 0)" Position=quadraticCurve.ControlPoints[0] />
+                    <Anchor RingColor="black" OnPointerDown="() => AnchorSelect(j, 0)" Position=quadraticCurve.ControlPoints[0] />
                     break;
                 case ShorthandCubicBézierCurveInstruction shorthandCubicCurve:
                     <StripedLine Color="black" From=shorthandCubicCurve.ControlPoints[0] To=shorthandCubicCurve.EndPosition />
@@ -62,12 +62,12 @@
                     if (shorthandCubicCurve.PreviousInstruction is not ShorthandQuadraticBézierCurveInstruction)
                     {
                         <StripedLine Color="grey" From=shorthandCubicCurve.StartPosition To=shorthandCubicCurve.ReflectedPreviousInstructionsLastControlPoint />
-                        <Anchor Color=@(withinRangeOfShorthandCubicCurvePoints ? "blue" : "grey")
+                        <Anchor RingColor=@(withinRangeOfShorthandCubicCurvePoints ? "blue" : "grey")
             CircleThickness=@(withinRangeOfShorthandCubicCurvePoints ? 4 : 2)
             OnPointerDown="() => AnchorSelect(j, -2)"
             Position=shorthandCubicCurve.ReflectedPreviousInstructionsLastControlPoint />
                     }
-                    <Anchor Color=@(withinRangeOfShorthandCubicCurvePoints ? "blue" : "black")
+                    <Anchor RingColor=@(withinRangeOfShorthandCubicCurvePoints ? "blue" : "black")
             CircleThickness=@(withinRangeOfShorthandCubicCurvePoints ? 4 : 2)
             OnPointerDown="() => AnchorSelect(j, 0)"
             Position=shorthandCubicCurve.ControlPoints[0] />
@@ -75,12 +75,12 @@
                 case ShorthandQuadraticBézierCurveInstruction shorthandQuadraticCurve:
                     <StripedLine Color="grey" From=shorthandQuadraticCurve.StartPosition To=shorthandQuadraticCurve.ReflectedPreviousInstructionsLastControlPoint />
                     <StripedLine Color="grey" From=shorthandQuadraticCurve.EndPosition To=shorthandQuadraticCurve.ReflectedPreviousInstructionsLastControlPoint />
-                    <Anchor Color="grey" OnPointerDown="() => AnchorSelect(j, -2)" Position=shorthandQuadraticCurve.ReflectedPreviousInstructionsLastControlPoint />
+                    <Anchor RingColor="grey" OnPointerDown="() => AnchorSelect(j, -2)" Position=shorthandQuadraticCurve.ReflectedPreviousInstructionsLastControlPoint />
                     break;
             }
             if (SVGElement.Instructions[i] is not ClosePathInstruction)
             {
-                <Anchor Color="black" OnPointerDown="() => AnchorSelect(j, -1)" Position=SVGElement.Instructions[i].EndPosition />
+                <Anchor RingColor="black" OnPointerDown="() => AnchorSelect(j, -1)" Position=SVGElement.Instructions[i].EndPosition />
             }
         }
     }
@@ -96,7 +96,7 @@
         if (SVGElement.SVG.EditMode is EditMode.Scale or EditMode.Move or EditMode.None)
         {
             SVGElement.SVG.CurrentAnchor = anchor;
-            SVGElement.SVG.CurrentAnchorShape = SVGElement;
+            SVGElement.SVG.CurrentEditShape = SVGElement;
         }
         if (SVGElement.SVG.EditMode is EditMode.Move or EditMode.None)
         {

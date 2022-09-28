@@ -2,10 +2,10 @@
 {
     <rect x=@X.AsString() y=@Y.AsString() width=@Width.AsString() height=@Height.AsString() fill="grey" fill-opacity="0.2" stroke="grey" stroke-dasharray="4" stroke-width="1" style="pointer-events:none;" />
 
-    <Anchor Color="black" OnPointerDown="() => AnchorOnPointerDown?.Invoke(-1, 0)" Position="(Box.X, Box.Y)" />
-    <Anchor Color="black" OnPointerDown="() => AnchorOnPointerDown?.Invoke(-1, 1)" Position="(Box.X+Box.Width, Box.Y)" />
-    <Anchor Color="black" OnPointerDown="() => AnchorOnPointerDown?.Invoke(-1, 2)" Position="(Box.X+Box.Width, Box.Y+Box.Height)" />
-    <Anchor Color="black" OnPointerDown="() => AnchorOnPointerDown?.Invoke(-1, 3)" Position="(Box.X, Box.Y+Box.Height)" />
+    <Anchor RingColor="black" OnPointerDown="() => AnchorOnPointerDown?.Invoke(-1, 0)" Position="(Box.X, Box.Y)" />
+    <Anchor RingColor="black" OnPointerDown="() => AnchorOnPointerDown?.Invoke(-1, 1)" Position="(Box.X+Box.Width, Box.Y)" />
+    <Anchor RingColor="black" OnPointerDown="() => AnchorOnPointerDown?.Invoke(-1, 2)" Position="(Box.X+Box.Width, Box.Y+Box.Height)" />
+    <Anchor RingColor="black" OnPointerDown="() => AnchorOnPointerDown?.Invoke(-1, 3)" Position="(Box.X, Box.Y+Box.Height)" />
 }
 
 @code {

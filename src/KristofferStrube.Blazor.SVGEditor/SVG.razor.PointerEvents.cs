@@ -16,18 +16,30 @@ public partial class SVG
         else
         {
             (double x, double y) = LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-            if (EditGradient is LinearGradient linearGradient && linearGradient.CurrentStop is Stop stop)
+            if (EditGradient is LinearGradient linearGradient && linearGradient.CurrentStop is int stop)
             {
-                var boundingBox = (x: EditGradientShape.BoundingBox.X, y: EditGradientShape.BoundingBox.Y);
-                var external = sub((x,y), boundingBox);
-                var p1 = (x: linearGradient.X1 * EditGradientShape.BoundingBox.Width, y: linearGradient.Y1 * EditGradientShape.BoundingBox.Height);
-                var p2 = (x: linearGradient.X2 * EditGradientShape.BoundingBox.Width, y: linearGradient.Y2 * EditGradientShape.BoundingBox.Height);
-                var v = sub(p2, p1);
-                var externalPrime = sub(external, p1);
-                var scalar = projectScalar(externalPrime, v);
-                stop.Offset = ((int)(scalar * 100)) / 100.0;
+                var boundingBox = (x: linearGradient.EditingShape.BoundingBox.X, y: linearGradient.EditingShape.BoundingBox.Y);
+                var external = sub((x, y), boundingBox);
+                if (stop is -1)
+                {
+                    (linearGradient.X1, linearGradient.Y1) = (Math.Round(external.x / linearGradient.EditingShape.BoundingBox.Width, 2), Math.Round(external.y / linearGradient.EditingShape.BoundingBox.Height, 2));
+                }
+                else if (stop is -2)
+                {
+                    (linearGradient.X2, linearGradient.Y2) = (Math.Round(external.x / linearGradient.EditingShape.BoundingBox.Width, 2), Math.Round(external.y / linearGradient.EditingShape.BoundingBox.Height, 2));
+                }
+                else
+                {
+                    // Used the folloing pseudocode supplied by FunByJohn: https://pastebin.com/fG0CH4Wv
+                    var p1 = (x: linearGradient.X1 * linearGradient.EditingShape.BoundingBox.Width, y: linearGradient.Y1 * linearGradient.EditingShape.BoundingBox.Height);
+                    var p2 = (x: linearGradient.X2 * linearGradient.EditingShape.BoundingBox.Width, y: linearGradient.Y2 * linearGradient.EditingShape.BoundingBox.Height);
+                    var v = sub(p2, p1);
+                    var externalPrime = sub(external, p1);
+                    var scalar = projectScalar(externalPrime, v);
+                    linearGradient.Stops[stop].Offset = Math.Round(Math.Clamp(scalar, 0, 1), 2);
+                }
             }
-            else if (CurrentAnchorShape is Shape shape)
+            else if (CurrentEditShape is Shape shape)
             {
                 shape.HandlePointerMove(eventArgs);
             }
@@ -54,7 +66,7 @@ public partial class SVG
 
     private (double x, double y) sub((double x, double y) u, (double x, double y) v)
     {
-        return (u.x - v.x, u.y - v.x);
+        return (u.x - v.x, u.y - v.y);
     }
 
     private double dot((double x, double y) u, (double x, double y) v)
@@ -82,7 +94,7 @@ public partial class SVG
 
     public void Up(PointerEventArgs eventArgs)
     {
-        CurrentAnchorShape = null;
+        CurrentEditShape = null;
         if (BoxSelectionShapes is { Count: > 0 })
         {
             SelectedShapes = BoxSelectionShapes;
@@ -114,7 +126,6 @@ public partial class SVG
             SelectedShapes.Clear();
             FocusedShapes = null;
             EditGradient = null;
-            EditGradientShape = null;
         }
     }
 

@@ -73,7 +73,7 @@ public class LinearGradient : ISVGElement
                 return double.Parse(x1.Trim());
             }
         }
-        set { Element.SetAttribute("x1", $"{value * 100}%"); Changed.Invoke(this); }
+        set { Element.SetAttribute("x1", (value * 100).AsString() + "%"); Changed.Invoke(this); }
     }
     public double Y1
     {
@@ -93,7 +93,7 @@ public class LinearGradient : ISVGElement
                 return double.Parse(y1.Trim());
             }
         }
-        set { Element.SetAttribute("y1", $"{value * 100}%"); Changed.Invoke(this); }
+        set { Element.SetAttribute("y1", (value * 100).AsString() + "%"); Changed.Invoke(this); }
     }
     public double X2
     {
@@ -113,7 +113,7 @@ public class LinearGradient : ISVGElement
                 return double.Parse(x2.Trim());
             }
         }
-        set { Element.SetAttribute("x2", $"{value * 100}%"); Changed.Invoke(this); }
+        set { Element.SetAttribute("x2", (value * 100).AsString() + "%"); Changed.Invoke(this); }
     }
     public double Y2
     {
@@ -132,7 +132,7 @@ public class LinearGradient : ISVGElement
                 return double.Parse(y2.Trim());
             }
         }
-        set { Element.SetAttribute("y2", $"{value*100}%"); Changed.Invoke(this); }
+        set { Element.SetAttribute("y2", (value * 100).AsString() + "%"); Changed.Invoke(this); }
     }
 
     public GradientUnits GradientUnits
@@ -178,7 +178,7 @@ public class LinearGradient : ISVGElement
 
     public List<Stop> Stops { get; set; }
 
-    public Stop? CurrentStop { get; set; }
+    public int? CurrentStop { get; set; }
 
     public List<BaseAnimate> AnimationElements { get; set; }
 

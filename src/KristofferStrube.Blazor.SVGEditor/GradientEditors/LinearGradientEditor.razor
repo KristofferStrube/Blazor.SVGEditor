@@ -1,29 +1,33 @@
-﻿@if (SVG.EditGradient is LinearGradient linearGradient)
+﻿@if (SVG.EditGradient is LinearGradient linearGradient && SVG.MarkedShapes.Contains(linearGradient.EditingShape))
 {
     <StripedLine Color="grey" From="LinearPoint1(linearGradient)" To="LinearPoint2(linearGradient)" />
-    <Anchor Position="LinearPoint1(linearGradient)" Color="black" />
-    <Anchor Position="LinearPoint2(linearGradient)" Color="black" />
+    <Anchor Position="LinearPoint1(linearGradient)" RingColor="black" OnPointerDown="_ => GradientEndClicked(linearGradient, -1)" />
+    <Anchor Position="LinearPoint2(linearGradient)" RingColor="black" OnPointerDown="_ => GradientEndClicked(linearGradient, -2)" />
     foreach (var s in linearGradient.Stops)
     {
         var stop = s;
-        <Anchor Position="Pos(linearGradient, stop)" Color="@stop.StopColor" OnPointerDown="_ => StopClicked(linearGradient, stop)" />
+        <Anchor Position="Pos(linearGradient, stop)" MiddleColor="@stop.StopColor" RingColor="black" OnPointerDown="_ => StopClicked(linearGradient, stop)" />
     }
 }
 
 @code {
     private (double x, double y) Pos(LinearGradient linearGradient, Stop stop) =>
         (
-            SVG.EditGradientShape.BoundingBox.X + ((stop.Offset * linearGradient.X2 + (1 - stop.Offset) * linearGradient.X1) * SVG.EditGradientShape.BoundingBox.Width),
-            SVG.EditGradientShape.BoundingBox.Y + ((stop.Offset * linearGradient.Y2 + (1 - stop.Offset) * linearGradient.Y1) * SVG.EditGradientShape.BoundingBox.Height)
+            linearGradient.EditingShape.BoundingBox.X + ((stop.Offset * linearGradient.X2 + (1 - stop.Offset) * linearGradient.X1) * linearGradient.EditingShape.BoundingBox.Width),
+            linearGradient.EditingShape.BoundingBox.Y + ((stop.Offset * linearGradient.Y2 + (1 - stop.Offset) * linearGradient.Y1) * linearGradient.EditingShape.BoundingBox.Height)
         );
 
-    private (double x, double y) LinearPoint1(LinearGradient linearGradient) => (SVG.EditGradientShape.BoundingBox.X + linearGradient.X1 * SVG.EditGradientShape.BoundingBox.Width, SVG.EditGradientShape.BoundingBox.Y + linearGradient.Y1 * SVG.EditGradientShape.BoundingBox.Height);
-    private (double x, double y) LinearPoint2(LinearGradient linearGradient) => (SVG.EditGradientShape.BoundingBox.X + linearGradient.X2 * SVG.EditGradientShape.BoundingBox.Width, SVG.EditGradientShape.BoundingBox.Y + linearGradient.Y2 * SVG.EditGradientShape.BoundingBox.Height);
+    private (double x, double y) LinearPoint1(LinearGradient linearGradient) => (linearGradient.EditingShape.BoundingBox.X + linearGradient.X1 * linearGradient.EditingShape.BoundingBox.Width, linearGradient.EditingShape.BoundingBox.Y + linearGradient.Y1 * linearGradient.EditingShape.BoundingBox.Height);
+    private (double x, double y) LinearPoint2(LinearGradient linearGradient) => (linearGradient.EditingShape.BoundingBox.X + linearGradient.X2 * linearGradient.EditingShape.BoundingBox.Width, linearGradient.EditingShape.BoundingBox.Y + linearGradient.Y2 * linearGradient.EditingShape.BoundingBox.Height);
 
-    // Used the folloing pseudocode supplied by FunByJohn: https://pastebin.com/fG0CH4Wv
     public void StopClicked(LinearGradient linearGradient, Stop stop)
     {
-        linearGradient.CurrentStop = stop;
+        linearGradient.CurrentStop = linearGradient.Stops.IndexOf(stop);
+    }
+
+    public void GradientEndClicked(LinearGradient linearGradient, int end)
+    {
+        linearGradient.CurrentStop = end;
     }
 
     [Parameter]

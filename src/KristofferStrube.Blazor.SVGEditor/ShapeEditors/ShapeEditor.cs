@@ -65,7 +65,7 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public void AnchorSelect(int anchor)
         {
-            SVGElement.SVG.CurrentAnchorShape = SVGElement;
+            SVGElement.SVG.CurrentEditShape = SVGElement;
             SVGElement.SVG.CurrentAnchor = anchor;
             SVGElement.SVG.EditMode = EditMode.MoveAnchor;
         }

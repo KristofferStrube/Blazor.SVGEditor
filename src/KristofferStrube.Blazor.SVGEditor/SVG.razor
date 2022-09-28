@@ -83,7 +83,7 @@
                         <SubMenu>
                             @foreach (var key in Definitions.Keys)
                             {
-                                <Item OnClick=@(_ => { shape.Fill = $"url('#{key}')"; if (Definitions[key] is LinearGradient linear) { EditGradient = linear; EditGradientShape = shape; } })>
+                                <Item OnClick=@(_ => { shape.Fill = $"url('#{key}')"; if (Definitions[key] is LinearGradient linear) { EditGradient = linear; linear.Edit(shape); } })>
                                     <svg width="0.8rem" height="0.8rem">
                                         <defs>
                                             @Definitions[key].Element.OuterHtml

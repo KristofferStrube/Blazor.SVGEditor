@@ -24,7 +24,7 @@
         @for (int i = 0; i < SVGElement.Points.Count(); i++)
         {
             var j = i;
-            <Anchor Color="black" OnPointerDown="() => AnchorSelect(j)" Position=SVGElement.Points[i] />
+            <Anchor RingColor="black" OnPointerDown="() => AnchorSelect(j)" Position=SVGElement.Points[i] />
         }
     }
 </ContextMenuTrigger>

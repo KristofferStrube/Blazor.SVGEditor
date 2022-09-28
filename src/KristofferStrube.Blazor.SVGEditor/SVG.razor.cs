@@ -49,7 +49,6 @@ public partial class SVG : ComponentBase
     public Dictionary<string, ISVGElement> Definitions { get; set; } = new();
 
     public ISVGElement EditGradient { get; set; }
-    public Shape EditGradientShape { get; set; }
 
     public Shape FocusedShapes { get; set; }
 
@@ -57,7 +56,7 @@ public partial class SVG : ComponentBase
 
     public int? CurrentAnchor { get; set; }
 #nullable enable
-    public Shape? CurrentAnchorShape { get; set; }
+    public Shape? CurrentEditShape { get; set; }
 #nullable disable
 
     public EditMode EditMode { get; set; } = EditMode.None;

@@ -1,5 +1,5 @@
-﻿<circle cx=@X cy=@Y r="5" stroke-width="@((CircleThickness+2).AsString())" stroke="white" fill="transparent" style="pointer-events:none;" />
-<circle cx=@X cy=@Y r="5" stroke-width="@CircleThickness.AsString()" stroke="@Color" fill="transparent" @onpointerdown=OnPointerDown />
+﻿<circle cx=@X cy=@Y r="@((5+CircleThickness).AsString())" stroke-width="@(CircleThickness).AsString()" stroke="white" fill="@MiddleColor" @onpointerdown=OnPointerDown />
+<circle cx=@X cy=@Y r="5" stroke-width="@CircleThickness.AsString()" stroke="@RingColor" fill="transparent" style="pointer-events:none;" />
 
 @code {
     [Parameter]
@@ -9,7 +9,10 @@
     public (double x, double y) Position { get; set; }
 
     [Parameter, EditorRequired]
-    public string Color { get; set; }
+    public string RingColor { get; set; }
+
+    [Parameter]
+    public string MiddleColor { get; set; } = "transparent";
 
     [Parameter]
     public double CircleThickness { get; set; } = 2;
