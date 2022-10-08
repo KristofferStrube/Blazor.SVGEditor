@@ -24,7 +24,6 @@ public partial class SVG : ComponentBase
     private string ColorPickerTitle => $"Pick {ColorPickerAttribute} Color";
     private bool IsColorPickerOpen => ColorPickerShapes is not null || ColorPickerAnimate is not null;
 
-
     [Parameter]
     public string Input { get; set; }
 
@@ -101,13 +100,11 @@ public partial class SVG : ComponentBase
         }
         _input = Input;
 
-        IConfiguration config = Configuration.Default;
+        Definitions.Clear();
+        SelectedShapes.Clear();
 
-        IBrowsingContext context = BrowsingContext.New(config);
-
+        IBrowsingContext context = BrowsingContext.New();
         Document = await context.OpenAsync(req => req.Content(Input));
-
-        Definitions = new();
 
         Elements = Document.GetElementsByTagName("BODY")[0].Children.Select(child =>
         {

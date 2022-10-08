@@ -17,11 +17,17 @@
                 <DynamicComponent Type=@SVGElement.Presenter Parameters=Parameters />
             }
             <foreignObject class="unselectable" x="5" y="0" height="22" width="150" style="font-size:20px;pointer-events:none;touch-action:none;">Scale 1:@(Math.Round(Scale, 3).AsString())</foreignObject>
+            @foreach (var shape in MarkedShapes)
+            {
+                @if (shape.Fill is ['u', 'r', 'l', '(', '\'', '#', .. var id, '\'', ')'] && Definitions.TryGetValue(id, out var definition) && definition is LinearGradient linearGradient)
+                {
+                    <LinearGradientEditor LinearGradient="linearGradient" EditingShape="shape" />
+                }
+            }
             @if (SelectionBox is not null)
             {
                 <BoxScaler Box=SelectionBox />
             }
-            <LinearGradientEditor SVG="this" />
         </CascadingValue>
     </svg>
 </ContextMenuTrigger>

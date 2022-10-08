@@ -5,6 +5,7 @@
     <RunAOTCompilation>true</RunAOTCompilation>
     <ImplicitUsings>true</ImplicitUsings>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
   
   <ItemGroup>
