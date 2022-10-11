@@ -51,7 +51,7 @@ public class LinearGradient : ISVGElement
 
     public SVG SVG { get; init; }
 
-    public Type Presenter => typeof(LinearGradientPresenter);
+    public Type Presenter => typeof(GradientPresenter);
 
     public string StateRepresentation => throw new NotImplementedException();
 
@@ -186,15 +186,7 @@ public class LinearGradient : ISVGElement
 
     public string StoredHtml { get; set; }
 
-    public bool IsEditing { get; set; }
-
     public Shape EditingShape { get; set; }
-
-    public void Edit(Shape shape)
-    {
-        IsEditing = true;
-        EditingShape = shape;
-    }
 
     public void Complete()
     {

@@ -14,11 +14,11 @@ jobs:
         # Checkout the code
         - uses: actions/checkout@v2
 
-        # Install .NET Core SDK
-        - name: Setup .NET 6 preview
+        # Install .NET SDK
+        - name: Setup .NET 7 preview
           uses: actions/setup-dotnet@v1
           with:
-            dotnet-version: '6.0.x'
+            dotnet-version: '7.0.x'
             include-prerelease: true
         
         # Add Nuget.Config to solution

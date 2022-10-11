@@ -24,12 +24,14 @@
 
     public void StopClicked(Stop stop)
     {
+        LinearGradient.SVG.EditGradient = LinearGradient;
         LinearGradient.EditingShape = EditingShape;
         LinearGradient.CurrentStop = LinearGradient.Stops.IndexOf(stop);
     }
 
     public void GradientEndClicked(int end)
     {
+        LinearGradient.SVG.EditGradient = LinearGradient;
         LinearGradient.EditingShape = EditingShape;
         LinearGradient.CurrentStop = end;
     }

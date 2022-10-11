@@ -1,0 +1,24 @@
+﻿@if (Color is ['u', 'r', 'l', '(', '\'', '#', .. var id, '\'', ')']
+&& SVG.Definitions.TryGetValue(id, out var definition)
+&& definition is LinearGradient linearGradient)
+{
+    <svg width="0.8rem" height="0.8rem" style="margin-left:5px;margin-right:5px;">
+        <defs>
+            @linearGradient.Element.OuterHtml
+        </defs>
+        <rect width="0.8rem" height="0.8rem" fill="url('#@linearGradient.Id')" stroke="black" />
+    </svg>
+}
+else
+{
+    <div class="colorPickerCube" style="background-color:@Color;"></div>
+}
+
+
+@code {
+    [Parameter]
+    public string Color { get; set; }
+
+    [CascadingParameter]
+    public SVG SVG { get; set; }
+}

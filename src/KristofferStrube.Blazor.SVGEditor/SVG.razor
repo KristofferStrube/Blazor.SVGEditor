@@ -1,16 +1,16 @@
-﻿<ContextMenuTrigger MenuId="SVGMenu" style="height:100%;">
-    <svg @ref=SVGElementReference
-         @onpointermove="Move"
-         @onpointerdown="Down"
-         @onpointerup="Up"
-         @onpointerout="Out"
-         @onwheel="Wheel"
-         style="border:1px solid black; cursor:@(TranslatePanner.HasValue ? "move" : "initial");user-select:none;touch-action:none;"
-         width="100%"
-         height="100%"
-         @onpointerdown:stopPropagation="true">
-        <rect width="100%" height="100%" fill="transparent" @onpointerdown=@UnSelect></rect>
-        <CascadingValue Value=this IsFixed=true>
+﻿<CascadingValue Value=this IsFixed=true>
+    <ContextMenuTrigger MenuId="SVGMenu" style="height:100%;">
+        <svg @ref=SVGElementReference
+             @onpointermove="Move"
+             @onpointerdown="Down"
+             @onpointerup="Up"
+             @onpointerout="Out"
+             @onwheel="Wheel"
+             style="border:1px solid black; cursor:@(TranslatePanner.HasValue ? "move" : "initial");user-select:none;touch-action:none;"
+             width="100%"
+             height="100%"
+             @onpointerdown:stopPropagation="true">
+            <rect width="100%" height="100%" fill="transparent" @onpointerdown=@UnSelect></rect>
             @foreach (ISVGElement SVGElement in Elements)
             {
                 var Parameters = new Dictionary<string, object> { { "SVGElement", SVGElement } };
@@ -30,147 +30,150 @@
             {
                 <BoxScaler Box=SelectionBox />
             }
-        </CascadingValue>
-    </svg>
-</ContextMenuTrigger>
-<ContextMenu Id="SVGMenu">
-    @if (SelectedShapes.Count == 1 && EditMode == EditMode.Add)
-    {
-        <Item OnClick="_ => CompleteShape(SelectedShapes[0])">
-            <div class="icon">✨</div> Complete New Shape
-            @if (SelectedShapes[0] is Path path)
-            {
-                <SubMenu>
-                    <Item OnClick="_ => CompleteShapeWithoutClose(path)"><div class="icon">❗</div> Complete Without Close Instruction</Item>
-                    <Item OnClick="_ => DeletePreviousInstruction(path)"><div class="icon">❌</div> Remove Last added Instruction</Item>
-                </SubMenu>
-            }
-        </Item>
-    }
-    else
-    {
-        <Item>
-            <div class="icon">✨</div> Add
-            <SubMenu>
-                <Item OnClick="_ => Path.AddNew(this)"><div class="icon">🎢</div> New Path</Item>
-                <Item OnClick="_ => Polygon.AddNew(this)"><div class="icon">🔷</div> New Polygon</Item>
-                <Item OnClick="_ => Polyline.AddNew(this)"><div class="icon">〰</div> New Polyline</Item>
-                <Item OnClick="_ => Line.AddNew(this)"><div class="icon">➖</div> New Line</Item>
-                <Item OnClick="_ => Circle.AddNew(this)"><div class="icon">🔵</div> New Circle</Item>
-                <Item OnClick="_ => Ellipse.AddNew(this)"><div class="icon">🕳</div> New Ellipse</Item>
-                <Item OnClick="_ => Rect.AddNew(this)"><div class="icon">🟦</div> New rectangle</Item>
-                @if (context.Data is Shape shape && !shape.IsChildElement)
+        </svg>
+    </ContextMenuTrigger>
+    <ContextMenu Id="SVGMenu">
+        @if (SelectedShapes.Count == 1 && EditMode == EditMode.Add)
+        {
+            <Item OnClick="_ => CompleteShape(SelectedShapes[0])">
+                <div class="icon">✨</div> Complete New Shape
+                @if (SelectedShapes[0] is Path path)
                 {
-                    <Item>
-                        <div class="icon">💥</div> New Animation
-                        <SubMenu>
-                            <Item OnClick="_ => AnimateFill.AddNew(this, shape)"><div class="icon">🎨</div> Fill</Item>
-                            <Item OnClick="_ => AnimateStroke.AddNew(this, shape)"><div class="icon">🎨</div> Stroke</Item>
-                            @if (shape is Path path)
-                            {
-                                <Item OnClick="_ => AnimateD.AddNew(this, path)"><div class="icon">🎢</div> Path Data</Item>
-                            }
-                        </SubMenu>
-                    </Item>
+                    <SubMenu>
+                        <Item OnClick="_ => CompleteShapeWithoutClose(path)"><div class="icon">❗</div> Complete Without Close Instruction</Item>
+                        <Item OnClick="_ => DeletePreviousInstruction(path)"><div class="icon">❌</div> Remove Last added Instruction</Item>
+                    </SubMenu>
                 }
-            </SubMenu>
-        </Item>
-    }
-    @if (context.Data is Shape shape && !shape.IsChildElement)
-    {
-        <Item OnClick="() => OpenColorPicker(AttributeNames.Fill)">
-            <div class="colorPickerCube" style="background-color:@shape.Fill;"></div> Fill Color
-            <SubMenu>
-                <Item OnClick=@(_ => shape.Fill = "none")><div class="icon">⚪</div> Set To None</Item>
-                <Item OnClick=@(_ => shape.Fill = "transparent")><div class="icon">🔘</div> Set To Transparent</Item>
-                <Item OnClick=@(_ => shape.Fill = "black")><div class="icon">⚫</div> Set To Black</Item>
-                @if (Definitions.Count > 0)
-                {
-                    <Item>
-                        <div class="icon">🦓</div> Gradients
-                        <SubMenu>
-                            @foreach (var key in Definitions.Keys)
-                            {
-                                <Item OnClick=@(_ => { shape.Fill = $"url('#{key}')"; if (Definitions[key] is LinearGradient linear) { EditGradient = linear; linear.Edit(shape); } })>
-                                    <svg width="0.8rem" height="0.8rem">
-                                        <defs>
-                                            @Definitions[key].Element.OuterHtml
-                                        </defs>
-                                        <rect width="0.8rem" height="0.8rem" fill="url('#@key')" stroke="black" />
-                                    </svg>
-                                    @key
-                                </Item>
-                            }
-                        </SubMenu>
-                    </Item>
-                }
-            </SubMenu>
-        </Item>
-        <Item OnClick="() => OpenColorPicker(AttributeNames.Stroke)">
-            <div class="colorPickerCube" style="background-color:@shape.Stroke;"></div> Stroke Color
-            <SubMenu>
-                <Item OnClick=@(_ => shape.Stroke = "none")><div class="icon">⚪</div> Set To None</Item>
-                <Item OnClick=@(_ => shape.Stroke = "transparent")><div class="icon">🔘</div> Set To Transparent</Item>
-                <Item OnClick=@(_ => shape.Stroke = "black")><div class="icon">⚫</div> Set To Black</Item>
-            </SubMenu>
-        </Item>
-        <Item @onclick:preventDefault="true">
-            <div class="icon">➖</div> Stroke Width
-            <input type="number" @bind-value=shape.StrokeWidth style="width:50px;" />
-        </Item>
-        @if (shape.HasAnimation)
+            </Item>
+        }
+        else
         {
             <Item>
-                <div class="icon">💥</div> Animations
+                <div class="icon">✨</div> Add
                 <SubMenu>
-                    @if (shape.AnimationElements.Any(a => a.Playing))
+                    <Item OnClick="_ => Path.AddNew(this)"><div class="icon">🎢</div> New Path</Item>
+                    <Item OnClick="_ => Polygon.AddNew(this)"><div class="icon">🔷</div> New Polygon</Item>
+                    <Item OnClick="_ => Polyline.AddNew(this)"><div class="icon">〰</div> New Polyline</Item>
+                    <Item OnClick="_ => Line.AddNew(this)"><div class="icon">➖</div> New Line</Item>
+                    <Item OnClick="_ => Circle.AddNew(this)"><div class="icon">🔵</div> New Circle</Item>
+                    <Item OnClick="_ => Ellipse.AddNew(this)"><div class="icon">🕳</div> New Ellipse</Item>
+                    <Item OnClick="_ => Rect.AddNew(this)"><div class="icon">🟦</div> New rectangle</Item>
+                    @if (context.Data is Shape shape && !shape.IsChildElement)
                     {
-                        <Item OnClick="StopAnimation"><div class="icon">🛑</div> Stop Animations</Item>
-                    }
-                    else
-                    {
-                        <Item OnClick="PlayAnimation"><div class="icon">▶</div> Play Animations</Item>
-                    }
-                    @foreach (BaseAnimate animate in shape.AnimationElements)
-                    {
-                        var Parameters = new Dictionary<string, object> { { "Animate", animate } };
-                        <DynamicComponent Type=animate.MenuItem Parameters=Parameters />
+                        <Item>
+                            <div class="icon">💥</div> New Animation
+                            <SubMenu>
+                                <Item OnClick="_ => AnimateFill.AddNew(this, shape)"><div class="icon">🎨</div> Fill</Item>
+                                <Item OnClick="_ => AnimateStroke.AddNew(this, shape)"><div class="icon">🎨</div> Stroke</Item>
+                                @if (shape is Path path)
+                                {
+                                    <Item OnClick="_ => AnimateD.AddNew(this, path)"><div class="icon">🎢</div> Path Data</Item>
+                                }
+                            </SubMenu>
+                        </Item>
                     }
                 </SubMenu>
             </Item>
         }
-        <Item>
-            <div class="icon">↕</div> Move
-            <SubMenu>
-                <Item OnClick="() => MoveToBack(shape)"><div class="icon">⏫</div> To Back</Item>
-                <Item OnClick="() => MoveBack(shape)"><div class="icon">🔼</div> Back</Item>
-                <Item OnClick="() => MoveForward(shape)"><div class="icon">🔽</div> Forward</Item>
-                <Item OnClick="() => MoveToFront(shape)"><div class="icon">⏬</div> To Front</Item>
-            </SubMenu>
-        </Item>
-        if (shape is Path path)
+        @if (context.Data is Shape shape && !shape.IsChildElement)
         {
-            <Item data=path OnClick="() => ScaleShape(shape)"> <div class="icon">↔</div> Scale</Item>
+            <Item OnClick="() => OpenColorPicker(AttributeNames.Fill)">
+                <ColorCube Color=@shape.Fill /> Fill Color
+                <SubMenu>
+                    <Item OnClick=@(_ => shape.Fill = "none")><div class="icon">⚪</div> Set To None</Item>
+                    <Item OnClick=@(_ => shape.Fill = "transparent")><div class="icon">🔘</div> Set To Transparent</Item>
+                    <Item OnClick=@(_ => shape.Fill = "black")><div class="icon">⚫</div> Set To Black</Item>
+                    @if (Definitions.Count > 0)
+                    {
+                        <Item>
+                            <div class="icon">🦓</div> Gradients
+                            <SubMenu>
+                                @foreach (var (key, value) in Definitions)
+                                {
+                                    <Item OnClick=@(_ => shape.Fill = $"url('#{key}')")>
+                                        <ColorCube Color=@($"url('#{key}')") />
+                                        @key
+                                    </Item>
+                                }
+                                <Item>
+                                    <div class="icon">➕</div> Add Gradient
+                                    <SubMenu>
+                                        <Item>
+                                            <div class="icon">📏</div> Add Gradient
+                                        </Item>
+                                    </SubMenu>
+                                </Item>
+                            </SubMenu>
+                        </Item>
+                    }
+                </SubMenu>
+            </Item>
+            <Item OnClick="() => OpenColorPicker(AttributeNames.Stroke)">
+                <ColorCube Color=@shape.Stroke /> Stroke Color
+                <SubMenu>
+                    <Item OnClick=@(_ => shape.Stroke = "none")><div class="icon">⚪</div> Set To None</Item>
+                    <Item OnClick=@(_ => shape.Stroke = "transparent")><div class="icon">🔘</div> Set To Transparent</Item>
+                    <Item OnClick=@(_ => shape.Stroke = "black")><div class="icon">⚫</div> Set To Black</Item>
+                </SubMenu>
+            </Item>
+            <Item @onclick:preventDefault="true">
+                <div class="icon">➖</div> Stroke Width
+                <input type="number" @bind-value=shape.StrokeWidth style="width:50px;" />
+            </Item>
+            @if (shape.HasAnimation)
+            {
+                <Item>
+                    <div class="icon">💥</div> Animations
+                    <SubMenu>
+                        @if (shape.AnimationElements.Any(a => a.Playing))
+                        {
+                            <Item OnClick="StopAnimation"><div class="icon">🛑</div> Stop Animations</Item>
+                        }
+                        else
+                        {
+                            <Item OnClick="PlayAnimation"><div class="icon">▶</div> Play Animations</Item>
+                        }
+                        @foreach (BaseAnimate animate in shape.AnimationElements)
+                        {
+                            var Parameters = new Dictionary<string, object> { { "Animate", animate } };
+                            <DynamicComponent Type=animate.MenuItem Parameters=Parameters />
+                        }
+                    </SubMenu>
+                </Item>
+            }
+            <Item>
+                <div class="icon">↕</div> Move
+                <SubMenu>
+                    <Item OnClick="() => MoveToBack(shape)"><div class="icon">⏫</div> To Back</Item>
+                    <Item OnClick="() => MoveBack(shape)"><div class="icon">🔼</div> Back</Item>
+                    <Item OnClick="() => MoveForward(shape)"><div class="icon">🔽</div> Forward</Item>
+                    <Item OnClick="() => MoveToFront(shape)"><div class="icon">⏬</div> To Front</Item>
+                </SubMenu>
+            </Item>
+            if (shape is Path path)
+            {
+                <Item data=path OnClick="() => ScaleShape(shape)"> <div class="icon">↔</div> Scale</Item>
+            }
+            <Item OnClick="() => Group(shape)"><div class="icon">🔗</div> Group</Item>
+            if (shape is G g)
+            {
+                <Item OnClick="() => Ungroup(g)"><div class="icon">📤</div> Ungroup</Item>
+            }
+            <Item OnClick="() => Remove()"><div class="icon">❌</div> Delete</Item>
+            <Item OnClick="() => CopyElementsAsync()"><div class="icon">✂️</div> Copy</Item>
+            <Item OnClick="() => PasteElementsAsync(shape)"><div class="icon">📋</div> Paste</Item>
+            <Item>
+                <div class="icon">📈</div> Optimize
+                <SubMenu>
+                    <Item OnClick="() => SnapShapesToInteger()"><div class="icon">🔢</div> Snap To Integer</Item>
+                    <Item OnClick="() => CompactPaths()"><div class="icon">🤏</div> Compact paths to relative</Item>
+                </SubMenu>
+            </Item>
         }
-        <Item OnClick="() => Group(shape)"><div class="icon">🔗</div> Group</Item>
-        if (shape is G g)
+        else
         {
-            <Item OnClick="() => Ungroup(g)"><div class="icon">📤</div> Ungroup</Item>
+            <Item OnClick="() => PasteElementsAsync()"><div class="icon">📋</div> Paste</Item>
         }
-        <Item OnClick="() => Remove()"><div class="icon">❌</div> Delete</Item>
-        <Item OnClick="() => CopyElementsAsync()"><div class="icon">✂️</div> Copy</Item>
-        <Item OnClick="() => PasteElementsAsync(shape)"><div class="icon">📋</div> Paste</Item>
-        <Item>
-            <div class="icon">📈</div> Optimize
-            <SubMenu>
-                <Item OnClick="() => SnapShapesToInteger()"><div class="icon">🔢</div> Snap To Integer</Item>
-                <Item OnClick="() => CompactPaths()"><div class="icon">🤏</div> Compact paths to relative</Item>
-            </SubMenu>
-        </Item>
-    }
-    else
-    {
-        <Item OnClick="() => PasteElementsAsync()"><div class="icon">📋</div> Paste</Item>
-    }
-</ContextMenu>
+    </ContextMenu>
+</CascadingValue>
 <ColorPicker Title=@ColorPickerTitle IsOpened=@IsColorPickerOpen Closed=@ColorPickerClosed MyColor=@PreviousColor></ColorPicker>
