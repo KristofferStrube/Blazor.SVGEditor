@@ -16,7 +16,7 @@
     <PackageReference Include="AngleSharp" Version="0.16.1" />
     <PackageReference Include="Blazor.ContextMenu" Version="1.13.0" />
     <PackageReference Include="BlazorColorPicker" Version="2.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.*-*" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.0-RC.2.*" />
     <PackageReference Include="System.Reactive.Linq" Version="5.0.0" />
     <PackageReference Include="KristofferStrube.Blazor.SVGAnimation" Version="0.1.0" />
   </ItemGroup>
