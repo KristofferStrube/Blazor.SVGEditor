@@ -1,7 +1,9 @@
 ﻿using AngleSharp.Dom;
+using AngleSharp.Svg.Dom;
 using AngleSharp.Text;
 using KristofferStrube.Blazor.SVGEditor.Extensions;
 using KristofferStrube.Blazor.SVGEditor.GradientEditors;
+using System.Xml;
 using System.Xml.Linq;
 using static System.Formats.Asn1.AsnWriter;
 
@@ -203,5 +205,23 @@ public class LinearGradient : ISVGElement
         Stops.ForEach(s => s.UpdateHtml());
         AnimationElements.ForEach(a => a.UpdateHtml());
         StoredHtml = $"<linearGradient{string.Join("", Element.Attributes.Select(a => $" {a.Name}=\"{a.Value}\""))}>\n" + string.Join("", Stops.Select(e => e.StoredHtml + "\n")) + string.Join("", AnimationElements.Select(a => a.StoredHtml + "\n")) + "</linearGradient>";
+    }
+
+
+    public void AddNew(SVG svg)
+    {
+        IElement element = SVG.Document.CreateElement("STOP");
+
+        Stop stop = new(element, this, svg)
+        {
+            Changed = SVG.UpdateInput,
+            StopColor = "white"
+        };
+        SVG.EditMode = EditMode.None;
+
+        Stops.Add(stop);
+        Element.AppendElement(element);
+        UpdateHtml();
+        Changed.Invoke(this);
     }
 }

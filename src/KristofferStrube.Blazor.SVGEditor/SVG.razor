@@ -72,6 +72,12 @@
                             </SubMenu>
                         </Item>
                     }
+                    else if (context.Data is LinearGradient linearGradient)
+                    {
+                        <Item>
+                            <Item OnClick="_ => linearGradient.AddNew(this)"><div class="icon">⚪</div> New Stop to Gradient</Item>
+                        </Item>
+                    }
                 </SubMenu>
             </Item>
         }

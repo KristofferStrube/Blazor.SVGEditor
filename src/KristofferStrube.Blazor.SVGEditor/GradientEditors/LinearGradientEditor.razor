@@ -1,6 +1,9 @@
 ﻿<StripedLine Color="grey" From="LinearPoint1" To="LinearPoint2" />
-<Anchor Position="LinearPoint1" RingColor="black" OnPointerDown="_ => GradientEndClicked(-1)" />
-<Anchor Position="LinearPoint2" RingColor="black" OnPointerDown="_ => GradientEndClicked(-2)" />
+
+<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@LinearGradient>
+    <Anchor Position="LinearPoint1" RingColor="black" OnPointerDown="e => GradientEndClicked(e, -1)" />
+    <Anchor Position="LinearPoint2" RingColor="black" OnPointerDown="e => GradientEndClicked(e, -2)" />
+</ContextMenuTrigger>
 @foreach (var stop in LinearGradient.Stops)
 {
     <Anchor Position="Pos(stop)" MiddleColor="@stop.StopColor" RingColor="black" OnPointerDown="_ => StopClicked(stop)" />
@@ -29,8 +32,12 @@
         LinearGradient.CurrentStop = LinearGradient.Stops.IndexOf(stop);
     }
 
-    public void GradientEndClicked(int end)
+    public void GradientEndClicked(PointerEventArgs eventArgs, int end)
     {
+        if (eventArgs.Button is 2)
+        {
+            return;
+        }
         LinearGradient.SVG.EditGradient = LinearGradient;
         LinearGradient.EditingShape = EditingShape;
         LinearGradient.CurrentStop = end;

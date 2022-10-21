@@ -37,6 +37,12 @@ public partial class SVG
                     var externalPrime = sub(external, p1);
                     var scalar = projectScalar(externalPrime, v);
                     linearGradient.Stops[stop].Offset = Math.Round(Math.Clamp(scalar, 0, 1), 2);
+                    if (stop is not 0 && linearGradient.Stops[stop - 1].Offset > linearGradient.Stops[stop].Offset)
+                    {
+                        (linearGradient.Stops[stop - 1], linearGradient.Stops[stop]) = (linearGradient.Stops[stop], linearGradient.Stops[stop - 1]);
+                        linearGradient.Element.InsertBefore(linearGradient.Element.RemoveChild(linearGradient.Stops[stop - 1].Element), linearGradient.Stops[stop].Element);
+                        linearGradient.CurrentStop--;
+                    }
                 }
             }
             else if (CurrentEditShape is Shape shape)
