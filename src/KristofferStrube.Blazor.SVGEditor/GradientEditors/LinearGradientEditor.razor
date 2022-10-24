@@ -3,15 +3,15 @@
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@LinearGradient>
     <Anchor Position="LinearPoint1" RingColor="black" OnPointerDown="e => GradientEndClicked(e, -1)" />
     <Anchor Position="LinearPoint2" RingColor="black" OnPointerDown="e => GradientEndClicked(e, -2)" />
+    @foreach (var stop in LinearGradient.Stops)
+    {
+        <Anchor @key=stop.StopColor Position="Pos(stop)" MiddleColor="@stop.StopColor" RingColor="black" OnPointerDown="_ => StopClicked(stop)" />
+    }
 </ContextMenuTrigger>
-@foreach (var stop in LinearGradient.Stops)
-{
-    <Anchor Position="Pos(stop)" MiddleColor="@stop.StopColor" RingColor="black" OnPointerDown="_ => StopClicked(stop)" />
-}
 
 @code {
     private (double x, double y) Pos(Stop stop) =>
-        (
+    (
             EditingShape.BoundingBox.X + ((stop.Offset * LinearGradient.X2 + (1 - stop.Offset) * LinearGradient.X1) * EditingShape.BoundingBox.Width),
             EditingShape.BoundingBox.Y + ((stop.Offset * LinearGradient.Y2 + (1 - stop.Offset) * LinearGradient.Y1) * EditingShape.BoundingBox.Height)
         );

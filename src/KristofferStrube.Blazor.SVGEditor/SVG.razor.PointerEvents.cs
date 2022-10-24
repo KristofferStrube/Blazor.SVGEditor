@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Web;
+﻿using AngleSharp.Dom;
+using Microsoft.AspNetCore.Components.Web;
 using System.Data.SqlTypes;
 
 namespace KristofferStrube.Blazor.SVGEditor;
@@ -42,6 +43,12 @@ public partial class SVG
                         (linearGradient.Stops[stop - 1], linearGradient.Stops[stop]) = (linearGradient.Stops[stop], linearGradient.Stops[stop - 1]);
                         linearGradient.Element.InsertBefore(linearGradient.Element.RemoveChild(linearGradient.Stops[stop - 1].Element), linearGradient.Stops[stop].Element);
                         linearGradient.CurrentStop--;
+                    }
+                    else if (linearGradient.Stops.Count is > 1 && stop != linearGradient.Stops.Count - 1 && linearGradient.Stops[stop].Offset > linearGradient.Stops[stop + 1].Offset)
+                    {
+                        (linearGradient.Stops[stop + 1], linearGradient.Stops[stop]) = (linearGradient.Stops[stop], linearGradient.Stops[stop + 1]);
+                        linearGradient.Element.InsertBefore(linearGradient.Element.RemoveChild(linearGradient.Stops[stop].Element), linearGradient.Stops[stop + 1].Element);
+                        linearGradient.CurrentStop++;
                     }
                 }
             }

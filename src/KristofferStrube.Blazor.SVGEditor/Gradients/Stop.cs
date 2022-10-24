@@ -13,7 +13,10 @@ public class Stop : ISVGElement
         Parent = parent;
         SVG = svg;
         AnimationElements = new();
+        Key = Guid.NewGuid();
     }
+
+    public Guid Key { get; set; }
 
     public string Id { get; set; }
     public IElement Element { get; init; }
