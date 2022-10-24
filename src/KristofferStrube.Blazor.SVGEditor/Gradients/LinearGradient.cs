@@ -1,11 +1,6 @@
 ﻿using AngleSharp.Dom;
-using AngleSharp.Svg.Dom;
-using AngleSharp.Text;
 using KristofferStrube.Blazor.SVGEditor.Extensions;
 using KristofferStrube.Blazor.SVGEditor.GradientEditors;
-using System.Xml;
-using System.Xml.Linq;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
@@ -207,21 +202,28 @@ public class LinearGradient : ISVGElement
         StoredHtml = $"<linearGradient{string.Join("", Element.Attributes.Select(a => $" {a.Name}=\"{a.Value}\""))}>\n" + string.Join("", Stops.Select(e => e.StoredHtml + "\n")) + string.Join("", AnimationElements.Select(a => a.StoredHtml + "\n")) + "</linearGradient>";
     }
 
-
-    public void AddNew(SVG svg)
+    public void AddNewStop(SVG svg, Stop tempStop = null)
     {
         IElement element = SVG.Document.CreateElement("STOP");
 
         Stop stop = new(element, this, svg)
         {
-            Changed = SVG.UpdateInput,
-            StopColor = "white"
+            Offset = tempStop?.Offset ?? 0.5,
+            StopColor = "white",
         };
         SVG.EditMode = EditMode.None;
 
-        Stops.Add(stop);
-        Element.AppendElement(element);
-        UpdateHtml();
+        var stopBefore = Stops.Where(s => s.Offset >= stop.Offset).MinBy(s => s.Offset);
+        if (stopBefore is null)
+        {
+            Stops.Add(stop);
+            Element.AppendElement(element);
+        }
+        else
+        {
+            Stops.Insert(Stops.IndexOf(stopBefore) + 1, stop);
+            stopBefore.Element.InsertAfter(element);
+        }
         Changed.Invoke(this);
     }
 }

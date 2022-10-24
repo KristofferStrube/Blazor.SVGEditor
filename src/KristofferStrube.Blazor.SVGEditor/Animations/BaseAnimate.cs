@@ -104,6 +104,7 @@ public abstract class BaseAnimate : ISVGElement
             Element.SetAttribute("values", ValuesToString(Values));
         }
         Parent.UpdateHtml();
+        Parent.Changed(Parent);
     }
 
     public abstract bool IsEditing(string property);

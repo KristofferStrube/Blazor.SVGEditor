@@ -1,42 +1,34 @@
-﻿using Microsoft.JSInterop;
+﻿using AngleSharp.Dom;
+using Microsoft.JSInterop;
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
 public partial class SVG
 {
-    private void OpenColorPicker(AttributeNames attribute)
+    public void OpenColorPicker(string attributeName, string previousColor, Action<string> colorSetter)
     {
         ColorPickerShapes = MarkedShapes;
-        ColorPickerAttribute = attribute;
-        ColorPickerAttribute = attribute;
-    }
-
-    public void OpenAnimateColorPicker(BaseAnimate animate, AttributeNames attribute, int frame)
-    {
-        ColorPickerAnimate = animate;
-        ColorPickerAnimateFrame = frame;
-        ColorPickerAttribute = attribute;
+        PreviousColor = previousColor;
+        ColorPickerAttributeName = attributeName;
+        ColorPickerSetter = colorSetter;
         StateHasChanged();
     }
 
     private void ColorPickerClosed(string value)
     {
-        if (ColorPickerAttribute == AttributeNames.Fill)
+        if (ColorPickerAttributeName is "Fill")
         {
-            ColorPickerShapes.ForEach(shape => shape.Fill = value);
+            ColorPickerShapes.ForEach(s => s.Fill = value);
         }
-        else if (ColorPickerAttribute == AttributeNames.Stroke)
+        else if (ColorPickerAttributeName is "Stroke")
         {
-            ColorPickerShapes.ForEach(shape => shape.Stroke = value);
+            ColorPickerShapes.ForEach(s => s.Stroke = value);
         }
-        else if (ColorPickerAttribute is AttributeNames.FillAnimate or AttributeNames.StrokeAnimate)
+        else
         {
-            ColorPickerAnimate.Values[ColorPickerAnimateFrame] = value;
-            ColorPickerAnimate.UpdateValues();
-            ColorPickerAnimate.Parent.Changed(ColorPickerAnimate.Parent);
+            ColorPickerSetter.Invoke(value);
         }
         ColorPickerShapes = null;
-        ColorPickerAnimate = null;
     }
 
     private void MoveToBack(Shape shape)

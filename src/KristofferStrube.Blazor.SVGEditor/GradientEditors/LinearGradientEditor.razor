@@ -3,11 +3,14 @@
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@LinearGradient>
     <Anchor Position="LinearPoint1" RingColor="black" OnPointerDown="e => GradientEndClicked(e, -1)" />
     <Anchor Position="LinearPoint2" RingColor="black" OnPointerDown="e => GradientEndClicked(e, -2)" />
-    @foreach (var stop in LinearGradient.Stops)
-    {
-        <Anchor @key=stop.StopColor Position="Pos(stop)" MiddleColor="@stop.StopColor" RingColor="black" OnPointerDown="_ => StopClicked(stop)" />
-    }
 </ContextMenuTrigger>
+
+@foreach (var stop in LinearGradient.Stops)
+{
+    <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@stop>
+        <Anchor @key=stop.Key Position="Pos(stop)" MiddleColor="@stop.StopColor" RingColor="black" OnPointerDown="_ => StopClicked(stop)" />
+    </ContextMenuTrigger>
+}
 
 @code {
     private (double x, double y) Pos(Stop stop) =>

@@ -11,9 +11,8 @@ public partial class SVG : ComponentBase
     private string _input;
     private ElementReference SVGElementReference;
     private List<Shape> ColorPickerShapes;
-    private BaseAnimate ColorPickerAnimate;
-    private int ColorPickerAnimateFrame;
-    private AttributeNames ColorPickerAttribute;
+    private string ColorPickerAttributeName;
+    private Action<string> ColorPickerSetter;
     private List<ISVGElement> Elements;
     private (double x, double y)? TranslatePanner;
     private readonly Subject<ISVGElement> ElementSubject = new();
@@ -21,8 +20,8 @@ public partial class SVG : ComponentBase
     private List<Shape>? BoxSelectionShapes;
     private Box? SelectionBox;
 #nullable disable
-    private string ColorPickerTitle => $"Pick {ColorPickerAttribute} Color";
-    private bool IsColorPickerOpen => ColorPickerShapes is not null || ColorPickerAnimate is not null;
+    private string ColorPickerTitle => $"Pick {ColorPickerAttributeName} Color";
+    private bool IsColorPickerOpen => ColorPickerShapes is not null;
 
     [Parameter]
     public string Input { get; set; }
@@ -70,15 +69,7 @@ public partial class SVG : ComponentBase
         BoxSelectionShapes.ToList() :
         MarkedShapes;
 
-    public string PreviousColor =>
-        ColorPickerShapes is null or { Count: 0 } ?
-        string.Empty :
-        ColorPickerAttribute switch
-        {
-            AttributeNames.Fill or AttributeNames.FillAnimate => ColorPickerShapes.GroupBy(shape => shape.Fill).MaxBy(group => group.Count()).Key,
-            AttributeNames.Stroke or AttributeNames.StrokeAnimate => ColorPickerShapes.GroupBy(shape => shape.Stroke).MaxBy(group => group.Count()).Key,
-            _ => string.Empty
-        };
+    public string PreviousColor { get; set; }
 
     public Dictionary<string, Type> SupportedTypes { get; set; } = new Dictionary<string, Type> {
             { "RECT", typeof(Rect) },

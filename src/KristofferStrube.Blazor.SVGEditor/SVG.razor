@@ -74,16 +74,18 @@
                     }
                     else if (context.Data is LinearGradient linearGradient)
                     {
-                        <Item>
-                            <Item OnClick="_ => linearGradient.AddNew(this)"><div class="icon">⚪</div> New Stop to Gradient</Item>
-                        </Item>
+                        <Item OnClick="_ => linearGradient.AddNewStop(this)"><div class="icon">⚪</div> New Stop to Gradient</Item>
+                    }
+                    else if (context.Data is Stop stop)
+                    {
+                        <Item OnClick="_ => stop.Parent.AddNewStop(this, stop)"><div class="icon">⚪</div> New Stop to Gradient</Item>
                     }
                 </SubMenu>
             </Item>
         }
         @if (context.Data is Shape shape && !shape.IsChildElement)
         {
-            <Item OnClick="() => OpenColorPicker(AttributeNames.Fill)">
+            <Item OnClick=@(() => OpenColorPicker("Fill", shape.Fill, _ => {}))>
                 <ColorCube Color=@shape.Fill /> Fill Color
                 <SubMenu>
                     <Item OnClick=@(_ => shape.Fill = "none")><div class="icon">⚪</div> Set To None</Item>
@@ -114,7 +116,7 @@
                     }
                 </SubMenu>
             </Item>
-            <Item OnClick="() => OpenColorPicker(AttributeNames.Stroke)">
+            <Item OnClick=@(() => OpenColorPicker("Stroke", shape.Stroke, _ => {}))>
                 <ColorCube Color=@shape.Stroke /> Stroke Color
                 <SubMenu>
                     <Item OnClick=@(_ => shape.Stroke = "none")><div class="icon">⚪</div> Set To None</Item>
@@ -174,6 +176,12 @@
                     <Item OnClick="() => SnapShapesToInteger()"><div class="icon">🔢</div> Snap To Integer</Item>
                     <Item OnClick="() => CompactPaths()"><div class="icon">🤏</div> Compact paths to relative</Item>
                 </SubMenu>
+            </Item>
+        }
+        else if (context.Data is Stop stop)
+        {
+            <Item OnClick=@(() => OpenColorPicker("Gradient Stop", stop.StopColor, (value) => stop.StopColor = value))>
+                <ColorCube Color=@stop.StopColor /> Gradient Stop Color
             </Item>
         }
         else
