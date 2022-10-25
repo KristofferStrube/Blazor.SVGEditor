@@ -1,4 +1,6 @@
-﻿<CascadingValue Value=this IsFixed=true>
+﻿@inject IBlazorContextMenuService blazorContextMenuService
+
+<CascadingValue Value=this IsFixed=true>
     <ContextMenuTrigger MenuId="SVGMenu" style="height:100%;">
         <svg @ref=SVGElementReference
              @onpointermove="Move"
@@ -51,13 +53,34 @@
             <Item>
                 <div class="icon">✨</div> Add
                 <SubMenu>
-                    <Item OnClick="_ => Path.AddNew(this)"><div class="icon">🎢</div> New Path</Item>
-                    <Item OnClick="_ => Polygon.AddNew(this)"><div class="icon">🔷</div> New Polygon</Item>
-                    <Item OnClick="_ => Polyline.AddNew(this)"><div class="icon">〰</div> New Polyline</Item>
-                    <Item OnClick="_ => Line.AddNew(this)"><div class="icon">➖</div> New Line</Item>
-                    <Item OnClick="_ => Circle.AddNew(this)"><div class="icon">🔵</div> New Circle</Item>
-                    <Item OnClick="_ => Ellipse.AddNew(this)"><div class="icon">🕳</div> New Ellipse</Item>
-                    <Item OnClick="_ => Rect.AddNew(this)"><div class="icon">🟦</div> New rectangle</Item>
+                    @if (context.Data is LinearGradient linearGradient)
+                    {
+                        <Item OnClick="_ => linearGradient.AddNewStop()"><div class="icon">⚪</div> New Stop to Gradient</Item>
+                    }
+                    else if (context.Data is Stop stop)
+                    {
+                        <Item OnClick="_ => stop.Parent.AddNewStop(stop)"><div class="icon">⚪</div> New Stop to Gradient</Item>
+                    }
+                    else
+                    {
+                        <Item OnClick="_ => Path.AddNew(this)"><div class="icon">🎢</div> New Path</Item>
+                        <Item OnClick="_ => Polygon.AddNew(this)"><div class="icon">🔷</div> New Polygon</Item>
+                        <Item OnClick="_ => Polyline.AddNew(this)"><div class="icon">〰</div> New Polyline</Item>
+                        <Item OnClick="_ => Line.AddNew(this)"><div class="icon">➖</div> New Line</Item>
+                        <Item OnClick="_ => Circle.AddNew(this)"><div class="icon">🔵</div> New Circle</Item>
+                        <Item OnClick="_ => Ellipse.AddNew(this)"><div class="icon">🕳</div> New Ellipse</Item>
+                        <Item OnClick="_ => Rect.AddNew(this)"><div class="icon">🟦</div> New rectangle</Item>
+                        <Item @onclick:stopPropagation="true">
+                            <div class="icon">🦓</div> New Gradient
+                            <SubMenu>
+                                <Item @onclick:stopPropagation="true">
+                                    <div class="icon">📏</div> Linear
+                                    <input @bind-value=NewLinearGradientId style="width:50px;" />
+                                    <button class="btn btn-success btn-sm" @onclick=@(_ => { LinearGradient.AddNew(this, NewLinearGradientId); blazorContextMenuService.HideMenu("SVGMenu"); NewLinearGradientId = ""; })>➕</button>
+                                </Item>
+                            </SubMenu>
+                        </Item>
+                    }
                     @if (context.Data is Shape shape && !shape.IsChildElement)
                     {
                         <Item>
@@ -72,14 +95,6 @@
                             </SubMenu>
                         </Item>
                     }
-                    else if (context.Data is LinearGradient linearGradient)
-                    {
-                        <Item OnClick="_ => linearGradient.AddNewStop(this)"><div class="icon">⚪</div> New Stop to Gradient</Item>
-                    }
-                    else if (context.Data is Stop stop)
-                    {
-                        <Item OnClick="_ => stop.Parent.AddNewStop(this, stop)"><div class="icon">⚪</div> New Stop to Gradient</Item>
-                    }
                 </SubMenu>
             </Item>
         }
@@ -91,7 +106,7 @@
                     <Item OnClick=@(_ => shape.Fill = "none")><div class="icon">⚪</div> Set To None</Item>
                     <Item OnClick=@(_ => shape.Fill = "transparent")><div class="icon">🔘</div> Set To Transparent</Item>
                     <Item OnClick=@(_ => shape.Fill = "black")><div class="icon">⚫</div> Set To Black</Item>
-                    @if (Definitions.Count > 0)
+                    @if (Definitions.Values.Count(d => d is LinearGradient) > 0)
                     {
                         <Item>
                             <div class="icon">🦓</div> Gradients
@@ -103,14 +118,6 @@
                                         @key
                                     </Item>
                                 }
-                                <Item>
-                                    <div class="icon">➕</div> Add Gradient
-                                    <SubMenu>
-                                        <Item>
-                                            <div class="icon">📏</div> Add Gradient
-                                        </Item>
-                                    </SubMenu>
-                                </Item>
                             </SubMenu>
                         </Item>
                     }

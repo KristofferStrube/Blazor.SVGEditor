@@ -23,11 +23,11 @@ public partial class SVG
                 var external = sub((x, y), boundingBox);
                 if (stop is -1)
                 {
-                    (linearGradient.X1, linearGradient.Y1) = (Math.Round(external.x / linearGradient.EditingShape.BoundingBox.Width, 2), Math.Round(external.y / linearGradient.EditingShape.BoundingBox.Height, 2));
+                    (linearGradient.X1, linearGradient.Y1) = (external.x / linearGradient.EditingShape.BoundingBox.Width, external.y / linearGradient.EditingShape.BoundingBox.Height);
                 }
                 else if (stop is -2)
                 {
-                    (linearGradient.X2, linearGradient.Y2) = (Math.Round(external.x / linearGradient.EditingShape.BoundingBox.Width, 2), Math.Round(external.y / linearGradient.EditingShape.BoundingBox.Height, 2));
+                    (linearGradient.X2, linearGradient.Y2) = (external.x / linearGradient.EditingShape.BoundingBox.Width, external.y / linearGradient.EditingShape.BoundingBox.Height);
                 }
                 else
                 {
@@ -37,7 +37,7 @@ public partial class SVG
                     var v = sub(p2, p1);
                     var externalPrime = sub(external, p1);
                     var scalar = projectScalar(externalPrime, v);
-                    linearGradient.Stops[stop].Offset = Math.Round(Math.Clamp(scalar, 0, 1), 2);
+                    linearGradient.Stops[stop].Offset = Math.Clamp(scalar, 0, 1);
                     if (stop is not 0 && linearGradient.Stops[stop - 1].Offset > linearGradient.Stops[stop].Offset)
                     {
                         (linearGradient.Stops[stop - 1], linearGradient.Stops[stop]) = (linearGradient.Stops[stop], linearGradient.Stops[stop - 1]);

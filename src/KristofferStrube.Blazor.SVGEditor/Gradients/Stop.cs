@@ -38,11 +38,11 @@ public class Stop : ISVGElement
             }
             else if (offset.Trim().EndsWith("%"))
             {
-                return double.Parse(offset.Trim()[..^1]) / 100;
+                return offset.Trim()[..^1].ParseAsDouble() / 100;
             }
             else
             {
-                return double.Parse(offset.Trim());
+                return offset.Trim().ParseAsDouble();
             }
         }
         set

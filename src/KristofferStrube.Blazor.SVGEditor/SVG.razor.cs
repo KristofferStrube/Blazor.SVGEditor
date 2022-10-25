@@ -1,5 +1,6 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
+using BlazorContextMenu;
 using Microsoft.AspNetCore.Components;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -13,6 +14,7 @@ public partial class SVG : ComponentBase
     private List<Shape> ColorPickerShapes;
     private string ColorPickerAttributeName;
     private Action<string> ColorPickerSetter;
+    private string NewLinearGradientId;
     private List<ISVGElement> Elements;
     private (double x, double y)? TranslatePanner;
     private readonly Subject<ISVGElement> ElementSubject = new();
@@ -150,6 +152,29 @@ public partial class SVG : ComponentBase
             parent.Changed.Invoke(parent);
         }
         UpdateInput();
+    }
+
+    public void AddDefinition(ISVGElement SVGElement)
+    {
+        var firstDefs = Elements.Where(e => e is Defs).FirstOrDefault();
+        if (firstDefs is Defs defs)
+        {
+            defs.Children.Add(SVGElement);
+            SVGElement.Changed = defs.UpdateInput;
+            AddElement(SVGElement, defs);
+        }
+        else
+        {
+            var element = Document.CreateElement("DEFS");
+            var newDefs = new Defs(element, this)
+            {
+                Changed = UpdateInput
+            };
+            newDefs.Children.Add(SVGElement);
+            SVGElement.Changed = newDefs.UpdateInput;
+            AddElement(newDefs);
+            AddElement(SVGElement, newDefs);
+        }
     }
 
     public void RemoveElement(ISVGElement SVGElement)

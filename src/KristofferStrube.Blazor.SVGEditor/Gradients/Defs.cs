@@ -38,7 +38,7 @@ public class Defs : ISVGElement
         }).ToList();
     }
 
-    private void UpdateInput(ISVGElement child)
+    public void UpdateInput(ISVGElement child)
     {
         child.UpdateHtml();
         Changed.Invoke(this);
