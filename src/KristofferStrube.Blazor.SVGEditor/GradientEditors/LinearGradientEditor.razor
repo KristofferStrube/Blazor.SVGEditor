@@ -13,6 +13,19 @@
 }
 
 @code {
+    protected override bool ShouldRender()
+    {
+        string StateRepresentation = LinearGradient.StateRepresentation;
+        if (LinearGradient._stateRepresentation != StateRepresentation)
+        {
+            LinearGradient._stateRepresentation = StateRepresentation;
+            StateHasChanged();
+            Console.WriteLine("HEY!");
+            return true;
+        }
+        return false;
+    }
+
     private (double x, double y) Pos(Stop stop) =>
     (
             EditingShape.BoundingBox.X + ((stop.Offset * LinearGradient.X2 + (1 - stop.Offset) * LinearGradient.X1) * EditingShape.BoundingBox.Width),
@@ -33,6 +46,7 @@
         LinearGradient.SVG.EditGradient = LinearGradient;
         LinearGradient.EditingShape = EditingShape;
         LinearGradient.CurrentStop = LinearGradient.Stops.IndexOf(stop);
+        StateHasChanged();
     }
 
     public void GradientEndClicked(PointerEventArgs eventArgs, int end)

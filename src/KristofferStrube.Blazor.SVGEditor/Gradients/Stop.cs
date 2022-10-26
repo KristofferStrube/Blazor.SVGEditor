@@ -25,7 +25,7 @@ public class Stop : ISVGElement
 
     public Type Presenter => throw new NotImplementedException();
 
-    public string StateRepresentation => throw new NotImplementedException();
+    public string StateRepresentation => $"{Offset}{StopColor}{StopOpacity}";
 
     public double Offset
     {

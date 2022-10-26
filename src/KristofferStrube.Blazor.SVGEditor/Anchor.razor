@@ -26,7 +26,7 @@
 
     private string _State { get; set; }
 
-    private string State => string.Join("-", new string[] { Position.x.ToString(), Position.y.ToString(), SVG.Scale.ToString(), SVG.Translate.x.ToString(), SVG.Translate.y.ToString() });
+    private string State => $"{Position.x}{Position.y}{SVG.Scale}{SVG.Translate.x}{SVG.Translate.y}{RingColor}{MiddleColor}";
 
     protected override bool ShouldRender()
     {

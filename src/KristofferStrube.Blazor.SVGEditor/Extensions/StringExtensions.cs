@@ -16,4 +16,5 @@ internal static class StringExtensions
         }
         return points.Trim().Split(" ").Select(p => (x: p.Split(",")[0].ParseAsDouble(), y: p.Split(",")[1].ParseAsDouble())).ToList();
     }
+    internal static string ToUrl(this string id) => $"url('#{id}')";
 }

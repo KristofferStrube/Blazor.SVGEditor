@@ -76,7 +76,14 @@
                                 <Item @onclick:stopPropagation="true">
                                     <div class="icon">📏</div> Linear
                                     <input @bind-value=NewLinearGradientId style="width:50px;" />
-                                    <button class="btn btn-success btn-sm" @onclick=@(_ => { LinearGradient.AddNew(this, NewLinearGradientId); blazorContextMenuService.HideMenu("SVGMenu"); NewLinearGradientId = ""; })>➕</button>
+                                    @if (context.Data is Shape shape)
+                                    {
+                                        <button class="btn btn-success btn-sm" @onclick=@(_ => { LinearGradient.AddNew(this, NewLinearGradientId, shape); blazorContextMenuService.HideMenu("SVGMenu"); NewLinearGradientId = ""; })>➕</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-success btn-sm" @onclick=@(_ => { LinearGradient.AddNew(this, NewLinearGradientId); blazorContextMenuService.HideMenu("SVGMenu"); NewLinearGradientId = ""; })>➕</button>
+                                    }
                                 </Item>
                             </SubMenu>
                         </Item>
@@ -113,7 +120,7 @@
                             <SubMenu>
                                 @foreach (var (key, value) in Definitions)
                                 {
-                                    <Item OnClick=@(_ => shape.Fill = $"url('#{key}')")>
+                                    <Item OnClick=@(_ => shape.Fill = key.ToUrl())>
                                         <ColorCube Color=@($"url('#{key}')") />
                                         @key
                                     </Item>

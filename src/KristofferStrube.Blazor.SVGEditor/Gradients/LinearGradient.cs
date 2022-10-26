@@ -50,7 +50,9 @@ public class LinearGradient : ISVGElement
 
     public Type Presenter => typeof(GradientPresenter);
 
-    public string StateRepresentation => throw new NotImplementedException();
+    public string StateRepresentation => $"{X1}{X2}{Y1}{Y2}{string.Join("", Stops.Select(s => s.StateRepresentation))}";
+
+    internal string _stateRepresentation;
 
     public double X1
     {
@@ -203,7 +205,7 @@ public class LinearGradient : ISVGElement
         StoredHtml = $"<linearGradient{string.Join("", Element.Attributes.Select(a => $" {a.Name}=\"{a.Value}\""))}>\n" + string.Join("", Stops.Select(e => e.StoredHtml + "\n")) + string.Join("", AnimationElements.Select(a => a.StoredHtml + "\n")) + "</linearGradient>";
     }
 
-    public void AddNewStop(Stop tempStop = null)
+    public void AddNewStop(Stop tempStop = null, string color = "grey")
     {
         IElement element = SVG.Document.CreateElement("STOP");
 
@@ -212,7 +214,7 @@ public class LinearGradient : ISVGElement
         {
             if (Stops.Count is 0)
             {
-                offset = 0.25;
+                offset = 1.0/3;
             }
             else
             {
@@ -233,7 +235,7 @@ public class LinearGradient : ISVGElement
         Stop stop = new(element, this, SVG)
         {
             Offset = offset,
-            StopColor = "white",
+            StopColor = color,
         };
 
         var stopBefore = Stops.Where(s => s.Offset <= offset).MaxBy(s => s.Offset);
@@ -252,8 +254,15 @@ public class LinearGradient : ISVGElement
         Changed.Invoke(this);
     }
 
-    public static void AddNew(SVG svg, string id)
+    public static void AddNew(SVG svg, string id, Shape? shape = null)
     {
+        var firstStopColor = "grey";
+        if (shape is not null)
+        {
+            firstStopColor = shape.Fill;
+            shape.Fill = id.ToUrl();
+        }
+
         IElement element = svg.Document.CreateElement("LINEARGRADIENT");
 
         LinearGradient linearGradient = new(element, svg);
@@ -261,5 +270,10 @@ public class LinearGradient : ISVGElement
         svg.AddDefinition(linearGradient);
         linearGradient.Id = string.IsNullOrEmpty(id) ? Random.Shared.Next(999).ToString() : id;
         svg.Definitions[linearGradient.Id] = linearGradient;
+
+        if (shape is not null)
+        {
+            linearGradient.AddNewStop(color: firstStopColor);
+        }
     }
 }
