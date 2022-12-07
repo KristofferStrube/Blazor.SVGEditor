@@ -9,7 +9,7 @@
               stroke="@SVGElement.Stroke"
               stroke-width="@SVGElement.StrokeWidth"
               fill="@SVGElement.Fill"
-              style="pointer-events:none;">
+              style="pointer-events:none;@SVGElement.Style">
             @((MarkupString)SVGElement.CharacterData.Replace(" ", "&nbsp;"))
             @foreach (BaseAnimate animate in SVGElement.AnimationElements)
             {
@@ -26,7 +26,7 @@
         @onfocusout="UnfocusElement"
         @onpointerdown="Select">
             <input @bind="SVGElement.CharacterData"
-            @bind:event="oninput" class="textInput" style="width:@SVGElement.BoundingBox.Width.AsString()px;" autocomplete="off" />
+            @bind:event="oninput" class="textInput" style="width:@SVGElement.BoundingBox.Width.AsString()px;font-size:@(SVGElement.FontSize)px;" autocomplete="off" />
         </foreignObject>
     </g>
 </ContextMenuTrigger>

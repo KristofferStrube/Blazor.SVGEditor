@@ -7,7 +7,20 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public class Text : Shape
 {
-    public Text(IElement element, SVG svg) : base(element, svg) { }
+    private Dictionary<string, string> styleAttributes;
+
+    public Text(IElement element, SVG svg) : base(element, svg)
+    {
+        var style = element.GetAttribute("style");
+        if (style is null)
+        {
+            styleAttributes = new();
+        }
+        else
+        {
+            styleAttributes = style.Split(";").Select(style => style.Split(":")).ToDictionary(pair => pair[0], pair => pair[1]);
+        }
+    }
 
     public double X
     {
@@ -26,18 +39,31 @@ public class Text : Shape
         set { Element.InnerHtml = value; Changed.Invoke(this); }
     }
 
+    public string FontSize
+    {
+        get => styleAttributes.GetValueOrDefault("font-size", "");
+        set { styleAttributes["font-size"] = value; UpdateStyle(); }
+    }
+
+    public string Style => Element.GetAttributeOrEmpty("style");
+
+    public void UpdateStyle()
+    {
+        Element.SetAttribute("style", string.Join(";", styleAttributes.Select(kv => $"{kv.Key}:{kv.Value}")));
+        Changed.Invoke(this);
+    }
+
     public override Type Presenter => typeof(TextEditor);
 
     public override IEnumerable<(double x, double y)> SelectionPoints => new List<(double x, double y)>();
 
     public override void HandlePointerMove(PointerEventArgs eventArgs)
     {
-        Console.WriteLine($"X: {eventArgs.MovementX}, Y: {eventArgs.MovementY}");
         (double x, double y) = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
         switch (SVG.EditMode)
         {
             case EditMode.Move:
-                (double x, double y) diff = (eventArgs.MovementX/SVG.Scale, eventArgs.MovementY/SVG.Scale);
+                (double x, double y) diff = (eventArgs.MovementX / SVG.Scale, eventArgs.MovementY / SVG.Scale);
                 X += diff.x;
                 Y += diff.y;
                 BoundingBox.X += diff.x;

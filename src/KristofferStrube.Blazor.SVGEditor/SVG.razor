@@ -141,9 +141,16 @@
             </Item>
             <Item @onclick:preventDefault="true">
                 <div class="icon">➖</div> Stroke Width
-                <input type="number" @bind-value=shape.StrokeWidth style="width:50px;" />
+                <input type="number" @bind-value=shape.StrokeWidth @bind-value:event="oninput" style="width:50px;float:right;" />
             </Item>
-            @if (shape.HasAnimation)
+            @if (shape is Text text)
+            {
+                <Item @onclick:preventDefault="true">
+                    <div class="icon">🔠</div> Font Size
+                    <input type="number" @bind-value=text.FontSize @bind-value:event="oninput" style="width:50px;float:right;" />
+                </Item>
+            }
+            if (shape.HasAnimation)
             {
                 <Item>
                     <div class="icon">💥</div> Animations
