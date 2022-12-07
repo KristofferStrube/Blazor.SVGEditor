@@ -10,9 +10,9 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public ElementReference ElementReference { get; set; }
 
-        protected override async Task OnAfterRenderAsync(bool _)
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (SVGElement.Selected)
+            if (SVGElement.Selected || firstRender)
             {
                 Box BBox = await SVGElement.SVG.GetBoundingBox(ElementReference);
                 (double x, double y) = SVGElement.SVG.LocalDetransform((BBox.X - SVGElement.SVG.BBox.X, BBox.Y - SVGElement.SVG.BBox.Y));

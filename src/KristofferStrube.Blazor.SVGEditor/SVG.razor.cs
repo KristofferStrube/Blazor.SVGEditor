@@ -2,6 +2,7 @@
 using AngleSharp.Dom;
 using BlazorContextMenu;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
@@ -81,6 +82,7 @@ public partial class SVG : ComponentBase
             { "POLYLINE", typeof(Polyline) },
             { "LINE", typeof(Line) },
             { "PATH", typeof(Path) },
+            { "TEXT", typeof(Text) },
             { "G", typeof(G) },
             { "DEFS", typeof(Defs) },
         };
@@ -131,6 +133,8 @@ public partial class SVG : ComponentBase
                     .ForEach(element => element.UpdateHtml());
                 UpdateInput();
             });
+
+        moduleTask = new(async () => await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/KristofferStrube.Blazor.SVGEditor/KristofferStrube.Blazor.SVGEditor.js"));
     }
 
     public void UpdateInput(ISVGElement SVGElement)

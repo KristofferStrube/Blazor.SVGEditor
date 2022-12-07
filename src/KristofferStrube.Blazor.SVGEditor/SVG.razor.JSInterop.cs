@@ -3,32 +3,44 @@ using Microsoft.JSInterop;
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
-public partial class SVG
+public partial class SVG : IAsyncDisposable
 {
     [Inject]
     protected IJSRuntime JSRuntime { get; set; }
 
-    private IJSObjectReference _jSModule;
+    protected Lazy<Task<IJSObjectReference>> moduleTask;
     public Box BBox { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _jSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/KristofferStrube.Blazor.SVGEditor/KristofferStrube.Blazor.SVGEditor.js");
         BBox = await GetBoundingBox(SVGElementReference);
     }
 
     public async Task Focus(ElementReference elementReference)
     {
-        await _jSModule.InvokeVoidAsync("focus", elementReference);
+        var module = await moduleTask.Value;
+        await module.InvokeVoidAsync("focus", elementReference);
     }
 
     public async Task UnFocus(ElementReference elementReference)
     {
-        await _jSModule.InvokeVoidAsync("unFocus", elementReference);
+        var module = await moduleTask.Value;
+        await module.InvokeVoidAsync("unFocus", elementReference);
     }
 
     public async Task<Box> GetBoundingBox(ElementReference elementReference)
     {
-        return await _jSModule.InvokeAsync<Box>("BBox", elementReference);
+        var module = await moduleTask.Value;
+        return await module.InvokeAsync<Box>("BBox", elementReference);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (moduleTask.IsValueCreated)
+        {
+            IJSObjectReference module = await moduleTask.Value;
+            await module.DisposeAsync();
+        }
+        GC.SuppressFinalize(this);
     }
 }

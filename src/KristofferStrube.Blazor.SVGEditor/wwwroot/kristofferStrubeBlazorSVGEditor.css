@@ -19,7 +19,7 @@
 }
 
 
-path:focus, rect:focus, circle:focus, ellipse:focus, polygon:focus, polyline:focus, line:focus, g:focus {
+path:focus, rect:focus, circle:focus, ellipse:focus, polygon:focus, polyline:focus, line:focus, g:focus, text:focus {
     outline: none;
 }
 
@@ -32,3 +32,19 @@ path:focus, rect:focus, circle:focus, ellipse:focus, polygon:focus, polyline:foc
     user-select: none;
     touch-action: none;
 }
+
+.textInput {
+    color: transparent;
+    user-select: none;
+    caret-color: black;
+    border: none;
+    outline: none;
+    background: none;
+    text-overflow: clip;
+    line-height: 1;
+    padding: 0px;
+}
+
+    .textInput::selection {
+        background:none;
+    }

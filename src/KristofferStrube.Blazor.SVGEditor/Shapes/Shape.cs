@@ -1,5 +1,4 @@
-﻿using AngleSharp;
-using AngleSharp.Dom;
+﻿using AngleSharp.Dom;
 using KristofferStrube.Blazor.SVGEditor.Extensions;
 using Microsoft.AspNetCore.Components.Web;
 using static System.Text.Json.JsonSerializer;

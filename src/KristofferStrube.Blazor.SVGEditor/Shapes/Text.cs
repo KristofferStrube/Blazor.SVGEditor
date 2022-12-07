@@ -1,0 +1,102 @@
+﻿using AngleSharp.Dom;
+using KristofferStrube.Blazor.SVGEditor.Extensions;
+using KristofferStrube.Blazor.SVGEditor.ShapeEditors;
+using Microsoft.AspNetCore.Components.Web;
+
+namespace KristofferStrube.Blazor.SVGEditor;
+
+public class Text : Shape
+{
+    public Text(IElement element, SVG svg) : base(element, svg) { }
+
+    public double X
+    {
+        get => Element.GetAttributeOrZero("x");
+        set { Element.SetAttribute("x", value.AsString()); Changed.Invoke(this); }
+    }
+    public double Y
+    {
+        get => Element.GetAttributeOrZero("y");
+        set { Element.SetAttribute("y", value.AsString()); Changed.Invoke(this); }
+    }
+
+    public string CharacterData
+    {
+        get => Element.TextContent;
+        set { Element.InnerHtml = value; Changed.Invoke(this); }
+    }
+
+    public override Type Presenter => typeof(TextEditor);
+
+    public override IEnumerable<(double x, double y)> SelectionPoints => new List<(double x, double y)>();
+
+    public override void HandlePointerMove(PointerEventArgs eventArgs)
+    {
+        Console.WriteLine($"X: {eventArgs.MovementX}, Y: {eventArgs.MovementY}");
+        (double x, double y) = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+        switch (SVG.EditMode)
+        {
+            case EditMode.Move:
+                (double x, double y) diff = (eventArgs.MovementX/SVG.Scale, eventArgs.MovementY/SVG.Scale);
+                X += diff.x;
+                Y += diff.y;
+                BoundingBox.X += diff.x;
+                BoundingBox.Y += diff.y;
+                break;
+        }
+    }
+
+    public override void HandlePointerOut(PointerEventArgs eventArgs)
+    {
+    }
+
+    public override void HandlePointerUp(PointerEventArgs eventArgs)
+    {
+        switch (SVG.EditMode)
+        {
+            case EditMode.Move or EditMode.MoveAnchor or EditMode.Add:
+                SVG.EditMode = EditMode.None;
+                break;
+        }
+    }
+
+    public override string StateRepresentation => base.StateRepresentation + CharacterData;
+
+    public override void UpdateHtml()
+    {
+        AnimationElements.ForEach(a => a.UpdateHtml());
+        StoredHtml = $"<{Element.LocalName}{string.Join("", Element.Attributes.Select(a => $" {a.Name}=\"{a.Value}\""))}>" + Element.TextContent + (AnimationElements.Count > 0 ? "\n" : "") + string.Join("", AnimationElements.Select(a => a.StoredHtml + "\n")) + $"</{Element.LocalName}>";
+    }
+
+    public static void AddNew(SVG SVG)
+    {
+        IElement element = SVG.Document.CreateElement("TEXT");
+
+        Text text = new(element, SVG)
+        {
+            Changed = SVG.UpdateInput,
+            Stroke = "black",
+            StrokeWidth = "1",
+            Fill = "lightgrey",
+            CharacterData = "TEXT"
+        };
+        SVG.EditMode = EditMode.Add;
+
+        (text.X, text.Y) = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
+
+        SVG.SelectedShapes.Clear();
+        SVG.SelectedShapes.Add(text);
+        SVG.AddElement(text);
+    }
+
+    public override void Complete()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void SnapToInteger()
+    {
+        X = (int)X;
+        Y = (int)Y;
+    }
+}
