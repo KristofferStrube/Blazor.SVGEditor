@@ -15,12 +15,10 @@
 @code {
     protected override bool ShouldRender()
     {
-        string StateRepresentation = LinearGradient.StateRepresentation;
+        string StateRepresentation = LinearGradient.StateRepresentation + EditingShape.StateRepresentation;
         if (LinearGradient._stateRepresentation != StateRepresentation)
         {
             LinearGradient._stateRepresentation = StateRepresentation;
-            StateHasChanged();
-            Console.WriteLine("HEY!");
             return true;
         }
         return false;
