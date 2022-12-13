@@ -28,12 +28,12 @@ namespace KristofferStrube.Blazor.SVGEditor
 
         public void FocusElement()
         {
-            SVGElement.SVG.FocusedShapes = SVGElement;
+            SVGElement.SVG.FocusedShape = SVGElement;
         }
 
         public void UnfocusElement()
         {
-            SVGElement.SVG.FocusedShapes = null;
+            SVGElement.SVG.FocusedShape = null;
         }
 
         public async Task KeyUp(KeyboardEventArgs eventArgs)
@@ -70,7 +70,7 @@ namespace KristofferStrube.Blazor.SVGEditor
             SVGElement.SVG.EditMode = EditMode.MoveAnchor;
         }
 
-        public async Task Select(MouseEventArgs eventArgs)
+        public async Task SelectAsync(MouseEventArgs eventArgs)
         {
             if (SVGElement.IsChildElement)
             {
@@ -87,7 +87,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                 if (!SVGElement.Selected)
                 {
                     SVGElement.SVG.SelectedShapes.Add(SVGElement);
-                    await SVGElement.SVG.Focus(ElementReference);
+                    await SVGElement.SVG.FocusAsync(ElementReference);
                 }
                 SVGElement.SVG.EditMode = EditMode.None;
             }
@@ -99,7 +99,7 @@ namespace KristofferStrube.Blazor.SVGEditor
                     SVGElement.SVG.EditMode = EditMode.Move;
                     SVGElement.SVG.SelectedShapes.Clear();
                     SVGElement.SVG.SelectedShapes.Add(SVGElement);
-                    await SVGElement.SVG.Focus(ElementReference);
+                    await SVGElement.SVG.FocusAsync(ElementReference);
                 }
                 StateHasChanged();
                 if (eventArgs.Button == 0)

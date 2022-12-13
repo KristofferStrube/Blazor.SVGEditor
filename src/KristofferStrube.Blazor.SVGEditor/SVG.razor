@@ -111,9 +111,9 @@
             <Item OnClick=@(() => OpenColorPicker("Fill", shape.Fill, _ => {}))>
                 <ColorCube Color=@shape.Fill /> Fill Color
                 <SubMenu>
-                    <Item OnClick=@(_ => shape.Fill = "none")><div class="icon">⚪</div> Set To None</Item>
-                    <Item OnClick=@(_ => shape.Fill = "transparent")><div class="icon">🔘</div> Set To Transparent</Item>
-                    <Item OnClick=@(_ => shape.Fill = "black")><div class="icon">⚫</div> Set To Black</Item>
+                    <Item OnClick=@(_ => SetFillForMarkedShapes("none"))><div class="icon">⚪</div> Set To None</Item>
+                    <Item OnClick=@(_ => SetFillForMarkedShapes("transparent"))><div class="icon">🔘</div> Set To Transparent</Item>
+                    <Item OnClick=@(_ => SetFillForMarkedShapes("black"))><div class="icon">⚫</div> Set To Black</Item>
                     @if (Definitions.Values.Count(d => d is LinearGradient) > 0)
                     {
                         <Item>
@@ -121,7 +121,7 @@
                             <SubMenu>
                                 @foreach (var (key, value) in Definitions)
                                 {
-                                    <Item OnClick=@(_ => shape.Fill = key.ToUrl())>
+                                    <Item OnClick=@(_ => SetFillForMarkedShapes(key.ToUrl()))>
                                         <ColorCube Color=@($"url('#{key}')") />
                                         @key
                                     </Item>
@@ -134,9 +134,24 @@
             <Item OnClick=@(() => OpenColorPicker("Stroke", shape.Stroke, _ => {}))>
                 <ColorCube Color=@shape.Stroke /> Stroke Color
                 <SubMenu>
-                    <Item OnClick=@(_ => shape.Stroke = "none")><div class="icon">⚪</div> Set To None</Item>
-                    <Item OnClick=@(_ => shape.Stroke = "transparent")><div class="icon">🔘</div> Set To Transparent</Item>
-                    <Item OnClick=@(_ => shape.Stroke = "black")><div class="icon">⚫</div> Set To Black</Item>
+                    <Item OnClick=@(_ => SetStrokeForMarkedShapes("none"))><div class="icon">⚪</div> Set To None</Item>
+                    <Item OnClick=@(_ => SetStrokeForMarkedShapes("transparent"))><div class="icon">🔘</div> Set To Transparent</Item>
+                    <Item OnClick=@(_ => SetStrokeForMarkedShapes("black"))><div class="icon">⚫</div> Set To Black</Item>
+                    @if (Definitions.Values.Count(d => d is LinearGradient) > 0)
+                    {
+                        <Item>
+                            <div class="icon">🦓</div> Gradients
+                            <SubMenu>
+                                @foreach (var (key, value) in Definitions)
+                                {
+                                    <Item OnClick=@(_ => SetStrokeForMarkedShapes(key.ToUrl()))>
+                                        <ColorCube Color=@($"url('#{key}')") />
+                                        @key
+                                    </Item>
+                                }
+                            </SubMenu>
+                        </Item>
+                    }
                 </SubMenu>
             </Item>
             <Item @onclick:preventDefault="true">

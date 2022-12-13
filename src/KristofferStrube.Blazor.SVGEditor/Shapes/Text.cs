@@ -55,7 +55,7 @@ public class Text : Shape
 
     public override Type Presenter => typeof(TextEditor);
 
-    public override IEnumerable<(double x, double y)> SelectionPoints => new List<(double x, double y)>();
+    public override List<(double x, double y)> SelectionPoints => new() { (BoundingBox.X, BoundingBox.Y), (BoundingBox.X + BoundingBox.Width, BoundingBox.Y), (BoundingBox.X + BoundingBox.Width, BoundingBox.Y + BoundingBox.Height), (BoundingBox.X, BoundingBox.Y + BoundingBox.Height) };
 
     public override void HandlePointerMove(PointerEventArgs eventArgs)
     {
@@ -63,7 +63,7 @@ public class Text : Shape
         switch (SVG.EditMode)
         {
             case EditMode.Move:
-                (double x, double y) diff = (eventArgs.MovementX / SVG.Scale, eventArgs.MovementY / SVG.Scale);
+                (double x, double y) diff = (x: x - SVG.MovePanner.x, y: y - SVG.MovePanner.y);
                 X += diff.x;
                 Y += diff.y;
                 BoundingBox.X += diff.x;

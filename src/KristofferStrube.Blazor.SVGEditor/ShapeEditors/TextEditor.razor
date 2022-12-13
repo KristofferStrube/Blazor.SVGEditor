@@ -2,14 +2,18 @@
 
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement StopPropagation=@(!SVGElement.IsChildElement)>
     <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
-        <text tabindex="@(SVGElement.IsChildElement ? -1 : 0)"
-        @ref=ElementReference
+        <text @ref=ElementReference
+        @onfocusin="FocusElement"
+        @onkeyup="KeyUp"
+        @onfocusout="UnfocusElement"
+        @onpointerdown="SelectAsync"
+              tabindex="@(SVGElement.IsChildElement ? -1 : 0)"
               x=@SVGElement.X.AsString()
               y=@SVGElement.Y.AsString()
               stroke="@SVGElement.Stroke"
               stroke-width="@SVGElement.StrokeWidth"
               fill="@SVGElement.Fill"
-              style="pointer-events:none;@SVGElement.Style">
+              style="@SVGElement.Style">
             @((MarkupString)SVGElement.CharacterData.Replace(" ", "&nbsp;"))
             @foreach (BaseAnimate animate in SVGElement.AnimationElements)
             {
@@ -17,16 +21,36 @@
                 <DynamicComponent Type=animate.Presenter Parameters=Parameters />
             }
         </text>
-        <foreignObject x="@SVGElement.BoundingBox.X.AsString()"
+        <foreignObject @onpointermove="() => { SVGElement.SVG.MoveOverShapes.Clear(); SVGElement.SVG.MoveOverShapes.Add(SVGElement); }"
+                       x="@SVGElement.BoundingBox.X.AsString()"
                        y="@((SVGElement.BoundingBox.Y-1).AsString())"
                        width="@SVGElement.BoundingBox.Width.AsString()"
                        height="@SVGElement.BoundingBox.Height.AsString()"
-        @onfocusin="FocusElement"
-        @onkeyup="KeyUp"
-        @onfocusout="UnfocusElement"
-        @onpointerdown="Select">
+                       style="pointer-events:@(SVGElement.SVG.MarkedShapes.Count() is 0 && !SVGElement.SVG.MoveOverShapes.Contains(SVGElement) ? "auto" : "none");">
             <input @bind="SVGElement.CharacterData"
-            @bind:event="oninput" class="textInput" style="width:@SVGElement.BoundingBox.Width.AsString()px;font-size:@(SVGElement.FontSize)px;" autocomplete="off" />
+            @bind:event="oninput"
+            @onpointerdown="TextSelect"
+                   class="textInput"
+                   style="pointer-events:inherits;width:@SVGElement.BoundingBox.Width.AsString()px;font-size:@(SVGElement.FontSize)px;"
+                   autocomplete="off" />
         </foreignObject>
     </g>
+    @if (SVGElement.Selected)
+    {
+        <Anchor RingColor="grey" Position="(SVGElement.BoundingBox.X, SVGElement.BoundingBox.Y)" />
+        <Anchor RingColor="grey" Position="(SVGElement.BoundingBox.X+SVGElement.BoundingBox.Width, SVGElement.BoundingBox.Y)" />
+        <Anchor RingColor="grey" Position="(SVGElement.BoundingBox.X+SVGElement.BoundingBox.Width, SVGElement.BoundingBox.Y+SVGElement.BoundingBox.Height)" />
+        <Anchor RingColor="grey" Position="(SVGElement.BoundingBox.X, SVGElement.BoundingBox.Y+SVGElement.BoundingBox.Height)" />
+    }
 </ContextMenuTrigger>
+
+@code {
+    protected void TextSelect(PointerEventArgs eventArgs)
+    {
+        SVGElement.SVG.MovePanner = (SVGElement.BoundingBox.X + eventArgs.OffsetX, SVGElement.BoundingBox.Y + eventArgs.OffsetY);
+        SVGElement.SVG.SelectedShapes.Clear();
+        SVGElement.SVG.SelectedShapes.Add(SVGElement);
+        SVGElement.SVG.EditMode = EditMode.Move;
+        SVGElement.SVG.SelectionBox = null;
+    }
+}

@@ -16,13 +16,13 @@ public partial class SVG : IAsyncDisposable
         BBox = await GetBoundingBox(SVGElementReference);
     }
 
-    public async Task Focus(ElementReference elementReference)
+    public async Task FocusAsync(ElementReference elementReference)
     {
         var module = await moduleTask.Value;
         await module.InvokeVoidAsync("focus", elementReference);
     }
 
-    public async Task UnFocus(ElementReference elementReference)
+    public async Task UnFocusAsync(ElementReference elementReference)
     {
         var module = await moduleTask.Value;
         await module.InvokeVoidAsync("unFocus", elementReference);

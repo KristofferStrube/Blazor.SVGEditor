@@ -31,6 +31,16 @@ public partial class SVG
         ColorPickerShapes = null;
     }
 
+    private void SetFillForMarkedShapes(string value)
+    {
+        MarkedShapes.ForEach(shape => shape.Fill = value);
+    }
+
+    private void SetStrokeForMarkedShapes(string value)
+    {
+        MarkedShapes.ForEach(shape => shape.Stroke = value);
+    }
+
     private void MoveToBack(Shape shape)
     {
         SelectedShapes.Clear();
@@ -106,9 +116,9 @@ public partial class SVG
     {
         SelectedShapes.Clear();
         SelectedShapes.Add(shape);
-        if (FocusedShapes != shape)
+        if (FocusedShape != shape)
         {
-            FocusedShapes = null;
+            FocusedShape = null;
         }
         EditMode = EditMode.Scale;
     }

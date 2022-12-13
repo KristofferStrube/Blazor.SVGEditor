@@ -13,7 +13,7 @@
               stroke="@SVGElement.Stroke"
               stroke-width="@SVGElement.StrokeWidth"
               fill="@SVGElement.Fill"
-              @onpointerdown="Select"
+              @onpointerdown="SelectAsync"
               @onkeyup="KeyUp">
             @foreach(BaseAnimate animate in SVGElement.AnimationElements)
             {

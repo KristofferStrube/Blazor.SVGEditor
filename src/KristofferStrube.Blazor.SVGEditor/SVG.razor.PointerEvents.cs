@@ -107,11 +107,12 @@ public partial class SVG
 
     public void Up(PointerEventArgs eventArgs)
     {
+        MoveOverShapes.Clear();
         CurrentEditShape = null;
         if (BoxSelectionShapes is { Count: > 0 })
         {
             SelectedShapes = BoxSelectionShapes;
-            FocusedShapes = null;
+            FocusedShape = null;
         }
         BoxSelectionShapes = null;
         SelectionBox = null;
@@ -137,7 +138,7 @@ public partial class SVG
         {
             EditMode = EditMode.None;
             SelectedShapes.Clear();
-            FocusedShapes = null;
+            FocusedShape = null;
             EditGradient = null;
         }
     }

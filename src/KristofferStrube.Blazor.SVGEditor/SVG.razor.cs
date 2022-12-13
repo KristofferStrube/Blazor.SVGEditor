@@ -21,7 +21,6 @@ public partial class SVG : ComponentBase
     private readonly Subject<ISVGElement> ElementSubject = new();
 #nullable enable
     private List<Shape>? BoxSelectionShapes;
-    private Box? SelectionBox;
 #nullable disable
     private string ColorPickerTitle => $"Pick {ColorPickerAttributeName} Color";
     private bool IsColorPickerOpen => ColorPickerShapes is not null;
@@ -45,13 +44,17 @@ public partial class SVG : ComponentBase
 
     public (double x, double y) LastRightClick { get; set; }
 
+    public Box? SelectionBox { get; set; }
+
     public List<Shape> SelectedShapes { get; set; } = new();
 
     public Dictionary<string, ISVGElement> Definitions { get; set; } = new();
 
     public ISVGElement EditGradient { get; set; }
 
-    public Shape FocusedShapes { get; set; }
+    public Shape FocusedShape { get; set; }
+
+    public List<Shape> MoveOverShapes { get; set; } = new();
 
     public (double x, double y) MovePanner { get; set; }
 
@@ -63,8 +66,8 @@ public partial class SVG : ComponentBase
     public EditMode EditMode { get; set; } = EditMode.None;
 
     public List<Shape> MarkedShapes =>
-        FocusedShapes != null && !SelectedShapes.Contains(FocusedShapes) ?
-        SelectedShapes.Append(FocusedShapes).ToList() :
+        FocusedShape != null && !SelectedShapes.Contains(FocusedShape) ?
+        SelectedShapes.Append(FocusedShape).ToList() :
         SelectedShapes;
 
     public List<Shape> VisibleSelectionShapes =>
