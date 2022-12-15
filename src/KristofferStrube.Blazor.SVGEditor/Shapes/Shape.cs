@@ -61,6 +61,16 @@ public abstract class Shape : ISVGElement
         get => Element.GetAttributeOrEmpty("stroke-width");
         set { Element.SetAttribute("stroke-width", value); Changed.Invoke(this); }
     }
+    public string StrokeDasharray
+    {
+        get => Element.GetAttributeOrEmpty("stroke-dasharray");
+        set { Element.SetAttribute("stroke-dasharray", value); Changed.Invoke(this); }
+    }
+    public double StrokeDashoffset
+    {
+        get => Element.GetAttributeOrZero("stroke-dashoffset");
+        set { Element.SetAttribute("stroke-dashoffset", value.AsString()); Changed.Invoke(this); }
+    }
     public List<BaseAnimate> AnimationElements { get; set; }
     public bool HasAnimation => AnimationElements is { Count: > 0 };
     public Box BoundingBox { get; set; } = new();

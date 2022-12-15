@@ -2,19 +2,20 @@
 
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement StopPropagation=@(!SVGElement.IsChildElement)>
     <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
-        <circle tabindex="@(SVGElement.IsChildElement ? -1 : 0)"
-                @onfocusin="FocusElement"
-                @onfocusout="UnfocusElement"
-                @ref=ElementReference
+        <circle @ref=ElementReference
+        @onfocusin="FocusElement"
+        @onfocusout="UnfocusElement"
+        @onpointerdown="SelectAsync"
+        @onkeyup="KeyUp" tabindex="@(SVGElement.IsChildElement ? -1 : 0)"
                 cx=@SVGElement.Cx.AsString()
                 cy=@SVGElement.Cy.AsString()
                 r=@SVGElement.R.AsString()
                 stroke="@SVGElement.Stroke"
                 stroke-width="@SVGElement.StrokeWidth"
-                fill="@SVGElement.Fill"
-                @onpointerdown="SelectAsync"
-                @onkeyup="KeyUp">
-            @foreach(BaseAnimate animate in SVGElement.AnimationElements)
+                stroke-dasharray="@SVGElement.StrokeDasharray"
+                stroke-dashoffset="@SVGElement.StrokeDashoffset.AsString()"
+                fill="@SVGElement.Fill">
+            @foreach (BaseAnimate animate in SVGElement.AnimationElements)
             {
                 var Parameters = new Dictionary<string, object> { { "SVGElement", animate } };
                 <DynamicComponent Type=animate.Presenter Parameters=Parameters />

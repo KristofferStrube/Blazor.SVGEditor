@@ -3,17 +3,19 @@
 
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement StopPropagation=@(!SVGElement.IsChildElement)>
     <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
-        <path tabindex="@(SVGElement.IsChildElement ? -1 : 0)"
-              @onfocusin="FocusElement"
-              @onfocusout="UnfocusElement"
-              @ref=ElementReference
+        <path @ref=ElementReference
+        @onfocusin="FocusElement"
+        @onfocusout="UnfocusElement"
+        @onpointerdown="SelectAsync"
+        @onkeyup="KeyUp"
+        @onselectstart:stopPropagation="true"
+              tabindex="@(SVGElement.IsChildElement ? -1 : 0)"
               d="@SVGElement.Instructions.AsString()"
               fill="@SVGElement.Fill"
               stroke="@SVGElement.Stroke"
               stroke-width="@SVGElement.StrokeWidth"
-              @onpointerdown="SelectAsync"
-              @onkeyup="KeyUp"
-              @onselectstart:stopPropagation="true"
+              stroke-dasharray="@SVGElement.StrokeDasharray"
+              stroke-dashoffset="@SVGElement.StrokeDashoffset.AsString()"
               class="unselectable">
             @foreach (BaseAnimate animate in SVGElement.AnimationElements)
             {
@@ -42,13 +44,13 @@
 
                     var withinRangeOfCubicCurvePoints = cubicCurve.ControlPoints[0].WithinRangeOf(cubicCurve.ControlPoints[1], 5 / SVGElement.SVG.Scale);
                     <Anchor RingColor=@(withinRangeOfCubicCurvePoints ? "blue" : "black")
-            CircleThickness=@(withinRangeOfCubicCurvePoints ? 4 : 2)
-            OnPointerDown="() => AnchorSelect(j, 0)"
-            Position=cubicCurve.ControlPoints[0] />
+                            CircleThickness=@(withinRangeOfCubicCurvePoints ? 4 : 2)
+                            OnPointerDown="() => AnchorSelect(j, 0)"
+                            Position=cubicCurve.ControlPoints[0] />
                     <Anchor RingColor=@(withinRangeOfCubicCurvePoints ? "blue" : "black")
-            CircleThickness=@(withinRangeOfCubicCurvePoints ? 4 : 2)
-            OnPointerDown="() => AnchorSelect(j, 1)"
-            Position=cubicCurve.ControlPoints[1] />
+                            CircleThickness=@(withinRangeOfCubicCurvePoints ? 4 : 2)
+                            OnPointerDown="() => AnchorSelect(j, 1)"
+                            Position=cubicCurve.ControlPoints[1] />
                     break;
                 case QuadraticBézierCurveInstruction quadraticCurve:
                     <StripedLine Color="black" From=quadraticCurve.StartPosition To=quadraticCurve.ControlPoints[0] />
@@ -63,14 +65,14 @@
                     {
                         <StripedLine Color="grey" From=shorthandCubicCurve.StartPosition To=shorthandCubicCurve.ReflectedPreviousInstructionsLastControlPoint />
                         <Anchor RingColor=@(withinRangeOfShorthandCubicCurvePoints ? "blue" : "grey")
-            CircleThickness=@(withinRangeOfShorthandCubicCurvePoints ? 4 : 2)
-            OnPointerDown="() => AnchorSelect(j, -2)"
-            Position=shorthandCubicCurve.ReflectedPreviousInstructionsLastControlPoint />
+                                CircleThickness=@(withinRangeOfShorthandCubicCurvePoints ? 4 : 2)
+                                OnPointerDown="() => AnchorSelect(j, -2)"
+                                Position=shorthandCubicCurve.ReflectedPreviousInstructionsLastControlPoint />
                     }
                     <Anchor RingColor=@(withinRangeOfShorthandCubicCurvePoints ? "blue" : "black")
-            CircleThickness=@(withinRangeOfShorthandCubicCurvePoints ? 4 : 2)
-            OnPointerDown="() => AnchorSelect(j, 0)"
-            Position=shorthandCubicCurve.ControlPoints[0] />
+                            CircleThickness=@(withinRangeOfShorthandCubicCurvePoints ? 4 : 2)
+                            OnPointerDown="() => AnchorSelect(j, 0)"
+                            Position=shorthandCubicCurve.ControlPoints[0] />
                     break;
                 case ShorthandQuadraticBézierCurveInstruction shorthandQuadraticCurve:
                     <StripedLine Color="grey" From=shorthandQuadraticCurve.StartPosition To=shorthandQuadraticCurve.ReflectedPreviousInstructionsLastControlPoint />

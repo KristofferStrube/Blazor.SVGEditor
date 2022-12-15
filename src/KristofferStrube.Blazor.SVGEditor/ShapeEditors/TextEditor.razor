@@ -12,6 +12,8 @@
               y=@SVGElement.Y.AsString()
               stroke="@SVGElement.Stroke"
               stroke-width="@SVGElement.StrokeWidth"
+              stroke-dasharray="@SVGElement.StrokeDasharray"
+              stroke-dashoffset="@SVGElement.StrokeDashoffset.AsString()"
               fill="@SVGElement.Fill"
               style="@SVGElement.Style">
             @((MarkupString)SVGElement.CharacterData.Replace(" ", "&nbsp;"))

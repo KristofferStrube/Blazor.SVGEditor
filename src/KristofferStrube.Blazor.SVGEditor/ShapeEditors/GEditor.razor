@@ -1,12 +1,17 @@
 ﻿@inherits ShapeEditor<G>
 
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement StopPropagation=@(!SVGElement.IsChildElement)>
-    <g tabindex="@(SVGElement.IsChildElement ? -1 : 0)"
-       @onfocusin="FocusElement"
-       @onfocusout="UnfocusElement"
-       @ref=ElementReference
-       @onpointerdown="SelectAsync"
-       @onkeyup="KeyUp">
+    <g @ref=ElementReference
+    @onfocusin="FocusElement"
+    @onfocusout="UnfocusElement"
+    @onpointerdown="SelectAsync"
+    @onkeyup="KeyUp"
+       stroke="@SVGElement.Stroke"
+       stroke-width="@SVGElement.StrokeWidth"
+       stroke-dasharray="@SVGElement.StrokeDasharray"
+       stroke-dashoffset="@SVGElement.StrokeDashoffset.AsString()"
+       fill="@SVGElement.Fill"
+       tabindex="@(SVGElement.IsChildElement ? -1 : 0)">
         @foreach (ISVGElement child in SVGElement.ChildShapes)
         {
             var Parameters = new Dictionary<string, object> { { "SVGElement", child } };
