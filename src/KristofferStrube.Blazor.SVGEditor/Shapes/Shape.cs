@@ -61,6 +61,16 @@ public abstract class Shape : ISVGElement
         get => Element.GetAttributeOrEmpty("stroke-width");
         set { Element.SetAttribute("stroke-width", value); Changed.Invoke(this); }
     }
+    public Linecap StrokeLinecap
+    {
+        get => Element.GetAttributeOrEmpty("stroke-linecap").ToLower().ParseAsLinecap();
+        set { Element.SetAttribute("stroke-linecap", value.AsString()); Changed.Invoke(this); }
+    }
+    public Linejoin StrokeLinejoin
+    {
+        get => Element.GetAttributeOrEmpty("stroke-linejoin").ToLower().ParseAsLinejoin();
+        set { Element.SetAttribute("stroke-linejoin", value.AsString()); Changed.Invoke(this); }
+    }
     public string StrokeDasharray
     {
         get => Element.GetAttributeOrEmpty("stroke-dasharray");

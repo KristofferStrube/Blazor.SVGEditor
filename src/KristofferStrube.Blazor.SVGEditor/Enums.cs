@@ -14,3 +14,19 @@ public enum SelectionMode
     WindowSelection,
     CrossingSelection,
 }
+
+public enum Linecap
+{
+    Butt,
+    Round,
+    Square,
+}
+
+public enum Linejoin
+{
+    Miter,
+    MiterClip,
+    Round,
+    Bevel,
+    Arcs,
+}

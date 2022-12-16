@@ -12,6 +12,8 @@
                  fill="@SVGElement.Fill"
                  stroke="@SVGElement.Stroke"
                  stroke-width="@SVGElement.StrokeWidth"
+                 stroke-linecap="@SVGElement.StrokeLinecap.AsString()"
+                 stroke-linejoin="@SVGElement.StrokeLinejoin.AsString()"
                  stroke-dasharray="@SVGElement.StrokeDasharray"
                  stroke-dashoffset="@SVGElement.StrokeDashoffset.AsString()">
             @foreach (BaseAnimate animate in SVGElement.AnimationElements)
