@@ -21,7 +21,7 @@
     protected override void OnInitialized()
     {
         SaveSubject
-            .Buffer(TimeSpan.FromMilliseconds(500))
+            .Buffer(TimeSpan.FromMilliseconds(200))
             .Where(updates => updates.Count > 0)
             .Subscribe(updates =>
             {
