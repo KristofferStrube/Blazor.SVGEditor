@@ -16,7 +16,6 @@ public partial class SVG : ComponentBase
     private string ColorPickerAttributeName;
     private Action<string> ColorPickerSetter;
     private string NewLinearGradientId;
-    private List<ISVGElement> Elements;
     private (double x, double y)? TranslatePanner;
     private readonly Subject<ISVGElement> ElementSubject = new();
 #nullable enable
@@ -45,6 +44,8 @@ public partial class SVG : ComponentBase
     public (double x, double y) LastRightClick { get; set; }
 
     public Box? SelectionBox { get; set; }
+
+    public List<ISVGElement> Elements { get; internal set; }
 
     public List<Shape> SelectedShapes { get; set; } = new();
 

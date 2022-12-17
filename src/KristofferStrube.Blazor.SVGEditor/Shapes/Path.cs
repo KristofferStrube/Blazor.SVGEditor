@@ -26,7 +26,7 @@ public class Path : Shape
 
     public List<IPathInstruction> Instructions { get; set; }
 
-    public override IEnumerable<(double x, double y)> SelectionPoints => Instructions.Count > 0 ? Instructions.Where(inst => inst is not MoveInstruction).Select(inst => inst.StartPosition) : Enumerable.Empty<(double x, double y)>();
+    public override IEnumerable<(double x, double y)> SelectionPoints => Instructions.Count > 0 ? Instructions.Where(inst => inst is not MoveInstruction).SelectMany(inst => inst.SelectionPoints) : Enumerable.Empty<(double x, double y)>();
 
     public void UpdateData()
     {
