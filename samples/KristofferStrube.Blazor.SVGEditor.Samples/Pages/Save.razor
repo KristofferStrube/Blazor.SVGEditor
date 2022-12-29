@@ -39,7 +39,7 @@ else
 
             var fileContent = $@"<svg xmlns=""http://www.w3.org/2000/svg"" viewBox=""{(minX - 10).AsString()} {(minY - 10).AsString()} {(width + 20).AsString()} {(height + 20).AsString()}"" width=""400"" height=""400"">{Input}</svg>";
             var bytes = System.Text.Encoding.UTF8.GetBytes(fileContent);
-            SaveLink = "data:image/png;base64," + Convert.ToBase64String(bytes);
+            SaveLink = "data:application/pdf;base64," + Convert.ToBase64String(bytes);
         }
     }
 

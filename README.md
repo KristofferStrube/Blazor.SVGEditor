@@ -7,13 +7,14 @@ A basic HTML SVG Editor written in Blazor WASM.
 The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEditor/](https://kristofferstrube.github.io/Blazor.SVGEditor/)
 
 ## Tag type support and attributes
-- RECT (x, y, width, height, fill, stroke, stroke-width)
-- CIRCLE (cx, cy, r, fill, stroke, stroke-width)
-- ELLIPSE (cx, cy, rx, ry, fill, stroke, stroke-width)
-- POLYGON (points, fill, stroke, stroke-width)
-- POLYLINE (points, fill, stroke, stroke-width)
-- LINE (x1, y1, x2, y2, fill, stroke, stroke-width)
-- PATH (d, fill, stroke, stroke-width)
+- RECT (x, y, width, height, fill, stroke, stroke-width, stroke-linecap, stroke-linejoin, stroke-offset)
+- CIRCLE (cx, cy, r, fill, stroke, stroke-width, stroke-linecap, stroke-linejoin, stroke-offset)
+- ELLIPSE (cx, cy, rx, ry, fill, stroke, stroke-width, stroke-linecap, stroke-linejoin, stroke-offset)
+- POLYGON (points, fill, stroke, stroke-width, stroke-linecap, stroke-linejoin, stroke-offset)
+- POLYLINE (points, fill, stroke, stroke-width, stroke-linecap, stroke-linejoin, stroke-offset)
+- LINE (x1, y1, x2, y2, fill, stroke, stroke-width, stroke-linecap, stroke-linejoin, stroke-offset)
+- TEXT (x, y, style:font-size, fill, stroke, stroke-width, stroke-linecap, stroke-linejoin, stroke-offset)
+- PATH (d, fill, stroke, stroke-width, stroke-linecap, stroke-linejoin, stroke-offset)
     - Movements
     - Lines
     - Vertical Lines
@@ -25,18 +26,17 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
         - Shorthand aswell
     - Elliptical Arc Curve
         - Needs more work for radi interaction
-- G
+- G (fill, stroke, stroke-width, stroke-linecap, stroke-linejoin, stroke-offset)
     - Missing scaling of children
-- Animate
+- ANIMATE
     - Support for showing all Animate tags when Playing
     - Support for editing Fill animation values
     - Support for editing Stroke animation values
+- LINEARGRADIENT (x1, x2, y1, y2, and stops)
 
 ## Current goals
 - Add support for touch devices
 - Support errors better to recover instead of crashing on malformed SVG
-- Show text in SVG.
-- Implement text edit in SVG.
 - Support more browsers using style attribute.
 
 ```mermaid
@@ -45,6 +45,7 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
       Circle
       Ellipse
       Line
+      Text
       Path
       Polygon
       Polyline
@@ -77,6 +78,7 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
       Circle-.->Shape;
       Ellipse-.->Shape;
       Line-.->Shape;
+      Text-.->Shape;
       Polygon-.->Shape;
       Polyline-.->Shape;
       Rect-.->Shape;
