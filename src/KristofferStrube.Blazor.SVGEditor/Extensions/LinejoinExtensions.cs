@@ -13,10 +13,10 @@ internal static class LinejoinExtensions
 
     public static string AsString(this Linejoin value) => value switch
     {
-        Linejoin.MiterClip => "round",
+        Linejoin.MiterClip => "miter-clip",
         Linejoin.Round => "round",
-        Linejoin.Bevel => "round",
-        Linejoin.Arcs => "round",
+        Linejoin.Bevel => "bevel",
+        Linejoin.Arcs => "arcs",
         _ => "miter",
     };
 }

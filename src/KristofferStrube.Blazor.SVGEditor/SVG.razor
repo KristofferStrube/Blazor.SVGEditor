@@ -76,7 +76,7 @@
                             <SubMenu>
                                 <Item @onclick:stopPropagation="true">
                                     <div class="icon">📏</div> Linear
-                                    <input @bind-value=NewLinearGradientId style="width:50px;" />
+                                    <input @bind-value=NewLinearGradientId style="width:50px;height:26px;" />
                                     @if (context.Data is Shape shape)
                                     {
                                         <button class="btn btn-success btn-sm" @onclick=@(_ => { LinearGradient.AddNew(this, NewLinearGradientId, shape); blazorContextMenuService.HideMenu("SVGMenu"); NewLinearGradientId = ""; })>➕</button>
@@ -136,11 +136,11 @@
                 <SubMenu>
                     <Item @onclick:stopPropagation="true">
                         <div class="icon">➖</div> Width
-                        <input type="number" @bind-value=shape.StrokeWidth @bind-value:event="oninput" style="width:50px;float:right;" />
+                        <input type="number" @bind-value=shape.StrokeWidth @bind-value:event="oninput" style="width:50px;height:26px;float:right;" />
                     </Item>
                     <Item @onclick:stopPropagation="true">
                         <div class="icon">🍭</div> Line Cap
-                        <InputSelect @bind-Value=shape.StrokeLinecap style="width:70px;float:right;">
+                        <InputSelect @bind-Value=shape.StrokeLinecap style="width:70px;height:28px;float:right;">
                             <option value="@Linecap.Butt">butt</option>
                             <option value="@Linecap.Round">round</option>
                             <option value="@Linecap.Square">square</option>
@@ -148,7 +148,7 @@
                     </Item>
                     <Item @onclick:stopPropagation="true">
                         <div class="icon">🧩</div> Line Join
-                        <InputSelect @bind-Value=shape.StrokeLinejoin style="width:70px;float:right;">
+                        <InputSelect @bind-Value=shape.StrokeLinejoin style="width:70px;height:28px;float:right;">
                             <option value="@Linejoin.Miter">miter</option>
                             <option value="@Linejoin.MiterClip">miter-clip</option>
                             <option value="@Linejoin.Round">round</option>
@@ -158,11 +158,11 @@
                     </Item>
                     <Item @onclick:stopPropagation="true">
                         <div class="icon">🍡</div> Dash Array
-                        <input @bind-value=shape.StrokeDasharray @bind-value:event="oninput" style="width:50px;float:right;" />
+                        <input @bind-value=shape.StrokeDasharray @bind-value:event="oninput" style="width:50px;height:26px;float:right;" />
                     </Item>
                     <Item @onclick:stopPropagation="true">
                         <div class="icon">🔪</div> Dash Offset
-                        <input type="number" @bind-value=shape.StrokeDashoffset @bind-value:event="oninput" style="width:50px;float:right;" />
+                        <input type="number" @bind-value=shape.StrokeDashoffset @bind-value:event="oninput" style="width:50px;height:26px;float:right;" />
                     </Item>
                     <Item OnClick=@(_ => SetStrokeForMarkedShapes("none"))><div class="icon">⚪</div> Set To None</Item>
                     <Item OnClick=@(_ => SetStrokeForMarkedShapes("transparent"))><div class="icon">🔘</div> Set To Transparent</Item>
@@ -188,7 +188,7 @@
             {
                 <Item @onclick:preventDefault="true">
                     <div class="icon">🔠</div> Font Size
-                    <input type="number" @bind-value=text.FontSize @bind-value:event="oninput" style="width:50px;float:right;" />
+                    <input type="number" @bind-value=text.FontSize @bind-value:event="oninput" style="width:50px;height:26px;float:right;" />
                 </Item>
             }
             if (shape.HasAnimation)
