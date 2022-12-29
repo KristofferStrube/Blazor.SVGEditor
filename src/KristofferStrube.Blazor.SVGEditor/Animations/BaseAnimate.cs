@@ -110,6 +110,7 @@ public abstract class BaseAnimate : ISVGElement
     public abstract bool IsEditing(string property);
 
     public abstract void AddFrame();
+    public abstract void RemoveFrame(int frame);
 
     public static List<string> StringToValues(string attribute)
     {
@@ -124,6 +125,17 @@ public abstract class BaseAnimate : ISVGElement
     private static string ValuesToString(List<string> values)
     {
         return string.Join(";", values);
+    }
+
+    public void Remove()
+    {
+        SVG.EditMode = EditMode.None;
+        SVG.SelectedShapes.Clear();
+        if (Parent is Shape parentShape)
+        {
+            parentShape.AnimationElements.Remove(this);
+        }
+        SVG.RemoveElement(this, Parent);
     }
 
     public void UpdateHtml()

@@ -185,9 +185,17 @@ public partial class SVG : ComponentBase
         }
     }
 
-    public void RemoveElement(ISVGElement SVGElement)
+    public void RemoveElement(ISVGElement SVGElement, ISVGElement parent = null)
     {
-        Elements.Remove(SVGElement);
+        if (parent is null)
+        {
+            Elements.Remove(SVGElement);
+        }
+        else
+        {
+            parent.Element.RemoveChild(SVGElement.Element);
+            parent.Changed.Invoke(parent);
+        }
     }
 
     private void UpdateInput()

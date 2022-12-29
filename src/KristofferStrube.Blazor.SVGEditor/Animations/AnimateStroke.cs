@@ -23,6 +23,13 @@ public class AnimateStroke : BaseAnimate
         Parent.Changed(Parent);
     }
 
+    public override void RemoveFrame(int frame)
+    {
+        Values.RemoveAt(frame);
+        UpdateValues();
+        Parent.Changed(Parent);
+    }
+
     public static void AddNew(SVG SVG, Shape parent)
     {
         IElement element = SVG.Document.CreateElement("ANIMATE");

@@ -43,7 +43,7 @@
                 {
                     <SubMenu>
                         <Item OnClick="_ => CompleteShapeWithoutClose(path)"><div class="icon">❗</div> Complete Without Close Instruction</Item>
-                        <Item OnClick="_ => DeletePreviousInstruction(path)"><div class="icon">❌</div> Remove Last added Instruction</Item>
+                        <Item OnClick="_ => RemovePreviousInstruction(path)"><div class="icon">❌</div> Remove Last added Instruction</Item>
                     </SubMenu>
                 }
             </Item>
@@ -89,14 +89,20 @@
                             </SubMenu>
                         </Item>
                     }
-                    @if (context.Data is Shape shape && !shape.IsChildElement)
+                    @if (context.Data is Shape shape && !shape.IsChildElement && !shape.AnimationElements.Any(a => a.AttributeName is "fill" or "stroke" or "d"))
                     {
                         <Item>
                             <div class="icon">💥</div> New Animation
                             <SubMenu>
-                                <Item OnClick="_ => AnimateFill.AddNew(this, shape)"><div class="icon">🎨</div> Fill</Item>
-                                <Item OnClick="_ => AnimateStroke.AddNew(this, shape)"><div class="icon">🎨</div> Stroke</Item>
-                                @if (shape is Path path)
+                                @if (!shape.AnimationElements.Any(a => a.AttributeName == "fill"))
+                                {
+                                    <Item OnClick="_ => AnimateFill.AddNew(this, shape)"><div class="icon">🎨</div> Fill</Item>
+                                }
+                                @if (!shape.AnimationElements.Any(a => a.AttributeName == "stroke"))
+                                {
+                                    <Item OnClick="_ => AnimateStroke.AddNew(this, shape)"><div class="icon">🎨</div> Stroke</Item>
+                                }
+                                @if (shape is Path path && !path.AnimationElements.Any(a => a.AttributeName == "d"))
                                 {
                                     <Item OnClick="_ => AnimateD.AddNew(this, path)"><div class="icon">🎢</div> Path Data</Item>
                                 }
@@ -230,7 +236,7 @@
             {
                 <Item OnClick="() => Ungroup(g)"><div class="icon">📤</div> Ungroup</Item>
             }
-            <Item OnClick="() => Remove()"><div class="icon">❌</div> Delete</Item>
+            <Item OnClick="() => Remove()"><div class="icon">❌</div> Remove</Item>
             <Item OnClick="() => CopyElementsAsync()"><div class="icon">✂️</div> Copy</Item>
             <Item OnClick="() => PasteElementsAsync(shape)"><div class="icon">📋</div> Paste</Item>
             <Item>

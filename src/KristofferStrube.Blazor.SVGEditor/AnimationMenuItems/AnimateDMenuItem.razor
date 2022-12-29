@@ -10,10 +10,15 @@
             }
             else
             {
-                <Item OnClick="() => Animate.SetParentD(j)"><div class="icon">👁‍🗨</div> Frame @j Data</Item>
+                <Item OnClick="() => Animate.SetParentD(j)">
+                    <div class="icon">👁‍🗨</div>
+                    Frame @j Data
+                    <div class="icon" @onclick:stopPropagation=true @onclick="() => Animate.RemoveFrame(j)" title="Remove Frame" alt="Remove Frame">❌</div>
+                </Item>
             }
         }
-        <Item OnClick="() => Animate.AddFrame()"><div class="icon">➕</div> Add Frame</Item>
+        <Item @onclick:stopPropagation="true" @onpointerup="() => Animate.AddFrame()"><div class="icon">➕</div> Add Frame</Item>
+        <Item OnClick="() => Animate.Remove()"><div class="icon">❌</div> Remove Animation</Item>
     </SubMenu>
 </Item>
 

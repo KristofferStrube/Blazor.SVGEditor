@@ -3,6 +3,7 @@ using KristofferStrube.Blazor.SVGEditor.AnimationEditors;
 using KristofferStrube.Blazor.SVGEditor.AnimationMenuItems;
 using KristofferStrube.Blazor.SVGEditor.Extensions;
 using KristofferStrube.Blazor.SVGEditor.PathDataSequences;
+using System.IO;
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
@@ -40,6 +41,24 @@ public class AnimateD : BaseAnimate
         Values.Add(Parent is Path p ? p.Instructions.AsString() : "M 0 0 L 10 10");
         UpdateValues();
         Parent.Changed(Parent);
+    }
+
+    public override void RemoveFrame(int frame)
+    {
+        if (Parent is Path path)
+        {
+            if (CurrentFrame == frame)
+            {
+                CurrentFrame = null;
+                path.Instructions = PathData.Parse(path.Element.GetAttributeOrEmpty("d"));
+            }
+            else
+            {
+                Values.RemoveAt(frame);
+                UpdateValues();
+                Parent.Changed(Parent);
+            }
+        }
     }
 
     public static void AddNew(SVG SVG, Shape parent)

@@ -1,6 +1,8 @@
 ﻿using AngleSharp.Dom;
 using KristofferStrube.Blazor.SVGEditor.AnimationEditors;
 using KristofferStrube.Blazor.SVGEditor.AnimationMenuItems;
+using KristofferStrube.Blazor.SVGEditor.Extensions;
+using KristofferStrube.Blazor.SVGEditor.PathDataSequences;
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
@@ -19,6 +21,13 @@ public class AnimateFill : BaseAnimate
     public override void AddFrame()
     {
         Values.Add(Parent is Shape s ? s.Fill : "lightgrey");
+        UpdateValues();
+        Parent.Changed(Parent);
+    }
+
+    public override void RemoveFrame(int frame)
+    {
+        Values.RemoveAt(frame);
         UpdateValues();
         Parent.Changed(Parent);
     }

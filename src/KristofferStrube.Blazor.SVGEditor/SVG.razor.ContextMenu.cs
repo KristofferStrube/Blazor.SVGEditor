@@ -106,7 +106,7 @@ public partial class SVG
         path.UpdateData();
     }
 
-    private static void DeletePreviousInstruction(Path path)
+    private static void RemovePreviousInstruction(Path path)
     {
         path.Instructions = path.Instructions.Take(0..^2).ToList();
         path.UpdateData();
