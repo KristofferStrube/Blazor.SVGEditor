@@ -11,6 +11,7 @@ public abstract class Shape : ISVGElement
     {
         { "fill", typeof(AnimateFill) },
         { "stroke", typeof(AnimateStroke) },
+        { "stroke-dashoffset", typeof(AnimateStrokeDashoffset) },
         { "d", typeof(AnimateD) },
     };
 

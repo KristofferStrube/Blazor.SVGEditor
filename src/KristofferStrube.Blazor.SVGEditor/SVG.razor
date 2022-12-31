@@ -69,7 +69,7 @@
                         <Item OnClick="_ => Line.AddNew(this)"><div class="icon">➖</div> New Line</Item>
                         <Item OnClick="_ => Circle.AddNew(this)"><div class="icon">🔵</div> New Circle</Item>
                         <Item OnClick="_ => Ellipse.AddNew(this)"><div class="icon">🕳</div> New Ellipse</Item>
-                        <Item OnClick="_ => Rect.AddNew(this)"><div class="icon">🟦</div> New ´Rectangle</Item>
+                        <Item OnClick="_ => Rect.AddNew(this)"><div class="icon">🟦</div> New Rectangle</Item>
                         <Item OnClick="_ => Text.AddNew(this)"><div class="icon">🅱</div> New Text</Item>
                         <Item @onclick:stopPropagation="true">
                             <div class="icon">🦓</div> New Gradient
@@ -101,6 +101,10 @@
                                 @if (!shape.AnimationElements.Any(a => a.AttributeName == "stroke"))
                                 {
                                     <Item OnClick="_ => AnimateStroke.AddNew(this, shape)"><div class="icon">🎨</div> Stroke</Item>
+                                }
+                                @if (!shape.AnimationElements.Any(a => a.AttributeName == "stroke-dashoffset"))
+                                {
+                                    <Item OnClick="_ => AnimateStrokeDashoffset.AddNew(this, shape)"><div class="icon">🔪</div> Stroke Dash Offset</Item>
                                 }
                                 @if (shape is Path path && !path.AnimationElements.Any(a => a.AttributeName == "d"))
                                 {

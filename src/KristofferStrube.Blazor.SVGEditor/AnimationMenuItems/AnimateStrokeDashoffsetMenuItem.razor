@@ -1,12 +1,11 @@
 ﻿<Item>
-    <div class="icon">🎨</div> Stroke Color
+    <div class="icon">🔪</div> Stroke Dash Offset
     <SubMenu>
         @for (int i = 0; i < Animate.FrameCount; i++)
         {
             var j = i;
-            <Item OnClick=@(_ => Animate.SVG.OpenColorPicker("Animate Stroke", Animate.Values[j], (value) => {Animate.Values[j] = value; Animate.UpdateValues(); }))>
-                <ColorCube Color=@Animate.Values[j] />
-                Frame @j Fill
+            <Item @onclick:stopPropagation=true>
+                Frame @j Dash Offset <input type="number" @bind=@Animate.Values[j] style="width:50px;height:26px;float:right;" @bind:event="oninput" @onchange="() => Animate.UpdateValues()">
                 <div class="icon" @onclick:stopPropagation=true @onclick="() => Animate.RemoveFrame(j)" title="Remove Frame" alt="Remove Frame">❌</div>
             </Item>
         }
@@ -17,5 +16,5 @@
 
 @code {
     [Parameter]
-    public AnimateStroke Animate { get; set; }
+    public AnimateStrokeDashoffset Animate { get; set; }
 }
