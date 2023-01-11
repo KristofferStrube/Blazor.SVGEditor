@@ -32,6 +32,7 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
     - Support for showing all Animate tags when Playing
     - Support for editing Fill animation values
     - Support for editing Stroke animation values
+    - Support for editing Stroke Offset values
 - LINEARGRADIENT (x1, x2, y1, y2, and stops)
 
 ## Current goals
