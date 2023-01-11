@@ -45,6 +45,18 @@ public class Text : Shape
         set { styleAttributes["font-size"] = value; UpdateStyle(); }
     }
 
+    public string FontWeight
+    {
+        get => styleAttributes.GetValueOrDefault("font-weight", "");
+        set { styleAttributes["font-weight"] = value; UpdateStyle(); }
+    }
+
+    public string FontFamily
+    {
+        get => styleAttributes.GetValueOrDefault("font-family", "");
+        set { styleAttributes["font-family"] = value; UpdateStyle(); }
+    }
+
     public string Style => Element.GetAttributeOrEmpty("style");
 
     public void UpdateStyle()

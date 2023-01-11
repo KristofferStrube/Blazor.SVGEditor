@@ -196,9 +196,22 @@
             </Item>
             @if (shape is Text text)
             {
-                <Item @onclick:preventDefault="true">
-                    <div class="icon">🔠</div> Font Size
-                    <input type="number" @bind-value=text.FontSize @bind-value:event="oninput" style="width:50px;height:26px;float:right;" />
+                <Item>
+                    <div class="icon">🆎</div> Font
+                    <SubMenu>
+                        <Item @onclick:preventDefault="true">
+                            <div class="icon">🔠</div> Font Size
+                            <input type="number" @bind-value=text.FontSize @bind-value:event="oninput" style="width:50px;height:26px;float:right;" />
+                        </Item>
+                        <Item @onclick:preventDefault="true">
+                            <div class="icon">🅱</div> Font Weight
+                            <input type="text" @bind-value=text.FontWeight @bind-value:event="oninput" style="width:50px;height:26px;float:right;" />
+                        </Item>
+                        <Item @onclick:preventDefault="true">
+                            <div class="icon">🔣</div> Font Family
+                            <input type="text" @bind-value=text.FontFamily @bind-value:event="oninput" style="width:50px;height:26px;float:right;" />
+                        </Item>
+                    </SubMenu>
                 </Item>
             }
             if (shape.HasAnimation)
