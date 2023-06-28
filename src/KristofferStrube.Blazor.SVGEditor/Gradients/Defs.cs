@@ -51,12 +51,10 @@ public class Defs : ISVGElement
 
     public void Complete()
     {
-        throw new NotImplementedException();
     }
 
     public void Rerender()
     {
-        throw new NotImplementedException();
     }
 
     public void UpdateHtml()
