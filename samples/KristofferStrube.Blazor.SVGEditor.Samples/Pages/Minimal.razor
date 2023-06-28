@@ -3,28 +3,76 @@
 <PageTitle>Minimal configured SVGEditor</PageTitle>
 
 <p>
-    Here we have configured the SVG Editor so that we can only select shape, deselect shapes, and move the anchors of them.
+    Here we have disabled all interaction with the SVG Editor except for selecting shapes, deselecting shapes, and moving anchor points.
 </p>
+<div style="display:flex; flex-wrap: wrap; grid-column-gap: 30px;">
+    <div>
+        <InputCheckbox @bind-Value=DisableContextMenu id="DisableContextMenu" />
+        <label for="DisableContextMenu">Disable ContextMenu</label>
+    </div>
+    <div>
+        <InputCheckbox @bind-Value=DisableZoom id="DisableZoom" />
+        <label for="DisableZoom">Disable Zoom</label>
+    </div>
+    <div>
+        <InputCheckbox @bind-Value=DisablePanning id="DisablePanning" />
+        <label for="DisablePanning">Disable Panning</label>
+    </div>
+    <div>
+        <InputCheckbox @bind-Value=DisableSelecting id="DisableSelecting" />
+        <label for="DisableSelecting">Disable Selecting</label>
+    </div>
+    <div>
+        <InputCheckbox @bind-Value=DisableDeselecting id="DisableDeselecting" />
+        <label for="DisableDeselecting">Disable Deselecting</label>
+    </div>
+    <div>
+        <InputCheckbox @bind-Value=DisableBoxSelection id="DisableBoxSelection" />
+        <label for="DisableBoxSelection">Disable Box Selection</label>
+    </div>
+    <div>
+        <InputCheckbox @bind-Value=DisableMoveEditMode id="DisableMoveEditMode" />
+        <label for="DisableMoveEditMode">Disable Move EditMode</label>
+    </div>
+    <div>
+        <InputCheckbox @bind-Value=DisableMoveAnchorEditMode id="DisableMoveAnchorEditMode" />
+        <label for="DisableMoveAnchorEditMode">Disable MoveAnchor EditMode</label>
+    </div>
+    <div>
+        <InputCheckbox @bind-Value=DisableScaleLabel id="DisableScaleLabel" />
+        <label for="DisableScaleLabel">Disable Scale Label</label>
+    </div>
+</div>
 <div style="height:80vh">
     <SVGEditor @ref="SVGEditor"
                Input=@Input
                InputUpdated="(string s) => { Input = s; StateHasChanged(); }"
                SnapToInteger=true
-               DisableContextMenu=true
-               DisableZoom=true
-               DisablePanning=true
-               DisableSelecting=false
-               DisableDeselecting=false
-               DisableBoxSelection=true
-               DisableMoveEditMode=true
-               DisableMoveAnchorEditMode=false
-               DisableScaleLabel=true />
+               DisableContextMenu=DisableContextMenu
+               DisableZoom=DisableZoom
+               DisablePanning=DisablePanning
+               DisableSelecting=DisableSelecting
+               DisableDeselecting=DisableDeselecting
+               DisableBoxSelection=DisableBoxSelection
+               DisableMoveEditMode=DisableMoveEditMode
+               DisableMoveAnchorEditMode=DisableMoveAnchorEditMode
+               DisableScaleLabel=DisableScaleLabel />
 </div>
 
 @code {
+    private bool DisableContextMenu = true;
+    private bool DisableZoom = true;
+    private bool DisablePanning = true;
+    private bool DisableSelecting = false;
+    private bool DisableDeselecting = false;
+    private bool DisableBoxSelection = true;
+    private bool DisableMoveEditMode = true;
+    private bool DisableMoveAnchorEditMode = false;
+    private bool DisableScaleLabel = true;
+
     private SVGEditor SVGEditor;
     private string Input =
-    """<polygon stroke="#FB8C00" stroke-width="10" fill="#3949AB" points="100,100 300,100 300,300 100,300" stroke-linecap="round" stroke-linejoin="round" stroke-dashoffset="15" stroke-dasharray="30 20"></polygon><polygon stroke="black" stroke-width="3" fill="grey" points="100,400 300,400 300,600 100,600"></polygon>""";
+    """<polygon stroke="#FB8C00" stroke-width="10" fill="#3949AB" points="100,100 300,100 300,300 100,300" stroke-linecap="round" stroke-linejoin="round" stroke-dashoffset="15" stroke-dasharray="30 20"></polygon><polygon stroke="black" stroke-width="3" fill="grey" points="400,100 600,100 600,300 400,300"></polygon>""";
 
     protected override void OnAfterRender(bool firstRender)
     {
