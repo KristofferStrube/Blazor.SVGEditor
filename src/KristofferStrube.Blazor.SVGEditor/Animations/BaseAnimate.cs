@@ -7,7 +7,7 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public abstract class BaseAnimate : ISVGElement
 {
-    public BaseAnimate(IElement element, ISVGElement parent, SVG svg)
+    public BaseAnimate(IElement element, ISVGElement parent, SVGEditor svg)
     {
         Element = element;
         Parent = parent;
@@ -35,7 +35,7 @@ public abstract class BaseAnimate : ISVGElement
 
     public string? Id { get; set; }
     public IElement Element { get; init; }
-    public SVG SVG { get; init; }
+    public SVGEditor SVG { get; init; }
     public ISVGElement Parent { get; set; }
     public abstract Type Presenter { get; }
     public abstract Type MenuItem { get; }
@@ -108,7 +108,7 @@ public abstract class BaseAnimate : ISVGElement
     public void Remove()
     {
         SVG.EditMode = EditMode.None;
-        SVG.SelectedShapes.Clear();
+        SVG.ClearSelectedShapes();
         if (Parent is Shape parentShape)
         {
             _ = parentShape.AnimationElements.Remove(this);

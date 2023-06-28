@@ -10,7 +10,7 @@ public class Defs : ISVGElement
         { "LINEARGRADIENT", typeof(LinearGradient) }
     };
 
-    public Defs(IElement element, SVG svg)
+    public Defs(IElement element, SVGEditor svg)
     {
         Element = element;
         SVG = svg;
@@ -38,7 +38,7 @@ public class Defs : ISVGElement
 
     public IElement Element { get; init; }
 
-    public SVG SVG { get; init; }
+    public SVGEditor SVG { get; init; }
 
     public List<ISVGElement> Children { get; init; } = new();
 

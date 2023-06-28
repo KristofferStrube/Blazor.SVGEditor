@@ -2,7 +2,7 @@
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
-public partial class SVG
+public partial class SVGEditor
 {
     private void Move(PointerEventArgs eventArgs)
     {
@@ -95,10 +95,14 @@ public partial class SVG
     {
         if (eventArgs.Button == 1)
         {
+            if (DisablePanning) return;
+
             TranslatePanner = (eventArgs.OffsetX, eventArgs.OffsetY);
         }
         else
         {
+            if (DisableBoxSelection) return;
+
             (double x, double y) = LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             SelectionBox = new Box() { X = x, Y = y };
         }
@@ -111,7 +115,7 @@ public partial class SVG
         if (BoxSelectionShapes is { Count: > 0 })
         {
             SelectedShapes = BoxSelectionShapes;
-            FocusedShape = null;
+            UnfocusShape();
         }
         BoxSelectionShapes = null;
         SelectionBox = null;
@@ -127,17 +131,21 @@ public partial class SVG
         else if (eventArgs.Button == 1)
         {
             TranslatePanner = null;
-            SelectedShapes.Clear();
+            ClearSelectedShapes();
+        }
+        if (EditMode is EditMode.Move)
+        {
+            EditMode = EditMode.None;
         }
     }
 
-    public void UnSelect(PointerEventArgs eventArgs)
+    public void UnSelect(MouseEventArgs eventArgs)
     {
         if (EditMode != EditMode.Add && !eventArgs.CtrlKey)
         {
             EditMode = EditMode.None;
-            SelectedShapes.Clear();
-            FocusedShape = null;
+            ClearSelectedShapes();
+            UnfocusShape();
             EditGradient = null;
         }
     }

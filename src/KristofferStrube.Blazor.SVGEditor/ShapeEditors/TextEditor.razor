@@ -52,8 +52,8 @@
     protected void TextSelect(PointerEventArgs eventArgs)
     {
         SVGElement.SVG.MovePanner = (SVGElement.BoundingBox.X + eventArgs.OffsetX, SVGElement.BoundingBox.Y + eventArgs.OffsetY);
-        SVGElement.SVG.SelectedShapes.Clear();
-        SVGElement.SVG.SelectedShapes.Add(SVGElement);
+        SVGElement.SVG.ClearSelectedShapes();
+        SVGElement.SVG.SelectShape(SVGElement);
         SVGElement.SVG.EditMode = EditMode.Move;
         SVGElement.SVG.SelectionBox = null;
     }

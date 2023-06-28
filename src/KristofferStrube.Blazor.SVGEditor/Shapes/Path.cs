@@ -8,7 +8,7 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public class Path : Shape
 {
-    public Path(IElement element, SVG svg) : base(element, svg)
+    public Path(IElement element, SVGEditor svg) : base(element, svg)
     {
         try
         {
@@ -380,7 +380,7 @@ public class Path : Shape
     {
     }
 
-    public static void AddNew(SVG SVG)
+    public static void AddNew(SVGEditor SVG)
     {
         IElement element = SVG.Document.CreateElement("PATH");
 
@@ -393,8 +393,8 @@ public class Path : Shape
         };
         SVG.EditMode = EditMode.Add;
 
-        SVG.SelectedShapes.Clear();
-        SVG.SelectedShapes.Add(path);
+        SVG.ClearSelectedShapes();
+        SVG.SelectShape(path);
         SVG.AddElement(path);
     }
 

@@ -33,12 +33,12 @@ public abstract class ShapeEditor<TShape> : ComponentBase where TShape : Shape
             return;
         }
 
-        SVGElement.SVG.FocusedShape = SVGElement;
+        SVGElement.SVG.FocusShape(SVGElement);
     }
 
     public void UnfocusElement()
     {
-        SVGElement.SVG.FocusedShape = null;
+        SVGElement.SVG.UnfocusShape();
     }
 
     public async Task KeyUp(KeyboardEventArgs eventArgs)
@@ -77,13 +77,14 @@ public abstract class ShapeEditor<TShape> : ComponentBase where TShape : Shape
 
     public async Task SelectAsync(MouseEventArgs eventArgs)
     {
-        if (SVGElement.IsChildElement)
+        if (SVGElement.IsChildElement) return;
+        if (SVGElement.SVG.EditMode is EditMode.Add) return;
+        if (SVGElement.SVG.DisableSelecting && !SVGElement.Selected)
         {
-            return;
-        }
-
-        if (SVGElement.SVG.EditMode is EditMode.Add)
-        {
+            if (!SVGElement.SVG.DisableDeselecting)
+            {
+                SVGElement.SVG.UnSelect(eventArgs);
+            }
             return;
         }
 
@@ -91,7 +92,7 @@ public abstract class ShapeEditor<TShape> : ComponentBase where TShape : Shape
         {
             if (!SVGElement.Selected)
             {
-                SVGElement.SVG.SelectedShapes.Add(SVGElement);
+                SVGElement.SVG.SelectShape(SVGElement);
                 await SVGElement.SVG.FocusAsync(ElementReference);
             }
             SVGElement.SVG.EditMode = EditMode.None;
@@ -102,8 +103,8 @@ public abstract class ShapeEditor<TShape> : ComponentBase where TShape : Shape
             if (!SVGElement.Selected)
             {
                 SVGElement.SVG.EditMode = EditMode.Move;
-                SVGElement.SVG.SelectedShapes.Clear();
-                SVGElement.SVG.SelectedShapes.Add(SVGElement);
+                SVGElement.SVG.ClearSelectedShapes();
+                SVGElement.SVG.SelectShape(SVGElement);
                 await SVGElement.SVG.FocusAsync(ElementReference);
             }
             StateHasChanged();

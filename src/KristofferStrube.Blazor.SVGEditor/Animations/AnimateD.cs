@@ -8,7 +8,7 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public class AnimateD : BaseAnimate
 {
-    public AnimateD(IElement element, ISVGElement parent, SVG svg) : base(element, parent, svg) { }
+    public AnimateD(IElement element, ISVGElement parent, SVGEditor svg) : base(element, parent, svg) { }
 
     public override Type Presenter => typeof(AnimateDefaultEditor);
     public override Type MenuItem => typeof(AnimateDMenuItem);
@@ -53,7 +53,7 @@ public class AnimateD : BaseAnimate
         }
     }
 
-    public static void AddNew(SVG SVG, Shape parent)
+    public static void AddNew(SVGEditor SVG, Shape parent)
     {
         IElement element = SVG.Document.CreateElement("ANIMATE");
 
@@ -67,7 +67,7 @@ public class AnimateD : BaseAnimate
         animate.AddFrame();
         animate.UpdateValues();
         SVG.EditMode = EditMode.None;
-        SVG.SelectedShapes.Clear();
+        SVG.ClearSelectedShapes();
 
         SVG.AddElement(animate, parent);
         parent.AnimationElements.Add(animate);

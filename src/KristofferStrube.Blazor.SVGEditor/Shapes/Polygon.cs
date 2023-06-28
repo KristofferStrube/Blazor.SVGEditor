@@ -7,7 +7,7 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public class Polygon : Shape
 {
-    public Polygon(IElement element, SVG svg) : base(element, svg)
+    public Polygon(IElement element, SVGEditor svg) : base(element, svg)
     {
         Points = Element.GetAttributeOrEmpty("points").ToPoints();
     }
@@ -77,7 +77,7 @@ public class Polygon : Shape
                 if (Points.Count == 0)
                 {
                     SVG.RemoveElement(this);
-                    SVG.SelectedShapes.Clear();
+                    SVG.ClearSelectedShapes();
                     Changed?.Invoke(this);
                 }
                 break;
@@ -100,7 +100,7 @@ public class Polygon : Shape
     {
     }
 
-    public static void AddNew(SVG SVG)
+    public static void AddNew(SVGEditor SVG)
     {
         IElement element = SVG.Document.CreateElement("POLYGON");
 
@@ -113,8 +113,8 @@ public class Polygon : Shape
         };
         SVG.EditMode = EditMode.Add;
 
-        SVG.SelectedShapes.Clear();
-        SVG.SelectedShapes.Add(polygon);
+        SVG.ClearSelectedShapes();
+        SVG.SelectShape(polygon);
         SVG.AddElement(polygon);
     }
 

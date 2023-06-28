@@ -7,7 +7,7 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public class Polyline : Shape
 {
-    public Polyline(IElement element, SVG svg) : base(element, svg)
+    public Polyline(IElement element, SVGEditor svg) : base(element, svg)
     {
         Points = Element.GetAttributeOrEmpty("points").ToPoints();
     }
@@ -77,7 +77,7 @@ public class Polyline : Shape
                 if (Points.Count == 0)
                 {
                     SVG.RemoveElement(this);
-                    SVG.SelectedShapes.Clear();
+                    SVG.ClearSelectedShapes();
                     Changed?.Invoke(this);
                 }
                 break;
@@ -100,7 +100,7 @@ public class Polyline : Shape
     {
     }
 
-    public static void AddNew(SVG SVG)
+    public static void AddNew(SVGEditor SVG)
     {
         IElement element = SVG.Document.CreateElement("POLYLINE");
 
@@ -113,8 +113,8 @@ public class Polyline : Shape
         };
         SVG.EditMode = EditMode.Add;
 
-        SVG.SelectedShapes.Clear();
-        SVG.SelectedShapes.Add(polyline);
+        SVG.ClearSelectedShapes();
+        SVG.SelectShape(polyline);
         SVG.AddElement(polyline);
     }
 

@@ -9,7 +9,7 @@ public class Text : Shape
 {
     private readonly Dictionary<string, string> styleAttributes;
 
-    public Text(IElement element, SVG svg) : base(element, svg)
+    public Text(IElement element, SVGEditor svg) : base(element, svg)
     {
         string? style = element.GetAttribute("style");
         styleAttributes = style is null
@@ -116,7 +116,7 @@ public class Text : Shape
         StoredHtml = $"<{Element.LocalName}{string.Join("", Element.Attributes.Select(a => $" {a.Name}=\"{a.Value}\""))}>" + Element.TextContent + (AnimationElements.Count > 0 ? "\n" : "") + string.Join("", AnimationElements.Select(a => a.StoredHtml + "\n")) + $"</{Element.LocalName}>";
     }
 
-    public static void AddNew(SVG SVG)
+    public static void AddNew(SVGEditor SVG)
     {
         IElement element = SVG.Document.CreateElement("TEXT");
 
@@ -132,8 +132,8 @@ public class Text : Shape
 
         (text.X, text.Y) = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
 
-        SVG.SelectedShapes.Clear();
-        SVG.SelectedShapes.Add(text);
+        SVG.ClearSelectedShapes();
+        SVG.SelectShape(text);
         SVG.AddElement(text);
     }
 

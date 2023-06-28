@@ -7,7 +7,7 @@ using System.Reactive.Subjects;
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
-public partial class SVG : ComponentBase
+public partial class SVGEditor : ComponentBase
 {
     private string? _input;
     private ElementReference SVGElementReference;
@@ -33,6 +33,33 @@ public partial class SVG : ComponentBase
     [Parameter]
     public SelectionMode SelectionMode { get; set; } = SelectionMode.WindowSelection;
 
+    [Parameter]
+    public bool DisableContextMenu { get; set; }
+
+    [Parameter]
+    public bool DisableZoom { get; set; }
+
+    [Parameter]
+    public bool DisablePanning { get; set; }
+
+    [Parameter]
+    public bool DisableDeselecting { get; set; }
+
+    [Parameter]
+    public bool DisableSelecting { get; set; }
+
+    [Parameter]
+    public bool DisableBoxSelection { get; set; }
+
+    [Parameter]
+    public bool DisableMoveEditMode { get; set; }
+
+    [Parameter]
+    public bool DisableMoveAnchorEditMode { get; set; }
+
+    [Parameter]
+    public bool DisableScaleLabel { get; set; }
+
     internal IDocument Document { get; set; } = default!;
     public double Scale { get; set; } = 1;
 
@@ -57,9 +84,20 @@ public partial class SVG : ComponentBase
     public (double x, double y) MovePanner { get; set; }
 
     public int? CurrentAnchor { get; set; }
+
     public Shape? CurrentEditShape { get; set; }
 
-    public EditMode EditMode { get; set; } = EditMode.None;
+    private EditMode editMode = EditMode.None;
+    public EditMode EditMode
+    {
+        get => editMode;
+        set
+        {
+            if (value is EditMode.Move && DisableMoveEditMode) return;
+            if (value is EditMode.MoveAnchor && DisableMoveAnchorEditMode) return;
+            editMode = value;
+        }
+    }
 
     public List<Shape> MarkedShapes =>
         FocusedShape != null && !SelectedShapes.Contains(FocusedShape) ?
@@ -95,7 +133,7 @@ public partial class SVG : ComponentBase
         _input = Input;
 
         Definitions.Clear();
-        SelectedShapes.Clear();
+        ClearSelectedShapes();
 
         IBrowsingContext context = BrowsingContext.New();
         Document = await context.OpenAsync(req => req.Content(Input));
@@ -136,6 +174,30 @@ public partial class SVG : ComponentBase
     public void UpdateInput(ISVGElement SVGElement)
     {
         ElementSubject.OnNext(SVGElement);
+    }
+
+    public void SelectShape(Shape shape)
+    {
+        if (DisableSelecting) return;
+        SelectedShapes.Add(shape);
+    }
+
+    public void ClearSelectedShapes()
+    {
+        if (DisableDeselecting) return;
+        SelectedShapes.Clear();
+    }
+
+    public void FocusShape(Shape shape)
+    {
+        if (DisableSelecting) return;
+        FocusedShape = shape;
+    }
+
+    public void UnfocusShape()
+    {
+        if (DisableDeselecting) return;
+        FocusedShape = null;
     }
 
     public void AddElement(ISVGElement SVGElement, ISVGElement? parent = null)
@@ -214,6 +276,8 @@ public partial class SVG : ComponentBase
 
     private void ZoomIn(double x, double y, double ZoomFactor = 1.1)
     {
+        if (DisableZoom) return;
+
         double prevScale = Scale;
         Scale *= ZoomFactor;
         if ((Scale > 0.91) && (Scale < 1.09))
@@ -225,6 +289,8 @@ public partial class SVG : ComponentBase
 
     private void ZoomOut(double x, double y, double ZoomFactor = 1.1)
     {
+        if (DisableZoom) return;
+
         double prevScale = Scale;
         Scale /= ZoomFactor;
         if ((Scale > 0.91) && (Scale < 1.09))

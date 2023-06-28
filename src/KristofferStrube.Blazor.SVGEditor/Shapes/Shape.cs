@@ -17,7 +17,7 @@ public abstract class Shape : ISVGElement
 
     internal string _stateRepresentation = string.Empty;
 
-    public Shape(IElement element, SVG svg)
+    public Shape(IElement element, SVGEditor svg)
     {
         Element = element;
         SVG = svg;
@@ -43,7 +43,7 @@ public abstract class Shape : ISVGElement
 
     public string? Id { get; set; }
     public IElement Element { get; init; }
-    public SVG SVG { get; init; }
+    public SVGEditor SVG { get; init; }
     public abstract Type Presenter { get; }
 
     public string Fill

@@ -7,7 +7,7 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public class Circle : Shape
 {
-    public Circle(IElement element, SVG svg) : base(element, svg) { }
+    public Circle(IElement element, SVGEditor svg) : base(element, svg) { }
 
     public override Type Presenter => typeof(CircleEditor);
 
@@ -86,7 +86,7 @@ public class Circle : Shape
     {
     }
 
-    public static void AddNew(SVG SVG)
+    public static void AddNew(SVGEditor SVG)
     {
         IElement element = SVG.Document.CreateElement("CIRCLE");
 
@@ -102,8 +102,8 @@ public class Circle : Shape
         (double x, double y) startPos = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
         (circle.Cx, circle.Cy) = startPos;
 
-        SVG.SelectedShapes.Clear();
-        SVG.SelectedShapes.Add(circle);
+        SVG.ClearSelectedShapes();
+        SVG.SelectShape(circle);
         SVG.AddElement(circle);
     }
 

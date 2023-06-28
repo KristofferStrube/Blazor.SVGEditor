@@ -6,7 +6,7 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public class AnimateDefault : BaseAnimate
 {
-    public AnimateDefault(IElement element, ISVGElement parent, SVG svg) : base(element, parent, svg) { }
+    public AnimateDefault(IElement element, ISVGElement parent, SVGEditor svg) : base(element, parent, svg) { }
 
     public override Type Presenter => typeof(AnimateFallbackEditor);
     public override Type MenuItem => typeof(AnimateDefaultMenuItem);

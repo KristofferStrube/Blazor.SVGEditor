@@ -2,7 +2,7 @@
 
 <textarea @bind="Input" @bind:event="oninput" style="width:100%;height:15vh;" />
 <div style="height:80vh">
-    <SVG Input=@Input InputUpdated="(string s) => { Input = s; StateHasChanged(); }" SelectionMode="SelectionMode.WindowSelection" />
+    <SVGEditor Input=@Input InputUpdated="(string s) => { Input = s; StateHasChanged(); }" SelectionMode="SelectionMode.WindowSelection" />
 </div>
 
 @code {

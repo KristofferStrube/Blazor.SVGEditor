@@ -7,7 +7,7 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public class Rect : Shape
 {
-    public Rect(IElement element, SVG svg) : base(element, svg) { }
+    public Rect(IElement element, SVGEditor svg) : base(element, svg) { }
 
     public override Type Presenter => typeof(RectEditor);
 
@@ -125,7 +125,7 @@ public class Rect : Shape
     {
     }
 
-    public static void AddNew(SVG SVG)
+    public static void AddNew(SVGEditor SVG)
     {
         IElement element = SVG.Document.CreateElement("RECT");
 
@@ -140,8 +140,8 @@ public class Rect : Shape
 
         (rect.X, rect.Y) = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
 
-        SVG.SelectedShapes.Clear();
-        SVG.SelectedShapes.Add(rect);
+        SVG.ClearSelectedShapes();
+        SVG.SelectShape(rect);
         SVG.AddElement(rect);
     }
 

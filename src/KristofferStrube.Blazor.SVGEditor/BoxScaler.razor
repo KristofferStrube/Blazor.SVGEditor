@@ -16,7 +16,7 @@
     public Action<int, int>? AnchorOnPointerDown { get; set; }
 
     [CascadingParameter]
-    protected SVG SVG { get; set; } = default!;
+    protected SVGEditor SVG { get; set; } = default!;
 
     private double X => SVG.LocalTransform((Box.X, Box.Y)).x + (Box.Width >= 0 ? 0 : -Width);
 

@@ -1,0 +1,35 @@
+﻿@page "/Minimal"
+
+<PageTitle>Minimal configured SVGEditor</PageTitle>
+
+<p>
+    Here we have configured the SVG Editor so that we can only select shape, deselect shapes, and move the anchors of them.
+</p>
+<div style="height:80vh">
+    <SVGEditor @ref="SVGEditor"
+               Input=@Input
+               InputUpdated="(string s) => { Input = s; StateHasChanged(); }"
+               SnapToInteger=true
+               DisableContextMenu=true
+               DisableZoom=true
+               DisablePanning=true
+               DisableSelecting=false
+               DisableDeselecting=false
+               DisableBoxSelection=true
+               DisableMoveEditMode=true
+               DisableMoveAnchorEditMode=false
+               DisableScaleLabel=true />
+</div>
+
+@code {
+    private SVGEditor SVGEditor;
+    private string Input =
+    """<polygon stroke="#FB8C00" stroke-width="10" fill="#3949AB" points="100,100 300,100 300,300 100,300" stroke-linecap="round" stroke-linejoin="round" stroke-dashoffset="15" stroke-dasharray="30 20"></polygon><polygon stroke="black" stroke-width="3" fill="grey" points="100,400 300,400 300,600 100,600"></polygon>""";
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        SVGEditor.SelectedShapes.Add(SVGEditor.Elements.First() as Shape);
+    }
+} 

@@ -18,7 +18,7 @@
     public double CircleThickness { get; set; } = 2;
 
     [CascadingParameter]
-    protected SVG SVG { get; set; } = default!;
+    protected SVGEditor SVG { get; set; } = default!;
 
     protected string X => SVG.LocalTransform(Position).x.AsString();
 

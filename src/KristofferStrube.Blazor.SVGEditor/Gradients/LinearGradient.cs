@@ -6,7 +6,7 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public class LinearGradient : ISVGElement
 {
-    public LinearGradient(IElement element, SVG svg)
+    public LinearGradient(IElement element, SVGEditor svg)
     {
         Element = element;
         SVG = svg;
@@ -46,7 +46,7 @@ public class LinearGradient : ISVGElement
 
     public IElement Element { get; init; }
 
-    public SVG SVG { get; init; }
+    public SVGEditor SVG { get; init; }
 
     public Type Presenter => typeof(GradientPresenter);
 
@@ -180,7 +180,7 @@ public class LinearGradient : ISVGElement
         Changed?.Invoke(this);
     }
 
-    public static void AddNew(SVG svg, string id, Shape? shape = null)
+    public static void AddNew(SVGEditor svg, string id, Shape? shape = null)
     {
         string firstStopColor = "grey";
         if (shape is not null)

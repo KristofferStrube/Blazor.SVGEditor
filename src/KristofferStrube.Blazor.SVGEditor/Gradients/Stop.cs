@@ -5,7 +5,7 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public class Stop : ISVGElement
 {
-    public Stop(IElement element, LinearGradient parent, SVG svg)
+    public Stop(IElement element, LinearGradient parent, SVGEditor svg)
     {
         Element = element;
         Parent = parent;
@@ -19,7 +19,7 @@ public class Stop : ISVGElement
     public string? Id { get; set; }
     public IElement Element { get; init; }
     public LinearGradient Parent { get; init; }
-    public SVG SVG { get; init; }
+    public SVGEditor SVG { get; init; }
 
     public Type Presenter => throw new NotImplementedException();
 

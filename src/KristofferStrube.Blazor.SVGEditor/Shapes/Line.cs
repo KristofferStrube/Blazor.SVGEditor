@@ -7,7 +7,7 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public class Line : Shape
 {
-    public Line(IElement element, SVG svg) : base(element, svg) { }
+    public Line(IElement element, SVGEditor svg) : base(element, svg) { }
 
     public override Type Presenter => typeof(LineEditor);
 
@@ -91,7 +91,7 @@ public class Line : Shape
     {
     }
 
-    public static void AddNew(SVG SVG)
+    public static void AddNew(SVGEditor SVG)
     {
         IElement element = SVG.Document.CreateElement("LINE");
 
@@ -107,8 +107,8 @@ public class Line : Shape
         (line.X1, line.Y1) = start;
         (line.X2, line.Y2) = start;
 
-        SVG.SelectedShapes.Clear();
-        SVG.SelectedShapes.Add(line);
+        SVG.ClearSelectedShapes();
+        SVG.SelectShape(line);
         SVG.AddElement(line);
     }
 

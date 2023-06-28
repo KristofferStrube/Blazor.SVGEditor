@@ -3,7 +3,7 @@ using Microsoft.JSInterop;
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
-public partial class SVG : IAsyncDisposable
+public partial class SVGEditor : IAsyncDisposable
 {
     [Inject]
     protected IJSRuntime JSRuntime { get; set; } = default!;
@@ -18,12 +18,14 @@ public partial class SVG : IAsyncDisposable
 
     public async Task FocusAsync(ElementReference elementReference)
     {
+        if (DisableSelecting) return;
         IJSObjectReference module = await moduleTask.Value;
         await module.InvokeVoidAsync("focus", elementReference);
     }
 
     public async Task UnFocusAsync(ElementReference elementReference)
     {
+        if (DisableDeselecting) return;
         IJSObjectReference module = await moduleTask.Value;
         await module.InvokeVoidAsync("unFocus", elementReference);
     }

@@ -7,7 +7,7 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public class Ellipse : Shape
 {
-    public Ellipse(IElement element, SVG svg) : base(element, svg) { }
+    public Ellipse(IElement element, SVGEditor svg) : base(element, svg) { }
 
     public override Type Presenter => typeof(EllipseEditor);
 
@@ -120,7 +120,7 @@ public class Ellipse : Shape
     {
     }
 
-    public static void AddNew(SVG SVG)
+    public static void AddNew(SVGEditor SVG)
     {
         IElement element = SVG.Document.CreateElement("ELLIPSE");
 
@@ -136,8 +136,8 @@ public class Ellipse : Shape
         (double x, double y) startPos = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
         (ellipse.Cx, ellipse.Cy) = startPos;
 
-        SVG.SelectedShapes.Clear();
-        SVG.SelectedShapes.Add(ellipse);
+        SVG.ClearSelectedShapes();
+        SVG.SelectShape(ellipse);
         SVG.AddElement(ellipse);
     }
 

@@ -2,7 +2,7 @@
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
-public partial class SVG
+public partial class SVGEditor
 {
     public void OpenColorPicker(string attributeName, string previousColor, Action<string> colorSetter)
     {
@@ -42,7 +42,7 @@ public partial class SVG
 
     private void MoveToBack(Shape shape)
     {
-        SelectedShapes.Clear();
+        ClearSelectedShapes();
         _ = Elements.Remove(shape);
         Elements.Insert(0, shape);
         Elements.ForEach(e => e.UpdateHtml());
@@ -55,7 +55,7 @@ public partial class SVG
         int index = Elements.IndexOf(shape);
         if (index != 0)
         {
-            SelectedShapes.Clear();
+            ClearSelectedShapes();
             _ = Elements.Remove(shape);
             Elements.Insert(index - 1, shape);
             Elements.ForEach(e => e.UpdateHtml());
@@ -69,7 +69,7 @@ public partial class SVG
         int index = Elements.IndexOf(shape);
         if (index != Elements.Count - 1)
         {
-            SelectedShapes.Clear();
+            ClearSelectedShapes();
             _ = Elements.Remove(shape);
             Elements.Insert(index + 1, shape);
             Elements.ForEach(e => e.UpdateHtml());
@@ -80,7 +80,7 @@ public partial class SVG
 
     private void MoveToFront(Shape shape)
     {
-        SelectedShapes.Clear();
+        ClearSelectedShapes();
         _ = Elements.Remove(shape);
         Elements.Insert(Elements.Count, shape);
         Elements.ForEach(e => e.UpdateHtml());
@@ -94,7 +94,7 @@ public partial class SVG
         {
             EditMode = EditMode.None;
             sVGElement.Complete();
-            SelectedShapes.Clear();
+            ClearSelectedShapes();
         }
     }
 
@@ -113,11 +113,11 @@ public partial class SVG
 
     private void ScaleShape(Shape shape)
     {
-        SelectedShapes.Clear();
-        SelectedShapes.Add(shape);
+        ClearSelectedShapes();
+        SelectShape(shape);
         if (FocusedShape != shape)
         {
-            FocusedShape = null;
+            UnfocusShape();
         }
         EditMode = EditMode.Scale;
     }
@@ -125,7 +125,7 @@ public partial class SVG
     public void Remove()
     {
         MarkedShapes.ForEach(e => Elements.Remove(e));
-        SelectedShapes.Clear();
+        ClearSelectedShapes();
         UpdateInput();
         RerenderAll();
     }
@@ -148,7 +148,7 @@ public partial class SVG
         {
             elementsAsHtml.Add(clipboard);
         }
-        SelectedShapes.Clear();
+        ClearSelectedShapes();
         InputUpdated?.Invoke(string.Join("\n", elementsAsHtml));
     }
 
@@ -171,7 +171,7 @@ public partial class SVG
                 elementsAsHtml.RemoveAt(pos);
             }
         }
-        SelectedShapes.Clear();
+        ClearSelectedShapes();
         InputUpdated?.Invoke(string.Join("\n", elementsAsHtml));
     }
 
@@ -180,7 +180,7 @@ public partial class SVG
         var elementsAsHtml = Elements.Select(e => e.StoredHtml).ToList();
         int pos = Elements.IndexOf(g);
         elementsAsHtml[pos] = string.Join("\n", g.ChildShapes.Select(e => e.StoredHtml));
-        SelectedShapes.Clear();
+        ClearSelectedShapes();
         InputUpdated?.Invoke(string.Join("\n", elementsAsHtml));
     }
 
