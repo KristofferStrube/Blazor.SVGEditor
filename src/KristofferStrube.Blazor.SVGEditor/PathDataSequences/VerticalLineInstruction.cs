@@ -7,21 +7,14 @@ public class VerticalLineInstruction : BasePathInstruction
     public VerticalLineInstruction(double y, bool Relative, IPathInstruction PreviousInstruction) : base(Relative, PreviousInstruction)
     {
         this.Relative = Relative;
-        if (Relative)
-        {
-            this.Y = StartPosition.y + y;
-        }
-        else
-        {
-            this.Y = y;
-        }
+        Y = Relative ? StartPosition.y + y : y;
     }
 
     private double Y { get; set; }
 
     public override (double x, double y) EndPosition
     {
-        get => (PreviousInstruction.EndPosition.x, Y);
+        get => (PreviousInstruction!.EndPosition.x, Y);
         set => Y = value.y;
     }
 

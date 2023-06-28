@@ -1,14 +1,12 @@
 ﻿using AngleSharp.Dom;
 using KristofferStrube.Blazor.SVGEditor.AnimationEditors;
 using KristofferStrube.Blazor.SVGEditor.AnimationMenuItems;
-using KristofferStrube.Blazor.SVGEditor.Extensions;
-using KristofferStrube.Blazor.SVGEditor.PathDataSequences;
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
 public class AnimateDefault : BaseAnimate
 {
-    public AnimateDefault(IElement element, SVG svg) : base(element, svg) { }
+    public AnimateDefault(IElement element, ISVGElement parent, SVG svg) : base(element, parent, svg) { }
 
     public override Type Presenter => typeof(AnimateFallbackEditor);
     public override Type MenuItem => typeof(AnimateDefaultMenuItem);
@@ -22,13 +20,13 @@ public class AnimateDefault : BaseAnimate
     {
         Values.Add("");
         UpdateValues();
-        Parent.Changed(Parent);
+        Parent.Changed?.Invoke(Parent);
     }
 
     public override void RemoveFrame(int frame)
     {
         Values.RemoveAt(frame);
         UpdateValues();
-        Parent.Changed(Parent);
+        Parent.Changed?.Invoke(Parent);
     }
 }

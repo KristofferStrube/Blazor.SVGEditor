@@ -14,17 +14,17 @@ public class Circle : Shape
     public double Cx
     {
         get => Element.GetAttributeOrZero("cx");
-        set { Element.SetAttribute("cx", value.AsString()); Changed.Invoke(this); }
+        set { Element.SetAttribute("cx", value.AsString()); Changed?.Invoke(this); }
     }
     public double Cy
     {
         get => Element.GetAttributeOrZero("cy");
-        set { Element.SetAttribute("cy", value.AsString()); Changed.Invoke(this); }
+        set { Element.SetAttribute("cy", value.AsString()); Changed?.Invoke(this); }
     }
     public double R
     {
         get => Element.GetAttributeOrZero("r");
-        set { Element.SetAttribute("r", value.AsString()); Changed.Invoke(this); }
+        set { Element.SetAttribute("r", value.AsString()); Changed?.Invoke(this); }
     }
 
     public override List<(double x, double y)> SelectionPoints => new() { (Cx + R, Cy + R), (Cx + R, Cy - R), (Cx - R, Cy + R), (Cx - R, Cy - R) };
@@ -57,7 +57,15 @@ public class Circle : Shape
                     case 3:
                         R = Math.Abs(y - Cy);
                         break;
+                    default:
+                        break;
                 }
+                break;
+            case EditMode.None:
+                break;
+            case EditMode.Scale:
+                break;
+            default:
                 break;
         }
     }
@@ -68,6 +76,8 @@ public class Circle : Shape
         {
             case EditMode.Move or EditMode.MoveAnchor or EditMode.Add:
                 SVG.EditMode = EditMode.None;
+                break;
+            default:
                 break;
         }
     }

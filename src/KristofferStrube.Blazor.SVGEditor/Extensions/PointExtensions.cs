@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using static System.Math;
+﻿using static System.Math;
 
 namespace KristofferStrube.Blazor.SVGEditor.Extensions;
 

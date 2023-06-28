@@ -6,7 +6,7 @@
         <defs>
             @linearGradient.Element.OuterHtml
         </defs>
-        <rect width="0.8rem" height="0.8rem" fill="@linearGradient.Id.ToUrl()" stroke="black" />
+        <rect width="0.8rem" height="0.8rem" fill="@(linearGradient.Id?.ToUrl() ?? "")" stroke="black" />
     </svg>
 }
 else
@@ -17,8 +17,8 @@ else
 
 @code {
     [Parameter]
-    public string Color { get; set; }
+    public string Color { get; set; } = default!;
 
     [CascadingParameter]
-    public SVG SVG { get; set; }
+    public SVG SVG { get; set; } = default!;
 }

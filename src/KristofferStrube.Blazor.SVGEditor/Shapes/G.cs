@@ -11,15 +11,11 @@ public class G : Shape
     {
         ChildShapes = Element.Children.Select(child =>
         {
-            Shape childShape;
-            if (SVG.SupportedTypes.ContainsKey(child.TagName))
-            {
-                childShape = (Shape)Activator.CreateInstance(SVG.SupportedTypes[child.TagName], child, SVG);
-            }
-            else
+            if (!SVG.SupportedTypes.TryGetValue(child.TagName, out Type? tagType))
             {
                 throw new NotImplementedException($"Tag not supported:\n {child.OuterHtml}");
             }
+            var childShape = (Shape)Activator.CreateInstance(tagType, child, SVG)!;
             childShape.Changed = UpdateInput;
             return childShape;
         }).ToList();
@@ -28,7 +24,7 @@ public class G : Shape
     private void UpdateInput(ISVGElement child)
     {
         child.UpdateHtml();
-        Changed.Invoke(this);
+        Changed?.Invoke(this);
     }
 
     public override Type Presenter => typeof(GEditor);
@@ -49,7 +45,7 @@ public class G : Shape
     public override void Rerender()
     {
         ChildShapes.ForEach(c => c.Rerender());
-        _stateRepresentation = null;
+        _stateRepresentation = string.Empty;
     }
 
     public override void HandlePointerMove(PointerEventArgs eventArgs)
@@ -66,6 +62,16 @@ public class G : Shape
                 BoundingBox.X += diff.x;
                 BoundingBox.Y += diff.y;
                 break;
+            case EditMode.None:
+                break;
+            case EditMode.Add:
+                break;
+            case EditMode.MoveAnchor:
+                break;
+            case EditMode.Scale:
+                break;
+            default:
+                break;
         }
     }
 
@@ -80,6 +86,8 @@ public class G : Shape
             case EditMode.Move or EditMode.MoveAnchor or EditMode.Add:
                 SVG.EditMode = EditMode.None;
                 break;
+            default:
+                break;
         }
     }
     public override void Complete()
@@ -88,7 +96,7 @@ public class G : Shape
 
     public override void SnapToInteger()
     {
-        foreach(var child in ChildShapes)
+        foreach (Shape child in ChildShapes)
         {
             child.SnapToInteger();
         }

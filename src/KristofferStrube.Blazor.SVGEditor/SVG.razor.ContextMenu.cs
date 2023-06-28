@@ -1,5 +1,4 @@
-﻿using AngleSharp.Dom;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
@@ -18,15 +17,15 @@ public partial class SVG
     {
         if (ColorPickerAttributeName is "Fill")
         {
-            ColorPickerShapes.ForEach(s => s.Fill = value);
+            ColorPickerShapes?.ForEach(s => s.Fill = value);
         }
         else if (ColorPickerAttributeName is "Stroke")
         {
-            ColorPickerShapes.ForEach(s => s.Stroke = value);
+            ColorPickerShapes?.ForEach(s => s.Stroke = value);
         }
         else
         {
-            ColorPickerSetter.Invoke(value);
+            ColorPickerSetter?.Invoke(value);
         }
         ColorPickerShapes = null;
     }
@@ -44,7 +43,7 @@ public partial class SVG
     private void MoveToBack(Shape shape)
     {
         SelectedShapes.Clear();
-        Elements.Remove(shape);
+        _ = Elements.Remove(shape);
         Elements.Insert(0, shape);
         Elements.ForEach(e => e.UpdateHtml());
         UpdateInput();
@@ -57,7 +56,7 @@ public partial class SVG
         if (index != 0)
         {
             SelectedShapes.Clear();
-            Elements.Remove(shape);
+            _ = Elements.Remove(shape);
             Elements.Insert(index - 1, shape);
             Elements.ForEach(e => e.UpdateHtml());
             UpdateInput();
@@ -71,7 +70,7 @@ public partial class SVG
         if (index != Elements.Count - 1)
         {
             SelectedShapes.Clear();
-            Elements.Remove(shape);
+            _ = Elements.Remove(shape);
             Elements.Insert(index + 1, shape);
             Elements.ForEach(e => e.UpdateHtml());
             UpdateInput();
@@ -82,7 +81,7 @@ public partial class SVG
     private void MoveToFront(Shape shape)
     {
         SelectedShapes.Clear();
-        Elements.Remove(shape);
+        _ = Elements.Remove(shape);
         Elements.Insert(Elements.Count, shape);
         Elements.ForEach(e => e.UpdateHtml());
         UpdateInput();
@@ -102,7 +101,7 @@ public partial class SVG
     private void CompleteShapeWithoutClose(Path path)
     {
         CompleteShape(path);
-        path.Instructions.Remove(path.Instructions.Last());
+        _ = path.Instructions.Remove(path.Instructions.Last());
         path.UpdateData();
     }
 
@@ -136,10 +135,10 @@ public partial class SVG
         await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", string.Join("\n", MarkedShapes.Select(e => e.StoredHtml)));
     }
 
-    public async Task PasteElementsAsync(ISVGElement SVGElement = null)
+    public async Task PasteElementsAsync(ISVGElement? SVGElement = null)
     {
         string clipboard = await JSRuntime.InvokeAsync<string>("navigator.clipboard.readText");
-        List<string> elementsAsHtml = Elements.Select(e => e.StoredHtml).ToList();
+        var elementsAsHtml = Elements.Select(e => e.StoredHtml).ToList();
         if (SVGElement != null)
         {
             int index = Elements.IndexOf(SVGElement);
@@ -150,20 +149,20 @@ public partial class SVG
             elementsAsHtml.Add(clipboard);
         }
         SelectedShapes.Clear();
-        InputUpdated(string.Join("\n", elementsAsHtml));
+        InputUpdated?.Invoke(string.Join("\n", elementsAsHtml));
     }
 
     public void Group(Shape shape)
     {
-        List<string> elementsAsHtml = Elements.Select(e => e.StoredHtml).ToList();
+        var elementsAsHtml = Elements.Select(e => e.StoredHtml).ToList();
         if (MarkedShapes.Count == 1)
         {
             int pos = Elements.IndexOf(shape);
             elementsAsHtml[pos] = "<g>" + shape.StoredHtml + "</g>";
         }
-        else
+        else if (MarkedShapes is { Count: > 1 })
         {
-            ISVGElement frontElement = MarkedShapes.MaxBy(e => Elements.IndexOf(e));
+            ISVGElement frontElement = MarkedShapes.MaxBy(Elements.IndexOf)!;
             elementsAsHtml[Elements.IndexOf(frontElement)] = "<g>\n" + string.Join("\n", MarkedShapes.OrderBy(e => Elements.IndexOf(e)).Select(e => e.StoredHtml)) + "\n</g>";
             foreach (ISVGElement element in MarkedShapes.Where(e => e != frontElement))
             {
@@ -173,16 +172,16 @@ public partial class SVG
             }
         }
         SelectedShapes.Clear();
-        InputUpdated(string.Join("\n", elementsAsHtml));
+        InputUpdated?.Invoke(string.Join("\n", elementsAsHtml));
     }
 
     public void Ungroup(G g)
     {
-        List<string> elementsAsHtml = Elements.Select(e => e.StoredHtml).ToList();
+        var elementsAsHtml = Elements.Select(e => e.StoredHtml).ToList();
         int pos = Elements.IndexOf(g);
         elementsAsHtml[pos] = string.Join("\n", g.ChildShapes.Select(e => e.StoredHtml));
         SelectedShapes.Clear();
-        InputUpdated(string.Join("\n", elementsAsHtml));
+        InputUpdated?.Invoke(string.Join("\n", elementsAsHtml));
     }
 
     protected void StopAnimation()

@@ -1,6 +1,4 @@
-﻿using AngleSharp.Dom;
-using Microsoft.AspNetCore.Components.Web;
-using System.Data.SqlTypes;
+﻿using Microsoft.AspNetCore.Components.Web;
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
@@ -19,8 +17,8 @@ public partial class SVG
             (double x, double y) = LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             if (EditGradient is LinearGradient linearGradient && linearGradient.CurrentStop is int stop)
             {
-                var boundingBox = (x: linearGradient.EditingShape.BoundingBox.X, y: linearGradient.EditingShape.BoundingBox.Y);
-                var external = sub((x, y), boundingBox);
+                (double x, double y) boundingBox = (x: linearGradient.EditingShape!.BoundingBox.X, y: linearGradient.EditingShape.BoundingBox.Y);
+                (double x, double y) external = Sub((x, y), boundingBox);
                 if (stop is -1)
                 {
                     (linearGradient.X1, linearGradient.Y1) = (external.x / linearGradient.EditingShape.BoundingBox.Width, external.y / linearGradient.EditingShape.BoundingBox.Height);
@@ -32,22 +30,22 @@ public partial class SVG
                 else
                 {
                     // Used the folloing pseudocode supplied by FunByJohn: https://pastebin.com/fG0CH4Wv
-                    var p1 = (x: linearGradient.X1 * linearGradient.EditingShape.BoundingBox.Width, y: linearGradient.Y1 * linearGradient.EditingShape.BoundingBox.Height);
-                    var p2 = (x: linearGradient.X2 * linearGradient.EditingShape.BoundingBox.Width, y: linearGradient.Y2 * linearGradient.EditingShape.BoundingBox.Height);
-                    var v = sub(p2, p1);
-                    var externalPrime = sub(external, p1);
-                    var scalar = projectScalar(externalPrime, v);
+                    (double x, double y) p1 = (x: linearGradient.X1 * linearGradient.EditingShape.BoundingBox.Width, y: linearGradient.Y1 * linearGradient.EditingShape.BoundingBox.Height);
+                    (double x, double y) p2 = (x: linearGradient.X2 * linearGradient.EditingShape.BoundingBox.Width, y: linearGradient.Y2 * linearGradient.EditingShape.BoundingBox.Height);
+                    (double x, double y) v = Sub(p2, p1);
+                    (double x, double y) externalPrime = Sub(external, p1);
+                    double scalar = ProjectScalar(externalPrime, v);
                     linearGradient.Stops[stop].Offset = Math.Clamp(scalar, 0, 1);
                     if (stop is not 0 && linearGradient.Stops[stop - 1].Offset > linearGradient.Stops[stop].Offset)
                     {
                         (linearGradient.Stops[stop - 1], linearGradient.Stops[stop]) = (linearGradient.Stops[stop], linearGradient.Stops[stop - 1]);
-                        linearGradient.Element.InsertBefore(linearGradient.Element.RemoveChild(linearGradient.Stops[stop - 1].Element), linearGradient.Stops[stop].Element);
+                        _ = linearGradient.Element.InsertBefore(linearGradient.Element.RemoveChild(linearGradient.Stops[stop - 1].Element), linearGradient.Stops[stop].Element);
                         linearGradient.CurrentStop--;
                     }
                     else if (linearGradient.Stops.Count is > 1 && stop != linearGradient.Stops.Count - 1 && linearGradient.Stops[stop].Offset > linearGradient.Stops[stop + 1].Offset)
                     {
                         (linearGradient.Stops[stop + 1], linearGradient.Stops[stop]) = (linearGradient.Stops[stop], linearGradient.Stops[stop + 1]);
-                        linearGradient.Element.InsertBefore(linearGradient.Element.RemoveChild(linearGradient.Stops[stop].Element), linearGradient.Stops[stop + 1].Element);
+                        _ = linearGradient.Element.InsertBefore(linearGradient.Element.RemoveChild(linearGradient.Stops[stop].Element), linearGradient.Stops[stop + 1].Element);
                         linearGradient.CurrentStop++;
                     }
                 }
@@ -65,6 +63,7 @@ public partial class SVG
                     BoxSelectionShapes = SelectionMode switch
                     {
                         SelectionMode.WindowSelection => WindowSelection(SelectionBox),
+                        SelectionMode.CrossingSelection => CrossingSelection(SelectionBox),
                         _ => CrossingSelection(SelectionBox)
                     };
                 }
@@ -77,19 +76,19 @@ public partial class SVG
         }
     }
 
-    private (double x, double y) sub((double x, double y) u, (double x, double y) v)
+    private static (double x, double y) Sub((double x, double y) u, (double x, double y) v)
     {
         return (u.x - v.x, u.y - v.y);
     }
 
-    private double dot((double x, double y) u, (double x, double y) v)
+    private static double Dot((double x, double y) u, (double x, double y) v)
     {
-        return u.x * v.x + u.y * v.y;
+        return (u.x * v.x) + (u.y * v.y);
     }
 
-    private double projectScalar((double x, double y) u, (double x, double y) v)
+    private static double ProjectScalar((double x, double y) u, (double x, double y) v)
     {
-        return dot(u, v) / dot(v, v);
+        return Dot(u, v) / Dot(v, v);
     }
 
     public void Down(PointerEventArgs eventArgs)

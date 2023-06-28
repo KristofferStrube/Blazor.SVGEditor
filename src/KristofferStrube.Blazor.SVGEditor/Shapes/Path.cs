@@ -1,5 +1,4 @@
 ﻿using AngleSharp.Dom;
-using AngleSharp.Svg.Dom;
 using KristofferStrube.Blazor.SVGEditor.Extensions;
 using KristofferStrube.Blazor.SVGEditor.PathDataSequences;
 using KristofferStrube.Blazor.SVGEditor.ShapeEditors;
@@ -32,17 +31,17 @@ public class Path : Shape
     {
         if (Instructions.Count > 0)
         {
-            var editingAnimation = AnimationElements.FirstOrDefault(a => a.IsEditing("d"));
+            BaseAnimate? editingAnimation = AnimationElements.FirstOrDefault(a => a.IsEditing("d"));
             if (editingAnimation is not null)
             {
-                editingAnimation.Values[editingAnimation.CurrentFrame.Value] = Instructions.AsString();
+                editingAnimation.Values[editingAnimation.CurrentFrame!.Value] = Instructions.AsString();
                 editingAnimation.UpdateValues();
             }
             else
             {
                 Element.SetAttribute("d", Instructions.AsString());
             }
-            Changed.Invoke(this);
+            Changed?.Invoke(this);
         }
     }
 
@@ -58,10 +57,10 @@ public class Path : Shape
                 {
                     SVG.CurrentAnchor = -1;
                 }
-                IPathInstruction inst = Instructions[(int)CurrentInstruction];
+                IPathInstruction inst = Instructions[CurrentInstruction!.Value];
                 double diffX = x - inst.EndPosition.x;
                 double diffY = y - inst.EndPosition.y;
-                IPathInstruction prev = inst.PreviousInstruction;
+                IPathInstruction prev = inst.PreviousInstruction!;
 
                 if (SVG.CurrentAnchor == -1)
                 {
@@ -78,7 +77,7 @@ public class Path : Shape
                         case HorizontalLineInstruction:
                             while (prev is HorizontalLineInstruction)
                             {
-                                prev = prev.PreviousInstruction;
+                                prev = prev.PreviousInstruction!;
                             }
                             if (prev is ClosePathInstruction closeBeforeHorizontal)
                             {
@@ -89,13 +88,15 @@ public class Path : Shape
                         case VerticalLineInstruction:
                             while (prev is VerticalLineInstruction)
                             {
-                                prev = prev.PreviousInstruction;
+                                prev = prev.PreviousInstruction!;
                             }
                             if (prev is ClosePathInstruction closeBeforeVertical)
                             {
                                 prev = closeBeforeVertical.GetReferenceInstruction();
                             }
                             prev.EndPosition = (prev.EndPosition.x + (x - inst.EndPosition.x), prev.EndPosition.y);
+                            break;
+                        default:
                             break;
                     }
                     if (inst.NextInstruction is not null and not ShorthandCubicBézierCurveInstruction and not QuadraticBézierCurveInstruction and not ShorthandQuadraticBézierCurveInstruction and BaseControlPointPathInstruction nextInst)
@@ -131,6 +132,8 @@ public class Path : Shape
                         case 3:
                             ellipticalArcInstruction.ControlPointXNeg = (x, y);
                             break;
+                        default:
+                            break;
                     }
                 }
                 UpdateData();
@@ -147,10 +150,10 @@ public class Path : Shape
                     Instructions.Add(new MoveInstruction(startPos.x, startPos.y, false, null) { ExplicitSymbol = true });
                     Instructions.Add(new CubicBézierCurveInstruction(0, 0, 0, 0, 0, 0, false, Instructions.Last()) { ExplicitSymbol = true });
                 }
-                CubicBézierCurveInstruction currentInstruction = (CubicBézierCurveInstruction)Instructions[^1];
+                var currentInstruction = (CubicBézierCurveInstruction)Instructions[^1];
                 currentInstruction.EndPosition = (x, y);
-                currentInstruction.ControlPoints[0] = ((int)(currentInstruction.StartPosition.x * 2.0 / 3.0 + currentInstruction.EndPosition.x * 1.0 / 3.0), (int)(currentInstruction.StartPosition.y * 2.0 / 3.0 + currentInstruction.EndPosition.y * 1.0 / 3.0));
-                currentInstruction.ControlPoints[^1] = ((int)(currentInstruction.StartPosition.x * 1.0 / 3.0 + currentInstruction.EndPosition.x * 2.0 / 3.0), (int)(currentInstruction.StartPosition.y * 1.0 / 3.0 + currentInstruction.EndPosition.y * 2.0 / 3.0));
+                currentInstruction.ControlPoints[0] = ((int)((currentInstruction.StartPosition.x * 2.0 / 3.0) + (currentInstruction.EndPosition.x * 1.0 / 3.0)), (int)((currentInstruction.StartPosition.y * 2.0 / 3.0) + (currentInstruction.EndPosition.y * 1.0 / 3.0)));
+                currentInstruction.ControlPoints[^1] = ((int)((currentInstruction.StartPosition.x * 1.0 / 3.0) + (currentInstruction.EndPosition.x * 2.0 / 3.0)), (int)((currentInstruction.StartPosition.y * 1.0 / 3.0) + (currentInstruction.EndPosition.y * 2.0 / 3.0)));
                 UpdateData();
                 break;
             case EditMode.Scale:
@@ -175,8 +178,10 @@ public class Path : Shape
                             case var dim when dim.height < 0:
                                 SVG.CurrentAnchor = 3;
                                 break;
+                            default:
+                                break;
                         }
-                        Func<(double x, double y), (double, double)> topLeftScaler = ((double x, double y) point) => ((point.x - BoundingBox.X - BoundingBox.Width) * (BoundingBox.Width + BoundingBox.X - x) / BoundingBox.Width + BoundingBox.X + BoundingBox.Width, (point.y - BoundingBox.Y - BoundingBox.Height) * (BoundingBox.Height + BoundingBox.Y - y) / BoundingBox.Height + BoundingBox.Y + BoundingBox.Height);
+                        Func<(double x, double y), (double, double)> topLeftScaler = ((double x, double y) point) => (((point.x - BoundingBox.X - BoundingBox.Width) * (BoundingBox.Width + BoundingBox.X - x) / BoundingBox.Width) + BoundingBox.X + BoundingBox.Width, ((point.y - BoundingBox.Y - BoundingBox.Height) * (BoundingBox.Height + BoundingBox.Y - y) / BoundingBox.Height) + BoundingBox.Y + BoundingBox.Height);
                         UpdatePoints(topLeftScaler, ((BoundingBox.Width + BoundingBox.X - x) / BoundingBox.Width, (BoundingBox.Height + BoundingBox.Y - y) / BoundingBox.Height));
                         BoundingBox.Width += BoundingBox.X - x;
                         BoundingBox.Height += BoundingBox.Y - y;
@@ -194,8 +199,10 @@ public class Path : Shape
                             case var dim when dim.height < 0:
                                 SVG.CurrentAnchor = 2;
                                 break;
+                            default:
+                                break;
                         }
-                        Func<(double x, double y), (double, double)> topRightScaler = ((double x, double y) point) => ((point.x - BoundingBox.X) * (x - BoundingBox.X) / BoundingBox.Width + BoundingBox.X, (point.y - BoundingBox.Y - BoundingBox.Height) * (BoundingBox.Height + BoundingBox.Y - y) / BoundingBox.Height + BoundingBox.Y + BoundingBox.Height);
+                        Func<(double x, double y), (double, double)> topRightScaler = ((double x, double y) point) => (((point.x - BoundingBox.X) * (x - BoundingBox.X) / BoundingBox.Width) + BoundingBox.X, ((point.y - BoundingBox.Y - BoundingBox.Height) * (BoundingBox.Height + BoundingBox.Y - y) / BoundingBox.Height) + BoundingBox.Y + BoundingBox.Height);
                         UpdatePoints(topRightScaler, (1, 1));
                         BoundingBox.Width = x - BoundingBox.X;
                         BoundingBox.Height += BoundingBox.Y - y;
@@ -213,8 +220,10 @@ public class Path : Shape
                             case var dim when dim.height < 0:
                                 SVG.CurrentAnchor = 1;
                                 break;
+                            default:
+                                break;
                         }
-                        Func<(double x, double y), (double, double)> bottomRightScaler = ((double x, double y) point) => ((point.x - BoundingBox.X) * (x - BoundingBox.X) / BoundingBox.Width + BoundingBox.X, (point.y - BoundingBox.Y) * (y - BoundingBox.Y) / BoundingBox.Height + BoundingBox.Y);
+                        Func<(double x, double y), (double, double)> bottomRightScaler = ((double x, double y) point) => (((point.x - BoundingBox.X) * (x - BoundingBox.X) / BoundingBox.Width) + BoundingBox.X, ((point.y - BoundingBox.Y) * (y - BoundingBox.Y) / BoundingBox.Height) + BoundingBox.Y);
                         UpdatePoints(bottomRightScaler, (1, 1));
                         BoundingBox.Width = x - BoundingBox.X;
                         BoundingBox.Height = y - BoundingBox.Y;
@@ -232,15 +241,23 @@ public class Path : Shape
                             case var dim when dim.height < 0:
                                 SVG.CurrentAnchor = 0;
                                 break;
+                            default:
+                                break;
                         }
-                        Func<(double x, double y), (double, double)> bottomLeftScaler = ((double x, double y) point) => ((point.x - BoundingBox.X - BoundingBox.Width) * (BoundingBox.Width + BoundingBox.X - x) / BoundingBox.Width + BoundingBox.X + BoundingBox.Width, (point.y - BoundingBox.Y) * (y - BoundingBox.Y) / BoundingBox.Height + BoundingBox.Y);
+                        Func<(double x, double y), (double, double)> bottomLeftScaler = ((double x, double y) point) => (((point.x - BoundingBox.X - BoundingBox.Width) * (BoundingBox.Width + BoundingBox.X - x) / BoundingBox.Width) + BoundingBox.X + BoundingBox.Width, ((point.y - BoundingBox.Y) * (y - BoundingBox.Y) / BoundingBox.Height) + BoundingBox.Y);
                         UpdatePoints(bottomLeftScaler, (1, 1));
                         BoundingBox.Width += BoundingBox.X - x;
                         BoundingBox.Height = y - BoundingBox.Y;
                         (BoundingBox.X, BoundingBox.Y) = (x, y - BoundingBox.Height);
                         break;
+                    default:
+                        break;
                 }
                 UpdateData();
+                break;
+            case EditMode.None:
+                break;
+            default:
                 break;
         }
     }
@@ -270,6 +287,11 @@ public class Path : Shape
         switch (SVG.EditMode)
         {
             case EditMode.MoveAnchor:
+                if (CurrentInstruction is null)
+                {
+                    break;
+                }
+
                 if (Instructions[CurrentInstruction.Value] is CubicBézierCurveInstruction cubicCurve)
                 {
                     if (cubicCurve.ControlPoints[0].WithinRangeOf(cubicCurve.ControlPoints[1], 5 / SVG.Scale))
@@ -280,12 +302,17 @@ public class Path : Shape
                             cubicCurve.EndPosition.x,
                             cubicCurve.EndPosition.y,
                             false,
-                            cubicCurve.PreviousInstruction
-                            );
-                        newQuadraticCurve.ExplicitSymbol = cubicCurve.ExplicitSymbol;
-                        newQuadraticCurve.NextInstruction = cubicCurve.NextInstruction;
-                        cubicCurve.NextInstruction.PreviousInstruction = newQuadraticCurve;
-                        cubicCurve.PreviousInstruction.NextInstruction = newQuadraticCurve;
+                            cubicCurve.PreviousInstruction!
+                            )
+                        {
+                            ExplicitSymbol = cubicCurve.ExplicitSymbol,
+                            NextInstruction = cubicCurve.NextInstruction
+                        };
+                        if (cubicCurve.NextInstruction is { } next)
+                        {
+                            next.PreviousInstruction = newQuadraticCurve;
+                        }
+                        cubicCurve.PreviousInstruction!.NextInstruction = newQuadraticCurve;
                         Instructions[CurrentInstruction.Value] = newQuadraticCurve;
                         UpdateData();
                     }
@@ -298,12 +325,17 @@ public class Path : Shape
                             shorthandCubicCurve.EndPosition.x,
                             shorthandCubicCurve.EndPosition.y,
                             false,
-                            shorthandCubicCurve.PreviousInstruction
-                            );
-                        newShorthandQuadraticCurve.ExplicitSymbol = shorthandCubicCurve.ExplicitSymbol;
-                        newShorthandQuadraticCurve.NextInstruction = shorthandCubicCurve.NextInstruction;
-                        shorthandCubicCurve.NextInstruction.PreviousInstruction = newShorthandQuadraticCurve;
-                        shorthandCubicCurve.PreviousInstruction.NextInstruction = newShorthandQuadraticCurve;
+                            shorthandCubicCurve.PreviousInstruction!
+                            )
+                        {
+                            ExplicitSymbol = shorthandCubicCurve.ExplicitSymbol,
+                            NextInstruction = shorthandCubicCurve.NextInstruction
+                        };
+                        if (shorthandCubicCurve.NextInstruction is { } next)
+                        {
+                            next.PreviousInstruction = newShorthandQuadraticCurve;
+                        }
+                        shorthandCubicCurve.PreviousInstruction!.NextInstruction = newShorthandQuadraticCurve;
                         Instructions[CurrentInstruction.Value] = newShorthandQuadraticCurve;
                         newShorthandQuadraticCurve.UpdateReflectionForInstructions();
                         UpdateData();
@@ -316,11 +348,11 @@ public class Path : Shape
                 SVG.EditMode = EditMode.None;
                 break;
             case EditMode.Add:
-                CubicBézierCurveInstruction currentInstruction = (CubicBézierCurveInstruction)Instructions.Last();
+                var currentInstruction = (CubicBézierCurveInstruction)Instructions.Last();
                 CubicBézierCurveInstruction nextInstruction = new(x, y, x, y, x, y, false, Instructions.Last()) { ExplicitSymbol = true };
                 currentInstruction.EndPosition = (x, y);
-                currentInstruction.ControlPoints[0] = (currentInstruction.StartPosition.x * 2.0 / 3.0 + currentInstruction.EndPosition.x * 1.0 / 3.0, currentInstruction.StartPosition.y * 2.0 / 3.0 + currentInstruction.EndPosition.y * 1.0 / 3.0);
-                currentInstruction.ControlPoints[^1] = (currentInstruction.StartPosition.x * 1.0 / 3.0 + currentInstruction.EndPosition.x * 2.0 / 3.0, currentInstruction.StartPosition.y * 1.0 / 3.0 + currentInstruction.EndPosition.y * 2.0 / 3.0);
+                currentInstruction.ControlPoints[0] = ((currentInstruction.StartPosition.x * 2.0 / 3.0) + (currentInstruction.EndPosition.x * 1.0 / 3.0), (currentInstruction.StartPosition.y * 2.0 / 3.0) + (currentInstruction.EndPosition.y * 1.0 / 3.0));
+                currentInstruction.ControlPoints[^1] = ((currentInstruction.StartPosition.x * 1.0 / 3.0) + (currentInstruction.EndPosition.x * 2.0 / 3.0), (currentInstruction.StartPosition.y * 1.0 / 3.0) + (currentInstruction.EndPosition.y * 2.0 / 3.0));
                 if (SVG.SnapToInteger)
                 {
                     currentInstruction.ControlPoints[0] = ((int)currentInstruction.ControlPoints[0].x, (int)currentInstruction.ControlPoints[0].y);
@@ -336,6 +368,10 @@ public class Path : Shape
                 {
                     SnapToInteger();
                 }
+                break;
+            case EditMode.None:
+                break;
+            default:
                 break;
         }
     }
@@ -371,7 +407,7 @@ public class Path : Shape
 
     public override void SnapToInteger()
     {
-        foreach(var inst in Instructions)
+        foreach (IPathInstruction inst in Instructions)
         {
             inst.SnapToInteger();
         }
@@ -380,7 +416,7 @@ public class Path : Shape
 
     public void ConvertToRelative()
     {
-        foreach (var inst in Instructions)
+        foreach (IPathInstruction inst in Instructions)
         {
             inst.Relative = true;
         }

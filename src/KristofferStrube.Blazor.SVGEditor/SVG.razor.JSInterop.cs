@@ -6,10 +6,10 @@ namespace KristofferStrube.Blazor.SVGEditor;
 public partial class SVG : IAsyncDisposable
 {
     [Inject]
-    protected IJSRuntime JSRuntime { get; set; }
+    protected IJSRuntime JSRuntime { get; set; } = default!;
 
-    protected Lazy<Task<IJSObjectReference>> moduleTask;
-    public Box BBox { get; set; }
+    protected Lazy<Task<IJSObjectReference>> moduleTask = default!;
+    public Box BBox { get; set; } = default!;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -18,19 +18,19 @@ public partial class SVG : IAsyncDisposable
 
     public async Task FocusAsync(ElementReference elementReference)
     {
-        var module = await moduleTask.Value;
+        IJSObjectReference module = await moduleTask.Value;
         await module.InvokeVoidAsync("focus", elementReference);
     }
 
     public async Task UnFocusAsync(ElementReference elementReference)
     {
-        var module = await moduleTask.Value;
+        IJSObjectReference module = await moduleTask.Value;
         await module.InvokeVoidAsync("unFocus", elementReference);
     }
 
     public async Task<Box> GetBoundingBox(ElementReference elementReference)
     {
-        var module = await moduleTask.Value;
+        IJSObjectReference module = await moduleTask.Value;
         return await module.InvokeAsync<Box>("BBox", elementReference);
     }
 

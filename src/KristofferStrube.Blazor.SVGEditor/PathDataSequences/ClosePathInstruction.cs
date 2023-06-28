@@ -8,12 +8,12 @@ public class ClosePathInstruction : BasePathInstruction
     {
         get
         {
-            IPathInstruction prev = PreviousInstruction;
-            while (prev is not (ClosePathInstruction or MoveInstruction))
+            IPathInstruction? prev = PreviousInstruction;
+            while (prev is { } and not (ClosePathInstruction or MoveInstruction))
             {
                 prev = prev.PreviousInstruction;
             }
-            return prev.EndPosition;
+            return prev!.EndPosition;
         }
         set
         {
@@ -22,8 +22,8 @@ public class ClosePathInstruction : BasePathInstruction
 
     public IPathInstruction GetReferenceInstruction()
     {
-        IPathInstruction prev = PreviousInstruction;
-        while (prev is not (ClosePathInstruction or MoveInstruction))
+        IPathInstruction? prev = PreviousInstruction;
+        while (prev is { } and not (ClosePathInstruction or MoveInstruction))
         {
             prev = prev.PreviousInstruction;
         }
@@ -31,7 +31,7 @@ public class ClosePathInstruction : BasePathInstruction
         {
             prev = closePath.GetReferenceInstruction();
         }
-        return prev;
+        return prev!;
     }
 
     public override string AbsoluteInstruction => "Z";

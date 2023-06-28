@@ -6,7 +6,7 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public class AnimateStroke : BaseAnimate
 {
-    public AnimateStroke(IElement element, SVG svg) : base(element, svg) { }
+    public AnimateStroke(IElement element, ISVGElement parent, SVG svg) : base(element, parent, svg) { }
 
     public override Type Presenter => typeof(AnimateDefaultEditor);
     public override Type MenuItem => typeof(AnimateStrokeMenuItem);
@@ -20,24 +20,23 @@ public class AnimateStroke : BaseAnimate
     {
         Values.Add(Parent is Shape s ? s.Stroke : "black");
         UpdateValues();
-        Parent.Changed(Parent);
+        Parent.Changed?.Invoke(Parent);
     }
 
     public override void RemoveFrame(int frame)
     {
         Values.RemoveAt(frame);
         UpdateValues();
-        Parent.Changed(Parent);
+        Parent.Changed?.Invoke(Parent);
     }
 
     public static void AddNew(SVG SVG, Shape parent)
     {
         IElement element = SVG.Document.CreateElement("ANIMATE");
 
-        AnimateStroke animate = new(element, SVG)
+        AnimateStroke animate = new(element, parent, SVG)
         {
             AttributeName = "stroke",
-            Parent = parent,
             Values = new(),
             Begin = 0,
             Dur = 5,

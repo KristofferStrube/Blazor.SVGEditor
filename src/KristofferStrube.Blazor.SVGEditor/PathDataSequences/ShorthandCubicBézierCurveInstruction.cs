@@ -9,14 +9,14 @@ public class ShorthandCubicBézierCurveInstruction : BaseControlPointPathInstruc
         if (Relative)
         {
             ControlPoints.Add((StartPosition.x + x2, StartPosition.y + y2));
-            this.X = StartPosition.x + x;
-            this.Y = StartPosition.y + y;
+            X = StartPosition.x + x;
+            Y = StartPosition.y + y;
         }
         else
         {
             ControlPoints.Add((x2, y2));
-            this.X = x;
-            this.Y = y;
+            X = x;
+            Y = y;
         }
     }
 

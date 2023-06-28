@@ -23,25 +23,25 @@ public class LinearGradient : ISVGElement
             .Where(child => child.TagName == "ANIMATE" && child.HasAttribute("attributename"))
             .Select(child =>
             {
-                string attributeName = child.GetAttribute("attributename");
-                if (Shape.animateTypes.ContainsKey(attributeName))
+                string? attributeName = child.GetAttribute("attributename");
+                if (attributeName is not null && Shape.animateTypes.TryGetValue(attributeName, out Type? animationType))
                 {
-                    BaseAnimate animation = (BaseAnimate)Activator.CreateInstance(Shape.animateTypes[attributeName], child, SVG);
+                    var animation = (BaseAnimate)Activator.CreateInstance(animationType, child, this, SVG)!;
                     animation.Parent = this;
                     return animation;
                 }
                 else
                 {
-                    return new AnimateDefault(child, SVG);
+                    return new AnimateDefault(child, this, SVG);
                 }
             }
             )
             .ToList();
     }
-    public string Id
+    public string? Id
     {
         get => Element.GetAttribute("id");
-        set { Element.SetAttribute("id", value); Changed.Invoke(this); }
+        set { Element.SetAttribute("id", value); Changed?.Invoke(this); }
     }
 
     public IElement Element { get; init; }
@@ -52,128 +52,74 @@ public class LinearGradient : ISVGElement
 
     public string StateRepresentation => $"{X1}{X2}{Y1}{Y2}{string.Join("", Stops.Select(s => s.StateRepresentation))}";
 
-    internal string _stateRepresentation;
+    internal string _stateRepresentation = string.Empty;
 
     public double X1
     {
         get
         {
-            var x1 = Element.GetAttribute("x1");
-            if (x1 is null)
-            {
-                return 0;
-            }
-            else if (x1.Trim().EndsWith("%"))
-            {
-                return x1.Trim()[..^1].ParseAsDouble() / 100;
-            }
-            else
-            {
-                return x1.Trim().ParseAsDouble();
-            }
+            string? x1 = Element.GetAttribute("x1");
+            return x1 is null ? 0 : x1.Trim().EndsWith("%") ? x1.Trim()[..^1].ParseAsDouble() / 100 : x1.Trim().ParseAsDouble();
         }
-        set { Element.SetAttribute("x1", (value * 100).AsString() + "%"); Changed.Invoke(this); }
+        set { Element.SetAttribute("x1", (value * 100).AsString() + "%"); Changed?.Invoke(this); }
     }
     public double Y1
     {
         get
         {
-            var y1 = Element.GetAttribute("y1");
-            if (y1 is null)
-            {
-                return 0;
-            }
-            else if (y1.Trim().EndsWith("%"))
-            {
-                return y1.Trim()[..^1].ParseAsDouble() / 100;
-            }
-            else
-            {
-                return y1.Trim().ParseAsDouble();
-            }
+            string? y1 = Element.GetAttribute("y1");
+            return y1 is null ? 0 : y1.Trim().EndsWith("%") ? y1.Trim()[..^1].ParseAsDouble() / 100 : y1.Trim().ParseAsDouble();
         }
-        set { Element.SetAttribute("y1", (value * 100).AsString() + "%"); Changed.Invoke(this); }
+        set { Element.SetAttribute("y1", (value * 100).AsString() + "%"); Changed?.Invoke(this); }
     }
     public double X2
     {
         get
         {
-            var x2 = Element.GetAttribute("x2");
-            if (x2 is null)
-            {
-                return 1;
-            }
-            else if (x2.Trim().EndsWith("%"))
-            {
-                return x2.Trim()[..^1].ParseAsDouble() / 100;
-            }
-            else
-            {
-                return x2.Trim().ParseAsDouble();
-            }
+            string? x2 = Element.GetAttribute("x2");
+            return x2 is null ? 1 : x2.Trim().EndsWith("%") ? x2.Trim()[..^1].ParseAsDouble() / 100 : x2.Trim().ParseAsDouble();
         }
-        set { Element.SetAttribute("x2", (value * 100).AsString() + "%"); Changed.Invoke(this); }
+        set { Element.SetAttribute("x2", (value * 100).AsString() + "%"); Changed?.Invoke(this); }
     }
     public double Y2
     {
         get
         {
-            var y2 = Element.GetAttribute("y2");
-            if (y2 is null)
-            {
-                return 0;
-            }
-            else if (y2.Trim().EndsWith("%"))
-            {
-                return y2.Trim()[..^1].ParseAsDouble() / 100;
-            }
-            else
-            {
-                return y2.Trim().ParseAsDouble();
-            }
+            string? y2 = Element.GetAttribute("y2");
+            return y2 is null ? 0 : y2.Trim().EndsWith("%") ? y2.Trim()[..^1].ParseAsDouble() / 100 : y2.Trim().ParseAsDouble();
         }
-        set { Element.SetAttribute("y2", (value * 100).AsString() + "%"); Changed.Invoke(this); }
+        set { Element.SetAttribute("y2", (value * 100).AsString() + "%"); Changed?.Invoke(this); }
     }
 
     public GradientUnits GradientUnits
     {
-        get
+        get => Element.GetAttributeOrEmpty("gradientUnits") switch
         {
-            return Element.GetAttributeOrEmpty("gradientUnits") switch
-            {
-                "userSpaceOnUse" => GradientUnits.UserSpaceOnUse,
-                _ => GradientUnits.ObjectBoundingBox
-            };
-        }
-        set
+            "userSpaceOnUse" => GradientUnits.UserSpaceOnUse,
+            _ => GradientUnits.ObjectBoundingBox
+        };
+        set => Element.SetAttribute("gradientUnits", value switch
         {
-            Element.SetAttribute("gradientUnits", value switch
-            {
-                GradientUnits.UserSpaceOnUse => "userSpaceOnUser",
-                _ => "objectBoundingBox"
-            });
-        }
+            GradientUnits.UserSpaceOnUse => "userSpaceOnUser",
+            GradientUnits.ObjectBoundingBox => "objectBoundingBox",
+            _ => throw new NotSupportedException($"Value {value} not supported as {nameof(GradientUnits)}")
+        });
     }
     public SpreadMethod SpreadMethod
     {
-        get
+        get => Element.GetAttributeOrEmpty("spreadMethod") switch
         {
-            return Element.GetAttributeOrEmpty("spreadMethod") switch
-            {
-                "reflect" => SpreadMethod.Reflect,
-                "repeat" => SpreadMethod.Repeat,
-                _ => SpreadMethod.Pad
-            };
-        }
-        set
+            "reflect" => SpreadMethod.Reflect,
+            "repeat" => SpreadMethod.Repeat,
+            _ => SpreadMethod.Pad
+        };
+        set => Element.SetAttribute("spreadMethod", value switch
         {
-            Element.SetAttribute("spreadMethod", value switch
-            {
-                SpreadMethod.Reflect => "reflect",
-                SpreadMethod.Repeat => "repeat",
-                _ => "pad"
-            });
-        }
+            SpreadMethod.Reflect => "reflect",
+            SpreadMethod.Repeat => "repeat",
+            SpreadMethod.Pad => "pad",
+            _ => "pad"
+        });
     }
 
     public List<Stop> Stops { get; set; }
@@ -182,11 +128,11 @@ public class LinearGradient : ISVGElement
 
     public List<BaseAnimate> AnimationElements { get; set; }
 
-    public Action<ISVGElement> Changed { get; set; }
+    public Action<ISVGElement>? Changed { get; set; }
 
-    public string StoredHtml { get; set; }
+    public string StoredHtml { get; set; } = string.Empty;
 
-    public Shape EditingShape { get; set; }
+    public Shape? EditingShape { get; set; }
 
     public void Complete()
     {
@@ -205,44 +151,24 @@ public class LinearGradient : ISVGElement
         StoredHtml = $"<linearGradient{string.Join("", Element.Attributes.Select(a => $" {a.Name}=\"{a.Value}\""))}>\n" + string.Join("", Stops.Select(e => e.StoredHtml + "\n")) + string.Join("", AnimationElements.Select(a => a.StoredHtml + "\n")) + "</linearGradient>";
     }
 
-    public void AddNewStop(Stop tempStop = null, string color = "grey")
+    public void AddNewStop(Stop? tempStop = null, string color = "grey")
     {
         IElement element = SVG.Document.CreateElement("STOP");
 
-        double offset;
-        if (tempStop is null)
-        {
-            if (Stops.Count is 0)
-            {
-                offset = 1.0/3;
-            }
-            else
-            {
-                offset = Stops.Last().Offset / 2 + 0.5;
-            }
-        }
-        else
-        {
-            if (tempStop == Stops.Last())
-            {
-                offset = Stops.Last().Offset / 2 + 0.5;
-            }
-            else
-            {
-                offset = (tempStop.Offset + Stops[Stops.IndexOf(tempStop) + 1].Offset) / 2;
-            }
-        }
+        double offset = tempStop is null
+            ? Stops.Count is 0 ? 1.0 / 3 : (Stops.Last().Offset / 2) + 0.5
+            : tempStop == Stops.Last() ? (Stops.Last().Offset / 2) + 0.5 : (tempStop.Offset + Stops[Stops.IndexOf(tempStop) + 1].Offset) / 2;
         Stop stop = new(element, this, SVG)
         {
             Offset = offset,
             StopColor = color,
         };
 
-        var stopBefore = Stops.Where(s => s.Offset <= offset).MaxBy(s => s.Offset);
+        Stop? stopBefore = Stops.Where(s => s.Offset <= offset).MaxBy(s => s.Offset);
         if (stopBefore is null)
         {
             Stops.Add(stop);
-            Element.AppendElement(element);
+            _ = Element.AppendElement(element);
         }
         else
         {
@@ -251,12 +177,12 @@ public class LinearGradient : ISVGElement
         }
 
         SVG.EditMode = EditMode.None;
-        Changed.Invoke(this);
+        Changed?.Invoke(this);
     }
 
     public static void AddNew(SVG svg, string id, Shape? shape = null)
     {
-        var firstStopColor = "grey";
+        string firstStopColor = "grey";
         if (shape is not null)
         {
             firstStopColor = shape.Fill;

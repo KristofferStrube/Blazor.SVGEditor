@@ -1,7 +1,5 @@
 ﻿using AngleSharp.Dom;
-using AngleSharp.Text;
 using KristofferStrube.Blazor.SVGEditor.Extensions;
-using System.Xml.Linq;
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
@@ -18,7 +16,7 @@ public class Stop : ISVGElement
 
     public Guid Key { get; set; }
 
-    public string Id { get; set; }
+    public string? Id { get; set; }
     public IElement Element { get; init; }
     public LinearGradient Parent { get; init; }
     public SVG SVG { get; init; }
@@ -31,49 +29,35 @@ public class Stop : ISVGElement
     {
         get
         {
-            var offset = Element.GetAttribute("offset");
-            if (offset is null)
-            {
-                return 0;
-            }
-            else if (offset.Trim().EndsWith("%"))
-            {
-                return offset.Trim()[..^1].ParseAsDouble() / 100;
-            }
-            else
-            {
-                return offset.Trim().ParseAsDouble();
-            }
+            string? offset = Element.GetAttribute("offset");
+            return offset is null ? 0 : offset.Trim().EndsWith("%") ? offset.Trim()[..^1].ParseAsDouble() / 100 : offset.Trim().ParseAsDouble();
         }
         set
         {
-            Element.SetAttribute("offset", (value*100).AsString() + "%");
-            Changed.Invoke(this);
+            Element.SetAttribute("offset", (value * 100).AsString() + "%");
+            Changed?.Invoke(this);
         }
     }
 
     public string StopColor
     {
         get => Element.GetAttributeOrEmpty("stop-color");
-        set { Element.SetAttribute("stop-color", value); Changed.Invoke(this); }
+        set { Element.SetAttribute("stop-color", value); Changed?.Invoke(this); }
     }
 
     public double StopOpacity
     {
         get => Element.GetAttributeOrOne("stop-opacity");
-        set { if (value != 1) Element.SetAttribute("stop-opacity", value.AsString()); Changed.Invoke(this); }
+        set { if (value != 1) { Element.SetAttribute("stop-opacity", value.AsString()); } Changed?.Invoke(this); }
     }
 
     public List<BaseAnimate> AnimationElements { get; set; }
 
-    public Action<ISVGElement> Changed
+    public Action<ISVGElement>? Changed
     {
-        get => Parent.Changed; set
-        {
-            Parent.Changed = value;
-        }
+        get => Parent.Changed; set => Parent.Changed = value;
     }
-    public string StoredHtml { get; set; }
+    public string StoredHtml { get; set; } = string.Empty;
 
     public void Complete()
     {

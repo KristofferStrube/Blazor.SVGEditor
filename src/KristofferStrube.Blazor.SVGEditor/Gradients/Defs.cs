@@ -1,9 +1,5 @@
 using AngleSharp.Dom;
 using KristofferStrube.Blazor.SVGEditor.GradientEditors;
-using KristofferStrube.Blazor.SVGEditor.ShapeEditors;
-using Microsoft.AspNetCore.Components.Web;
-using static System.Formats.Asn1.AsnWriter;
-using static System.Text.Json.JsonSerializer;
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
@@ -20,30 +16,25 @@ public class Defs : ISVGElement
         SVG = svg;
         Children = Element.Children.Select(child =>
         {
-            ISVGElement sVGElement;
-            if (SVG.SupportedTypes.ContainsKey(child.TagName))
+            ISVGElement? sVGElement = SVG.SupportedTypes.TryGetValue(child.TagName, out Type? type)
+                ? Activator.CreateInstance(type, child, SVG) as Shape
+                : GradientTypes.TryGetValue(child.TagName, out Type? gradientType)
+                    ? Activator.CreateInstance(gradientType, child, SVG) as ISVGElement
+                    : throw new NotImplementedException($"Tag not supported:\n {child.OuterHtml}");
+            if (sVGElement is not null)
             {
-                sVGElement = (Shape)Activator.CreateInstance(SVG.SupportedTypes[child.TagName], child, SVG);
+                sVGElement.Changed = UpdateInput;
             }
-            else if (GradientTypes.ContainsKey(child.TagName))
-            {
-                sVGElement = (ISVGElement)Activator.CreateInstance(GradientTypes[child.TagName], child, SVG);
-            }
-            else
-            {
-                throw new NotImplementedException($"Tag not supported:\n {child.OuterHtml}");
-            }
-            sVGElement.Changed = UpdateInput;
             return sVGElement;
-        }).ToList();
+        }).Select(element => element!).ToList();
     }
 
     public void UpdateInput(ISVGElement child)
     {
         child.UpdateHtml();
-        Changed.Invoke(this);
+        Changed?.Invoke(this);
     }
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     public IElement Element { get; init; }
 
@@ -55,8 +46,8 @@ public class Defs : ISVGElement
 
     public string StateRepresentation => throw new NotImplementedException();
 
-    public Action<ISVGElement> Changed { get; set; }
-    public string StoredHtml { get; set; }
+    public Action<ISVGElement>? Changed { get; set; }
+    public string StoredHtml { get; set; } = string.Empty;
 
     public void Complete()
     {

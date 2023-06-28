@@ -21,7 +21,7 @@ public class Polygon : Shape
     private void UpdatePoints()
     {
         Element.SetAttribute("points", PointsToString(Points));
-        Changed.Invoke(this);
+        Changed?.Invoke(this);
     }
 
     public static string PointsToString(List<(double x, double y)> points)
@@ -57,6 +57,12 @@ public class Polygon : Shape
                 Points[^1] = (x, y);
                 UpdatePoints();
                 break;
+            case EditMode.None:
+                break;
+            case EditMode.Scale:
+                break;
+            default:
+                break;
         }
     }
 
@@ -72,7 +78,7 @@ public class Polygon : Shape
                 {
                     SVG.RemoveElement(this);
                     SVG.SelectedShapes.Clear();
-                    Changed.Invoke(this);
+                    Changed?.Invoke(this);
                 }
                 break;
             case EditMode.Move:
@@ -80,6 +86,12 @@ public class Polygon : Shape
                 break;
             case EditMode.Add:
                 Points.Add((x, y));
+                break;
+            case EditMode.None:
+                break;
+            case EditMode.Scale:
+                break;
+            default:
                 break;
         }
     }

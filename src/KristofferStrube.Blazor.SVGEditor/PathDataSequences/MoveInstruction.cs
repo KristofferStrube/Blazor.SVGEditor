@@ -4,17 +4,17 @@ namespace KristofferStrube.Blazor.SVGEditor.PathDataSequences;
 
 public class MoveInstruction : BasePathInstruction
 {
-    public MoveInstruction(double x, double y, bool Relative, IPathInstruction PreviousInstruction) : base(Relative, PreviousInstruction)
+    public MoveInstruction(double x, double y, bool Relative, IPathInstruction? PreviousInstruction) : base(Relative, PreviousInstruction)
     {
         if (Relative)
         {
-            this.X = StartPosition.x + x;
-            this.Y = StartPosition.y + y;
+            X = StartPosition.x + x;
+            Y = StartPosition.y + y;
         }
         else
         {
-            this.X = x;
-            this.Y = y;
+            X = x;
+            Y = y;
         }
     }
 

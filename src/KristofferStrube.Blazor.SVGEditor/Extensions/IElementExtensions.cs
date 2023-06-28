@@ -6,34 +6,19 @@ internal static class IElementExtensions
 {
     internal static double GetAttributeOrZero(this IElement element, string attribute)
     {
-        string attributeValue = element.GetAttribute(attribute);
-        if (string.IsNullOrWhiteSpace(attributeValue))
-        {
-            return 0;
-        }
-
-        return attributeValue.ParseAsDouble();
+        string? attributeValue = element.GetAttribute(attribute);
+        return string.IsNullOrWhiteSpace(attributeValue) ? 0 : attributeValue.ParseAsDouble();
     }
 
     internal static double GetAttributeOrOne(this IElement element, string attribute)
     {
-        string attributeValue = element.GetAttribute(attribute);
-        if (string.IsNullOrWhiteSpace(attributeValue))
-        {
-            return 1;
-        }
-
-        return attributeValue.ParseAsDouble();
+        string? attributeValue = element.GetAttribute(attribute);
+        return string.IsNullOrWhiteSpace(attributeValue) ? 1 : attributeValue.ParseAsDouble();
     }
 
     internal static string GetAttributeOrEmpty(this IElement element, string attribute)
     {
-        string attributeValue = element.GetAttribute(attribute);
-        if (string.IsNullOrWhiteSpace(attributeValue))
-        {
-            return string.Empty;
-        }
-
-        return attributeValue;
+        string? attributeValue = element.GetAttribute(attribute);
+        return string.IsNullOrWhiteSpace(attributeValue) ? string.Empty : attributeValue;
     }
 }

@@ -8,7 +8,7 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public class AnimateStrokeDashoffset : BaseAnimate
 {
-    public AnimateStrokeDashoffset(IElement element, SVG svg) : base(element, svg) { }
+    public AnimateStrokeDashoffset(IElement element, ISVGElement parent, SVG svg) : base(element, parent, svg) { }
 
     public override Type Presenter => typeof(AnimateDefaultEditor);
     public override Type MenuItem => typeof(AnimateStrokeDashoffsetMenuItem);
@@ -18,14 +18,7 @@ public class AnimateStrokeDashoffset : BaseAnimate
         CurrentFrame = frame;
         if (Parent is Path path)
         {
-            if (frame is int i)
-            {
-                path.StrokeDashoffset = Values[i].ParseAsDouble();
-            }
-            else
-            {
-                path.StrokeDashoffset = path.Element.GetAttributeOrEmpty("stroke-dashoffset").ParseAsDouble();
-            }
+            path.StrokeDashoffset = frame is int i ? Values[i].ParseAsDouble() : path.Element.GetAttributeOrEmpty("stroke-dashoffset").ParseAsDouble();
             path.Changed?.Invoke(path);
         }
     }
@@ -39,7 +32,7 @@ public class AnimateStrokeDashoffset : BaseAnimate
     {
         Values.Add(Parent is Shape s ? s.StrokeDashoffset.AsString() : "0");
         UpdateValues();
-        Parent.Changed(Parent);
+        Parent.Changed?.Invoke(Parent);
     }
 
     public override void RemoveFrame(int frame)
@@ -55,7 +48,7 @@ public class AnimateStrokeDashoffset : BaseAnimate
             {
                 Values.RemoveAt(frame);
                 UpdateValues();
-                Parent.Changed(Parent);
+                Parent.Changed?.Invoke(Parent);
             }
         }
     }
@@ -64,10 +57,9 @@ public class AnimateStrokeDashoffset : BaseAnimate
     {
         IElement element = SVG.Document.CreateElement("ANIMATE");
 
-        AnimateStrokeDashoffset animate = new(element, SVG)
+        AnimateStrokeDashoffset animate = new(element, parent, SVG)
         {
             AttributeName = "stroke-dashoffset",
-            Parent = parent,
             Values = new(),
             Begin = 0,
             Dur = 5,

@@ -2,17 +2,24 @@
 
 internal static class LinecapExtensions
 {
-    public static Linecap ParseAsLinecap(this string value) => value switch
+    public static Linecap ParseAsLinecap(this string value)
+    {
+        return value switch
         {
             "round" => Linecap.Round,
             "square" => Linecap.Square,
             _ => Linecap.Butt,
         };
+    }
 
-    public static string AsString(this Linecap value) => value switch
+    public static string AsString(this Linecap value)
     {
-        Linecap.Round => "round",
-        Linecap.Square => "square",
-        _ => "butt",
-    };
+        return value switch
+        {
+            Linecap.Round => "round",
+            Linecap.Square => "square",
+            Linecap.Butt => "butt",
+            _ => "butt",
+        };
+    }
 }

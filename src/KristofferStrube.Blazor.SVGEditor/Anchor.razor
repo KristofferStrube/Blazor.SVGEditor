@@ -9,7 +9,7 @@
     public (double x, double y) Position { get; set; }
 
     [Parameter, EditorRequired]
-    public string RingColor { get; set; }
+    public string RingColor { get; set; } = default!;
 
     [Parameter]
     public string MiddleColor { get; set; } = "transparent";
@@ -18,13 +18,13 @@
     public double CircleThickness { get; set; } = 2;
 
     [CascadingParameter]
-    protected SVG SVG { get; set; }
+    protected SVG SVG { get; set; } = default!;
 
-	protected string X => SVG.LocalTransform(Position).x.AsString();
+    protected string X => SVG.LocalTransform(Position).x.AsString();
 
-	protected string Y => SVG.LocalTransform(Position).y.AsString();
+    protected string Y => SVG.LocalTransform(Position).y.AsString();
 
-    private string _State { get; set; }
+    private string _State { get; set; } = string.Empty;
 
     private string State => $"{Position.x}{Position.y}{SVG.Scale}{SVG.Translate.x}{SVG.Translate.y}{RingColor}{MiddleColor}";
 

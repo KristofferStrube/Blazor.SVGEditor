@@ -7,32 +7,33 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public abstract class BaseAnimate : ISVGElement
 {
-    public BaseAnimate(IElement element, SVG svg)
+    public BaseAnimate(IElement element, ISVGElement parent, SVG svg)
     {
         Element = element;
+        Parent = parent;
         SVG = svg;
         if (Element.HasAttribute("values"))
         {
-            Values = StringToValues(Element.GetAttribute("values"));
+            Values = StringToValues(Element.GetAttributeOrEmpty("values"));
         }
         else
         {
             var valuesSB = new StringBuilder();
             if (Element.HasAttribute("from"))
             {
-                valuesSB.Append(Element.GetAttribute("from"));
+                _ = valuesSB.Append(Element.GetAttribute("from"));
             }
             if (Element.HasAttribute("to"))
             {
-                valuesSB.Append(Element.GetAttribute("to"));
+                _ = valuesSB.Append(Element.GetAttribute("to"));
             }
             Values = StringToValues(valuesSB.ToString());
         }
     }
 
-    internal string _stateRepresentation;
+    internal string? _stateRepresentation;
 
-    public string Id { get; set; }
+    public string? Id { get; set; }
     public IElement Element { get; init; }
     public SVG SVG { get; init; }
     public ISVGElement Parent { get; set; }
@@ -45,40 +46,22 @@ public abstract class BaseAnimate : ISVGElement
     public int? CurrentFrame { get; set; }
     public double Begin
     {
-        get
-        {
-            return Element.GetAttribute("begin") is string s ? s.Replace("s", "").ParseAsDouble() : 0;
-        }
-        set
-        {
-            Element.SetAttribute("begin", $"{value.AsString()}s");
-        }
+        get => Element.GetAttribute("begin") is string s ? s.Replace("s", "").ParseAsDouble() : 0;
+        set => Element.SetAttribute("begin", $"{value.AsString()}s");
     }
     public double Dur
     {
-        get
-        {
-            return Element.GetAttribute("dur") is string s ? s.Replace("s", "").ParseAsDouble() : 0;
-        }
-        set
-        {
-            Element.SetAttribute("dur", $"{value.AsString()}s");
-        }
+        get => Element.GetAttribute("dur") is string s ? s.Replace("s", "").ParseAsDouble() : 0;
+        set => Element.SetAttribute("dur", $"{value.AsString()}s");
     }
     public string AttributeName
     {
-        get
-        {
-            return Element.GetAttributeOrEmpty("attributename");
-        }
-        init
-        {
-            Element.SetAttribute("attributename", value);
-        }
+        get => Element.GetAttributeOrEmpty("attributename");
+        init => Element.SetAttribute("attributename", value);
     }
     public string ValuesAsString => Element.GetAttributeOrEmpty("values");
-    public Action<ISVGElement> Changed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public string StoredHtml { get; set; }
+    public Action<ISVGElement>? Changed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public string StoredHtml { get; set; } = string.Empty;
 
     public void UpdateValues()
     {
@@ -104,7 +87,7 @@ public abstract class BaseAnimate : ISVGElement
             Element.SetAttribute("values", ValuesToString(Values));
         }
         Parent.UpdateHtml();
-        Parent.Changed(Parent);
+        Parent.Changed?.Invoke(Parent);
     }
 
     public abstract bool IsEditing(string property);
@@ -114,12 +97,7 @@ public abstract class BaseAnimate : ISVGElement
 
     public static List<string> StringToValues(string attribute)
     {
-        if (attribute == null)
-        {
-            return new List<string>();
-        }
-
-        return attribute.Split(";").Select(e => e.Trim()).ToList();
+        return attribute == null ? new List<string>() : attribute.Split(";").Select(e => e.Trim()).ToList();
     }
 
     private static string ValuesToString(List<string> values)
@@ -133,7 +111,7 @@ public abstract class BaseAnimate : ISVGElement
         SVG.SelectedShapes.Clear();
         if (Parent is Shape parentShape)
         {
-            parentShape.AnimationElements.Remove(this);
+            _ = parentShape.AnimationElements.Remove(this);
         }
         SVG.RemoveElement(this, Parent);
     }

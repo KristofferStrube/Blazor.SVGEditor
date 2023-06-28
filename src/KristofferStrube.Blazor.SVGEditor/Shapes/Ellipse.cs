@@ -14,22 +14,22 @@ public class Ellipse : Shape
     public double Cx
     {
         get => Element.GetAttributeOrZero("cx");
-        set { Element.SetAttribute("cx", value.AsString()); Changed.Invoke(this); }
+        set { Element.SetAttribute("cx", value.AsString()); Changed?.Invoke(this); }
     }
     public double Cy
     {
         get => Element.GetAttributeOrZero("cy");
-        set { Element.SetAttribute("cy", value.AsString()); Changed.Invoke(this); }
+        set { Element.SetAttribute("cy", value.AsString()); Changed?.Invoke(this); }
     }
     public double Rx
     {
         get => Element.GetAttributeOrZero("rx");
-        set { Element.SetAttribute("rx", value.AsString()); Changed.Invoke(this); }
+        set { Element.SetAttribute("rx", value.AsString()); Changed?.Invoke(this); }
     }
     public double Ry
     {
         get => Element.GetAttributeOrZero("ry");
-        set { Element.SetAttribute("ry", value.AsString()); Changed.Invoke(this); }
+        set { Element.SetAttribute("ry", value.AsString()); Changed?.Invoke(this); }
     }
 
     public override List<(double x, double y)> SelectionPoints => new() { (Cx + Rx, Cy + Ry), (Cx + Rx, Cy - Ry), (Cx - Rx, Cy + Ry), (Cx - Rx, Cy - Ry) };
@@ -81,7 +81,15 @@ public class Ellipse : Shape
                     case 3:
                         Ry = Math.Abs(y - Cy);
                         break;
+                    default:
+                        break;
                 }
+                break;
+            case EditMode.None:
+                break;
+            case EditMode.Scale:
+                break;
+            default:
                 break;
         }
     }
@@ -102,6 +110,8 @@ public class Ellipse : Shape
                 {
                     SVG.EditMode = EditMode.None;
                 }
+                break;
+            default:
                 break;
         }
     }

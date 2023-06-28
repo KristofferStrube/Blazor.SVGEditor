@@ -10,11 +10,12 @@ internal static class StringExtensions
     }
     internal static List<(double x, double y)> ToPoints(this string points)
     {
-        if (string.IsNullOrWhiteSpace(points))
-        {
-            return new();
-        }
-        return points.Trim().Split(" ").Select(p => (x: p.Split(",")[0].ParseAsDouble(), y: p.Split(",")[1].ParseAsDouble())).ToList();
+        return string.IsNullOrWhiteSpace(points)
+            ? new()
+            : points.Trim().Split(" ").Select(p => (x: p.Split(",")[0].ParseAsDouble(), y: p.Split(",")[1].ParseAsDouble())).ToList();
     }
-    internal static string ToUrl(this string id) => $"url('#{id}')";
+    internal static string ToUrl(this string id)
+    {
+        return $"url('#{id}')";
+    }
 }

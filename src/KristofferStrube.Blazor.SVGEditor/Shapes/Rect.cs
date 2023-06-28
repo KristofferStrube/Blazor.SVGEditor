@@ -14,22 +14,22 @@ public class Rect : Shape
     public double X
     {
         get => Element.GetAttributeOrZero("x");
-        set { Element.SetAttribute("x", value.AsString()); Changed.Invoke(this); }
+        set { Element.SetAttribute("x", value.AsString()); Changed?.Invoke(this); }
     }
     public double Y
     {
         get => Element.GetAttributeOrZero("y");
-        set { Element.SetAttribute("y", value.AsString()); Changed.Invoke(this); }
+        set { Element.SetAttribute("y", value.AsString()); Changed?.Invoke(this); }
     }
     public double Width
     {
         get => Element.GetAttributeOrZero("width");
-        set { Element.SetAttribute("width", value.AsString()); Changed.Invoke(this); }
+        set { Element.SetAttribute("width", value.AsString()); Changed?.Invoke(this); }
     }
     public double Height
     {
         get => Element.GetAttributeOrZero("height");
-        set { Element.SetAttribute("height", value.AsString()); Changed.Invoke(this); }
+        set { Element.SetAttribute("height", value.AsString()); Changed?.Invoke(this); }
     }
 
     private (double x, double y)? AddPos { get; set; }
@@ -42,10 +42,7 @@ public class Rect : Shape
         switch (SVG.EditMode)
         {
             case EditMode.Add:
-                if (AddPos is null)
-                {
-                    AddPos = (X, Y);
-                }
+                AddPos ??= (X, Y);
                 if (x < AddPos.Value.x)
                 {
                     X = x;
@@ -99,7 +96,15 @@ public class Rect : Shape
                         Height = y - Y;
                         X = x;
                         break;
+                    default:
+                        break;
                 }
+                break;
+            case EditMode.None:
+                break;
+            case EditMode.Scale:
+                break;
+            default:
                 break;
         }
     }
@@ -110,6 +115,8 @@ public class Rect : Shape
         {
             case EditMode.Move or EditMode.MoveAnchor or EditMode.Add:
                 SVG.EditMode = EditMode.None;
+                break;
+            default:
                 break;
         }
     }

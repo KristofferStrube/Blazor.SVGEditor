@@ -6,14 +6,7 @@ public class HorizontalLineInstruction : BasePathInstruction
 {
     public HorizontalLineInstruction(double x, bool Relative, IPathInstruction PreviousInstruction) : base(Relative, PreviousInstruction)
     {
-        if (Relative)
-        {
-            this.X = StartPosition.x + x;
-        }
-        else
-        {
-            this.X = x;
-        }
+        X = Relative ? StartPosition.x + x : x;
     }
 
     private double X { get; set; }

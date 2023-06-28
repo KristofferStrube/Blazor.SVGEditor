@@ -7,36 +7,34 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public class Text : Shape
 {
-    private Dictionary<string, string> styleAttributes;
+    private readonly Dictionary<string, string> styleAttributes;
 
     public Text(IElement element, SVG svg) : base(element, svg)
     {
-        var style = element.GetAttribute("style");
-        if (style is null)
-        {
-            styleAttributes = new();
-        }
-        else
-        {
-            styleAttributes = style.Split(";").Select(style => style.Split(":")).ToDictionary(pair => pair[0], pair => pair[1]);
-        }
+        string? style = element.GetAttribute("style");
+        styleAttributes = style is null
+            ? (Dictionary<string, string>)new()
+            : style
+                .Split(";")
+                .Select(style => style.Split(":"))
+                .ToDictionary(pair => pair[0], pair => pair[1]);
     }
 
     public double X
     {
         get => Element.GetAttributeOrZero("x");
-        set { Element.SetAttribute("x", value.AsString()); Changed.Invoke(this); }
+        set { Element.SetAttribute("x", value.AsString()); Changed?.Invoke(this); }
     }
     public double Y
     {
         get => Element.GetAttributeOrZero("y");
-        set { Element.SetAttribute("y", value.AsString()); Changed.Invoke(this); }
+        set { Element.SetAttribute("y", value.AsString()); Changed?.Invoke(this); }
     }
 
     public string CharacterData
     {
         get => Element.TextContent;
-        set { Element.InnerHtml = value; Changed.Invoke(this); }
+        set { Element.InnerHtml = value; Changed?.Invoke(this); }
     }
 
     public string FontSize
@@ -62,7 +60,7 @@ public class Text : Shape
     public void UpdateStyle()
     {
         Element.SetAttribute("style", string.Join(";", styleAttributes.Select(kv => $"{kv.Key}:{kv.Value}")));
-        Changed.Invoke(this);
+        Changed?.Invoke(this);
     }
 
     public override Type Presenter => typeof(TextEditor);
@@ -81,6 +79,16 @@ public class Text : Shape
                 BoundingBox.X += diff.x;
                 BoundingBox.Y += diff.y;
                 break;
+            case EditMode.None:
+                break;
+            case EditMode.Add:
+                break;
+            case EditMode.MoveAnchor:
+                break;
+            case EditMode.Scale:
+                break;
+            default:
+                break;
         }
     }
 
@@ -94,6 +102,8 @@ public class Text : Shape
         {
             case EditMode.Move or EditMode.MoveAnchor or EditMode.Add:
                 SVG.EditMode = EditMode.None;
+                break;
+            default:
                 break;
         }
     }

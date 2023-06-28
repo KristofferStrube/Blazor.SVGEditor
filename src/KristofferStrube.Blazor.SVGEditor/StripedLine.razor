@@ -9,8 +9,8 @@
     public (double x, double y) To { get; set; }
 
     [Parameter, EditorRequired]
-    public string Color { get; set; }
+    public string Color { get; set; } = default!;
 
     [CascadingParameter]
-    protected SVG SVG { get; set; }
+    protected SVG SVG { get; set; } = default!;
 }

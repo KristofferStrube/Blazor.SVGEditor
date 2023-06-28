@@ -1,12 +1,12 @@
 ﻿@inject ISVGAnimationService SVGAnimationService
 <animate @ref=AnimateElement begin="indefinite" attributeName="@SVGElement.AttributeName" values="@SVGElement.ValuesAsString" dur="@SVGElement.Dur.AsString()s" repeatCount="indefinite"></animate>
 @code {
-    private SVGAnimationElement SVGAnimation;
+    private SVGAnimationElement SVGAnimation = default!;
     private ElementReference AnimateElement;
     private bool Active = false;
 
     [Parameter]
-    public BaseAnimate SVGElement { get; set; }
+    public BaseAnimate SVGElement { get; set; } = default!;
 
     protected override bool ShouldRender()
     {

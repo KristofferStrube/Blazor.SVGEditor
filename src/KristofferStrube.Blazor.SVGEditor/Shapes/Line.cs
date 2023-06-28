@@ -14,22 +14,22 @@ public class Line : Shape
     public double X1
     {
         get => Element.GetAttributeOrZero("x1");
-        set { Element.SetAttribute("x1", value.AsString()); Changed.Invoke(this); }
+        set { Element.SetAttribute("x1", value.AsString()); Changed?.Invoke(this); }
     }
     public double Y1
     {
         get => Element.GetAttributeOrZero("y1");
-        set { Element.SetAttribute("y1", value.AsString()); Changed.Invoke(this); }
+        set { Element.SetAttribute("y1", value.AsString()); Changed?.Invoke(this); }
     }
     public double X2
     {
         get => Element.GetAttributeOrZero("x2");
-        set { Element.SetAttribute("x2", value.AsString()); Changed.Invoke(this); }
+        set { Element.SetAttribute("x2", value.AsString()); Changed?.Invoke(this); }
     }
     public double Y2
     {
         get => Element.GetAttributeOrZero("y2");
-        set { Element.SetAttribute("y2", value.AsString()); Changed.Invoke(this); }
+        set { Element.SetAttribute("y2", value.AsString()); Changed?.Invoke(this); }
     }
 
     public override List<(double x, double y)> SelectionPoints => new() { (X1, Y1), (X2, Y2) };
@@ -62,7 +62,15 @@ public class Line : Shape
                     case 1:
                         (X2, Y2) = (x, y);
                         break;
+                    default:
+                        break;
                 }
+                break;
+            case EditMode.None:
+                break;
+            case EditMode.Scale:
+                break;
+            default:
                 break;
         }
     }
@@ -73,6 +81,8 @@ public class Line : Shape
         {
             case EditMode.Move or EditMode.MoveAnchor or EditMode.Add:
                 SVG.EditMode = EditMode.None;
+                break;
+            default:
                 break;
         }
     }

@@ -15,7 +15,7 @@ public abstract class Shape : ISVGElement
         { "d", typeof(AnimateD) },
     };
 
-    internal string _stateRepresentation;
+    internal string _stateRepresentation = string.Empty;
 
     public Shape(IElement element, SVG svg)
     {
@@ -26,23 +26,22 @@ public abstract class Shape : ISVGElement
             .Where(child => child.TagName == "ANIMATE" && child.HasAttribute("attributename"))
             .Select(child =>
                 {
-                    string attributeName = child.GetAttribute("attributename");
-                    if (animateTypes.ContainsKey(attributeName))
+                    string? attributeName = child.GetAttribute("attributename");
+                    if (attributeName is not null && animateTypes.TryGetValue(attributeName, out Type? animateType))
                     {
-                        BaseAnimate animation = (BaseAnimate)Activator.CreateInstance(animateTypes[attributeName], child, SVG);
-                        animation.Parent = this;
-                        return animation;
+                        var animation = Activator.CreateInstance(animateType, child, this, SVG) as BaseAnimate;
+                        return animation ?? throw new NotImplementedException($"Tag not supported:\n {child.OuterHtml}");
                     }
                     else
                     {
-                        return new AnimateDefault(child, SVG);
+                        return new AnimateDefault(child, this, SVG);
                     }
                 }
             )
             .ToList();
     }
 
-    public string Id { get; set; }
+    public string? Id { get; set; }
     public IElement Element { get; init; }
     public SVG SVG { get; init; }
     public abstract Type Presenter { get; }
@@ -50,42 +49,42 @@ public abstract class Shape : ISVGElement
     public string Fill
     {
         get => Element.GetAttributeOrEmpty("fill");
-        set { Element.SetAttribute("fill", value); Changed.Invoke(this); }
+        set { Element.SetAttribute("fill", value); Changed?.Invoke(this); }
     }
     public string Stroke
     {
         get => Element.GetAttributeOrEmpty("stroke");
-        set { Element.SetAttribute("stroke", value); Changed.Invoke(this); }
+        set { Element.SetAttribute("stroke", value); Changed?.Invoke(this); }
     }
     public string StrokeWidth
     {
         get => Element.GetAttributeOrEmpty("stroke-width");
-        set { Element.SetAttribute("stroke-width", value); Changed.Invoke(this); }
+        set { Element.SetAttribute("stroke-width", value); Changed?.Invoke(this); }
     }
     public Linecap StrokeLinecap
     {
         get => Element.GetAttributeOrEmpty("stroke-linecap").ToLower().ParseAsLinecap();
-        set { Element.SetAttribute("stroke-linecap", value.AsString()); Changed.Invoke(this); }
+        set { Element.SetAttribute("stroke-linecap", value.AsString()); Changed?.Invoke(this); }
     }
     public Linejoin StrokeLinejoin
     {
         get => Element.GetAttributeOrEmpty("stroke-linejoin").ToLower().ParseAsLinejoin();
-        set { Element.SetAttribute("stroke-linejoin", value.AsString()); Changed.Invoke(this); }
+        set { Element.SetAttribute("stroke-linejoin", value.AsString()); Changed?.Invoke(this); }
     }
     public string StrokeDasharray
     {
         get => Element.GetAttributeOrEmpty("stroke-dasharray");
-        set { Element.SetAttribute("stroke-dasharray", value); Changed.Invoke(this); }
+        set { Element.SetAttribute("stroke-dasharray", value); Changed?.Invoke(this); }
     }
     public double StrokeDashoffset
     {
         get => Element.GetAttributeOrZero("stroke-dashoffset");
-        set { Element.SetAttribute("stroke-dashoffset", value.AsString()); Changed.Invoke(this); }
+        set { Element.SetAttribute("stroke-dashoffset", value.AsString()); Changed?.Invoke(this); }
     }
     public List<BaseAnimate> AnimationElements { get; set; }
     public bool HasAnimation => AnimationElements is { Count: > 0 };
     public Box BoundingBox { get; set; } = new();
-    public Action<ISVGElement> Changed { get; set; }
+    public Action<ISVGElement>? Changed { get; set; }
     public bool Selected => SVG.VisibleSelectionShapes.Contains(this);
     public bool IsChildElement => Element.ParentElement?.TagName is "G" or null;
     public virtual string StateRepresentation =>
@@ -97,7 +96,7 @@ public abstract class Shape : ISVGElement
         Serialize(BoundingBox) +
         string.Join("-", AnimationElements.Select(a => a.StateRepresentation));
 
-    public string StoredHtml { get; set; }
+    public string StoredHtml { get; set; } = string.Empty;
     public virtual void UpdateHtml()
     {
         AnimationElements.ForEach(a => a.UpdateHtml());
@@ -106,7 +105,7 @@ public abstract class Shape : ISVGElement
 
     public virtual void Rerender()
     {
-        _stateRepresentation = null;
+        _stateRepresentation = string.Empty;
     }
 
     public abstract void SnapToInteger();

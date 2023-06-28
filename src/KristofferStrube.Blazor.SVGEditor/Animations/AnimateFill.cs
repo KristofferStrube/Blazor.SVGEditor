@@ -1,14 +1,12 @@
 ﻿using AngleSharp.Dom;
 using KristofferStrube.Blazor.SVGEditor.AnimationEditors;
 using KristofferStrube.Blazor.SVGEditor.AnimationMenuItems;
-using KristofferStrube.Blazor.SVGEditor.Extensions;
-using KristofferStrube.Blazor.SVGEditor.PathDataSequences;
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
 public class AnimateFill : BaseAnimate
 {
-    public AnimateFill(IElement element, SVG svg) : base(element, svg) { }
+    public AnimateFill(IElement element, ISVGElement parent, SVG svg) : base(element, parent, svg) { }
 
     public override Type Presenter => typeof(AnimateDefaultEditor);
     public override Type MenuItem => typeof(AnimateFillMenuItem);
@@ -22,24 +20,23 @@ public class AnimateFill : BaseAnimate
     {
         Values.Add(Parent is Shape s ? s.Fill : "lightgrey");
         UpdateValues();
-        Parent.Changed(Parent);
+        Parent.Changed?.Invoke(Parent);
     }
 
     public override void RemoveFrame(int frame)
     {
         Values.RemoveAt(frame);
         UpdateValues();
-        Parent.Changed(Parent);
+        Parent.Changed?.Invoke(Parent);
     }
 
     public static void AddNew(SVG SVG, Shape parent)
     {
         IElement element = SVG.Document.CreateElement("ANIMATE");
 
-        AnimateFill animate = new(element, SVG)
+        AnimateFill animate = new(element, parent, SVG)
         {
             AttributeName = "fill",
-            Parent = parent,
             Values = new(),
             Begin = 0,
             Dur = 5,

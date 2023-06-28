@@ -10,13 +10,13 @@
 
 @code {
     [Parameter]
-    public Box Box { get; set; }
+    public Box Box { get; set; } = default!;
 
     [Parameter]
-    public Action<int, int> AnchorOnPointerDown { get; set; }
+    public Action<int, int>? AnchorOnPointerDown { get; set; }
 
     [CascadingParameter]
-    protected SVG SVG { get; set; }
+    protected SVG SVG { get; set; } = default!;
 
     private double X => SVG.LocalTransform((Box.X, Box.Y)).x + (Box.Width >= 0 ? 0 : -Width);
 

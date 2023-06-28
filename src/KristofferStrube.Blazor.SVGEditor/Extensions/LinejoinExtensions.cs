@@ -2,7 +2,9 @@
 
 internal static class LinejoinExtensions
 {
-    public static Linejoin ParseAsLinejoin(this string value) => value switch
+    public static Linejoin ParseAsLinejoin(this string value)
+    {
+        return value switch
         {
             "miter-clip" => Linejoin.MiterClip,
             "round" => Linejoin.Round,
@@ -10,13 +12,18 @@ internal static class LinejoinExtensions
             "arcs" => Linejoin.Arcs,
             _ => Linejoin.Miter,
         };
+    }
 
-    public static string AsString(this Linejoin value) => value switch
+    public static string AsString(this Linejoin value)
     {
-        Linejoin.MiterClip => "miter-clip",
-        Linejoin.Round => "round",
-        Linejoin.Bevel => "bevel",
-        Linejoin.Arcs => "arcs",
-        _ => "miter",
-    };
+        return value switch
+        {
+            Linejoin.MiterClip => "miter-clip",
+            Linejoin.Round => "round",
+            Linejoin.Bevel => "bevel",
+            Linejoin.Arcs => "arcs",
+            Linejoin.Miter => "miter",
+            _ => "miter",
+        };
+    }
 }

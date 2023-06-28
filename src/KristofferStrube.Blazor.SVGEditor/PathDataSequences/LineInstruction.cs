@@ -8,13 +8,13 @@ public class LineInstruction : BasePathInstruction
     {
         if (Relative)
         {
-            this.X = StartPosition.x + x;
-            this.Y = StartPosition.y + y;
+            X = StartPosition.x + x;
+            Y = StartPosition.y + y;
         }
         else
         {
-            this.X = x;
-            this.Y = y;
+            X = x;
+            Y = y;
         }
     }
 
