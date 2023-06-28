@@ -13,7 +13,7 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
 - POLYGON (points, fill, stroke, stroke-width, stroke-linecap, stroke-linejoin, stroke-offset)
 - POLYLINE (points, fill, stroke, stroke-width, stroke-linecap, stroke-linejoin, stroke-offset)
 - LINE (x1, y1, x2, y2, fill, stroke, stroke-width, stroke-linecap, stroke-linejoin, stroke-offset)
-- TEXT (x, y, style:font-size, fill, stroke, stroke-width, stroke-linecap, stroke-linejoin, stroke-offset)
+- TEXT (x, y, style:(font-size,font-weight,font-family), fill, stroke, stroke-width, stroke-linecap, stroke-linejoin, stroke-offset)
 - PATH (d, fill, stroke, stroke-width, stroke-linecap, stroke-linejoin, stroke-offset)
     - Movements
     - Lines
@@ -32,6 +32,7 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
     - Support for showing all Animate tags when Playing
     - Support for editing Fill animation values
     - Support for editing Stroke animation values
+    - Support for editing Stroke Offset values
 - LINEARGRADIENT (x1, x2, y1, y2, and stops)
 
 ## Current goals
