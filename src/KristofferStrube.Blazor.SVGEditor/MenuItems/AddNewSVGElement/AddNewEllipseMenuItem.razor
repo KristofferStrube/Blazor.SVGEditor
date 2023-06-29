@@ -1,0 +1,9 @@
+﻿<Item OnClick="_ => Ellipse.AddNew(SVGEditor)"><div class="icon">🕳</div> New Ellipse</Item>
+
+@code {
+    [CascadingParameter]
+    public SVGEditor SVGEditor { get; set; } = default!;
+
+    [Parameter]
+    public object Data { get; set; } = default!;
+}

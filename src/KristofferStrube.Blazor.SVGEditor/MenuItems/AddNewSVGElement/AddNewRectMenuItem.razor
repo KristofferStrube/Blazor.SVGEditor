@@ -1,0 +1,9 @@
+﻿<Item OnClick="_ => Rect.AddNew(SVGEditor)"><div class="icon">🟦</div> New Rectangle</Item>
+
+@code {
+    [CascadingParameter]
+    public SVGEditor SVGEditor { get; set; } = default!;
+
+    [Parameter]
+    public object Data { get; set; } = default!;
+}

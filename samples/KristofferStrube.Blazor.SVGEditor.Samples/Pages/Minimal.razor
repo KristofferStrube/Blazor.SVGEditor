@@ -3,7 +3,7 @@
 <PageTitle>Minimal configured SVGEditor</PageTitle>
 
 <p>
-    Here we have disabled all interaction with the SVG Editor except for selecting shapes, deselecting shapes, and moving anchor points.
+    Here we have disabled all interaction with the SVG Editor except for selecting shapes, deselecting shapes, moving shapes, and moving anchor points.
 </p>
 <div style="display:flex; flex-wrap: wrap; grid-column-gap: 30px;">
     <div>
@@ -39,11 +39,59 @@
         <label for="DisableMoveAnchorEditMode">Disable MoveAnchor EditMode</label>
     </div>
     <div>
+        <InputCheckbox @bind-Value=DisableRemoveElement id="DisableRemoveElement" />
+        <label for="DisableRemoveElement">Disable Remove Element</label>
+    </div>
+    <div>
+        <InputCheckbox @bind-Value=DisableCopyElement id="DisableCopyElement" />
+        <label for="DisableCopyElement">Disable Copy Element</label>
+    </div>
+    <div>
+        <InputCheckbox @bind-Value=DisablePasteElement id="DisablePasteElement" />
+        <label for="DisablePasteElement">Disable Paste Element</label>
+    </div>
+    <div>
         <InputCheckbox @bind-Value=DisableScaleLabel id="DisableScaleLabel" />
         <label for="DisableScaleLabel">Disable Scale Label</label>
     </div>
+    <div>
+        <InputCheckbox @bind-Value=DisableContextMenuFillItem id="DisableContextMenuFillItem" />
+        <label for="DisableContextMenuFillItem">Disable ContextMenu Fill Item</label>
+    </div>
+    <div>
+        <InputCheckbox @bind-Value=DisableContextMenuStrokeItem id="DisableContextMenuStrokeItem" />
+        <label for="DisableContextMenuStrokeItem">Disable ContextMenu Stroke Item</label>
+    </div>
+    <div>
+        <InputCheckbox @bind-Value=DisableContextMenuFontItem id="DisableContextMenuFontItem" />
+        <label for="DisableContextMenuFontItem">Disable ContextMenu Font Item</label>
+    </div>
+    <div>
+        <InputCheckbox @bind-Value=DisableContextMenuAnimationsItem id="DisableContextMenuAnimationsItem" />
+        <label for="DisableContextMenuAnimationsItem">Disable ContextMenu Animations Item</label>
+    </div>
+    <div>
+        <InputCheckbox @bind-Value=DisableContextMenuMoveItem id="DisableContextMenuMoveItem" />
+        <label for="DisableContextMenuMoveItem">Disable ContextMenu Move Item</label>
+    </div>
+    <div>
+        <InputCheckbox @bind-Value=DisableContextMenuScaleItem id="DisableContextMenuScaleItem" />
+        <label for="DisableContextMenuScaleItem">Disable ContextMenu Scale Item</label>
+    </div>
+    <div>
+        <InputCheckbox @bind-Value=DisableContextMenuGroupItem id="DisableContextMenuGroupItem" />
+        <label for="DisableContextMenuGroupItem">Disable ContextMenu Group Item</label>
+    </div>
+    <div>
+        <InputCheckbox @bind-Value=DisableContextMenuUngroupItem id="DisableContextMenuUngroupItem" />
+        <label for="DisableContextMenuUngroupItem">Disable ContextMenu Ungroup Item</label>
+    </div>
+    <div>
+        <InputCheckbox @bind-Value=DisableContextMenuOptimizeItem id="DisableContextMenuOptimizeItem" />
+        <label for="DisableContextMenuOptimizeItem">Disable ContextMenu Optimize Item</label>
+    </div>
 </div>
-<div style="height:80vh">
+<div style="height:70vh">
     <SVGEditor @ref="SVGEditor"
                Input=@Input
                InputUpdated="(string s) => { Input = s; StateHasChanged(); }"
@@ -56,7 +104,21 @@
                DisableBoxSelection=DisableBoxSelection
                DisableMoveEditMode=DisableMoveEditMode
                DisableMoveAnchorEditMode=DisableMoveAnchorEditMode
-               DisableScaleLabel=DisableScaleLabel />
+               DisableRemoveElement=DisableRemoveElement
+               DisableCopyElement=DisableCopyElement
+               DisablePasteElement=DisablePasteElement
+               DisableScaleLabel=DisableScaleLabel
+               DisableContextMenuFillItem=DisableContextMenuFillItem
+               DisableContextMenuStrokeItem=DisableContextMenuStrokeItem
+               DisableContextMenuFontItem=DisableContextMenuFontItem
+               DisableContextMenuAnimationsItem=DisableContextMenuAnimationsItem
+               DisableContextMenuMoveItem=DisableContextMenuMoveItem
+               DisableContextMenuScaleItem=DisableContextMenuScaleItem
+               DisableContextMenuGroupItem=DisableContextMenuGroupItem
+               DisableContextMenuUngroupItem=DisableContextMenuUngroupItem
+               DisableContextMenuOptimizeItem=DisableContextMenuOptimizeItem
+               AddNewSVGElementMenuItems="new()"
+               />
 </div>
 
 @code {
@@ -66,9 +128,21 @@
     private bool DisableSelecting = false;
     private bool DisableDeselecting = false;
     private bool DisableBoxSelection = true;
-    private bool DisableMoveEditMode = true;
+    private bool DisableMoveEditMode = false;
     private bool DisableMoveAnchorEditMode = false;
+    private bool DisableRemoveElement = true;
+    private bool DisableCopyElement = true;
+    private bool DisablePasteElement = true;
     private bool DisableScaleLabel = true;
+    private bool DisableContextMenuFillItem = true;
+    private bool DisableContextMenuStrokeItem = true;
+    private bool DisableContextMenuFontItem = true;
+    private bool DisableContextMenuAnimationsItem = true;
+    private bool DisableContextMenuMoveItem = true;
+    private bool DisableContextMenuScaleItem = true;
+    private bool DisableContextMenuGroupItem = true;
+    private bool DisableContextMenuUngroupItem = true;
+    private bool DisableContextMenuOptimizeItem = true;
 
     private SVGEditor SVGEditor;
     private string Input =

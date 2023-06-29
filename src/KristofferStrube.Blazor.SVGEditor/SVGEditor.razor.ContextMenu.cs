@@ -88,27 +88,15 @@ public partial class SVGEditor
         RerenderAll();
     }
 
-    private void CompleteShape(ISVGElement sVGElement)
+    public void CompleteShape(ISVGElement sVGElement)
     {
+        if (EditMode is not EditMode.Add) return;
         if (SelectedShapes.Count == 1)
         {
             EditMode = EditMode.None;
             sVGElement.Complete();
             ClearSelectedShapes();
         }
-    }
-
-    private void CompleteShapeWithoutClose(Path path)
-    {
-        CompleteShape(path);
-        _ = path.Instructions.Remove(path.Instructions.Last());
-        path.UpdateData();
-    }
-
-    private static void RemovePreviousInstruction(Path path)
-    {
-        path.Instructions = path.Instructions.Take(0..^2).ToList();
-        path.UpdateData();
     }
 
     private void ScaleShape(Shape shape)

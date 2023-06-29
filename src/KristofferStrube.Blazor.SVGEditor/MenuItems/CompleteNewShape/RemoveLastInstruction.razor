@@ -1,0 +1,15 @@
+﻿@if (SVGEditor.SelectedShapes[0] is Path path)
+{
+        <Item OnClick="_ => RemovePreviousInstruction(path)"><div class="icon">❌</div> Remove Last added Instruction</Item>
+}
+
+@code {
+    [CascadingParameter]
+    public SVGEditor SVGEditor { get; set; } = default!;
+
+    private static void RemovePreviousInstruction(Path path)
+    {
+        path.Instructions = path.Instructions.Take(0..^2).ToList();
+        path.UpdateData();
+    }
+}

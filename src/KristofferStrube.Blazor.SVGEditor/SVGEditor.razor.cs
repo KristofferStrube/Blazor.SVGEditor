@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using KristofferStrube.Blazor.SVGEditor.MenuItems.CompleteNewShape;
+using KristofferStrube.Blazor.SVGEditor.MenuItems.AddNewSVGElement;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
@@ -14,7 +17,6 @@ public partial class SVGEditor : ComponentBase
     private List<Shape>? ColorPickerShapes;
     private string? ColorPickerAttributeName;
     private Action<string>? ColorPickerSetter;
-    private string? NewLinearGradientId;
     private (double x, double y)? TranslatePanner;
     private readonly Subject<ISVGElement> ElementSubject = new();
     private List<Shape>? BoxSelectionShapes;
@@ -58,7 +60,65 @@ public partial class SVGEditor : ComponentBase
     public bool DisableMoveAnchorEditMode { get; set; }
 
     [Parameter]
+    public bool DisableRemoveElement { get; set; }
+
+    [Parameter]
+    public bool DisableCopyElement { get; set; }
+
+    [Parameter]
+    public bool DisablePasteElement { get; set; }
+
+    [Parameter]
     public bool DisableScaleLabel { get; set; }
+
+    [Parameter]
+    public bool DisableContextMenuFillItem { get; set; }
+
+    [Parameter]
+    public bool DisableContextMenuStrokeItem { get; set; }
+
+    [Parameter]
+    public bool DisableContextMenuFontItem { get; set; }
+
+    [Parameter]
+    public bool DisableContextMenuAnimationsItem { get; set; }
+
+    [Parameter]
+    public bool DisableContextMenuMoveItem { get; set; }
+
+    [Parameter]
+    public bool DisableContextMenuScaleItem { get; set; }
+
+    [Parameter]
+    public bool DisableContextMenuGroupItem { get; set; }
+
+    [Parameter]
+    public bool DisableContextMenuUngroupItem { get; set; }
+
+    [Parameter]
+    public bool DisableContextMenuOptimizeItem { get; set; }
+
+    [Parameter]
+    public List<CompleteNewShapeMenuItem> CompleteNewShapeMenuItems { get; set; } = new() { 
+        new(typeof(CompleteWithoutCloseMenuItem), (svgEditor) => svgEditor.SelectedShapes[0] is Path),
+        new(typeof(RemoveLastInstruction), (svgEditor) => svgEditor.SelectedShapes[0] is Path),
+    };
+
+    [Parameter]
+    public List<AddNewSVGElementMenuItem> AddNewSVGElementMenuItems { get; set; } = new() {
+        new(typeof(AddNewStopFromLinearGradientMenuItem), (svgEditor, data) => data is LinearGradient),
+        new(typeof(AddNewStopFromStopMenuItem), (svgEditor, data) => data is Stop),
+        new(typeof(AddNewPathMenuItem), (_, data) => data is not (LinearGradient or Stop)),
+        new(typeof(AddNewPolygonMenuItem), (_, data) => data is not (LinearGradient or Stop)),
+        new(typeof(AddNewPolylineMenuItem), (_, data) => data is not (LinearGradient or Stop)),
+        new(typeof(AddNewLineMenuItem), (_, data) => data is not (LinearGradient or Stop)),
+        new(typeof(AddNewCircleMenuItem), (_, data) => data is not (LinearGradient or Stop)),
+        new(typeof(AddNewEllipseMenuItem), (_, data) => data is not (LinearGradient or Stop)),
+        new(typeof(AddNewRectMenuItem), (_, data) => data is not (LinearGradient or Stop)),
+        new(typeof(AddNewTextMenuItem), (_, data) => data is not (LinearGradient or Stop)),
+        new(typeof(AddNewGradientMenuItem), (_, data) => data is not (LinearGradient or Stop)),
+        new(typeof(AddNewAnimationMenuItem), (_, data) => data is Shape shape && !shape.IsChildElement && !shape.AnimationElements.Any(a => a.AttributeName is "fill" or "stroke" or "d")),
+    };
 
     internal IDocument Document { get; set; } = default!;
     public double Scale { get; set; } = 1;

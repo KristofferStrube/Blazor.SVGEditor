@@ -1,0 +1,32 @@
+﻿@if (Data is Shape shape && !shape.IsChildElement && !shape.AnimationElements.Any(a => a.AttributeName is "fill" or "stroke" or "d"))
+{
+    <Item>
+        <div class="icon">💥</div> New Animation
+        <SubMenu>
+            @if (!shape.AnimationElements.Any(a => a.AttributeName == "fill"))
+            {
+                <Item OnClick="_ => AnimateFill.AddNew(SVGEditor, shape)"><div class="icon">🎨</div> Fill</Item>
+            }
+            @if (!shape.AnimationElements.Any(a => a.AttributeName == "stroke"))
+            {
+                <Item OnClick="_ => AnimateStroke.AddNew(SVGEditor, shape)"><div class="icon">🎨</div> Stroke</Item>
+            }
+            @if (!shape.AnimationElements.Any(a => a.AttributeName == "stroke-dashoffset"))
+            {
+                <Item OnClick="_ => AnimateStrokeDashoffset.AddNew(SVGEditor, shape)"><div class="icon">🔪</div> Stroke Dash Offset</Item>
+            }
+            @if (shape is Path path && !path.AnimationElements.Any(a => a.AttributeName == "d"))
+            {
+                <Item OnClick="_ => AnimateD.AddNew(SVGEditor, path)"><div class="icon">🎢</div> Path Data</Item>
+            }
+        </SubMenu>
+    </Item>
+}
+
+@code {
+    [CascadingParameter]
+    public SVGEditor SVGEditor { get; set; } = default!;
+
+    [Parameter]
+    public object Data { get; set; } = default!;
+}

@@ -1,0 +1,12 @@
+﻿@if (Data is LinearGradient linearGradient)
+{
+    <Item OnClick="_ => linearGradient.AddNewStop()"><div class="icon">⚪</div> New Stop to Gradient</Item>
+}
+
+@code {
+    [CascadingParameter]
+    public SVGEditor SVGEditor { get; set; } = default!;
+
+    [Parameter]
+    public object Data { get; set; } = default!;
+}

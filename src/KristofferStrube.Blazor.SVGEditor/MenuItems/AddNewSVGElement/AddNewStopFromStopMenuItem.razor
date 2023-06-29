@@ -1,0 +1,12 @@
+﻿@if (Data is Stop stop)
+{
+    <Item OnClick="_ => stop.Parent.AddNewStop(stop)"><div class="icon">⚪</div> New Stop to Gradient</Item>
+}
+
+@code {
+    [CascadingParameter]
+    public SVGEditor SVGEditor { get; set; } = default!;
+
+    [Parameter]
+    public object Data { get; set; } = default!;
+}

@@ -1,0 +1,43 @@
+﻿@inject IBlazorContextMenuService BlazorContextMenuService
+
+<Item @onclick:stopPropagation="true">
+    <div class="icon">🦓</div> New Gradient
+    <SubMenu>
+        <Item @onclick:stopPropagation="true">
+            <div class="icon">📏</div> Linear
+            <input @bind-value=newLinearGradientId style="width:50px;height:26px;" />
+            @if (Data is Shape shape)
+            {
+                <button class="btn btn-success btn-sm" @onclick=@(_ => AddNewLinearGradientToShape(shape))>➕</button>
+            }
+            else
+            {
+                <button class="btn btn-success btn-sm" @onclick=AddNewLinearGradient>➕</button>
+            }
+        </Item>
+    </SubMenu>
+</Item>
+
+@code {
+    private string newLinearGradientId = string.Empty;
+
+    [CascadingParameter]
+    public SVGEditor SVGEditor { get; set; } = default!;
+
+    [Parameter]
+    public object Data { get; set; } = default!;
+
+    private void AddNewLinearGradientToShape(Shape shape)
+    {
+        LinearGradient.AddNew(SVGEditor, newLinearGradientId, shape);
+        BlazorContextMenuService.HideMenu("SVGMenu");
+        newLinearGradientId = string.Empty;
+    }
+
+    private void AddNewLinearGradient()
+    {
+        LinearGradient.AddNew(SVGEditor, newLinearGradientId);
+        BlazorContextMenuService.HideMenu("SVGMenu");
+        newLinearGradientId = string.Empty;
+    }
+}

@@ -50,18 +50,18 @@ public abstract class ShapeEditor<TShape> : ComponentBase where TShape : Shape
 
         if (eventArgs.CtrlKey)
         {
-            if (eventArgs.Key == "c")
+            if (!SVGElement.SVG.DisableCopyElement && eventArgs.Key == "c")
             {
                 await SVGElement.SVG.CopyElementsAsync();
             }
-            else if (eventArgs.Key == "v")
+            else if (!SVGElement.SVG.DisablePasteElement && eventArgs.Key == "v")
             {
                 await SVGElement.SVG.PasteElementsAsync(SVGElement);
             }
         }
         else
         {
-            if (eventArgs.Key == "Delete")
+            if (!SVGElement.SVG.DisableRemoveElement && eventArgs.Key == "Delete")
             {
                 SVGElement.SVG.Remove();
             }

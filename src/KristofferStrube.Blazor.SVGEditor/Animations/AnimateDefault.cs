@@ -1,6 +1,6 @@
 ﻿using AngleSharp.Dom;
 using KristofferStrube.Blazor.SVGEditor.AnimationEditors;
-using KristofferStrube.Blazor.SVGEditor.AnimationMenuItems;
+using KristofferStrube.Blazor.SVGEditor.MenuItems.Animation;
 
 namespace KristofferStrube.Blazor.SVGEditor;
 

@@ -1,0 +1,16 @@
+﻿@if (SVGEditor.SelectedShapes[0] is Path path)
+{
+    <Item OnClick="_ => CompleteShapeWithoutClose(path)"><div class="icon">❗</div> Complete Without Close Instruction</Item>
+}
+
+@code {
+    [CascadingParameter]
+    public SVGEditor SVGEditor { get; set; } = default!;
+
+    private void CompleteShapeWithoutClose(Path path)
+    {
+        SVGEditor.CompleteShape(path);
+        _ = path.Instructions.Remove(path.Instructions.Last());
+        path.UpdateData();
+    }
+}
