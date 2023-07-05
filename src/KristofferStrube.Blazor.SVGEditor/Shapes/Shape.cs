@@ -7,14 +7,6 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public abstract class Shape : ISVGElement
 {
-    internal static readonly Dictionary<string, Type> animateTypes = new()
-    {
-        { "fill", typeof(AnimateFill) },
-        { "stroke", typeof(AnimateStroke) },
-        { "stroke-dashoffset", typeof(AnimateStrokeDashoffset) },
-        { "d", typeof(AnimateD) },
-    };
-
     internal string _stateRepresentation = string.Empty;
 
     public Shape(IElement element, SVGEditor svg)
@@ -27,7 +19,7 @@ public abstract class Shape : ISVGElement
             .Select(child =>
                 {
                     string? attributeName = child.GetAttribute("attributename");
-                    if (attributeName is not null && animateTypes.TryGetValue(attributeName, out Type? animateType))
+                    if (attributeName is not null && SVG.AnimationTypes.TryGetValue(attributeName, out Type? animateType))
                     {
                         var animation = Activator.CreateInstance(animateType, child, this, SVG) as BaseAnimate;
                         return animation ?? throw new NotImplementedException($"Tag not supported:\n {child.OuterHtml}");

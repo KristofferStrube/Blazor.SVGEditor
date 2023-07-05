@@ -7,7 +7,6 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public partial class SVGEditor
 {
-
     [Parameter, EditorRequired]
     public string Input { get; set; } = string.Empty;
 
@@ -107,4 +106,14 @@ public partial class SVGEditor
         { "G", typeof(G) },
         { "DEFS", typeof(Defs) },
     };
+
+    [Parameter]
+    public Dictionary<string, Type> AnimationTypes { get; set; } = new()
+    {
+        { "fill", typeof(AnimateFill) },
+        { "stroke", typeof(AnimateStroke) },
+        { "stroke-dashoffset", typeof(AnimateStrokeDashoffset) },
+        { "d", typeof(AnimateD) },
+    };
+
 }
