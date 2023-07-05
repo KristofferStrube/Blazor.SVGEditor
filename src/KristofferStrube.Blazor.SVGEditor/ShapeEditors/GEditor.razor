@@ -1,6 +1,6 @@
 ﻿@inherits ShapeEditor<G>
 
-<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement StopPropagation=@(!SVGElement.IsChildElement)>
+<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement MouseButtonTrigger="SVGElement.ShouldTriggerContextMenu ? MouseButtonTrigger.Right : (MouseButtonTrigger)4">
     <g @ref=ElementReference
     @onfocusin="FocusElement"
     @onfocusout="UnfocusElement"

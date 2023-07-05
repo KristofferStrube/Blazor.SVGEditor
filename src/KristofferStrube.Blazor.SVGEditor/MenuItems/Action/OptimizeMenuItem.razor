@@ -1,0 +1,52 @@
+﻿@if (SVGEditor.MarkedShapes.Any())
+{
+    <Item>
+        <div class="icon">📈</div> Optimize
+        <SubMenu>
+            <Item OnClick="() => SnapShapesToInteger()"><div class="icon">🔢</div> Snap To Integer</Item>
+            @if (SVGEditor.MarkedShapes.Any(shape => shape is Path))
+            {
+                <Item OnClick="() => CompactPaths()"><div class="icon">🤏</div> Compact paths to relative</Item>
+            }
+        </SubMenu>
+    </Item>
+}
+
+@code {
+    [CascadingParameter]
+    public SVGEditor SVGEditor { get; set; } = default!;
+
+    [Parameter]
+    public object Data { get; set; } = default!;
+
+    protected void SnapShapesToInteger()
+    {
+        SVGEditor.MarkedShapes
+            .ForEach(s =>
+            {
+                s.SnapToInteger();
+            });
+    }
+
+    protected void CompactPaths()
+    {
+        SVGEditor.MarkedShapes
+            .ForEach(s =>
+            {
+                if (s is Path p)
+                {
+                    p.ConvertToRelative();
+                }
+                else if (s is G g)
+                {
+                    g.ChildShapes.ForEach(c =>
+                    {
+                        if (c is Path p)
+                        {
+                            p.ConvertToRelative();
+                        }
+                    });
+                }
+            });
+    }
+}

@@ -1,0 +1,35 @@
+﻿@if (Data is Shape shape)
+{
+    <Item OnClick="() => Group(shape)"><div class="icon">🔗</div> Group</Item>
+}
+
+@code {
+    [CascadingParameter]
+    public SVGEditor SVGEditor { get; set; } = default!;
+
+    [Parameter]
+    public object Data { get; set; } = default!;
+
+    public void Group(Shape shape)
+    {
+        var elementsAsHtml = SVGEditor.Elements.Select(e => e.StoredHtml).ToList();
+        if (SVGEditor.MarkedShapes.Count == 1)
+        {
+            int pos = SVGEditor.Elements.IndexOf(shape);
+            elementsAsHtml[pos] = "<g>" + shape.StoredHtml + "</g>";
+        }
+        else if (SVGEditor.MarkedShapes is { Count: > 1 })
+        {
+            ISVGElement frontElement = SVGEditor.MarkedShapes.MaxBy(SVGEditor.Elements.IndexOf)!;
+            elementsAsHtml[SVGEditor.Elements.IndexOf(frontElement)] = "<g>\n" + string.Join("\n", SVGEditor.MarkedShapes.OrderBy(e => SVGEditor.Elements.IndexOf(e)).Select(e => e.StoredHtml)) + "\n</g>";
+            foreach (ISVGElement element in SVGEditor.MarkedShapes.Where(e => e != frontElement))
+            {
+                int pos = SVGEditor.Elements.IndexOf(element);
+                SVGEditor.Elements.RemoveAt(pos);
+                elementsAsHtml.RemoveAt(pos);
+            }
+        }
+        SVGEditor.ClearSelectedShapes();
+        SVGEditor.InputUpdated?.Invoke(string.Join("\n", elementsAsHtml));
+    }
+}

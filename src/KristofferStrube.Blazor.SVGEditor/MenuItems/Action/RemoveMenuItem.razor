@@ -1,0 +1,12 @@
+﻿@if (Data is ISVGElement element)
+{
+    <Item OnClick="() => SVGEditor.Remove()"><div class="icon">❌</div> Remove</Item>
+}
+
+@code {
+    [CascadingParameter]
+    public SVGEditor SVGEditor { get; set; } = default!;
+
+    [Parameter]
+    public object Data { get; set; } = default!;
+}

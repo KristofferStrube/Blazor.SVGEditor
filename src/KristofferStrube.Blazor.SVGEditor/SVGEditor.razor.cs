@@ -6,7 +6,8 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using KristofferStrube.Blazor.SVGEditor.MenuItems.CompleteNewShape;
 using KristofferStrube.Blazor.SVGEditor.MenuItems.AddNewSVGElement;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using KristofferStrube.Blazor.SVGEditor.MenuItems.Action;
+using KristofferStrube.Blazor.SVGEditor.ShapeEditors;
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
@@ -72,33 +73,6 @@ public partial class SVGEditor : ComponentBase
     public bool DisableScaleLabel { get; set; }
 
     [Parameter]
-    public bool DisableContextMenuFillItem { get; set; }
-
-    [Parameter]
-    public bool DisableContextMenuStrokeItem { get; set; }
-
-    [Parameter]
-    public bool DisableContextMenuFontItem { get; set; }
-
-    [Parameter]
-    public bool DisableContextMenuAnimationsItem { get; set; }
-
-    [Parameter]
-    public bool DisableContextMenuMoveItem { get; set; }
-
-    [Parameter]
-    public bool DisableContextMenuScaleItem { get; set; }
-
-    [Parameter]
-    public bool DisableContextMenuGroupItem { get; set; }
-
-    [Parameter]
-    public bool DisableContextMenuUngroupItem { get; set; }
-
-    [Parameter]
-    public bool DisableContextMenuOptimizeItem { get; set; }
-
-    [Parameter]
     public List<CompleteNewShapeMenuItem> CompleteNewShapeMenuItems { get; set; } = new() { 
         new(typeof(CompleteWithoutCloseMenuItem), (svgEditor) => svgEditor.SelectedShapes[0] is Path),
         new(typeof(RemoveLastInstruction), (svgEditor) => svgEditor.SelectedShapes[0] is Path),
@@ -120,7 +94,32 @@ public partial class SVGEditor : ComponentBase
         new(typeof(AddNewAnimationMenuItem), (_, data) => data is Shape shape && !shape.IsChildElement && !shape.AnimationElements.Any(a => a.AttributeName is "fill" or "stroke" or "d")),
     };
 
+    [Parameter]
+    public List<ActionMenuItem> ActionMenuItems { get; set; } = new() {
+        new(typeof(FillMenuItem), (_, data) => data is Shape shape && !shape.IsChildElement),
+        new(typeof(StrokeMenuItem), (_, data) => data is Shape shape && !shape.IsChildElement),
+        new(typeof(TextMenuItem), (_, data) => data is Text text && !text.IsChildElement),
+        new(typeof(AnimationsMenuItem), (_, data) => data is Shape shape && !shape.IsChildElement && shape.HasAnimation),
+        new(typeof(MoveMenuItem), (_, data) => data is Shape shape && !shape.IsChildElement),
+        new(typeof(ScaleMenuItem), (_, data) => data is Path path && !path.IsChildElement),
+        new(typeof(GroupMenuItem), (_, data) => data is Shape shape && !shape.IsChildElement),
+        new(typeof(UngroupMenuItem), (_, data) => data is G g && !g.IsChildElement),
+        new(typeof(RemoveMenuItem), (svgEditor, data) => data is Shape && !svgEditor.DisableRemoveElement),
+        new(typeof(CopyMenuItem), (svgEditor, data) => data is Shape && !svgEditor.DisableCopyElement),
+        new(typeof(PasteMenuItem), (svgEditor, _) => !svgEditor.DisablePasteElement),
+        new(typeof(OptimizeMenuItem), (_, data) => data is Shape shape && !shape.IsChildElement),
+    };
+
+    public bool ShouldShowContextMenu(object? data) => !DisableContextMenu
+        && (data is null || data is Shape { IsChildElement: false })
+        && ((SelectedShapes.Count == 1 && EditMode == EditMode.Add)
+            || AddNewSVGElementMenuItems.Any(item => item.ShouldBePresented(this, data))
+            || data is Stop
+            || ActionMenuItems.Any(item => item.ShouldBePresented(this, data))
+        );
+
     internal IDocument Document { get; set; } = default!;
+
     public double Scale { get; set; } = 1;
 
     public (double x, double y) Translate = (0, 0);

@@ -1,0 +1,20 @@
+﻿@if (Data is ISVGElement element)
+{
+    <Item>
+        <div class="icon">↕</div> Move
+        <SubMenu>
+            <Item OnClick="() => SVGEditor.MoveToBack(element)"><div class="icon">⏫</div> To Back</Item>
+            <Item OnClick="() => SVGEditor.MoveBack(element)"><div class="icon">🔼</div> Back</Item>
+            <Item OnClick="() => SVGEditor.MoveForward(element)"><div class="icon">🔽</div> Forward</Item>
+            <Item OnClick="() => SVGEditor.MoveToFront(element)"><div class="icon">⏬</div> To Front</Item>
+        </SubMenu>
+    </Item>
+}
+
+@code {
+    [CascadingParameter]
+    public SVGEditor SVGEditor { get; set; } = default!;
+
+    [Parameter]
+    public object Data { get; set; } = default!;
+}

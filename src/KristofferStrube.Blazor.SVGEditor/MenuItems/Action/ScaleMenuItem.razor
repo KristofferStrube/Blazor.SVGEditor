@@ -1,0 +1,23 @@
+﻿@if (Data is Path path)
+{
+    <Item data=path OnClick="() => ScaleShape(path)"> <div class="icon">↔</div> Scale</Item>
+}
+
+@code {
+    [CascadingParameter]
+    public SVGEditor SVGEditor { get; set; } = default!;
+
+    [Parameter]
+    public object Data { get; set; } = default!;
+
+    private void ScaleShape(Shape shape)
+    {
+        SVGEditor.ClearSelectedShapes();
+        SVGEditor.SelectShape(shape);
+        if (SVGEditor.FocusedShape != shape)
+        {
+            SVGEditor.UnfocusShape();
+        }
+        SVGEditor.EditMode = EditMode.Scale;
+    }
+}

@@ -1,0 +1,16 @@
+﻿@if (Data is Shape shape)
+{
+    <Item OnClick="() => SVGEditor.PasteElementsAsync(shape)"><div class="icon">📋</div> Paste</Item>
+}
+else
+{
+    <Item OnClick="() => SVGEditor.PasteElementsAsync(null)"><div class="icon">📋</div> Paste</Item>
+}
+
+@code {
+    [CascadingParameter]
+    public SVGEditor SVGEditor { get; set; } = default!;
+
+    [Parameter]
+    public object Data { get; set; } = default!;
+}

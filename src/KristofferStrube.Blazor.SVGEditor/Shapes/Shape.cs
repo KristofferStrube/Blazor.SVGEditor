@@ -87,6 +87,7 @@ public abstract class Shape : ISVGElement
     public Action<ISVGElement>? Changed { get; set; }
     public bool Selected => SVG.VisibleSelectionShapes.Contains(this);
     public bool IsChildElement => Element.ParentElement?.TagName is "G" or null;
+    public bool ShouldTriggerContextMenu => SVG.ShouldShowContextMenu(this);
     public virtual string StateRepresentation =>
         string.Join("-", Element.Attributes.Select(a => a.Value)) +
         Selected.ToString() +

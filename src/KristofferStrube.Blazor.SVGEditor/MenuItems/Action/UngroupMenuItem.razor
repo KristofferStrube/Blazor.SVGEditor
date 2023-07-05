@@ -1,0 +1,21 @@
+﻿@if (Data is G g)
+{
+    <Item OnClick="() => Ungroup(g)"><div class="icon">📤</div> Ungroup</Item>
+}
+
+@code {
+    [CascadingParameter]
+    public SVGEditor SVGEditor { get; set; } = default!;
+
+    [Parameter]
+    public object Data { get; set; } = default!;
+
+    public void Ungroup(G g)
+    {
+        var elementsAsHtml = SVGEditor.Elements.Select(e => e.StoredHtml).ToList();
+        int pos = SVGEditor.Elements.IndexOf(g);
+        elementsAsHtml[pos] = string.Join("\n", g.ChildShapes.Select(e => e.StoredHtml));
+        SVGEditor.ClearSelectedShapes();
+        SVGEditor.InputUpdated?.Invoke(string.Join("\n", elementsAsHtml));
+    }
+}

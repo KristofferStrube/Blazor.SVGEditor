@@ -30,84 +30,63 @@ public partial class SVGEditor
         ColorPickerShapes = null;
     }
 
-    private void SetFillForMarkedShapes(string value)
-    {
-        MarkedShapes.ForEach(shape => shape.Fill = value);
-    }
-
-    private void SetStrokeForMarkedShapes(string value)
-    {
-        MarkedShapes.ForEach(shape => shape.Stroke = value);
-    }
-
-    private void MoveToBack(Shape shape)
+    public void MoveToBack(ISVGElement element)
     {
         ClearSelectedShapes();
-        _ = Elements.Remove(shape);
-        Elements.Insert(0, shape);
+        _ = Elements.Remove(element);
+        Elements.Insert(0, element);
         Elements.ForEach(e => e.UpdateHtml());
         UpdateInput();
         RerenderAll();
     }
 
-    private void MoveBack(Shape shape)
+    public void MoveBack(ISVGElement element)
     {
-        int index = Elements.IndexOf(shape);
+        int index = Elements.IndexOf(element);
         if (index != 0)
         {
             ClearSelectedShapes();
-            _ = Elements.Remove(shape);
-            Elements.Insert(index - 1, shape);
+            _ = Elements.Remove(element);
+            Elements.Insert(index - 1, element);
             Elements.ForEach(e => e.UpdateHtml());
             UpdateInput();
             RerenderAll();
         }
     }
 
-    private void MoveForward(Shape shape)
+    public void MoveForward(ISVGElement element)
     {
-        int index = Elements.IndexOf(shape);
+        int index = Elements.IndexOf(element);
         if (index != Elements.Count - 1)
         {
             ClearSelectedShapes();
-            _ = Elements.Remove(shape);
-            Elements.Insert(index + 1, shape);
+            _ = Elements.Remove(element);
+            Elements.Insert(index + 1, element);
             Elements.ForEach(e => e.UpdateHtml());
             UpdateInput();
             RerenderAll();
         }
     }
 
-    private void MoveToFront(Shape shape)
+    public void MoveToFront(ISVGElement element)
     {
         ClearSelectedShapes();
-        _ = Elements.Remove(shape);
-        Elements.Insert(Elements.Count, shape);
+        _ = Elements.Remove(element);
+        Elements.Insert(Elements.Count, element);
         Elements.ForEach(e => e.UpdateHtml());
         UpdateInput();
         RerenderAll();
     }
 
-    public void CompleteShape(ISVGElement sVGElement)
+    public void CompleteShape(Shape shape)
     {
         if (EditMode is not EditMode.Add) return;
         if (SelectedShapes.Count == 1)
         {
             EditMode = EditMode.None;
-            sVGElement.Complete();
+            shape.Complete();
             ClearSelectedShapes();
         }
-    }
-
-    private void ScaleShape(Shape shape)
-    {
-        ClearSelectedShapes();
-        SelectShape(shape);
-        if (FocusedShape != shape)
-        {
-            UnfocusShape();
-        }
-        EditMode = EditMode.Scale;
     }
 
     public void Remove()
@@ -138,92 +117,5 @@ public partial class SVGEditor
         }
         ClearSelectedShapes();
         InputUpdated?.Invoke(string.Join("\n", elementsAsHtml));
-    }
-
-    public void Group(Shape shape)
-    {
-        var elementsAsHtml = Elements.Select(e => e.StoredHtml).ToList();
-        if (MarkedShapes.Count == 1)
-        {
-            int pos = Elements.IndexOf(shape);
-            elementsAsHtml[pos] = "<g>" + shape.StoredHtml + "</g>";
-        }
-        else if (MarkedShapes is { Count: > 1 })
-        {
-            ISVGElement frontElement = MarkedShapes.MaxBy(Elements.IndexOf)!;
-            elementsAsHtml[Elements.IndexOf(frontElement)] = "<g>\n" + string.Join("\n", MarkedShapes.OrderBy(e => Elements.IndexOf(e)).Select(e => e.StoredHtml)) + "\n</g>";
-            foreach (ISVGElement element in MarkedShapes.Where(e => e != frontElement))
-            {
-                int pos = Elements.IndexOf(element);
-                Elements.RemoveAt(pos);
-                elementsAsHtml.RemoveAt(pos);
-            }
-        }
-        ClearSelectedShapes();
-        InputUpdated?.Invoke(string.Join("\n", elementsAsHtml));
-    }
-
-    public void Ungroup(G g)
-    {
-        var elementsAsHtml = Elements.Select(e => e.StoredHtml).ToList();
-        int pos = Elements.IndexOf(g);
-        elementsAsHtml[pos] = string.Join("\n", g.ChildShapes.Select(e => e.StoredHtml));
-        ClearSelectedShapes();
-        InputUpdated?.Invoke(string.Join("\n", elementsAsHtml));
-    }
-
-    protected void StopAnimation()
-    {
-        MarkedShapes
-            .ForEach(s =>
-            {
-                s.AnimationElements.ForEach(a =>
-                {
-                    a.Playing = false;
-                });
-            });
-    }
-
-    protected void PlayAnimation()
-    {
-        MarkedShapes
-            .ForEach(s =>
-            {
-                s.AnimationElements.ForEach(a =>
-                {
-                    a.Playing = true;
-                });
-            });
-    }
-
-    protected void SnapShapesToInteger()
-    {
-        MarkedShapes
-            .ForEach(s =>
-            {
-                s.SnapToInteger();
-            });
-    }
-
-    protected void CompactPaths()
-    {
-        MarkedShapes
-            .ForEach(s =>
-            {
-                if (s is Path p)
-                {
-                    p.ConvertToRelative();
-                }
-                else if (s is G g)
-                {
-                    g.ChildShapes.ForEach(c =>
-                    {
-                        if (c is Path p)
-                        {
-                            p.ConvertToRelative();
-                        }
-                    });
-                }
-            });
     }
 }

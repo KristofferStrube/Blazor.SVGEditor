@@ -1,0 +1,52 @@
+﻿@if (Data is Shape shape && shape.HasAnimation)
+{
+    <Item>
+        <div class="icon">💥</div> Animations
+        <SubMenu>
+            @if (shape.AnimationElements.Any(a => a.Playing))
+            {
+                <Item OnClick="StopAnimation"><div class="icon">🛑</div> Stop Animations</Item>
+            }
+            else
+            {
+                <Item OnClick="PlayAnimation"><div class="icon">▶</div> Play Animations</Item>
+            }
+            @foreach (BaseAnimate animate in shape.AnimationElements)
+            {
+                <DynamicComponent Type=animate.MenuItem Parameters=@(new Dictionary<string, object> { { "Animate", animate } }) />
+            }
+        </SubMenu>
+    </Item>
+}
+
+@code {
+    [CascadingParameter]
+    public SVGEditor SVGEditor { get; set; } = default!;
+
+    [Parameter]
+    public object Data { get; set; } = default!;
+
+    protected void StopAnimation()
+    {
+        SVGEditor.MarkedShapes
+            .ForEach(s =>
+            {
+                s.AnimationElements.ForEach(a =>
+                {
+                    a.Playing = false;
+                });
+            });
+    }
+
+    protected void PlayAnimation()
+    {
+        SVGEditor.MarkedShapes
+            .ForEach(s =>
+            {
+                s.AnimationElements.ForEach(a =>
+                {
+                    a.Playing = true;
+                });
+            });
+    }
+}

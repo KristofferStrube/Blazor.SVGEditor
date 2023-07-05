@@ -1,149 +1,78 @@
 ﻿@page "/Minimal"
+@using KristofferStrube.Blazor.SVGEditor.MenuItems.Action;
 
 <PageTitle>Minimal configured SVGEditor</PageTitle>
 
 <p>
     Here we have disabled all interaction with the SVG Editor except for selecting shapes, deselecting shapes, moving shapes, and moving anchor points.
 </p>
-<div style="display:flex; flex-wrap: wrap; grid-column-gap: 30px;">
-    <div>
-        <InputCheckbox @bind-Value=DisableContextMenu id="DisableContextMenu" />
-        <label for="DisableContextMenu">Disable ContextMenu</label>
+@if (SVGEditor is not null)
+{
+    <div style="display:flex; flex-wrap: wrap; grid-column-gap: 30px;">
+        <div>
+            <InputCheckbox @bind-Value=SVGEditor.DisableContextMenu id="DisableContextMenu" />
+            <label for="DisableContextMenu">Disable ContextMenu</label>
+        </div>
+        <div>
+            <InputCheckbox @bind-Value=SVGEditor.DisableZoom id="DisableZoom" />
+            <label for="DisableZoom">Disable Zoom</label>
+        </div>
+        <div>
+            <InputCheckbox @bind-Value=SVGEditor.DisablePanning id="DisablePanning" />
+            <label for="DisablePanning">Disable Panning</label>
+        </div>
+        <div>
+            <InputCheckbox @bind-Value=SVGEditor.DisableSelecting id="DisableSelecting" />
+            <label for="DisableSelecting">Disable Selecting</label>
+        </div>
+        <div>
+            <InputCheckbox @bind-Value=SVGEditor.DisableDeselecting id="DisableDeselecting" />
+            <label for="DisableDeselecting">Disable Deselecting</label>
+        </div>
+        <div>
+            <InputCheckbox @bind-Value=SVGEditor.DisableBoxSelection id="DisableBoxSelection" />
+            <label for="DisableBoxSelection">Disable Box Selection</label>
+        </div>
+        <div>
+            <InputCheckbox @bind-Value=SVGEditor.DisableMoveEditMode id="DisableMoveEditMode" />
+            <label for="DisableMoveEditMode">Disable Move EditMode</label>
+        </div>
+        <div>
+            <InputCheckbox @bind-Value=SVGEditor.DisableMoveAnchorEditMode id="DisableMoveAnchorEditMode" />
+            <label for="DisableMoveAnchorEditMode">Disable MoveAnchor EditMode</label>
+        </div>
+        <div>
+            <InputCheckbox @bind-Value=SVGEditor.DisableRemoveElement id="DisableRemoveElement" />
+            <label for="DisableRemoveElement">Disable Remove Element</label>
+        </div>
+        <div>
+            <InputCheckbox @bind-Value=SVGEditor.DisableCopyElement id="DisableCopyElement" />
+            <label for="DisableCopyElement">Disable Copy Element</label>
+        </div>
+        <div>
+            <InputCheckbox @bind-Value=SVGEditor.DisablePasteElement id="DisablePasteElement" />
+            <label for="DisablePasteElement">Disable Paste Element</label>
+        </div>
+        <div>
+            <InputCheckbox @bind-Value=SVGEditor.DisableScaleLabel id="DisableScaleLabel" />
+            <label for="DisableScaleLabel">Disable Scale Label</label>
+        </div>
     </div>
-    <div>
-        <InputCheckbox @bind-Value=DisableZoom id="DisableZoom" />
-        <label for="DisableZoom">Disable Zoom</label>
-    </div>
-    <div>
-        <InputCheckbox @bind-Value=DisablePanning id="DisablePanning" />
-        <label for="DisablePanning">Disable Panning</label>
-    </div>
-    <div>
-        <InputCheckbox @bind-Value=DisableSelecting id="DisableSelecting" />
-        <label for="DisableSelecting">Disable Selecting</label>
-    </div>
-    <div>
-        <InputCheckbox @bind-Value=DisableDeselecting id="DisableDeselecting" />
-        <label for="DisableDeselecting">Disable Deselecting</label>
-    </div>
-    <div>
-        <InputCheckbox @bind-Value=DisableBoxSelection id="DisableBoxSelection" />
-        <label for="DisableBoxSelection">Disable Box Selection</label>
-    </div>
-    <div>
-        <InputCheckbox @bind-Value=DisableMoveEditMode id="DisableMoveEditMode" />
-        <label for="DisableMoveEditMode">Disable Move EditMode</label>
-    </div>
-    <div>
-        <InputCheckbox @bind-Value=DisableMoveAnchorEditMode id="DisableMoveAnchorEditMode" />
-        <label for="DisableMoveAnchorEditMode">Disable MoveAnchor EditMode</label>
-    </div>
-    <div>
-        <InputCheckbox @bind-Value=DisableRemoveElement id="DisableRemoveElement" />
-        <label for="DisableRemoveElement">Disable Remove Element</label>
-    </div>
-    <div>
-        <InputCheckbox @bind-Value=DisableCopyElement id="DisableCopyElement" />
-        <label for="DisableCopyElement">Disable Copy Element</label>
-    </div>
-    <div>
-        <InputCheckbox @bind-Value=DisablePasteElement id="DisablePasteElement" />
-        <label for="DisablePasteElement">Disable Paste Element</label>
-    </div>
-    <div>
-        <InputCheckbox @bind-Value=DisableScaleLabel id="DisableScaleLabel" />
-        <label for="DisableScaleLabel">Disable Scale Label</label>
-    </div>
-    <div>
-        <InputCheckbox @bind-Value=DisableContextMenuFillItem id="DisableContextMenuFillItem" />
-        <label for="DisableContextMenuFillItem">Disable ContextMenu Fill Item</label>
-    </div>
-    <div>
-        <InputCheckbox @bind-Value=DisableContextMenuStrokeItem id="DisableContextMenuStrokeItem" />
-        <label for="DisableContextMenuStrokeItem">Disable ContextMenu Stroke Item</label>
-    </div>
-    <div>
-        <InputCheckbox @bind-Value=DisableContextMenuFontItem id="DisableContextMenuFontItem" />
-        <label for="DisableContextMenuFontItem">Disable ContextMenu Font Item</label>
-    </div>
-    <div>
-        <InputCheckbox @bind-Value=DisableContextMenuAnimationsItem id="DisableContextMenuAnimationsItem" />
-        <label for="DisableContextMenuAnimationsItem">Disable ContextMenu Animations Item</label>
-    </div>
-    <div>
-        <InputCheckbox @bind-Value=DisableContextMenuMoveItem id="DisableContextMenuMoveItem" />
-        <label for="DisableContextMenuMoveItem">Disable ContextMenu Move Item</label>
-    </div>
-    <div>
-        <InputCheckbox @bind-Value=DisableContextMenuScaleItem id="DisableContextMenuScaleItem" />
-        <label for="DisableContextMenuScaleItem">Disable ContextMenu Scale Item</label>
-    </div>
-    <div>
-        <InputCheckbox @bind-Value=DisableContextMenuGroupItem id="DisableContextMenuGroupItem" />
-        <label for="DisableContextMenuGroupItem">Disable ContextMenu Group Item</label>
-    </div>
-    <div>
-        <InputCheckbox @bind-Value=DisableContextMenuUngroupItem id="DisableContextMenuUngroupItem" />
-        <label for="DisableContextMenuUngroupItem">Disable ContextMenu Ungroup Item</label>
-    </div>
-    <div>
-        <InputCheckbox @bind-Value=DisableContextMenuOptimizeItem id="DisableContextMenuOptimizeItem" />
-        <label for="DisableContextMenuOptimizeItem">Disable ContextMenu Optimize Item</label>
-    </div>
-</div>
+}
 <div style="height:70vh">
     <SVGEditor @ref="SVGEditor"
                Input=@Input
                InputUpdated="(string s) => { Input = s; StateHasChanged(); }"
                SnapToInteger=true
-               DisableContextMenu=DisableContextMenu
-               DisableZoom=DisableZoom
-               DisablePanning=DisablePanning
-               DisableSelecting=DisableSelecting
-               DisableDeselecting=DisableDeselecting
-               DisableBoxSelection=DisableBoxSelection
-               DisableMoveEditMode=DisableMoveEditMode
-               DisableMoveAnchorEditMode=DisableMoveAnchorEditMode
-               DisableRemoveElement=DisableRemoveElement
-               DisableCopyElement=DisableCopyElement
-               DisablePasteElement=DisablePasteElement
-               DisableScaleLabel=DisableScaleLabel
-               DisableContextMenuFillItem=DisableContextMenuFillItem
-               DisableContextMenuStrokeItem=DisableContextMenuStrokeItem
-               DisableContextMenuFontItem=DisableContextMenuFontItem
-               DisableContextMenuAnimationsItem=DisableContextMenuAnimationsItem
-               DisableContextMenuMoveItem=DisableContextMenuMoveItem
-               DisableContextMenuScaleItem=DisableContextMenuScaleItem
-               DisableContextMenuGroupItem=DisableContextMenuGroupItem
-               DisableContextMenuUngroupItem=DisableContextMenuUngroupItem
-               DisableContextMenuOptimizeItem=DisableContextMenuOptimizeItem
                AddNewSVGElementMenuItems="new()"
-               />
+               ActionMenuItems="new() {
+                        new(typeof(RemoveMenuItem), (svgEditor, data) => data is ISVGElement && !svgEditor.DisableRemoveElement),
+                        new(typeof(CopyMenuItem), (svgEditor, data) => data is ISVGElement && !svgEditor.DisableCopyElement),
+                        new(typeof(PasteMenuItem), (svgEditor, data) => data is ISVGElement && !svgEditor.DisablePasteElement),
+                }" />
 </div>
 
 @code {
-    private bool DisableContextMenu = true;
-    private bool DisableZoom = true;
-    private bool DisablePanning = true;
-    private bool DisableSelecting = false;
-    private bool DisableDeselecting = false;
-    private bool DisableBoxSelection = true;
-    private bool DisableMoveEditMode = false;
-    private bool DisableMoveAnchorEditMode = false;
-    private bool DisableRemoveElement = true;
-    private bool DisableCopyElement = true;
-    private bool DisablePasteElement = true;
-    private bool DisableScaleLabel = true;
-    private bool DisableContextMenuFillItem = true;
-    private bool DisableContextMenuStrokeItem = true;
-    private bool DisableContextMenuFontItem = true;
-    private bool DisableContextMenuAnimationsItem = true;
-    private bool DisableContextMenuMoveItem = true;
-    private bool DisableContextMenuScaleItem = true;
-    private bool DisableContextMenuGroupItem = true;
-    private bool DisableContextMenuUngroupItem = true;
-    private bool DisableContextMenuOptimizeItem = true;
-
     private SVGEditor SVGEditor;
     private string Input =
     """<polygon stroke="#FB8C00" stroke-width="10" fill="#3949AB" points="100,100 300,100 300,300 100,300" stroke-linecap="round" stroke-linejoin="round" stroke-dashoffset="15" stroke-dasharray="30 20"></polygon><polygon stroke="black" stroke-width="3" fill="grey" points="100,400 300,400 300,600 100,600"></polygon>""";
@@ -152,6 +81,20 @@
     {
         if (!firstRender) return;
 
+
+        SVGEditor.DisableContextMenu = true;
+        SVGEditor.DisableZoom = true;
+        SVGEditor.DisablePanning = true;
+        SVGEditor.DisableSelecting = false;
+        SVGEditor.DisableDeselecting = false;
+        SVGEditor.DisableBoxSelection = true;
+        SVGEditor.DisableMoveEditMode = false;
+        SVGEditor.DisableMoveAnchorEditMode = false;
+        SVGEditor.DisableRemoveElement = true;
+        SVGEditor.DisableCopyElement = true;
+        SVGEditor.DisablePasteElement = true;
+        SVGEditor.DisableScaleLabel = true;
         SVGEditor.SelectedShapes.Add(SVGEditor.Elements.First() as Shape);
+        StateHasChanged();
     }
 } 

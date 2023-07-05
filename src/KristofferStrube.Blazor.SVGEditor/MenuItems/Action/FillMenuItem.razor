@@ -1,0 +1,39 @@
+﻿@if (Data is Shape shape)
+{
+    <Item OnClick=@(() => SVGEditor.OpenColorPicker("Fill", shape.Fill, _ => {}))>
+        <ColorCube Color=@shape.Fill /> Fill
+        <SubMenu>
+            <Item OnClick=@(_ => SetFillForMarkedShapes("none"))><div class="icon">⚪</div> Set To None</Item>
+            <Item OnClick=@(_ => SetFillForMarkedShapes("transparent"))><div class="icon">🔘</div> Set To Transparent</Item>
+            <Item OnClick=@(_ => SetFillForMarkedShapes("black"))><div class="icon">⚫</div> Set To Black</Item>
+            @if (SVGEditor.Definitions.Values.Count(d => d is LinearGradient) > 0)
+            {
+                <Item>
+                    <div class="icon">🦓</div> Gradients
+                    <SubMenu>
+                        @foreach (var (key, value) in SVGEditor.Definitions)
+                        {
+                            <Item OnClick=@(_ => SetFillForMarkedShapes(key.ToUrl()))>
+                                <ColorCube Color=@($"url('#{key}')") />
+                                @key
+                            </Item>
+                        }
+                    </SubMenu>
+                </Item>
+            }
+        </SubMenu>
+    </Item>
+}
+
+@code {
+    [CascadingParameter]
+    public SVGEditor SVGEditor { get; set; } = default!;
+
+    [Parameter]
+    public object Data { get; set; } = default!;
+
+    private void SetFillForMarkedShapes(string value)
+    {
+        SVGEditor.MarkedShapes.ForEach(shape => shape.Fill = value);
+    }
+}
