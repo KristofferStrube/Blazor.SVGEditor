@@ -20,12 +20,23 @@
                 stroke-linejoin="@SVGElement.StrokeLinejoin.AsString()"
                 stroke-dasharray="@SVGElement.StrokeDasharray"
                 stroke-dashoffset="@SVGElement.StrokeDashoffset.AsString()"
-                fill="@SVGElement.Fill">
+                fill="@DarkenIfSelected(SVGElement.Fill)">
         </circle>
     </g>
 </ContextMenuTrigger>
 
 @code {
+    private string DarkenIfSelected(string color)
+    {
+        if (color[0] is not '#' || color.Length is not 7 || !SVGElement.Selected)
+        {
+            return color;
+        }
+
+        int[] parts = color[1..].Chunk(2).Select(part => int.Parse(part, System.Globalization.NumberStyles.HexNumber)).ToArray();
+        return "#" + string.Join("", parts.Select(part => Math.Max(0, part - 50).ToString("X2")));
+    }
+
     public async Task Select(MouseEventArgs eventArgs)
     {
         if (SVGElement.SVG.EditMode is EditMode.Add)
