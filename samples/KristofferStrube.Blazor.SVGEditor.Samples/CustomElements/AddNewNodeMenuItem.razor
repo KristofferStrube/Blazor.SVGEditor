@@ -1,0 +1,20 @@
+﻿@using BlazorContextMenu
+
+<Item OnClick="_ => Node.AddNew(SVGEditor)">
+    <div class="icon">⚫</div> New Node
+</Item>
+
+@code {
+    private string text = string.Empty;
+
+    [CascadingParameter]
+    public SVGEditor SVGEditor { get; set; } = default!;
+
+    [Parameter]
+    public object Data { get; set; } = default!;
+
+    private void AddNew()
+    {
+        Node.AddNew(SVGEditor);
+    }
+}

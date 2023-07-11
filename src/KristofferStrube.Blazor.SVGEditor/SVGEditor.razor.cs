@@ -20,15 +20,18 @@ public partial class SVGEditor : ComponentBase
     private string ColorPickerTitle => $"Pick {ColorPickerAttributeName} Color";
     private bool IsColorPickerOpen => ColorPickerShapes is not null;
 
-    public bool ShouldShowContextMenu(object? data) => !DisableContextMenu
+    public bool ShouldShowContextMenu(object? data)
+    {
+        return !DisableContextMenu
         && (data is null || data is Shape { IsChildElement: false })
         && ((SelectedShapes.Count == 1 && EditMode == EditMode.Add)
             || AddNewSVGElementMenuItems.Any(item => item.ShouldBePresented(this, data))
             || data is Stop
             || ActionMenuItems.Any(item => item.ShouldBePresented(this, data))
         );
+    }
 
-    internal IDocument Document { get; set; } = default!;
+    public IDocument Document { get; set; } = default!;
 
     public double Scale { get; set; } = 1;
 
@@ -62,8 +65,16 @@ public partial class SVGEditor : ComponentBase
         get => editMode;
         set
         {
-            if (value is EditMode.Move && DisableMoveEditMode) return;
-            if (value is EditMode.MoveAnchor && DisableMoveAnchorEditMode) return;
+            if (value is EditMode.Move && DisableMoveEditMode)
+            {
+                return;
+            }
+
+            if (value is EditMode.MoveAnchor && DisableMoveAnchorEditMode)
+            {
+                return;
+            }
+
             editMode = value;
         }
     }
@@ -94,18 +105,18 @@ public partial class SVGEditor : ComponentBase
         IBrowsingContext context = BrowsingContext.New();
         Document = await context.OpenAsync(req => req.Content(Input));
 
-        Elements = Document.GetElementsByTagName("BODY")[0].Children.Select(child =>
+        Elements = new();
+        foreach (IElement child in Document.GetElementsByTagName("BODY")[0].Children)
         {
-            ISVGElement? sVGElement = SupportedTypes.TryGetValue(child.TagName, out Type? type)
+            ISVGElement? sVGElement = SupportedElements.FirstOrDefault(se => se.CanHandle(child))?.ElementType is Type type
                 ? Activator.CreateInstance(type, child, this) as ISVGElement
                 : throw new NotImplementedException($"Tag not supported:\n {child.OuterHtml}");
             if (sVGElement is not null)
             {
                 sVGElement.Changed = UpdateInput;
             }
-            return sVGElement!;
+            Elements.Add(sVGElement!);
         }
-        ).ToList();
 
         Elements.ForEach(e => e.UpdateHtml());
     }
@@ -134,25 +145,41 @@ public partial class SVGEditor : ComponentBase
 
     public void SelectShape(Shape shape)
     {
-        if (DisableSelecting) return;
+        if (DisableSelecting)
+        {
+            return;
+        }
+
         SelectedShapes.Add(shape);
     }
 
     public void ClearSelectedShapes()
     {
-        if (DisableDeselecting) return;
+        if (DisableDeselecting)
+        {
+            return;
+        }
+
         SelectedShapes.Clear();
     }
 
     public void FocusShape(Shape shape)
     {
-        if (DisableSelecting) return;
+        if (DisableSelecting)
+        {
+            return;
+        }
+
         FocusedShape = shape;
     }
 
     public void UnfocusShape()
     {
-        if (DisableDeselecting) return;
+        if (DisableDeselecting)
+        {
+            return;
+        }
+
         FocusedShape = null;
     }
 
@@ -199,6 +226,7 @@ public partial class SVGEditor : ComponentBase
     {
         if (parent is null)
         {
+            SVGElement.BeforeBeingRemoved();
             _ = Elements.Remove(SVGElement);
         }
         else
@@ -232,7 +260,10 @@ public partial class SVGEditor : ComponentBase
 
     private void ZoomIn(double x, double y, double ZoomFactor = 1.1)
     {
-        if (DisableZoom) return;
+        if (DisableZoom)
+        {
+            return;
+        }
 
         double prevScale = Scale;
         Scale *= ZoomFactor;
@@ -245,7 +276,10 @@ public partial class SVGEditor : ComponentBase
 
     private void ZoomOut(double x, double y, double ZoomFactor = 1.1)
     {
-        if (DisableZoom) return;
+        if (DisableZoom)
+        {
+            return;
+        }
 
         double prevScale = Scale;
         Scale /= ZoomFactor;

@@ -22,11 +22,11 @@
             <label for="DisablePanning">Disable Panning</label>
         </div>
         <div>
-            <InputCheckbox @bind-Value=SVGEditor.DisableSelecting id="DisableSelecting" />
+            <InputCheckbox @bind-Value=DisableSelecting id="DisableSelecting" />
             <label for="DisableSelecting">Disable Selecting</label>
         </div>
         <div>
-            <InputCheckbox @bind-Value=SVGEditor.DisableDeselecting id="DisableDeselecting" />
+            <InputCheckbox @bind-Value=DisableDeselecting id="DisableDeselecting" />
             <label for="DisableDeselecting">Disable Deselecting</label>
         </div>
         <div>
@@ -34,11 +34,11 @@
             <label for="DisableBoxSelection">Disable Box Selection</label>
         </div>
         <div>
-            <InputCheckbox @bind-Value=SVGEditor.DisableMoveEditMode id="DisableMoveEditMode" />
+            <InputCheckbox @bind-Value=DisableMoveEditMode id="DisableMoveEditMode" />
             <label for="DisableMoveEditMode">Disable Move EditMode</label>
         </div>
         <div>
-            <InputCheckbox @bind-Value=SVGEditor.DisableMoveAnchorEditMode id="DisableMoveAnchorEditMode" />
+            <InputCheckbox @bind-Value=DisableMoveAnchorEditMode id="DisableMoveAnchorEditMode" />
             <label for="DisableMoveAnchorEditMode">Disable MoveAnchor EditMode</label>
         </div>
         <div>
@@ -64,36 +64,38 @@
                Input=@Input
                InputUpdated="(string s) => { Input = s; StateHasChanged(); }"
                SnapToInteger=true
-               AddNewSVGElementMenuItems="new()"
-               ActionMenuItems="new() {
-                        new(typeof(RemoveMenuItem), (svgEditor, data) => data is ISVGElement && !svgEditor.DisableRemoveElement),
-                        new(typeof(CopyMenuItem), (svgEditor, data) => data is ISVGElement && !svgEditor.DisableCopyElement),
-                        new(typeof(PasteMenuItem), (svgEditor, data) => data is ISVGElement && !svgEditor.DisablePasteElement),
-                }" />
+               AddNewSVGElementMenuItems=new()
+               ActionMenuItems=@(new() {
+                   new(typeof(RemoveMenuItem), (svgEditor, data) => !svgEditor.DisableRemoveElement),
+                   new(typeof(CopyMenuItem), (svgEditor, data) => !svgEditor.DisableCopyElement),
+                   new(typeof(PasteMenuItem), (svgEditor, data) => !svgEditor.DisablePasteElement),
+               })
+               DisableSelecting=DisableSelecting
+               DisableDeselecting=DisableDeselecting
+               DisableMoveEditMode=DisableMoveEditMode
+               DisableMoveAnchorEditMode=DisableMoveAnchorEditMode />
 </div>
 
 @code {
     private SVGEditor SVGEditor;
     private string Input =
     """<polygon stroke="#FB8C00" stroke-width="10" fill="#3949AB" points="100,100 300,100 300,300 100,300" stroke-linecap="round" stroke-linejoin="round" stroke-dashoffset="15" stroke-dasharray="30 20"></polygon><polygon stroke="black" stroke-width="3" fill="grey" points="100,400 300,400 300,600 100,600"></polygon>""";
+    private bool DisableSelecting;
+    private bool DisableDeselecting;
+    private bool DisableMoveEditMode;
+    private bool DisableMoveAnchorEditMode;
 
     protected override void OnAfterRender(bool firstRender)
     {
         if (!firstRender) return;
 
 
-        SVGEditor.DisableContextMenu = true;
-        SVGEditor.DisableZoom = true;
-        SVGEditor.DisablePanning = true;
-        SVGEditor.DisableSelecting = false;
-        SVGEditor.DisableDeselecting = false;
-        SVGEditor.DisableBoxSelection = true;
-        SVGEditor.DisableMoveEditMode = false;
-        SVGEditor.DisableMoveAnchorEditMode = false;
-        SVGEditor.DisableRemoveElement = true;
-        SVGEditor.DisableCopyElement = true;
-        SVGEditor.DisablePasteElement = true;
-        SVGEditor.DisableScaleLabel = true;
+        SVGEditor.DisableAllInteractions();
+
+        DisableSelecting = false;
+        DisableDeselecting = false;
+        DisableMoveEditMode = false;
+        DisableMoveAnchorEditMode = false;
         SVGEditor.SelectedShapes.Add(SVGEditor.Elements.First() as Shape);
         StateHasChanged();
     }

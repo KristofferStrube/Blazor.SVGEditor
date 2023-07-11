@@ -24,7 +24,7 @@ public class LinearGradient : ISVGElement
             .Select(child =>
             {
                 string? attributeName = child.GetAttribute("attributename");
-                if (attributeName is not null && SVG.AnimationTypes.TryGetValue(attributeName, out Type? animationType))
+                if (attributeName is not null && SVG.AnimationTypes.FirstOrDefault(at => at.AnimationAttributeName == attributeName)?.AnimationType is Type animationType)
                 {
                     var animation = (BaseAnimate)Activator.CreateInstance(animationType, child, this, SVG)!;
                     animation.Parent = this;
@@ -201,5 +201,9 @@ public class LinearGradient : ISVGElement
         {
             linearGradient.AddNewStop(color: firstStopColor);
         }
+    }
+
+    public void BeforeBeingRemoved()
+    {
     }
 }

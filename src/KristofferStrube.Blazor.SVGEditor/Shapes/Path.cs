@@ -36,12 +36,17 @@ public class Path : Shape
             {
                 editingAnimation.Values[editingAnimation.CurrentFrame!.Value] = Instructions.AsString();
                 editingAnimation.UpdateValues();
+                Changed?.Invoke(this);
             }
             else
             {
-                Element.SetAttribute("d", Instructions.AsString());
+                string serializedInstructions = Instructions.AsString();
+                if (Element.GetAttribute("d") != serializedInstructions)
+                {
+                    Element.SetAttribute("d", serializedInstructions);
+                    Changed?.Invoke(this);
+                }
             }
-            Changed?.Invoke(this);
         }
     }
 
@@ -140,7 +145,7 @@ public class Path : Shape
                 break;
             case EditMode.Move:
                 (double x, double y) diff = (x: x - SVG.MovePanner.x, y: y - SVG.MovePanner.y);
-                UpdatePoints(((double x, double y) point) => (point.x + diff.x, point.y + diff.y), (1, 1));
+                Instructions.UpdatePoints(((double x, double y) point) => (point.x + diff.x, point.y + diff.y), (1, 1));
                 UpdateData();
                 break;
             case EditMode.Add:
@@ -162,7 +167,7 @@ public class Path : Shape
                     case -1:
                         (double x, double y) moveDiff = (x: x - SVG.MovePanner.x, y: y - SVG.MovePanner.y);
                         SVG.MovePanner = (x, y);
-                        UpdatePoints(((double x, double y) point) => (point.x + moveDiff.x, point.y + moveDiff.y), (1, 1));
+                        Instructions.UpdatePoints(((double x, double y) point) => (point.x + moveDiff.x, point.y + moveDiff.y), (1, 1));
                         BoundingBox.X += moveDiff.x;
                         BoundingBox.Y += moveDiff.y;
                         break;
@@ -182,7 +187,7 @@ public class Path : Shape
                                 break;
                         }
                         Func<(double x, double y), (double, double)> topLeftScaler = ((double x, double y) point) => (((point.x - BoundingBox.X - BoundingBox.Width) * (BoundingBox.Width + BoundingBox.X - x) / BoundingBox.Width) + BoundingBox.X + BoundingBox.Width, ((point.y - BoundingBox.Y - BoundingBox.Height) * (BoundingBox.Height + BoundingBox.Y - y) / BoundingBox.Height) + BoundingBox.Y + BoundingBox.Height);
-                        UpdatePoints(topLeftScaler, ((BoundingBox.Width + BoundingBox.X - x) / BoundingBox.Width, (BoundingBox.Height + BoundingBox.Y - y) / BoundingBox.Height));
+                        Instructions.UpdatePoints(topLeftScaler, ((BoundingBox.Width + BoundingBox.X - x) / BoundingBox.Width, (BoundingBox.Height + BoundingBox.Y - y) / BoundingBox.Height));
                         BoundingBox.Width += BoundingBox.X - x;
                         BoundingBox.Height += BoundingBox.Y - y;
                         (BoundingBox.X, BoundingBox.Y) = (x, y);
@@ -203,7 +208,7 @@ public class Path : Shape
                                 break;
                         }
                         Func<(double x, double y), (double, double)> topRightScaler = ((double x, double y) point) => (((point.x - BoundingBox.X) * (x - BoundingBox.X) / BoundingBox.Width) + BoundingBox.X, ((point.y - BoundingBox.Y - BoundingBox.Height) * (BoundingBox.Height + BoundingBox.Y - y) / BoundingBox.Height) + BoundingBox.Y + BoundingBox.Height);
-                        UpdatePoints(topRightScaler, (1, 1));
+                        Instructions.UpdatePoints(topRightScaler, (1, 1));
                         BoundingBox.Width = x - BoundingBox.X;
                         BoundingBox.Height += BoundingBox.Y - y;
                         (BoundingBox.X, BoundingBox.Y) = (x - BoundingBox.Width, y);
@@ -224,7 +229,7 @@ public class Path : Shape
                                 break;
                         }
                         Func<(double x, double y), (double, double)> bottomRightScaler = ((double x, double y) point) => (((point.x - BoundingBox.X) * (x - BoundingBox.X) / BoundingBox.Width) + BoundingBox.X, ((point.y - BoundingBox.Y) * (y - BoundingBox.Y) / BoundingBox.Height) + BoundingBox.Y);
-                        UpdatePoints(bottomRightScaler, (1, 1));
+                        Instructions.UpdatePoints(bottomRightScaler, (1, 1));
                         BoundingBox.Width = x - BoundingBox.X;
                         BoundingBox.Height = y - BoundingBox.Y;
                         (BoundingBox.X, BoundingBox.Y) = (x - BoundingBox.Width, y - BoundingBox.Height);
@@ -245,7 +250,7 @@ public class Path : Shape
                                 break;
                         }
                         Func<(double x, double y), (double, double)> bottomLeftScaler = ((double x, double y) point) => (((point.x - BoundingBox.X - BoundingBox.Width) * (BoundingBox.Width + BoundingBox.X - x) / BoundingBox.Width) + BoundingBox.X + BoundingBox.Width, ((point.y - BoundingBox.Y) * (y - BoundingBox.Y) / BoundingBox.Height) + BoundingBox.Y);
-                        UpdatePoints(bottomLeftScaler, (1, 1));
+                        Instructions.UpdatePoints(bottomLeftScaler, (1, 1));
                         BoundingBox.Width += BoundingBox.X - x;
                         BoundingBox.Height = y - BoundingBox.Y;
                         (BoundingBox.X, BoundingBox.Y) = (x, y - BoundingBox.Height);
@@ -262,24 +267,6 @@ public class Path : Shape
         }
     }
 
-    private void UpdatePoints(Func<(double, double), (double, double)> transformer, (double x, double y) scale)
-    {
-        Instructions = Instructions.Select(inst =>
-        {
-            inst.EndPosition = transformer(inst.EndPosition);
-            if (inst is BaseControlPointPathInstruction controlPointInstruction)
-            {
-                controlPointInstruction.ControlPoints = controlPointInstruction.ControlPoints.Select(p => transformer(p)).ToList();
-                controlPointInstruction.UpdateReflectionForInstructions();
-            }
-            else if (inst is EllipticalArcInstruction arcInstruction)
-            {
-                arcInstruction.Rx += arcInstruction.Rx * Math.Cos(arcInstruction.XAxisRotation / 180 * Math.PI) * (scale.x - 1);
-                arcInstruction.Ry += arcInstruction.Ry * Math.Sin(arcInstruction.XAxisRotation / 180 * Math.PI) * (scale.y - 1);
-            }
-            return inst;
-        }).ToList();
-    }
 
     public override void HandlePointerUp(PointerEventArgs eventArgs)
     {

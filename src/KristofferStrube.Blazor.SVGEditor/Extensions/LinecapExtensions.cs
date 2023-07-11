@@ -1,6 +1,6 @@
 ﻿namespace KristofferStrube.Blazor.SVGEditor.Extensions;
 
-internal static class LinecapExtensions
+public static class LinecapExtensions
 {
     public static Linecap ParseAsLinecap(this string value)
     {

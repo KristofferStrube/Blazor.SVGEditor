@@ -77,8 +77,16 @@ public abstract class ShapeEditor<TShape> : ComponentBase where TShape : Shape
 
     public async Task SelectAsync(MouseEventArgs eventArgs)
     {
-        if (SVGElement.IsChildElement) return;
-        if (SVGElement.SVG.EditMode is EditMode.Add) return;
+        if (SVGElement.IsChildElement)
+        {
+            return;
+        }
+
+        if (SVGElement.SVG.EditMode is EditMode.Add)
+        {
+            return;
+        }
+
         if (SVGElement.SVG.DisableSelecting && !SVGElement.Selected)
         {
             if (!SVGElement.SVG.DisableDeselecting)

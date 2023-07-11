@@ -12,5 +12,6 @@ public interface ISVGElement
     public void UpdateHtml();
     public string StoredHtml { get; set; }
     public void Complete();
+    public void BeforeBeingRemoved();
     public void Rerender();
 }

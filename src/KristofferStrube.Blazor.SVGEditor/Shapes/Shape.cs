@@ -7,7 +7,7 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public abstract class Shape : ISVGElement
 {
-    internal string _stateRepresentation = string.Empty;
+    public string _stateRepresentation = string.Empty;
 
     public Shape(IElement element, SVGEditor svg)
     {
@@ -19,7 +19,7 @@ public abstract class Shape : ISVGElement
             .Select(child =>
                 {
                     string? attributeName = child.GetAttribute("attributename");
-                    if (attributeName is not null && SVG.AnimationTypes.TryGetValue(attributeName, out Type? animateType))
+                    if (SVG.AnimationTypes.FirstOrDefault(at => at.AnimationAttributeName == attributeName)?.AnimationType is Type animateType)
                     {
                         var animation = Activator.CreateInstance(animateType, child, this, SVG) as BaseAnimate;
                         return animation ?? throw new NotImplementedException($"Tag not supported:\n {child.OuterHtml}");
@@ -33,42 +33,46 @@ public abstract class Shape : ISVGElement
             .ToList();
     }
 
-    public string? Id { get; set; }
     public IElement Element { get; init; }
     public SVGEditor SVG { get; init; }
     public abstract Type Presenter { get; }
 
-    public string Fill
+    public virtual string? Id
+    {
+        get => Element.GetAttribute("id");
+        set { Element.SetAttribute("id", value); Changed?.Invoke(this); }
+    }
+    public virtual string Fill
     {
         get => Element.GetAttributeOrEmpty("fill");
         set { Element.SetAttribute("fill", value); Changed?.Invoke(this); }
     }
-    public string Stroke
+    public virtual string Stroke
     {
         get => Element.GetAttributeOrEmpty("stroke");
         set { Element.SetAttribute("stroke", value); Changed?.Invoke(this); }
     }
-    public string StrokeWidth
+    public virtual string StrokeWidth
     {
         get => Element.GetAttributeOrEmpty("stroke-width");
         set { Element.SetAttribute("stroke-width", value); Changed?.Invoke(this); }
     }
-    public Linecap StrokeLinecap
+    public virtual Linecap StrokeLinecap
     {
         get => Element.GetAttributeOrEmpty("stroke-linecap").ToLower().ParseAsLinecap();
         set { Element.SetAttribute("stroke-linecap", value.AsString()); Changed?.Invoke(this); }
     }
-    public Linejoin StrokeLinejoin
+    public virtual Linejoin StrokeLinejoin
     {
         get => Element.GetAttributeOrEmpty("stroke-linejoin").ToLower().ParseAsLinejoin();
         set { Element.SetAttribute("stroke-linejoin", value.AsString()); Changed?.Invoke(this); }
     }
-    public string StrokeDasharray
+    public virtual string StrokeDasharray
     {
         get => Element.GetAttributeOrEmpty("stroke-dasharray");
         set { Element.SetAttribute("stroke-dasharray", value); Changed?.Invoke(this); }
     }
-    public double StrokeDashoffset
+    public virtual double StrokeDashoffset
     {
         get => Element.GetAttributeOrZero("stroke-dashoffset");
         set { Element.SetAttribute("stroke-dashoffset", value.AsString()); Changed?.Invoke(this); }
@@ -109,4 +113,5 @@ public abstract class Shape : ISVGElement
     public abstract void HandlePointerUp(PointerEventArgs eventArgs);
     public abstract void HandlePointerOut(PointerEventArgs eventArgs);
     public abstract void Complete();
+    public virtual void BeforeBeingRemoved() { }
 }

@@ -1,3 +1,3 @@
-﻿namespace KristofferStrube.Blazor.SVGEditor.MenuItems.CompleteNewShape;
+﻿namespace KristofferStrube.Blazor.SVGEditor;
 
 public record CompleteNewShapeMenuItem(Type ComponentType, Func<SVGEditor, bool> ShouldBePresented);

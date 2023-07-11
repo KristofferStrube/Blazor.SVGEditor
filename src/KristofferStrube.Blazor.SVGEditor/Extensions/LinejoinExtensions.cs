@@ -1,6 +1,6 @@
 ﻿namespace KristofferStrube.Blazor.SVGEditor.Extensions;
 
-internal static class LinejoinExtensions
+public static class LinejoinExtensions
 {
     public static Linejoin ParseAsLinejoin(this string value)
     {

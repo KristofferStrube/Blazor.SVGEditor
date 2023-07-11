@@ -1,0 +1,23 @@
+﻿@using BlazorContextMenu
+
+@if (Data is Node node)
+{
+    <Item OnClick="_ => Connector.AddNew(SVGEditor, node)">
+        <div class="icon">〰</div> New Connector
+    </Item>
+}
+
+@code {
+    private string text = string.Empty;
+
+    [CascadingParameter]
+    public SVGEditor SVGEditor { get; set; } = default!;
+
+    [Parameter]
+    public object Data { get; set; } = default!;
+
+    private void AddNew()
+    {
+        Node.AddNew(SVGEditor);
+    }
+}

@@ -95,13 +95,19 @@ public partial class SVGEditor
     {
         if (eventArgs.Button == 1)
         {
-            if (DisablePanning) return;
+            if (DisablePanning)
+            {
+                return;
+            }
 
             TranslatePanner = (eventArgs.OffsetX, eventArgs.OffsetY);
         }
         else
         {
-            if (DisableBoxSelection) return;
+            if (DisableBoxSelection)
+            {
+                return;
+            }
 
             (double x, double y) = LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
             SelectionBox = new Box() { X = x, Y = y };

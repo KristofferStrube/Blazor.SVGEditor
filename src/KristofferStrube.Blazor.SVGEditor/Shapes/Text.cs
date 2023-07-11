@@ -17,6 +17,7 @@ public class Text : Shape
             : style
                 .Split(";")
                 .Select(style => style.Split(":"))
+                .Where(pair => pair.Length is 2)
                 .ToDictionary(pair => pair[0], pair => pair[1]);
     }
 

@@ -11,11 +11,11 @@ public class G : Shape
     {
         ChildShapes = Element.Children.Select(child =>
         {
-            if (!SVG.SupportedTypes.TryGetValue(child.TagName, out Type? tagType))
+            if (SVG.SupportedElements.FirstOrDefault(se => se.CanHandle(child))?.ElementType is not Type type)
             {
                 throw new NotImplementedException($"Tag not supported:\n {child.OuterHtml}");
             }
-            var childShape = (Shape)Activator.CreateInstance(tagType, child, SVG)!;
+            var childShape = (Shape)Activator.CreateInstance(type, child, SVG)!;
             childShape.Changed = UpdateInput;
             return childShape;
         }).ToList();

@@ -1,0 +1,47 @@
+﻿@page "/CustomElements"
+@using KristofferStrube.Blazor.SVGEditor.MenuItems.Action;
+@using KristofferStrube.Blazor.SVGEditor.Samples.CustomElements;
+
+
+<p>
+    In this sample we show how you can add custom handlers for elements to the editor and how you can add custom menu items.
+    <br />
+    Below we only support circles and lines tagged as <code>node</code>s and <code>connector</code>s and we can only create these from the <code>Add</code> sub-menu.
+    <br />
+    We have also limited what menu options are available and made logic that also changes the fill color of the circles when you set the stroke color.
+</p>
+<textarea @bind="Input" @bind:event="oninput" style="width:100%;height:10vh;" />
+<div style="height:75vh">
+    <SVGEditor Input=@Input
+               InputUpdated="(string s) => { Input = s; StateHasChanged(); }"
+               SelectionMode="SelectionMode.WindowSelection"
+               SupportedElements=SupportedElements
+               AddNewSVGElementMenuItems=AddNewSVGElementMenuItem
+               ActionMenuItems=ActionMenuItems />
+</div>
+
+@code {
+    protected string Input = @"<circle data-elementtype=""node"" r=""50"" cx=""100"" cy=""100"" stroke=""#66BB6A"" fill=""#98ED9C"" id=""ddcfdf43-3e28-4b5b-a3b9-665c62ef2d81""></circle><circle data-elementtype=""node"" r=""50"" cx=""100"" cy=""300"" stroke=""#FF7143"" fill=""#FFA375"" id=""8cbcd8da-cdd1-4f88-8376-886eb06e988f""></circle><line data-elementtype=""connector"" stroke=""black"" stroke-width=""5"" x2=""100"" y2=""250"" x1=""100"" y1=""150"" from=""ddcfdf43-3e28-4b5b-a3b9-665c62ef2d81"" to=""8cbcd8da-cdd1-4f88-8376-886eb06e988f""></line>";
+
+    protected List<SupportedElement> SupportedElements = new()
+    {
+        new(typeof(Node), element => element.TagName is "CIRCLE" && element.GetAttribute("data-elementtype") == "node"),
+        new(typeof(Connector), element => element.TagName is "LINE" && element.GetAttribute("data-elementtype") == "connector"),
+    };
+
+    protected List<SupportedAddNewSVGElementMenuItem> AddNewSVGElementMenuItem = new()
+    {
+        new(typeof(AddNewNodeMenuItem), (_,_) => true),
+        new(typeof(AddNewConnectorMenuItem), (_,data) => data is Node)
+    };
+
+    protected List<ActionMenuItem> ActionMenuItems { get; set; } = new() {
+        new(typeof(StrokeMenuItem), (_, data) => data is Shape shape && !shape.IsChildElement),
+        new(typeof(MoveMenuItem), (_, data) => data is Shape shape && !shape.IsChildElement),
+        new(typeof(GroupMenuItem), (_, data) => data is Shape shape && !shape.IsChildElement),
+        new(typeof(UngroupMenuItem), (_, data) => data is G g && !g.IsChildElement),
+        new(typeof(RemoveMenuItem), (svgEditor, data) => data is Shape && !svgEditor.DisableRemoveElement),
+        new(typeof(CopyMenuItem), (svgEditor, data) => data is Shape && !svgEditor.DisableCopyElement),
+        new(typeof(PasteMenuItem), (svgEditor, _) => !svgEditor.DisablePasteElement),
+    };
+}

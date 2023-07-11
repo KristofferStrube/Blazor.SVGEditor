@@ -1,0 +1,82 @@
+﻿@using BlazorContextMenu
+@using KristofferStrube.Blazor.SVGEditor.ShapeEditors
+@using KristofferStrube.Blazor.SVGEditor.Extensions
+
+@inherits ShapeEditor<Node>
+
+<ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement MouseButtonTrigger="SVGElement.ShouldTriggerContextMenu ? MouseButtonTrigger.Right : (MouseButtonTrigger)4">
+    <g transform="translate(@SVGElement.SVG.Translate.x.AsString() @SVGElement.SVG.Translate.y.AsString()) scale(@SVGElement.SVG.Scale.AsString())">
+        <circle @ref=ElementReference
+        @onfocusin="FocusElement"
+        @onfocusout="UnfocusElement"
+        @onpointerdown="Select"
+        @onkeyup="KeyUp" tabindex="@(SVGElement.IsChildElement ? -1 : 0)"
+                cx=@SVGElement.Cx.AsString()
+                cy=@SVGElement.Cy.AsString()
+                r=@SVGElement.R.AsString()
+                stroke="@SVGElement.Stroke"
+                stroke-width="@SVGElement.StrokeWidth"
+                stroke-linecap="@SVGElement.StrokeLinecap.AsString()"
+                stroke-linejoin="@SVGElement.StrokeLinejoin.AsString()"
+                stroke-dasharray="@SVGElement.StrokeDasharray"
+                stroke-dashoffset="@SVGElement.StrokeDashoffset.AsString()"
+                fill="@SVGElement.Fill">
+        </circle>
+    </g>
+</ContextMenuTrigger>
+
+@code {
+    public async Task Select(MouseEventArgs eventArgs)
+    {
+        if (SVGElement.SVG.EditMode is EditMode.Add)
+        {
+            if (SVGElement.SVG.SelectedShapes.Any(s => s is Connector))
+            {
+                SVGElement.SVG.SelectedShapes.Add(SVGElement);
+            }
+            return;
+        }
+
+        if (eventArgs.CtrlKey)
+        {
+            if (!SVGElement.Selected)
+            {
+                SVGElement.SVG.SelectShape(SVGElement);
+                await SVGElement.SVG.FocusAsync(ElementReference);
+            }
+            SVGElement.SVG.EditMode = EditMode.None;
+        }
+        else
+        {
+            SVGElement.SVG.MovePanner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+            if (!SVGElement.Selected)
+            {
+                SVGElement.SVG.EditMode = EditMode.Move;
+                SVGElement.SVG.ClearSelectedShapes();
+                SVGElement.SVG.SelectShape(SVGElement);
+                await SVGElement.SVG.FocusAsync(ElementReference);
+            }
+            StateHasChanged();
+            if (eventArgs.Button == 0)
+            {
+                switch (SVGElement.SVG.EditMode)
+                {
+                    case EditMode.None:
+                        SVGElement.SVG.EditMode = EditMode.Move;
+                        break;
+                    case EditMode.Scale:
+                        SVGElement.SVG.CurrentAnchor = -1;
+                        break;
+                    case EditMode.Add:
+                        break;
+                    case EditMode.Move:
+                        break;
+                    case EditMode.MoveAnchor:
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+}

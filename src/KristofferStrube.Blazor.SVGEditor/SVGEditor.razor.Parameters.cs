@@ -1,4 +1,6 @@
-﻿using KristofferStrube.Blazor.SVGEditor.MenuItems.Action;
+﻿using AngleSharp.Dom;
+using KristofferStrube.Blazor.SVGEditor.Animations;
+using KristofferStrube.Blazor.SVGEditor.MenuItems.Action;
 using KristofferStrube.Blazor.SVGEditor.MenuItems.AddNewSVGElement;
 using KristofferStrube.Blazor.SVGEditor.MenuItems.CompleteNewShape;
 using Microsoft.AspNetCore.Components;
@@ -14,10 +16,10 @@ public partial class SVGEditor
     public Action<string>? InputUpdated { get; set; }
 
     [Parameter]
-    public bool SnapToInteger { get; set; } = false;
+    public SelectionMode SelectionMode { get; set; } = SelectionMode.WindowSelection;
 
     [Parameter]
-    public SelectionMode SelectionMode { get; set; } = SelectionMode.WindowSelection;
+    public bool SnapToInteger { get; set; } = false;
 
     [Parameter]
     public bool DisableContextMenu { get; set; }
@@ -62,7 +64,7 @@ public partial class SVGEditor
     };
 
     [Parameter]
-    public List<AddNewSVGElementMenuItem> AddNewSVGElementMenuItems { get; set; } = new() {
+    public List<SupportedAddNewSVGElementMenuItem> AddNewSVGElementMenuItems { get; set; } = new() {
         new(typeof(AddNewStopFromLinearGradientMenuItem), (svgEditor, data) => data is LinearGradient),
         new(typeof(AddNewStopFromStopMenuItem), (svgEditor, data) => data is Stop),
         new(typeof(AddNewPathMenuItem), (_, data) => data is not (LinearGradient or Stop)),
@@ -94,26 +96,102 @@ public partial class SVGEditor
     };
 
     [Parameter]
-    public Dictionary<string, Type> SupportedTypes { get; set; } = new() {
-        { "RECT", typeof(Rect) },
-        { "CIRCLE", typeof(Circle) },
-        { "ELLIPSE", typeof(Ellipse) },
-        { "POLYGON", typeof(Polygon) },
-        { "POLYLINE", typeof(Polyline) },
-        { "LINE", typeof(Line) },
-        { "PATH", typeof(Path) },
-        { "TEXT", typeof(Text) },
-        { "G", typeof(G) },
-        { "DEFS", typeof(Defs) },
+    public List<SupportedElement> SupportedElements { get; set; } = new() {
+        new(typeof(Rect), (IElement element) => element.TagName == "RECT"),
+        new(typeof(Circle), (IElement element) => element.TagName == "CIRCLE"),
+        new(typeof(Ellipse), (IElement element) => element.TagName == "ELLIPSE"),
+        new(typeof(Polygon), (IElement element) => element.TagName == "POLYGON"),
+        new(typeof(Polyline), (IElement element) => element.TagName == "POLYLINE"),
+        new(typeof(Line), (IElement element) => element.TagName == "LINE"),
+        new(typeof(Path), (IElement element) => element.TagName == "PATH"),
+        new(typeof(Text), (IElement element) => element.TagName == "TEXT"),
+        new(typeof(G), (IElement element) => element.TagName == "G"),
+        new(typeof(Defs), (IElement element) => element.TagName == "DEFS"),
     };
 
     [Parameter]
-    public Dictionary<string, Type> AnimationTypes { get; set; } = new()
+    public List<SupportedAnimation> AnimationTypes { get; set; } = new()
     {
-        { "fill", typeof(AnimateFill) },
-        { "stroke", typeof(AnimateStroke) },
-        { "stroke-dashoffset", typeof(AnimateStrokeDashoffset) },
-        { "d", typeof(AnimateD) },
+        new(typeof(AnimateFill), "fill"),
+        new(typeof(AnimateStroke), "stroke"),
+        new(typeof(AnimateStrokeDashoffset), "stroke-dashoffset"),
+        new(typeof(AnimateD), "d"),
     };
 
+    public void DisableAllInteractions()
+    {
+        DisableContextMenu = true;
+        DisableZoom = true;
+        DisablePanning = true;
+        DisableDeselecting = true;
+        DisableSelecting = true;
+        DisableBoxSelection = true;
+        DisableMoveEditMode = true;
+        DisableMoveAnchorEditMode = true;
+        DisableRemoveElement = true;
+        DisableCopyElement = true;
+        DisablePasteElement = true;
+        DisableScaleLabel = true;
+    }
+
+    public void EnableAllInteractions()
+    {
+        DisableContextMenu = false;
+        DisableZoom = false;
+        DisablePanning = false;
+        DisableDeselecting = false;
+        DisableSelecting = false;
+        DisableBoxSelection = false;
+        DisableMoveEditMode = false;
+        DisableMoveAnchorEditMode = false;
+        DisableRemoveElement = false;
+        DisableCopyElement = false;
+        DisablePasteElement = false;
+        DisableScaleLabel = false;
+    }
+
+    public void ClearCompleteNewShapeMenuItems()
+    {
+        CompleteNewShapeMenuItems.Clear();
+    }
+
+    public void ClearAddNewSVGElementMenuItems()
+    {
+        AddNewSVGElementMenuItems.Clear();
+    }
+
+    public void ClearActionMenuItems()
+    {
+        ActionMenuItems.Clear();
+    }
+
+    public void ClearSupportedTypes()
+    {
+        SupportedElements.Clear();
+    }
+
+    public void ClearAnimationTypes()
+    {
+        AnimationTypes.Clear();
+    }
+
+    public void ClearAllMenuItems()
+    {
+        ClearCompleteNewShapeMenuItems();
+        ClearAddNewSVGElementMenuItems();
+        ClearActionMenuItems();
+    }
+
+    public void ClearAllSupportedTypes()
+    {
+        ClearSupportedTypes();
+        ClearAnimationTypes();
+    }
+
+    public void DisableAndClearAllFeatures()
+    {
+        DisableAllInteractions();
+        ClearAllMenuItems();
+        ClearAllSupportedTypes();
+    }
 }

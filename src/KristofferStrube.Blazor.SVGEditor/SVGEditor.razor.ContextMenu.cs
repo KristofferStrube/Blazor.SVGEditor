@@ -80,7 +80,11 @@ public partial class SVGEditor
 
     public void CompleteShape(Shape shape)
     {
-        if (EditMode is not EditMode.Add) return;
+        if (EditMode is not EditMode.Add)
+        {
+            return;
+        }
+
         if (SelectedShapes.Count == 1)
         {
             EditMode = EditMode.None;
@@ -91,7 +95,7 @@ public partial class SVGEditor
 
     public void Remove()
     {
-        MarkedShapes.ForEach(e => Elements.Remove(e));
+        MarkedShapes.ForEach(e => RemoveElement(e));
         ClearSelectedShapes();
         UpdateInput();
         RerenderAll();

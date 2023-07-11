@@ -16,7 +16,7 @@ public class Defs : ISVGElement
         SVG = svg;
         Children = Element.Children.Select(child =>
         {
-            ISVGElement? sVGElement = SVG.SupportedTypes.TryGetValue(child.TagName, out Type? type)
+            ISVGElement? sVGElement = SVG.SupportedElements.FirstOrDefault(se => se.CanHandle(child))?.ElementType is Type type
                 ? Activator.CreateInstance(type, child, SVG) as Shape
                 : GradientTypes.TryGetValue(child.TagName, out Type? gradientType)
                     ? Activator.CreateInstance(gradientType, child, SVG) as ISVGElement
@@ -61,5 +61,9 @@ public class Defs : ISVGElement
     {
         Children.ForEach(c => c.UpdateHtml());
         StoredHtml = $"<defs{string.Join("", Element.Attributes.Select(a => $" {a.Name}=\"{a.Value}\""))}>\n" + string.Join("", Children.Select(e => e.StoredHtml + "\n")) + "</defs>";
+    }
+
+    public void BeforeBeingRemoved()
+    {
     }
 }

@@ -16,7 +16,7 @@ internal static class StringExtensions
                 ? new()
                 : points.Trim().Split(" ").Select(p => (x: p.Split(",")[0].ParseAsDouble(), y: p.Split(",")[1].ParseAsDouble())).ToList();
         }
-        catch(Exception)
+        catch (Exception)
         {
             return new();
         }

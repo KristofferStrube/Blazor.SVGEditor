@@ -74,4 +74,8 @@ public class Stop : ISVGElement
         AnimationElements.ForEach(a => a.UpdateHtml());
         StoredHtml = $"<stop{string.Join("", Element.Attributes.Select(a => $" {a.Name}=\"{a.Value}\""))}>" + (AnimationElements.Count > 0 ? "\n" : "") + string.Join("", AnimationElements.Select(a => a.StoredHtml + "\n")) + "</stop>";
     }
+
+    public void BeforeBeingRemoved()
+    {
+    }
 }

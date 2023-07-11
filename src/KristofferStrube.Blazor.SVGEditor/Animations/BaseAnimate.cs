@@ -130,4 +130,8 @@ public abstract class BaseAnimate : ISVGElement
     {
         _stateRepresentation = null;
     }
+
+    public void BeforeBeingRemoved()
+    {
+    }
 }
