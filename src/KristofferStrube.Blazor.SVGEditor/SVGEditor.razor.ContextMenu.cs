@@ -30,49 +30,61 @@ public partial class SVGEditor
         ColorPickerShapes = null;
     }
 
-    public void MoveToBack(ISVGElement element)
+    public void MoveToBack()
     {
+        foreach(Shape element in SelectedShapes)
+        {
+            _ = Elements.Remove(element);
+            Elements.Insert(0, element);
+        }
         ClearSelectedShapes();
-        _ = Elements.Remove(element);
-        Elements.Insert(0, element);
         Elements.ForEach(e => e.UpdateHtml());
         UpdateInput();
         RerenderAll();
     }
 
-    public void MoveBack(ISVGElement element)
+    public void MoveBack()
     {
-        int index = Elements.IndexOf(element);
-        if (index != 0)
+        foreach (Shape element in SelectedShapes)
         {
-            ClearSelectedShapes();
-            _ = Elements.Remove(element);
-            Elements.Insert(index - 1, element);
-            Elements.ForEach(e => e.UpdateHtml());
-            UpdateInput();
-            RerenderAll();
+            int index = Elements.IndexOf(element);
+            if (index != 0)
+            {
+                ClearSelectedShapes();
+                _ = Elements.Remove(element);
+                Elements.Insert(index - 1, element);
+            }
         }
+        Elements.ForEach(e => e.UpdateHtml());
+        UpdateInput();
+        RerenderAll();
     }
 
-    public void MoveForward(ISVGElement element)
+    public void MoveForward()
     {
-        int index = Elements.IndexOf(element);
-        if (index != Elements.Count - 1)
+        foreach (Shape element in SelectedShapes)
         {
-            ClearSelectedShapes();
-            _ = Elements.Remove(element);
-            Elements.Insert(index + 1, element);
-            Elements.ForEach(e => e.UpdateHtml());
-            UpdateInput();
-            RerenderAll();
+            int index = Elements.IndexOf(element);
+            if (index != Elements.Count - 1)
+            {
+                ClearSelectedShapes();
+                _ = Elements.Remove(element);
+                Elements.Insert(index + 1, element);
+            }
         }
+        Elements.ForEach(e => e.UpdateHtml());
+        UpdateInput();
+        RerenderAll();
     }
 
-    public void MoveToFront(ISVGElement element)
+    public void MoveToFront()
     {
+        foreach (Shape element in SelectedShapes)
+        {
+            _ = Elements.Remove(element);
+            Elements.Insert(Elements.Count, element);
+        }
         ClearSelectedShapes();
-        _ = Elements.Remove(element);
-        Elements.Insert(Elements.Count, element);
         Elements.ForEach(e => e.UpdateHtml());
         UpdateInput();
         RerenderAll();
