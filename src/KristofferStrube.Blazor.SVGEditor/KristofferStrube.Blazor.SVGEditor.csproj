@@ -7,7 +7,29 @@
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
+    <Title>Blazor SVGEditor</Title>
+    <Description>An SVG Editor that is implemented in and for Blazor.</Description>
+    <PackageId>KristofferStrube.Blazor.SVGEditor</PackageId>
+    <PackageTags>Blazor;Wasm;Server;SVG;WYSIWYG;customizable;Path;pathdata;scaling;panning;editing;ordering</PackageTags>
+    <RepositoryUrl>https://github.com/KristofferStrube/Blazor.SVGEditor</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageVersion>0.1.0</PackageVersion>
+    <Authors>Kristoffer Strube</Authors>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <None Include="..\..\docs\icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove="Anchor.razor.css" />
