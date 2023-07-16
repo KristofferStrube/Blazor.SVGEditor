@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31410.414
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KristofferStrube.Blazor.SVGEditor.Samples", "samples\KristofferStrube.Blazor.SVGEditor.Samples\KristofferStrube.Blazor.SVGEditor.Samples.csproj", "{1CC1F8D5-3BFC-4DE4-9627-04344BC6584E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KristofferStrube.Blazor.SVGEditor.BlazorExample", "samples\KristofferStrube.Blazor.SVGEditor.BlazorExample\KristofferStrube.Blazor.SVGEditor.BlazorExample.csproj", "{1CC1F8D5-3BFC-4DE4-9627-04344BC6584E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KristofferStrube.Blazor.SVGEditor", "src\KristofferStrube.Blazor.SVGEditor\KristofferStrube.Blazor.SVGEditor.csproj", "{2DED3DA7-FDDC-4AC1-B261-2D40AB761EA5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KristofferStrube.Blazor.SvgEditor.Test", "test\KristofferStrube.Blazor.SvgEditor.Test\KristofferStrube.Blazor.SvgEditor.Test.csproj", "{04F564CB-F947-4F0C-9DA6-B40D0BA55034}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KristofferStrube.Blazor.SVGEditor.ServerExample", "samples\KristofferStrube.Blazor.SVGEditor.ServerExample\KristofferStrube.Blazor.SVGEditor.ServerExample.csproj", "{BCF15445-851C-4029-BC4A-66B674D656A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{04F564CB-F947-4F0C-9DA6-B40D0BA55034}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04F564CB-F947-4F0C-9DA6-B40D0BA55034}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04F564CB-F947-4F0C-9DA6-B40D0BA55034}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCF15445-851C-4029-BC4A-66B674D656A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCF15445-851C-4029-BC4A-66B674D656A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCF15445-851C-4029-BC4A-66B674D656A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCF15445-851C-4029-BC4A-66B674D656A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
