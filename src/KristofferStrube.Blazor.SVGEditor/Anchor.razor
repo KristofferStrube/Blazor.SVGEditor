@@ -18,11 +18,11 @@
     public MarkerType MarkerType { get; set; } = MarkerType.Primary;
 
     [CascadingParameter]
-    protected SVGEditor SVG { get; set; } = default!;
+    public required SVGEditor SVGEditor { get; set; }
 
-    protected string X => SVG.LocalTransform(Position).x.AsString();
+    protected string X => SVGEditor.LocalTransform(Position).x.AsString();
 
-    protected string Y => SVG.LocalTransform(Position).y.AsString();
+    protected string Y => SVGEditor.LocalTransform(Position).y.AsString();
 
     protected string OuterClasses => "anchor-outer"
     + (ThickCircle ? " anchor-outer-thick" : " anchor-outer-thin");
@@ -39,7 +39,7 @@
 
     private string _State { get; set; } = string.Empty;
 
-    private string State => $"{Position.x}{Position.y}{SVG.Scale}{SVG.Translate.x}{SVG.Translate.y}{MarkerType}{ThickCircle}{MiddleColor}";
+    private string State => $"{Position.x}{Position.y}{SVGEditor.Scale}{SVGEditor.Translate.x}{SVGEditor.Translate.y}{MarkerType}{ThickCircle}{MiddleColor}";
 
     protected override bool ShouldRender()
     {

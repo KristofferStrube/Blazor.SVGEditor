@@ -1,5 +1,5 @@
-﻿<line x1=@SVG.LocalTransform(From).x.AsString() y1=@SVG.LocalTransform(From).y.AsString() x2=@SVG.LocalTransform(To).x.AsString() y2=@SVG.LocalTransform(To).y.AsString() class="@NonOffsetClasses" />
-<line x1=@SVG.LocalTransform(From).x.AsString() y1=@SVG.LocalTransform(From).y.AsString() x2=@SVG.LocalTransform(To).x.AsString() y2=@SVG.LocalTransform(To).y.AsString() class="@OffsetClasses" />
+﻿<line x1=@SVGEditor.LocalTransform(From).x.AsString() y1=@SVGEditor.LocalTransform(From).y.AsString() x2=@SVGEditor.LocalTransform(To).x.AsString() y2=@SVGEditor.LocalTransform(To).y.AsString() class="@NonOffsetClasses" />
+<line x1=@SVGEditor.LocalTransform(From).x.AsString() y1=@SVGEditor.LocalTransform(From).y.AsString() x2=@SVGEditor.LocalTransform(To).x.AsString() y2=@SVGEditor.LocalTransform(To).y.AsString() class="@OffsetClasses" />
 
 @code {
     [Parameter, EditorRequired]
@@ -12,7 +12,7 @@
     public MarkerType MarkerType { get; set; } = MarkerType.Primary;
 
     [CascadingParameter]
-    protected SVGEditor SVG { get; set; } = default!;
+    public required SVGEditor SVGEditor { get; set; }
 
     protected string NonOffsetClasses => "line-non-offset"
     + MarkerType switch

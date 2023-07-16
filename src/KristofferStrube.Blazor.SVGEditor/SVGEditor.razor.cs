@@ -31,7 +31,7 @@ public partial class SVGEditor : ComponentBase
         );
     }
 
-    public IDocument Document { get; set; } = default!;
+    public required IDocument Document { get; set; }
 
     public double Scale { get; set; } = 1;
 
@@ -41,7 +41,7 @@ public partial class SVGEditor : ComponentBase
 
     public Box? SelectionBox { get; set; }
 
-    public List<ISVGElement> Elements { get; internal set; } = default!;
+    public List<ISVGElement> Elements { get; protected set; } = default!;
 
     public List<Shape> SelectedShapes { get; set; } = new();
 

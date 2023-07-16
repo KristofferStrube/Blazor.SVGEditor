@@ -6,7 +6,7 @@
     private bool Active = false;
 
     [Parameter]
-    public BaseAnimate SVGElement { get; set; } = default!;
+    public required BaseAnimate SVGElement { get; set; }
 
     protected override bool ShouldRender()
     {

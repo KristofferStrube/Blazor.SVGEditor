@@ -6,7 +6,7 @@ namespace KristofferStrube.Blazor.SVGEditor;
 public partial class SVGEditor : IAsyncDisposable
 {
     [Inject]
-    protected IJSRuntime JSRuntime { get; set; } = default!;
+    public required IJSRuntime JSRuntime { get; set; }
 
     protected Lazy<Task<IJSObjectReference>> moduleTask = default!;
     public Box BBox { get; set; } = default!;

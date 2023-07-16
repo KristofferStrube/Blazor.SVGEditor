@@ -11,7 +11,7 @@ public abstract class BaseAnimate : ISVGElement
     {
         Element = element;
         Parent = parent;
-        SVG = svg;
+        SVGEditor = svg;
         if (Element.HasAttribute("values"))
         {
             Values = StringToValues(Element.GetAttributeOrEmpty("values"));
@@ -35,7 +35,7 @@ public abstract class BaseAnimate : ISVGElement
 
     public string? Id { get; set; }
     public IElement Element { get; init; }
-    public SVGEditor SVG { get; init; }
+    public SVGEditor SVGEditor { get; init; }
     public ISVGElement Parent { get; set; }
     public abstract Type Presenter { get; }
     public abstract Type MenuItem { get; }
@@ -107,13 +107,13 @@ public abstract class BaseAnimate : ISVGElement
 
     public void Remove()
     {
-        SVG.EditMode = EditMode.None;
-        SVG.ClearSelectedShapes();
+        SVGEditor.EditMode = EditMode.None;
+        SVGEditor.ClearSelectedShapes();
         if (Parent is Shape parentShape)
         {
             _ = parentShape.AnimationElements.Remove(this);
         }
-        SVG.RemoveElement(this, Parent);
+        SVGEditor.RemoveElement(this, Parent);
     }
 
     public void UpdateHtml()

@@ -10,19 +10,19 @@
 
 @code {
     [Parameter]
-    public Box Box { get; set; } = default!;
+    public required Box Box { get; set; }
 
     [Parameter]
     public Action<int, int>? AnchorOnPointerDown { get; set; }
 
     [CascadingParameter]
-    protected SVGEditor SVG { get; set; } = default!;
+    public required SVGEditor SVGEditor { get; set; }
 
-    private double X => SVG.LocalTransform((Box.X, Box.Y)).x + (Box.Width >= 0 ? 0 : -Width);
+    private double X => SVGEditor.LocalTransform((Box.X, Box.Y)).x + (Box.Width >= 0 ? 0 : -Width);
 
-    private double Y => SVG.LocalTransform((Box.X, Box.Y)).y + (Box.Height >= 0 ? 0 : -Height);
+    private double Y => SVGEditor.LocalTransform((Box.X, Box.Y)).y + (Box.Height >= 0 ? 0 : -Height);
 
-    private double Height => Math.Abs(Box.Height * SVG.Scale);
+    private double Height => Math.Abs(Box.Height * SVGEditor.Scale);
 
-    private double Width => Math.Abs(Box.Width * SVG.Scale);
+    private double Width => Math.Abs(Box.Width * SVGEditor.Scale);
 }

@@ -5,7 +5,7 @@
 
 @code {
     [CascadingParameter]
-    public SVGEditor SVGEditor { get; set; } = default!;
+    public required SVGEditor SVGEditor { get; set; }
 
     private static void RemovePreviousInstruction(Path path)
     {

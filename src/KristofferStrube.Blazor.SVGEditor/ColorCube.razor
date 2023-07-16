@@ -1,5 +1,5 @@
 ﻿@if (Color is ['u', 'r', 'l', '(', '\'', '#', .. var id, '\'', ')']
-&& SVG.Definitions.TryGetValue(id, out var definition)
+&& SVGEditor.Definitions.TryGetValue(id, out var definition)
 && definition is LinearGradient linearGradient)
 {
     <svg width="0.8rem" height="0.8rem" style="margin-left:5px;margin-right:5px;">
@@ -16,9 +16,9 @@ else
 
 
 @code {
-    [Parameter]
-    public string Color { get; set; } = default!;
+    [Parameter, EditorRequired]
+    public required string Color { get; set; }
 
     [CascadingParameter]
-    public SVGEditor SVG { get; set; } = default!;
+    public required SVGEditor SVGEditor { get; set; }
 }

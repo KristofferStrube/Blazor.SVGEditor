@@ -6,7 +6,7 @@ namespace KristofferStrube.Blazor.SVGEditor.ShapeEditors;
 public abstract class ShapeEditor<TShape> : ComponentBase where TShape : Shape
 {
     [Parameter]
-    public TShape SVGElement { get; set; } = default!;
+    public required TShape SVGElement { get; set; }
 
     public ElementReference ElementReference { get; set; }
 

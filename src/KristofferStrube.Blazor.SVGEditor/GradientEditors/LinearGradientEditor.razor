@@ -34,10 +34,10 @@
     private (double x, double y) LinearPoint2 => (EditingShape.BoundingBox.X + LinearGradient.X2 * EditingShape.BoundingBox.Width, EditingShape.BoundingBox.Y + LinearGradient.Y2 * EditingShape.BoundingBox.Height);
 
     [Parameter]
-    public LinearGradient LinearGradient { get; set; } = default!;
+    public required LinearGradient LinearGradient { get; set; }
 
     [Parameter]
-    public Shape EditingShape { get; set; } = default!;
+    public required Shape EditingShape { get; set; }
 
     public void StopClicked(Stop stop)
     {

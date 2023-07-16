@@ -22,10 +22,10 @@
     private string newLinearGradientId = string.Empty;
 
     [CascadingParameter]
-    public SVGEditor SVGEditor { get; set; } = default!;
+    public required SVGEditor SVGEditor { get; set; }
 
     [Parameter]
-    public object Data { get; set; } = default!;
+    public required object Data { get; set; }
 
     private void AddNewLinearGradientToShape(Shape shape)
     {

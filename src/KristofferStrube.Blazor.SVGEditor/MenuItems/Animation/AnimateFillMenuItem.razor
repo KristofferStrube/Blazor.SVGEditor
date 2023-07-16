@@ -4,7 +4,7 @@
         @for (int i = 0; i < Animate.FrameCount; i++)
         {
             var j = i;
-            <Item OnClick=@(_ => Animate.SVG.OpenColorPicker("Animate Fill", Animate.Values[j], (value) => {Animate.Values[j] = value; Animate.UpdateValues(); }))>
+            <Item OnClick=@(_ => Animate.SVGEditor.OpenColorPicker("Animate Fill", Animate.Values[j], (value) => {Animate.Values[j] = value; Animate.UpdateValues(); }))>
                 <ColorCube Color=@Animate.Values[j] /> 
                 Frame @j Fill
                 <div class="icon" @onclick:stopPropagation=true @onclick="() => Animate.RemoveFrame(j)" title="Remove Frame" alt="Remove Frame">❌</div>
@@ -17,5 +17,5 @@
 
 @code {
     [Parameter]
-    public BaseAnimate Animate { get; set; } = default!;
+    public required BaseAnimate Animate { get; set; }
 }

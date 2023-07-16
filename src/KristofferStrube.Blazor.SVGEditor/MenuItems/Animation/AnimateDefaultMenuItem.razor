@@ -10,7 +10,7 @@
 
 @code {
     [Parameter]
-    public BaseAnimate Animate { get; set; } = default!;
+    public required BaseAnimate Animate { get; set; }
 
     private void InputChange(ChangeEventArgs eventArgs)
     {
