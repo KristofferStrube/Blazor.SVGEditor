@@ -1,4 +1,10 @@
 # KristofferStrube.Blazor.SVGEditor
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](/LICENSE.md)
+[![GitHub issues](https://img.shields.io/github/issues/KristofferStrube/Blazor.SVGEditor)](https://github.com/KristofferStrube/Blazor.SVGEditor/issues)
+[![GitHub forks](https://img.shields.io/github/forks/KristofferStrube/Blazor.SVGEditor)](https://github.com/KristofferStrube/Blazor.SVGEditor/network/members)
+[![GitHub stars](https://img.shields.io/github/stars/KristofferStrube/Blazor.SVGEditor)](https://github.com/KristofferStrube/Blazor.SVGEditor/stargazers)
+[![NuGet Downloads (official NuGet)](https://img.shields.io/nuget/dt/KristofferStrube.Blazor.SVGEditor?label=NuGet%20Downloads)](https://www.nuget.org/packages/KristofferStrube.Blazor.SVGEditor/)
+
 A basic HTML SVG Editor written in Blazor WASM.
 
 ![Showcase](./docs/showcase.gif?raw=true)
@@ -38,7 +44,6 @@ The project can be demoed at [https://kristofferstrube.github.io/Blazor.SVGEdito
 ## Current goals
 - Add support for touch devices
 - Support errors better to recover instead of crashing on malformed SVG
-- Support more browsers using style attribute.
 
 ```mermaid
   graph LR;
