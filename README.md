@@ -1,5 +1,5 @@
 # KristofferStrube.Blazor.SVGEditor
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](/LICENSE.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/KristofferStrube/Blazor.SVGEditor)](https://github.com/KristofferStrube/Blazor.SVGEditor/issues)
 [![GitHub forks](https://img.shields.io/github/forks/KristofferStrube/Blazor.SVGEditor)](https://github.com/KristofferStrube/Blazor.SVGEditor/network/members)
 [![GitHub stars](https://img.shields.io/github/stars/KristofferStrube/Blazor.SVGEditor)](https://github.com/KristofferStrube/Blazor.SVGEditor/stargazers)
