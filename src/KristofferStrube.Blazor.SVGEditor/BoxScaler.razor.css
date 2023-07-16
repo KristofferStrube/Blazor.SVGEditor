@@ -1,0 +1,8 @@
+﻿.box {
+    pointer-events: none;
+    fill: grey;
+    fill-opacity: 0.2;
+    stroke: grey;
+    stroke-width: 1;
+    stroke-dasharray: 4;
+}

@@ -1,0 +1,6 @@
+﻿.svg-editor {
+    user-select: none;
+    touch-action: none;
+    background-color: white;
+    border: 1px solid black;
+}

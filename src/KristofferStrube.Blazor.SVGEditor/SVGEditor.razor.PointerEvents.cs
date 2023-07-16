@@ -130,7 +130,7 @@ public partial class SVGEditor
             linearGradient.CurrentStop = null;
         }
         SelectedShapes.ForEach(e => e.HandlePointerUp(eventArgs));
-        if (eventArgs.Button == 2)
+        if (eventArgs.Button == 2 || eventArgs.Type == "contextmenu")
         {
             LastRightClick = (eventArgs.OffsetX, eventArgs.OffsetY);
         }

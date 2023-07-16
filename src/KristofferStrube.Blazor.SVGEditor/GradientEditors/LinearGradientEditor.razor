@@ -1,14 +1,14 @@
-﻿<StripedLine Color="grey" From="LinearPoint1" To="LinearPoint2" />
+﻿<StripedLine MarkerType=MarkerType.Secondary From="LinearPoint1" To="LinearPoint2" />
 
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@LinearGradient>
-    <Anchor Position="LinearPoint1" RingColor="black" OnPointerDown="e => GradientEndClicked(e, -1)" />
-    <Anchor Position="LinearPoint2" RingColor="black" OnPointerDown="e => GradientEndClicked(e, -2)" />
+    <Anchor Position="LinearPoint1" OnPointerDown="e => GradientEndClicked(e, -1)" />
+    <Anchor Position="LinearPoint2" OnPointerDown="e => GradientEndClicked(e, -2)" />
 </ContextMenuTrigger>
 
 @foreach (var stop in LinearGradient.Stops)
 {
     <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@stop>
-        <Anchor @key=stop.Key Position="Pos(stop)" MiddleColor="@stop.StopColor" RingColor="black" OnPointerDown="_ => StopClicked(stop)" />
+        <Anchor @key=stop.Key Position="Pos(stop)" MiddleColor="@stop.StopColor" OnPointerDown="_ => StopClicked(stop)" />
     </ContextMenuTrigger>
 }
 

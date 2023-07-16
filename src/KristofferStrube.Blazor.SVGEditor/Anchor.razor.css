@@ -1,0 +1,41 @@
+﻿.anchor-outer {
+    stroke: white;
+}
+
+.anchor-inner {
+    pointer-events: none;
+    fill: transparent;
+}
+
+
+.anchor-inner-thin {
+    stroke-width: 2;
+    r: 5
+}
+
+.anchor-inner-thick {
+    stroke-width: 4;
+    r: 5
+}
+
+.anchor-outer-thin {
+    stroke-width: 2;
+    r: 6
+}
+
+.anchor-outer-thick {
+    stroke-width: 4;
+    r: 7
+}
+
+.anchor-primary {
+    stroke: black;
+}
+
+.anchor-secondary {
+    stroke: grey;
+}
+
+.anchor-opportunity {
+    stroke: blue;
+}

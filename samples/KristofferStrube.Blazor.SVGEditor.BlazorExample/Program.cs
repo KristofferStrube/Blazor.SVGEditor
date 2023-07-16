@@ -1,5 +1,6 @@
+using KristofferStrube.Blazor.FileAPI;
+using KristofferStrube.Blazor.SVGEditor.BlazorExample;
 using KristofferStrube.Blazor.SVGEditor.Extensions;
-using KristofferStrube.Blazor.SVGEditor.Samples;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -8,6 +9,9 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+// This is used in the Save example
+builder.Services.AddURLServiceInProcess();
 
 builder.Services.AddSVGEditor();
 

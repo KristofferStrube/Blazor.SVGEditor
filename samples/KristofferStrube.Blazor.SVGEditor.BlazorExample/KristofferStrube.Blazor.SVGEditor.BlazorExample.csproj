@@ -9,6 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Pages\CustomElements.razor.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Pages\CustomElements.razor.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="KristofferStrube.Blazor.FileAPI" Version="0.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.2" PrivateAssets="all" />
   </ItemGroup>

@@ -1,0 +1,14 @@
+﻿::deep .anchor-primary {
+    stroke: orange;
+}
+
+::deep .box {
+    fill: orange;
+    fill-opacity: 0.5;
+    stroke: orange;
+}
+
+::deep .svg-editor {
+    background-color: #eee;
+    border: none;
+}

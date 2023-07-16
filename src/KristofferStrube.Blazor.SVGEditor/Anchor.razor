@@ -1,5 +1,5 @@
-﻿<circle cx=@X cy=@Y r="@((5+CircleThickness).AsString())" stroke-width="@CircleThickness.AsString()" stroke="white" fill="@MiddleColor" @onpointerdown=OnPointerDown />
-<circle cx=@X cy=@Y r="5" stroke-width="@CircleThickness.AsString()" stroke="@RingColor" fill="transparent" style="pointer-events:none;" />
+﻿<circle cx=@X cy=@Y r="7" class="@OuterClasses" fill="@MiddleColor" @onpointerdown=OnPointerDown />
+<circle cx=@X cy=@Y r="5" class="@InnerClasses" />
 
 @code {
     [Parameter]
@@ -8,14 +8,14 @@
     [Parameter, EditorRequired]
     public (double x, double y) Position { get; set; }
 
-    [Parameter, EditorRequired]
-    public string RingColor { get; set; } = default!;
-
     [Parameter]
     public string MiddleColor { get; set; } = "transparent";
 
     [Parameter]
-    public double CircleThickness { get; set; } = 2;
+    public bool ThickCircle { get; set; } = false;
+
+    [Parameter]
+    public MarkerType MarkerType { get; set; } = MarkerType.Primary;
 
     [CascadingParameter]
     protected SVGEditor SVG { get; set; } = default!;
@@ -24,9 +24,22 @@
 
     protected string Y => SVG.LocalTransform(Position).y.AsString();
 
+    protected string OuterClasses => "anchor-outer"
+    + (ThickCircle ? " anchor-outer-thick" : " anchor-outer-thin");
+
+    protected string InnerClasses => "anchor-inner"
+    + MarkerType switch
+    {
+        MarkerType.Primary => " anchor-primary",
+        MarkerType.Secondary => " anchor-secondary",
+        MarkerType.Opportunity => " anchor-opportunity",
+        var value => " anchor-custom-" + (int)value
+    }
+    + (ThickCircle ? " anchor-inner-thick" : " anchor-inner-thin");
+
     private string _State { get; set; } = string.Empty;
 
-    private string State => $"{Position.x}{Position.y}{SVG.Scale}{SVG.Translate.x}{SVG.Translate.y}{RingColor}{MiddleColor}";
+    private string State => $"{Position.x}{Position.y}{SVG.Scale}{SVG.Translate.x}{SVG.Translate.y}{MarkerType}{ThickCircle}{MiddleColor}";
 
     protected override bool ShouldRender()
     {

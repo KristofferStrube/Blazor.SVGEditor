@@ -41,10 +41,10 @@
     </g>
     @if (SVGElement.Selected)
     {
-        <Anchor RingColor="grey" Position="(SVGElement.BoundingBox.X, SVGElement.BoundingBox.Y)" />
-        <Anchor RingColor="grey" Position="(SVGElement.BoundingBox.X+SVGElement.BoundingBox.Width, SVGElement.BoundingBox.Y)" />
-        <Anchor RingColor="grey" Position="(SVGElement.BoundingBox.X+SVGElement.BoundingBox.Width, SVGElement.BoundingBox.Y+SVGElement.BoundingBox.Height)" />
-        <Anchor RingColor="grey" Position="(SVGElement.BoundingBox.X, SVGElement.BoundingBox.Y+SVGElement.BoundingBox.Height)" />
+        <Anchor MarkerType="MarkerType.Secondary" Position="(SVGElement.BoundingBox.X, SVGElement.BoundingBox.Y)" />
+        <Anchor MarkerType="MarkerType.Secondary" Position="(SVGElement.BoundingBox.X+SVGElement.BoundingBox.Width, SVGElement.BoundingBox.Y)" />
+        <Anchor MarkerType="MarkerType.Secondary" Position="(SVGElement.BoundingBox.X+SVGElement.BoundingBox.Width, SVGElement.BoundingBox.Y+SVGElement.BoundingBox.Height)" />
+        <Anchor MarkerType="MarkerType.Secondary" Position="(SVGElement.BoundingBox.X, SVGElement.BoundingBox.Y+SVGElement.BoundingBox.Height)" />
     }
 </ContextMenuTrigger>
 

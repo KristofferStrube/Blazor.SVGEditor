@@ -28,7 +28,7 @@
     </g>
     @if (SVGElement.Selected && SVGElement.SVG.EditMode != EditMode.Add)
     {
-        <Anchor RingColor="black" OnPointerDown="() => AnchorSelect(0)" Position="(SVGElement.X1, SVGElement.Y1)" />
-        <Anchor RingColor="black" OnPointerDown="() => AnchorSelect(1)" Position="(SVGElement.X2, SVGElement.Y2)" />
+        <Anchor OnPointerDown="() => AnchorSelect(0)" Position="(SVGElement.X1, SVGElement.Y1)" />
+        <Anchor OnPointerDown="() => AnchorSelect(1)" Position="(SVGElement.X2, SVGElement.Y2)" />
     }
 </ContextMenuTrigger>

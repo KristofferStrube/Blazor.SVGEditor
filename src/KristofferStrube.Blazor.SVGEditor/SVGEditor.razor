@@ -9,7 +9,8 @@
         @onpointerdown:stopPropagation="true"
         @oncontextmenu="()=>{}"
         @oncontextmenu:preventDefault="true"
-             style="border:1px solid black; cursor:@(TranslatePanner.HasValue ? "move" : "initial");user-select:none;touch-action:none;"
+             class="svg-editor"
+             style="cursor:@(TranslatePanner.HasValue ? "move" : "initial");"
              width="100%"
              height="100%">
             <rect width="100%" height="100%" fill="transparent" @onpointerdown=@UnSelect></rect>

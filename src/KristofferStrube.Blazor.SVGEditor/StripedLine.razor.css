@@ -1,0 +1,25 @@
+﻿.line-non-offset {
+    pointer-events: none;
+    stroke-dasharray: 4;
+    stroke-width: 2;
+}
+
+.line-offset {
+    pointer-events: none;
+    stroke-dasharray: 4;
+    stroke-dashoffset: 4;
+    stroke: white;
+    stroke-width: 2;
+}
+
+.line-primary {
+    stroke: black;
+}
+
+.line-secondary {
+    stroke: grey;
+}
+
+.line-opportunity {
+    stroke: blue;
+}
