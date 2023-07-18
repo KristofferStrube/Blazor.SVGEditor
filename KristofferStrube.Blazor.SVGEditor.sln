@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31410.414
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KristofferStrube.Blazor.SVGEditor.BlazorExample", "samples\KristofferStrube.Blazor.SVGEditor.BlazorExample\KristofferStrube.Blazor.SVGEditor.BlazorExample.csproj", "{1CC1F8D5-3BFC-4DE4-9627-04344BC6584E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KristofferStrube.Blazor.SVGEditor.WasmExample", "samples\KristofferStrube.Blazor.SVGEditor.WasmExample\KristofferStrube.Blazor.SVGEditor.WasmExample.csproj", "{1CC1F8D5-3BFC-4DE4-9627-04344BC6584E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KristofferStrube.Blazor.SVGEditor", "src\KristofferStrube.Blazor.SVGEditor\KristofferStrube.Blazor.SVGEditor.csproj", "{2DED3DA7-FDDC-4AC1-B261-2D40AB761EA5}"
 EndProject

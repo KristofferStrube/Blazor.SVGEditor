@@ -1,5 +1,5 @@
 using KristofferStrube.Blazor.FileAPI;
-using KristofferStrube.Blazor.SVGEditor.BlazorExample;
+using KristofferStrube.Blazor.SVGEditor.WasmExample;
 using KristofferStrube.Blazor.SVGEditor.Extensions;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;

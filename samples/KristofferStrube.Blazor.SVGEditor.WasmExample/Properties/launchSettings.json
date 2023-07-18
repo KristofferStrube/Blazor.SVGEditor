@@ -16,7 +16,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "KristofferStrube.Blazor.SVGEditor.BlazorExample": {
+    "KristofferStrube.Blazor.SVGEditor.WasmExample": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,

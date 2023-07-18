@@ -1,7 +1,7 @@
 ﻿using AngleSharp.Dom;
 using Microsoft.AspNetCore.Components.Web;
 
-namespace KristofferStrube.Blazor.SVGEditor.BlazorExample.CustomElements;
+namespace KristofferStrube.Blazor.SVGEditor.WasmExample.CustomElements;
 
 public class Node : Circle
 {
@@ -12,7 +12,7 @@ public class Node : Circle
         {
             Id = Guid.NewGuid().ToString();
         }
-        foreach (Connector connector in svg.Elements.Where(e => e is Connector connector && (connector.From?.Id == Id || connector.To?.Id == Id)))
+        foreach (Connector connector in svg.Elements.Where(e => e is Connector connector && (connector.From?.Id == Id || connector.To?.Id == Id)).Select(e => (Connector)e))
         {
             connector.UpdateLine();
             connector.Rerender();

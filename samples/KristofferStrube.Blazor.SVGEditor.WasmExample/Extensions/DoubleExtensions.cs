@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace KristofferStrube.Blazor.SVGEditor.BlazorExample;
+namespace KristofferStrube.Blazor.SVGEditor.WasmExample;
 
 internal static class DoubleExtensions
 {

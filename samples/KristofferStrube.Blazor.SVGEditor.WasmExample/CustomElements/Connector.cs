@@ -1,7 +1,7 @@
 ﻿using AngleSharp.Dom;
 using Microsoft.AspNetCore.Components.Web;
 
-namespace KristofferStrube.Blazor.SVGEditor.BlazorExample.CustomElements;
+namespace KristofferStrube.Blazor.SVGEditor.WasmExample.CustomElements;
 
 public class Connector : Line
 {
