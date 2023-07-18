@@ -33,6 +33,11 @@ public abstract class ShapeEditor<TShape> : ComponentBase where TShape : Shape
             return;
         }
 
+        if (SVGElement.SVG.EditMode is EditMode.Add)
+        {
+            return;
+        }
+
         SVGElement.SVG.FocusShape(SVGElement);
     }
 
@@ -86,6 +91,8 @@ public abstract class ShapeEditor<TShape> : ComponentBase where TShape : Shape
         {
             return;
         }
+
+        Console.WriteLine("WHaat");
 
         if (SVGElement.SVG.DisableSelecting && !SVGElement.Selected)
         {
