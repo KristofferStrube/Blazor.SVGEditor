@@ -68,8 +68,7 @@ public class Node : Circle
             R = 50
         };
 
-        (double x, double y) startPos = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
-        (node.Cx, node.Cy) = startPos;
+        (node.Cx, node.Cy) = SVG.LocalDetransform(SVG.LastRightClick);
 
         SVG.ClearSelectedShapes();
         SVG.SelectShape(node);
