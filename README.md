@@ -110,6 +110,9 @@ Now you are ready to use the component in your page. A minimal example of this w
 - Add support for touch devices
 - Support errors better to recover instead of crashing when parsing malformed SVGs.
 
+# Issues
+Feel free to open issues on the repository if you find any errors with the package or have wishes for features.
+
 # Diagram of relation between core types in the project.
 
 ```mermaid
