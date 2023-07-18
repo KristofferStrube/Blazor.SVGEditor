@@ -23,9 +23,7 @@ You can install the package via NuGet with the Package Manager in your IDE or al
 ```bash
 dotnet add package KristofferStrube.Blazor.SVGEditor
 ```
-
-# Usage
-The package can be used in Blazor WebAssembly and Blazor Server projects. In the samples folder of the repo you can find two projects that show how to use the `SVGEditor` component in both Blazor Server and WASM.
+The package can be used in Blazor WebAssembly and Blazor Server projects. In the samples folder of this repository, you can find two projects that show how to use the `SVGEditor` component in both Blazor Server and WASM.
 
 ## Import
 You need to reference the package to use it in your pages. This can be done in `_Import.razor` by adding the following.
