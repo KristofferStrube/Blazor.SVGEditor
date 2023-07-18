@@ -67,7 +67,7 @@ And to add this in the end of the same file after your have referenced Blazor Se
 ## Adding the component to a site.
 Now you are ready to use the component in your page. A minimal example of this would be the following:
 
-```
+```razor
 <div style="height:80vh">
     <SVGEditor Input=@Input InputUpdated="(string s) => { Input = s; StateHasChanged(); }" />
 </div>
