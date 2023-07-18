@@ -32,7 +32,7 @@ public partial class SVGEditor
 
     public void MoveToBack()
     {
-        foreach(Shape element in SelectedShapes)
+        foreach (Shape element in SelectedShapes)
         {
             _ = Elements.Remove(element);
             Elements.Insert(0, element);
@@ -50,11 +50,11 @@ public partial class SVGEditor
             int index = Elements.IndexOf(element);
             if (index != 0)
             {
-                ClearSelectedShapes();
                 _ = Elements.Remove(element);
                 Elements.Insert(index - 1, element);
             }
         }
+        ClearSelectedShapes();
         Elements.ForEach(e => e.UpdateHtml());
         UpdateInput();
         RerenderAll();
@@ -67,11 +67,11 @@ public partial class SVGEditor
             int index = Elements.IndexOf(element);
             if (index != Elements.Count - 1)
             {
-                ClearSelectedShapes();
                 _ = Elements.Remove(element);
                 Elements.Insert(index + 1, element);
             }
         }
+        ClearSelectedShapes();
         Elements.ForEach(e => e.UpdateHtml());
         UpdateInput();
         RerenderAll();
