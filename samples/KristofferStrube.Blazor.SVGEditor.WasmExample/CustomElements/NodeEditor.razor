@@ -8,7 +8,7 @@
         <circle @ref=ElementReference
         @onfocusin="FocusElement"
         @onfocusout="UnfocusElement"
-        @onpointerdown="Select"
+        @onpointerdown="SelectAsync"
         @onkeyup="KeyUp"
                 tabindex="@(SVGElement.IsChildElement ? -1 : 0)"
                 cx=@SVGElement.Cx.AsString()
@@ -26,16 +26,3 @@
     </g>
 </ContextMenuTrigger>
 
-@code {
-    public async Task Select(MouseEventArgs eventArgs)
-    {
-        if (SVGElement.SVG.EditMode is EditMode.Add && SVGElement.SVG.SelectedShapes.Any(s => s is Connector))
-        {
-            SVGElement.SVG.SelectedShapes.Add(SVGElement);
-        }
-        else
-        {
-            await SelectAsync(eventArgs);
-        }
-    }
-}
