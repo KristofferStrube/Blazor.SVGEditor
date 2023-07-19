@@ -1,7 +1,6 @@
 ﻿@using BlazorContextMenu
 @using KristofferStrube.Blazor.SVGEditor.ShapeEditors
 @using KristofferStrube.Blazor.SVGEditor.Extensions
-
 @inherits ShapeEditor<Node>
 
 <ContextMenuTrigger MenuId="SVGMenu" WrapperTag="g" Data=@SVGElement MouseButtonTrigger="SVGElement.ShouldTriggerContextMenu ? MouseButtonTrigger.Right : (MouseButtonTrigger)4">
@@ -10,7 +9,8 @@
         @onfocusin="FocusElement"
         @onfocusout="UnfocusElement"
         @onpointerdown="Select"
-        @onkeyup="KeyUp" tabindex="@(SVGElement.IsChildElement ? -1 : 0)"
+        @onkeyup="KeyUp"
+                tabindex="@(SVGElement.IsChildElement ? -1 : 0)"
                 cx=@SVGElement.Cx.AsString()
                 cy=@SVGElement.Cy.AsString()
                 r=@SVGElement.R.AsString()
@@ -20,74 +20,22 @@
                 stroke-linejoin="@SVGElement.StrokeLinejoin.AsString()"
                 stroke-dasharray="@SVGElement.StrokeDasharray"
                 stroke-dashoffset="@SVGElement.StrokeDashoffset.AsString()"
-                fill="@DarkenIfSelected(SVGElement.Fill)">
+                fill="@SVGElement.Fill"
+                style="filter:brightness(@(SVGElement.Selected ? "0.8" : "1"))">
         </circle>
     </g>
 </ContextMenuTrigger>
 
 @code {
-    private string DarkenIfSelected(string color)
-    {
-        if (color[0] is not '#' || color.Length is not 7 || !SVGElement.Selected)
-        {
-            return color;
-        }
-
-        int[] parts = color[1..].Chunk(2).Select(part => int.Parse(part, System.Globalization.NumberStyles.HexNumber)).ToArray();
-        return "#" + string.Join("", parts.Select(part => Math.Max(0, part - 50).ToString("X2")));
-    }
-
     public async Task Select(MouseEventArgs eventArgs)
     {
-        if (SVGElement.SVG.EditMode is EditMode.Add)
+        if (SVGElement.SVG.EditMode is EditMode.Add && SVGElement.SVG.SelectedShapes.Any(s => s is Connector))
         {
-            if (SVGElement.SVG.SelectedShapes.Any(s => s is Connector))
-            {
-                SVGElement.SVG.SelectedShapes.Add(SVGElement);
-            }
-            return;
-        }
-
-        if (eventArgs.CtrlKey)
-        {
-            if (!SVGElement.Selected)
-            {
-                SVGElement.SVG.SelectShape(SVGElement);
-                await SVGElement.SVG.FocusAsync(ElementReference);
-            }
-            SVGElement.SVG.EditMode = EditMode.None;
+            SVGElement.SVG.SelectedShapes.Add(SVGElement);
         }
         else
         {
-            SVGElement.SVG.MovePanner = SVGElement.SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-            if (!SVGElement.Selected)
-            {
-                SVGElement.SVG.EditMode = EditMode.Move;
-                SVGElement.SVG.ClearSelectedShapes();
-                SVGElement.SVG.SelectShape(SVGElement);
-                await SVGElement.SVG.FocusAsync(ElementReference);
-            }
-            StateHasChanged();
-            if (eventArgs.Button == 0)
-            {
-                switch (SVGElement.SVG.EditMode)
-                {
-                    case EditMode.None:
-                        SVGElement.SVG.EditMode = EditMode.Move;
-                        break;
-                    case EditMode.Scale:
-                        SVGElement.SVG.CurrentAnchor = -1;
-                        break;
-                    case EditMode.Add:
-                        break;
-                    case EditMode.Move:
-                        break;
-                    case EditMode.MoveAnchor:
-                        break;
-                    default:
-                        break;
-                }
-            }
+            await SelectAsync(eventArgs);
         }
     }
 }
