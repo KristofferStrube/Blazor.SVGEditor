@@ -5,16 +5,9 @@
 </Item>
 
 @code {
-    private string text = string.Empty;
-
     [CascadingParameter]
     public required SVGEditor SVGEditor { get; set; }
 
     [Parameter]
     public required object Data { get; set; }
-
-    private void AddNew()
-    {
-        Node.AddNew(SVGEditor);
-    }
 }

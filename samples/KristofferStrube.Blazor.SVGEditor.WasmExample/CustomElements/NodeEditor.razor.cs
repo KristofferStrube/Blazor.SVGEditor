@@ -1,4 +1,3 @@
-using KristofferStrube.Blazor.SVGEditor.ShapeEditors;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace KristofferStrube.Blazor.SVGEditor.WasmExample.CustomElements;
