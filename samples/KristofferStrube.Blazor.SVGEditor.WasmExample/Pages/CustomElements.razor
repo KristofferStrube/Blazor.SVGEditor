@@ -16,13 +16,14 @@
 <div style="height:65vh">
     <SVGEditor Input=@Input
                InputUpdated="(string s) => { Input = s; StateHasChanged(); }"
+               SnapToInteger=true
                SupportedElements=SupportedElements
-               AddNewSVGElementMenuItems=AddNewSVGElementMenuItem
+               AddNewSVGElementMenuItems=AddNewSVGElementMenuItems
                ActionMenuItems=ActionMenuItems />
 </div>
 
 @code {
-    protected string Input = @"<circle data-elementtype=""node"" r=""50"" cx=""100"" cy=""100"" stroke=""#66BB6A"" fill=""#98ED9C"" id=""ddcfdf43-3e28-4b5b-a3b9-665c62ef2d81""></circle><circle data-elementtype=""node"" r=""50"" cx=""100"" cy=""300"" stroke=""#7E57C2"" fill=""#B089F4"" id=""8cbcd8da-cdd1-4f88-8376-886eb06e988f""></circle><line data-elementtype=""connector"" stroke=""black"" stroke-width=""5"" x2=""100"" y2=""250"" x1=""100"" y1=""150"" from=""ddcfdf43-3e28-4b5b-a3b9-665c62ef2d81"" to=""8cbcd8da-cdd1-4f88-8376-886eb06e988f""></line>";
+    protected string Input = @"<circle data-elementtype=""node"" r=""50"" cx=""100"" cy=""100"" stroke=""#66BB6A"" fill=""#98ED9C"" id=""ddcfdf43-3e28-4b5b-a3b9-665c62ef2d81""></circle><circle data-elementtype=""node"" r=""50"" cx=""100"" cy=""300"" stroke=""#7E57C2"" fill=""#B089F4"" id=""8cbcd8da-cdd1-4f88-8376-886eb06e988f""></circle><line data-elementtype=""connector"" stroke=""black"" stroke-width=""5"" x2=""100"" y2=""250"" x1=""100"" y1=""150"" data-from=""ddcfdf43-3e28-4b5b-a3b9-665c62ef2d81"" data-to=""8cbcd8da-cdd1-4f88-8376-886eb06e988f""></line>";
 
     protected List<SupportedElement> SupportedElements = new()
     {
@@ -30,7 +31,7 @@
         new(typeof(Connector), element => element.TagName is "LINE" && element.GetAttribute("data-elementtype") == "connector"),
     };
 
-    protected List<SupportedAddNewSVGElementMenuItem> AddNewSVGElementMenuItem = new()
+    protected List<SupportedAddNewSVGElementMenuItem> AddNewSVGElementMenuItems = new()
     {
         new(typeof(AddNewNodeMenuItem), (_,_) => true),
         new(typeof(AddNewConnectorMenuItem), (_,data) => data is Node)

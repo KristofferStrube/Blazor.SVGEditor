@@ -16,7 +16,7 @@ public class Connector : Line
     {
         get
         {
-            var from = (Node?)SVG.Elements.FirstOrDefault(e => e is Node && e.Id == Element.GetAttribute("from"));
+            var from = (Node?)SVG.Elements.FirstOrDefault(e => e is Node && e.Id == Element.GetAttribute("data-from"));
             _ = from?.RelatedConnectors.Add(this);
             return from;
         }
@@ -28,11 +28,12 @@ public class Connector : Line
             }
             if (value is null)
             {
-                _ = Element.RemoveAttribute("from");
+                _ = Element.RemoveAttribute("data-from");
             }
             else
             {
-                Element.SetAttribute("from", value.Id);
+                Element.SetAttribute("data-from", value.Id);
+                _ = value.RelatedConnectors.Add(this);
             }
             Changed?.Invoke(this);
         }
@@ -42,7 +43,7 @@ public class Connector : Line
     {
         get
         {
-            var to = (Node?)SVG.Elements.FirstOrDefault(e => e is Node && e.Id == Element.GetAttribute("to"));
+            var to = (Node?)SVG.Elements.FirstOrDefault(e => e is Node && e.Id == Element.GetAttribute("data-to"));
             _ = to?.RelatedConnectors.Add(this);
             return to;
         }
@@ -54,11 +55,12 @@ public class Connector : Line
             }
             if (value is null)
             {
-                _ = Element.RemoveAttribute("to");
+                _ = Element.RemoveAttribute("data-to");
             }
             else
             {
-                Element.SetAttribute("to", value.Id);
+                Element.SetAttribute("data-to", value.Id);
+                _ = value.RelatedConnectors.Add(this);
             }
             Changed?.Invoke(this);
         }
@@ -66,44 +68,29 @@ public class Connector : Line
 
     public override void HandlePointerMove(PointerEventArgs eventArgs)
     {
-        switch (SVG.EditMode)
+        if (SVG.EditMode is EditMode.Add)
         {
-            case EditMode.Add:
-                (X2, Y2) = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
-                SetStart((X2, Y2));
-                break;
-            case EditMode.MoveAnchor or EditMode.Move or EditMode.None or EditMode.Scale:
-                break;
-            default:
-                break;
+            (X2, Y2) = SVG.LocalDetransform((eventArgs.OffsetX, eventArgs.OffsetY));
+            SetStart((X2, Y2));
         }
     }
 
     public override void HandlePointerUp(PointerEventArgs eventArgs)
     {
-        switch (SVG.EditMode)
+        if (SVG.EditMode is EditMode.Add
+            && SVG.SelectedShapes.FirstOrDefault(s => s is Node node
+            && node != From) is Node { } to)
         {
-            case EditMode.Add:
-                if (SVG.SelectedShapes.FirstOrDefault(s => s is Node node
-                    && node != From) is Node { } to)
-                {
-                    if (to.RelatedConnectors.Any(c => c.To == From || c.From == From))
-                    {
-                        Complete();
-                    }
-                    else
-                    {
-                        To = to;
-                        SVG.EditMode = EditMode.None;
-                        UpdateLine();
-                    }
-                }
-                break;
-            case EditMode.Move or EditMode.MoveAnchor:
+            if (to.RelatedConnectors.Any(c => c.To == From || c.From == From))
+            {
+                Complete();
+            }
+            else
+            {
+                To = to;
                 SVG.EditMode = EditMode.None;
-                break;
-            default:
-                break;
+                UpdateLine();
+            }
         }
     }
 
