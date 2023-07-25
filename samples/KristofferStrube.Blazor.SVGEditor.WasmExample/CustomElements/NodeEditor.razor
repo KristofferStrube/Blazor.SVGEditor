@@ -26,3 +26,16 @@
     </g>
 </ContextMenuTrigger>
 
+@code {
+    public new async Task SelectAsync(MouseEventArgs eventArgs)
+    {
+        if (SVGElement.SVG.EditMode is EditMode.Add && SVGElement.SVG.SelectedShapes.Any(s => s is Connector))
+        {
+            SVGElement.SVG.SelectedShapes.Add(SVGElement);
+        }
+        else
+        {
+            await base.SelectAsync(eventArgs);
+        }
+    }
+}

@@ -8,17 +8,9 @@
 }
 
 @code {
-    private string text = string.Empty;
-
-    // Now
     [CascadingParameter]
     public required SVGEditor SVGEditor { get; set; }
 
     [Parameter]
     public required object Data { get; set; }
-
-    private void AddNew()
-    {
-        Node.AddNew(SVGEditor);
-    }
 }

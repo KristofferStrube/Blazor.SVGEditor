@@ -78,8 +78,7 @@ public class Connector : Line
     public override void HandlePointerUp(PointerEventArgs eventArgs)
     {
         if (SVG.EditMode is EditMode.Add
-            && SVG.SelectedShapes.FirstOrDefault(s => s is Node node
-            && node != From) is Node { } to)
+            && SVG.SelectedShapes.FirstOrDefault(s => s is Node node && node != From) is Node { } to)
         {
             if (to.RelatedConnectors.Any(c => c.To == From || c.From == From))
             {
@@ -117,31 +116,21 @@ public class Connector : Line
         };
         SVG.EditMode = EditMode.Add;
 
-        (connector.X2, connector.Y2) = SVG.LocalDetransform((SVG.LastRightClick.x, SVG.LastRightClick.y));
-        connector.SetStart((connector.X2, connector.Y2));
-
         SVG.ClearSelectedShapes();
         SVG.SelectShape(connector);
         SVG.AddElement(connector);
     }
 
-    public void SetStart((double x, double y) to)
+    public void SetStart((double x, double y) towards)
     {
-        if (From is null)
-        {
-            return;
-        }
+        double differenceX = towards.x - From!.Cx;
+        double differenceY = towards.y - From!.Cy;
+        double distance = Math.Sqrt((differenceX * differenceX) + (differenceY * differenceY));
 
-        if (From.Cx == SVG.LastRightClick.x && From.Cy == SVG.LastRightClick.y)
+        if (distance > 0)
         {
-            (X1, Y1) = (From.Cx, From.Cy);
-        }
-        else
-        {
-            double a = to.x - From.Cx;
-            double b = to.y - From.Cy;
-            double length = Math.Sqrt((a * a) + (b * b));
-            (X1, Y1) = (From.Cx + (a / length * 50), From.Cy + (b / length * 50));
+            X1 = From!.Cx + (differenceX / distance * 50);
+            Y1 = From!.Cy + (differenceY / distance * 50);
         }
     }
 
@@ -153,17 +142,19 @@ public class Connector : Line
             return;
         }
 
-        double a = From.Cx - To.Cx;
-        double b = From.Cy - To.Cy;
-        double length = Math.Sqrt((a * a) + (b * b));
-        (X2, Y2) = (To.Cx + (a / length * 50), To.Cy + (b / length * 50));
-        if (length < 100)
+        double differenceX = To.Cx - From.Cx;
+        double differenceY = To.Cy - From.Cy;
+        double distance = Math.Sqrt((differenceX * differenceX) + (differenceY * differenceY));
+
+        if (distance < 100)
         {
             (X1, Y1) = (X2, Y2);
         }
         else
         {
-            SetStart((X2, Y2));
+            SetStart((To.Cx, To.Cy));
+            X2 = To.Cx - (differenceX / distance * 50);
+            Y2 = To.Cy - (differenceY / distance * 50);
         }
     }
 }

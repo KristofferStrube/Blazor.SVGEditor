@@ -27,12 +27,12 @@
 </ContextMenuTrigger>
 
 @code {
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+protected override async Task OnAfterRenderAsync(bool firstRender)
+{
+    if (firstRender)
     {
-        if (firstRender)
-        {
-            SVGElement.UpdateLine();
-        }
-        await base.OnAfterRenderAsync(firstRender);
+        SVGElement.UpdateLine();
     }
+    await base.OnAfterRenderAsync(firstRender);
+}
 }

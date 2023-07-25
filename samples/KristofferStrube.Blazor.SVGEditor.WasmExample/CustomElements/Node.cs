@@ -12,11 +12,6 @@ public class Node : Circle
         {
             Id = Guid.NewGuid().ToString();
         }
-        foreach (Connector connector in svg.Elements.Where(e => e is Connector connector && (connector.From?.Id == Id || connector.To?.Id == Id)).Select(e => (Connector)e))
-        {
-            connector.UpdateLine();
-            connector.Rerender();
-        }
     }
 
     public override Type Presenter => typeof(NodeEditor);
@@ -39,7 +34,7 @@ public class Node : Circle
     public override void HandlePointerMove(PointerEventArgs eventArgs)
     {
         base.HandlePointerMove(eventArgs);
-        if (SVG.EditMode == EditMode.Move)
+        if (SVG.EditMode is EditMode.Move)
         {
             foreach (Connector connector in RelatedConnectors)
             {
