@@ -111,6 +111,9 @@ Now you are ready to use the component in your page. A minimal example of this w
 # Issues
 Feel free to open issues on the repository if you find any errors with the package or have wishes for features.
 
+# Related articles:
+- https://kristoffer-strube.dk/post/blazor-svgeditor-released/
+
 # Diagram of relation between core types in the project.
 
 ```mermaid
