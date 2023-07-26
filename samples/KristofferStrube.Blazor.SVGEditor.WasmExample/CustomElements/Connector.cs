@@ -88,7 +88,6 @@ public class Connector : Line
             {
                 To = to;
                 SVG.EditMode = EditMode.None;
-                SVG.ClearSelectedShapes();
                 UpdateLine();
             }
         }
