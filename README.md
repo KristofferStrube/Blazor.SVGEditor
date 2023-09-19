@@ -48,22 +48,26 @@ await builder.Build().RunAsync();
 ```
 
 ## Include needed stylesheets and scripts
-The libraries that the component use also needs to have some stylesheets and scripts added to function.
-For this you need to insert the follow tags in the `<head>` section of your `index.html` or `Host.cshtml` file:
+The libraries that the component uses also need to have some stylesheets and scripts added to function.
+For this, you need to insert the following tags in the `<head>` section of your `index.html` or `Host.cshtml` file:
 ```html
 <link href="_content/BlazorColorPicker/colorpicker.css" rel="stylesheet" />
 <link href="_content/Blazor.ContextMenu/blazorContextMenu.min.css" rel="stylesheet" />
 <link href="_content/KristofferStrube.Blazor.SVGEditor/kristofferStrubeBlazorSVGEditor.css" rel="stylesheet" />
 ```
-And to add this in the end of the same file after your have referenced Blazor Server og Wasm bootstraper:
+The library uses Scoped CSS, so you must include your project-specific `.styles.css` CSS file in your project for the scoped styles of the library components. An example is in the test project in this repo:
+```html
+<link href="KristofferStrube.Blazor.SVGEditor.WasmExample.styles.css" rel="stylesheet" />
+```
+
+At the end of the file, after you have referenced the Blazor Server or Wasm bootstrapper, insert the following:
 
 ```html
 <script src="_content/BlazorColorPicker/colorpicker.js"></script>
-<script src="_content/Blazor.ContextMenu/blazorContextMenu.min.js"></script>
 ```
 
 ## Adding the component to a site.
-Now you are ready to use the component in your page. A minimal example of this would be the following:
+Now, you are ready to use the component in your page. A minimal example of this would be the following:
 
 ```razor
 <div style="height:80vh">
