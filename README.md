@@ -63,7 +63,7 @@ The library uses Scoped CSS, so you must include your project-specific `.styles.
 At the end of the file, after you have referenced the Blazor Server or Wasm bootstrapper, insert the following:
 
 ```html
-<script src="_content/BlazorColorPicker/colorpicker.js"></script>
+<script src="_content/Blazor.ContextMenu/blazorContextMenu.min.js"></script>
 ```
 
 ## Adding the component to a site.
