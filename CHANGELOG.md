@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2023-10-04
+### Fixed
+- There was an accidential console log left in the code which has now been removed.
+
 ## [0.1.1] - 2023-07-18
 ### Fixed
 - Fixed the functionality for moving elements back and forward
