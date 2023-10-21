@@ -30,20 +30,6 @@
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Anchor.razor.css" />
-    <None Remove="BoxScaler.razor.css" />
-    <None Remove="StripedLine.razor.css" />
-    <None Remove="SVGEditor.razor.css" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="SVGEditor.razor.css" />
-    <Content Include="BoxScaler.razor.css" />
-    <Content Include="Anchor.razor.css" />
-    <Content Include="StripedLine.razor.css" />
-  </ItemGroup>
   
   <ItemGroup>
     <SupportedPlatform Include="browser" />
