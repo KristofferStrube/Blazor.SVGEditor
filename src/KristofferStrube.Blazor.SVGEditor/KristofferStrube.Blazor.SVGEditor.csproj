@@ -8,7 +8,7 @@
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <Title>Blazor SVGEditor</Title>
-    <Description>An SVG Editor that is implemented in and for Blazor.</Description>
+    <Description>A SVG Editor that is implemented in and for Blazor.</Description>
     <PackageId>KristofferStrube.Blazor.SVGEditor</PackageId>
     <PackageTags>Blazor;Wasm;Server;SVG;WYSIWYG;customizable;Path;pathdata;scaling;panning;editing;ordering</PackageTags>
     <RepositoryUrl>https://github.com/KristofferStrube/Blazor.SVGEditor</RepositoryUrl>
