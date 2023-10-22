@@ -6,28 +6,28 @@ public partial class SVGEditor
 {
     public void OpenColorPicker(string attributeName, string previousColor, Action<string> colorSetter)
     {
-        ColorPickerShapes = MarkedShapes;
+        colorPickerShapes = MarkedShapes;
         PreviousColor = previousColor;
-        ColorPickerAttributeName = attributeName;
-        ColorPickerSetter = colorSetter;
+        colorPickerAttributeName = attributeName;
+        colorPickerSetter = colorSetter;
         StateHasChanged();
     }
 
     private void ColorPickerClosed(string value)
     {
-        if (ColorPickerAttributeName is "Fill")
+        if (colorPickerAttributeName is "Fill")
         {
-            ColorPickerShapes?.ForEach(s => s.Fill = value);
+            colorPickerShapes?.ForEach(s => s.Fill = value);
         }
-        else if (ColorPickerAttributeName is "Stroke")
+        else if (colorPickerAttributeName is "Stroke")
         {
-            ColorPickerShapes?.ForEach(s => s.Stroke = value);
+            colorPickerShapes?.ForEach(s => s.Stroke = value);
         }
         else
         {
-            ColorPickerSetter?.Invoke(value);
+            colorPickerSetter?.Invoke(value);
         }
-        ColorPickerShapes = null;
+        colorPickerShapes = null;
     }
 
     public void MoveToBack()

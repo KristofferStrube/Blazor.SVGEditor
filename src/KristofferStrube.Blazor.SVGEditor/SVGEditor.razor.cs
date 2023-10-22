@@ -9,16 +9,17 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public partial class SVGEditor : ComponentBase
 {
-    private string? _input;
-    private ElementReference SVGElementReference;
-    private List<Shape>? ColorPickerShapes;
-    private string? ColorPickerAttributeName;
-    private Action<string>? ColorPickerSetter;
-    private (double x, double y)? TranslatePanner;
-    private readonly Subject<ISVGElement> ElementSubject = new();
-    private List<Shape>? BoxSelectionShapes;
-    private string ColorPickerTitle => $"Pick {ColorPickerAttributeName} Color";
-    private bool IsColorPickerOpen => ColorPickerShapes is not null;
+    private string? input;
+    private ElementReference svgElementReference;
+    private List<Shape>? colorPickerShapes;
+    private string? colorPickerAttributeName;
+    private Action<string>? colorPickerSetter;
+    private (double x, double y)? translatePanner;
+    private ((double x, double y) firstFinger, (double x, double y) secondFinger)? multiplePointerPanners;
+    private readonly Subject<ISVGElement> elementSubject = new();
+    private List<Shape>? boxSelectionShapes;
+    private string ColorPickerTitle => $"Pick {colorPickerAttributeName} Color";
+    private bool IsColorPickerOpen => colorPickerShapes is not null;
 
     public bool ShouldShowContextMenu(object? data)
     {
@@ -60,6 +61,7 @@ public partial class SVGEditor : ComponentBase
     public Shape? CurrentEditShape { get; set; }
 
     private EditMode editMode = EditMode.None;
+
     public EditMode EditMode
     {
         get => editMode;
@@ -80,24 +82,24 @@ public partial class SVGEditor : ComponentBase
     }
 
     public List<Shape> MarkedShapes =>
-        FocusedShape != null && !SelectedShapes.Contains(FocusedShape) ?
-        SelectedShapes.Append(FocusedShape).ToList() :
-        SelectedShapes;
+        FocusedShape != null && !SelectedShapes.Contains(FocusedShape)
+        ? [.. SelectedShapes, FocusedShape]
+        : SelectedShapes;
 
     public List<Shape> VisibleSelectionShapes =>
-        BoxSelectionShapes is not null ?
-        BoxSelectionShapes.ToList() :
-        MarkedShapes;
+        boxSelectionShapes is not null
+        ? boxSelectionShapes
+        : MarkedShapes;
 
     public string? PreviousColor { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
-        if (Input == _input)
+        if (Input == input)
         {
             return;
         }
-        _input = Input;
+        input = Input;
 
         Definitions.Clear();
         ClearSelectedShapes();
@@ -105,7 +107,7 @@ public partial class SVGEditor : ComponentBase
         IBrowsingContext context = BrowsingContext.New();
         Document = await context.OpenAsync(req => req.Content(Input));
 
-        Elements = new();
+        Elements = [];
         foreach (IElement child in Document.GetElementsByTagName("BODY")[0].Children)
         {
             ISVGElement? sVGElement = SupportedElements.FirstOrDefault(se => se.CanHandle(child))?.ElementType is Type type
@@ -123,7 +125,7 @@ public partial class SVGEditor : ComponentBase
 
     protected override void OnInitialized()
     {
-        _ = ElementSubject
+        _ = elementSubject
             .Buffer(TimeSpan.FromMilliseconds(33))
             .Where(updates => updates.Count > 0)
             .Subscribe(updates =>
@@ -140,7 +142,7 @@ public partial class SVGEditor : ComponentBase
 
     public void UpdateInput(ISVGElement SVGElement)
     {
-        ElementSubject.OnNext(SVGElement);
+        elementSubject.OnNext(SVGElement);
     }
 
     public void SelectShape(Shape shape)
@@ -238,8 +240,8 @@ public partial class SVGEditor : ComponentBase
 
     private void UpdateInput()
     {
-        _input = string.Join(" \n", Elements.Select(e => e.StoredHtml));
-        InputUpdated?.Invoke(_input);
+        input = string.Join(" \n", Elements.Select(e => e.StoredHtml));
+        InputUpdated?.Invoke(input);
     }
 
     private void RerenderAll()
@@ -258,7 +260,7 @@ public partial class SVGEditor : ComponentBase
         return SnapToInteger ? ((double x, double y))((int)res.x, (int)res.y) : res;
     }
 
-    private void ZoomIn(double x, double y, double ZoomFactor = 1.1)
+    private void ZoomIn(double x, double y, double ZoomFactor = 1.1, bool snapToNeutralScale = true)
     {
         if (DisableZoom)
         {
@@ -267,14 +269,18 @@ public partial class SVGEditor : ComponentBase
 
         double prevScale = Scale;
         Scale *= ZoomFactor;
-        if ((Scale > 0.91) && (Scale < 1.09))
+        if (snapToNeutralScale && (Scale > 0.91) && (Scale < 1.09))
         {
             Scale = 1;
+        }
+        if (DisablePanning)
+        {
+            return;
         }
         Translate = (Translate.x + ((x - Translate.x) * (1 - (Scale / prevScale))), Translate.y + ((y - Translate.y) * (1 - (Scale / prevScale))));
     }
 
-    private void ZoomOut(double x, double y, double ZoomFactor = 1.1)
+    private void ZoomOut(double x, double y, double ZoomFactor = 1.1, bool snapToNeutralScale = true)
     {
         if (DisableZoom)
         {
@@ -283,9 +289,13 @@ public partial class SVGEditor : ComponentBase
 
         double prevScale = Scale;
         Scale /= ZoomFactor;
-        if ((Scale > 0.91) && (Scale < 1.09))
+        if (snapToNeutralScale && (Scale > 0.91) && (Scale < 1.09))
         {
             Scale = 1;
+        }
+        if (DisablePanning)
+        {
+            return;
         }
         Translate = (Translate.x + ((x - Translate.x) * (1 - (Scale / prevScale))), Translate.y + ((y - Translate.y) * (1 - (Scale / prevScale))));
     }

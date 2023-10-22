@@ -5,13 +5,15 @@ namespace KristofferStrube.Blazor.SVGEditor.PathDataSequences;
 
 public static partial class PathData
 {
+    private static readonly string[] instructions = ["M", "m", "Z", "z", "L", "l", "H", "h", "V", "v", "C", "c", "S", "s", "Q", "q", "T", "t", "A", "a"];
+
     public static List<IPathInstruction> Parse(string input)
     {
-        string strippedInput = input.Replace(",", " ").Replace("-", " -");
-        List<string> instructions = new() { "M", "m", "Z", "z", "L", "l", "H", "h", "V", "v", "C", "c", "S", "s", "Q", "q", "T", "t", "A", "a" };
-        string standardizedInput = instructions.Aggregate(strippedInput, (accu, curr) => accu.Replace(curr, $",{curr} ")).TrimStart(' ');
-        string removesDoubleSpaces = RemoveSpaces().Replace(standardizedInput, " ");
-        IEnumerable<string> splitInstructionSequences = removesDoubleSpaces.Split(",").Select(seq => NormalizeArgumentSequenceWithSpaceZeroDot(seq));
+        string commaAndSignStandardizedInput = input.Replace(",", " ").Replace("-", " -");
+        string spaceStandardizedInput = instructions.Aggregate(commaAndSignStandardizedInput, (accu, curr) => accu.Replace(curr, $",{curr} ")).TrimStart(' ');
+        string doubleSpacesRemovedInput = RemoveSpaces().Replace(spaceStandardizedInput, " ");
+
+        IEnumerable<string> splitInstructionSequences = doubleSpacesRemovedInput.Split(",").Select(NormalizeArgumentSequenceWithSpaceZeroDot);
         List<IPathInstruction> list = Enumerable.Range(1, splitInstructionSequences.Count() - 1).Aggregate(
             new List<IPathInstruction>(),
             (list, curr) =>
@@ -21,10 +23,10 @@ public static partial class PathData
                     string instruction = seq[..1];
                     if (curr == 1 && instruction is not ("M" or "m"))
                     {
-                        throw new ArgumentException($"The first sequence is not a move (\"m\" or \"M\") in {strippedInput}");
+                        throw new ArgumentException($"The first sequence is not a move (\"m\" or \"M\") in {commaAndSignStandardizedInput}");
                     }
 
-                    List<double> parameters = new();
+                    List<double> parameters = [];
                     if (seq != "Z" && seq != "z")
                     {
                         parameters = seq[2..].Split(" ").Select(p => p.ParseAsDouble()).ToList();
@@ -34,7 +36,7 @@ public static partial class PathData
                         case "L" or "l":
                             if (parameters.Count % 2 != 0 && parameters.Count >= 2)
                             {
-                                throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
+                                throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {commaAndSignStandardizedInput}");
                             }
 
                             Enumerable.Range(0, parameters.Count / 2).ToList().ForEach(i =>
@@ -46,7 +48,7 @@ public static partial class PathData
                         case "M" or "m":
                             if (parameters.Count % 2 != 0 && parameters.Count >= 2)
                             {
-                                throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
+                                throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {commaAndSignStandardizedInput}");
                             }
 
                             Enumerable.Range(0, parameters.Count / 2).ToList().ForEach(i =>
@@ -58,7 +60,7 @@ public static partial class PathData
                         case "H" or "h":
                             if (parameters.Count == 0)
                             {
-                                throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
+                                throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {commaAndSignStandardizedInput}");
                             }
 
                             Enumerable.Range(0, parameters.Count).ToList().ForEach(i =>
@@ -70,7 +72,7 @@ public static partial class PathData
                         case "V" or "v":
                             if (parameters.Count == 0)
                             {
-                                throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
+                                throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {commaAndSignStandardizedInput}");
                             }
 
                             Enumerable.Range(0, parameters.Count).ToList().ForEach(i =>
@@ -82,7 +84,7 @@ public static partial class PathData
                         case "Z" or "z":
                             if (parameters.Count != 0)
                             {
-                                throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
+                                throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {commaAndSignStandardizedInput}");
                             }
 
                             list.Add(new ClosePathInstruction(instruction == "z", previous!));
@@ -91,7 +93,7 @@ public static partial class PathData
                         case "C" or "c":
                             if (parameters.Count % 6 != 0 && parameters.Count >= 6)
                             {
-                                throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
+                                throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {commaAndSignStandardizedInput}");
                             }
 
                             Enumerable.Range(0, parameters.Count / 6).ToList().ForEach(i =>
@@ -103,7 +105,7 @@ public static partial class PathData
                         case "S" or "s":
                             if (parameters.Count % 4 != 0 && parameters.Count >= 4)
                             {
-                                throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
+                                throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {commaAndSignStandardizedInput}");
                             }
 
                             Enumerable.Range(0, parameters.Count / 4).ToList().ForEach(i =>
@@ -115,7 +117,7 @@ public static partial class PathData
                         case "Q" or "q":
                             if (parameters.Count % 4 != 0 && parameters.Count >= 4)
                             {
-                                throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
+                                throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {commaAndSignStandardizedInput}");
                             }
 
                             Enumerable.Range(0, parameters.Count / 4).ToList().ForEach(i =>
@@ -127,7 +129,7 @@ public static partial class PathData
                         case "T" or "t":
                             if (parameters.Count % 2 != 0 && parameters.Count >= 2)
                             {
-                                throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
+                                throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {commaAndSignStandardizedInput}");
                             }
 
                             Enumerable.Range(0, parameters.Count / 2).ToList().ForEach(i =>
@@ -139,7 +141,7 @@ public static partial class PathData
                         case "A" or "a":
                             if (parameters.Count % 7 != 0 && parameters.Count >= 7)
                             {
-                                throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {strippedInput}");
+                                throw new ArgumentException($"Wrong number of parameters for '{instruction}' at number {curr} sequence in {commaAndSignStandardizedInput}");
                             }
 
                             Enumerable.Range(0, parameters.Count / 7).ToList().ForEach(i =>
