@@ -6,11 +6,15 @@ public partial class SVGEditor
 {
     private void Move(PointerEventArgs eventArgs)
     {
-        if (TranslatePanner.HasValue)
+        if (multiplePointerPanners is not null)
+        {
+            return;
+        }
+        if (translatePanner.HasValue)
         {
             (double x, double y) newPanner = (x: eventArgs.OffsetX, y: eventArgs.OffsetY);
-            Translate = (Translate.x + newPanner.x - TranslatePanner.Value.x, Translate.y + newPanner.y - TranslatePanner.Value.y);
-            TranslatePanner = newPanner;
+            Translate = (Translate.x + newPanner.x - translatePanner.Value.x, Translate.y + newPanner.y - translatePanner.Value.y);
+            translatePanner = newPanner;
         }
         else
         {
@@ -54,24 +58,21 @@ public partial class SVGEditor
             {
                 shape.HandlePointerMove(eventArgs);
             }
+            else if (MarkedShapes.Count == 0 && SelectionBox is not null)
+            {
+                SelectionBox.Width = x - SelectionBox.X;
+                SelectionBox.Height = y - SelectionBox.Y;
+                boxSelectionShapes = SelectionMode switch
+                {
+                    SelectionMode.WindowSelection => WindowSelection(SelectionBox),
+                    SelectionMode.CrossingSelection => CrossingSelection(SelectionBox),
+                    _ => CrossingSelection(SelectionBox)
+                };
+            }
             else
             {
-                if (MarkedShapes.Count == 0 && SelectionBox is not null)
-                {
-                    SelectionBox.Width = x - SelectionBox.X;
-                    SelectionBox.Height = y - SelectionBox.Y;
-                    BoxSelectionShapes = SelectionMode switch
-                    {
-                        SelectionMode.WindowSelection => WindowSelection(SelectionBox),
-                        SelectionMode.CrossingSelection => CrossingSelection(SelectionBox),
-                        _ => CrossingSelection(SelectionBox)
-                    };
-                }
-                else
-                {
-                    MarkedShapes.ForEach(e => e.HandlePointerMove(eventArgs));
-                    MovePanner = (x, y);
-                }
+                MarkedShapes.ForEach(e => e.HandlePointerMove(eventArgs));
+                MovePanner = (x, y);
             }
         }
     }
@@ -100,7 +101,7 @@ public partial class SVGEditor
                 return;
             }
 
-            TranslatePanner = (eventArgs.OffsetX, eventArgs.OffsetY);
+            translatePanner = (eventArgs.OffsetX, eventArgs.OffsetY);
         }
         else
         {
@@ -118,12 +119,12 @@ public partial class SVGEditor
     {
         MoveOverShapes.Clear();
         CurrentEditShape = null;
-        if (BoxSelectionShapes is { Count: > 0 })
+        if (boxSelectionShapes is { Count: > 0 })
         {
-            SelectedShapes = BoxSelectionShapes;
+            SelectedShapes = boxSelectionShapes;
             UnfocusShape();
         }
-        BoxSelectionShapes = null;
+        boxSelectionShapes = null;
         SelectionBox = null;
         if (EditGradient is LinearGradient linearGradient)
         {
@@ -136,12 +137,64 @@ public partial class SVGEditor
         }
         else if (eventArgs.Button == 1)
         {
-            TranslatePanner = null;
+            translatePanner = null;
             ClearSelectedShapes();
         }
         if (EditMode is EditMode.Move)
         {
             EditMode = EditMode.None;
+        }
+    }
+
+    public void TouchStart(TouchEventArgs eventArgs)
+    {
+        if (eventArgs.Touches is [TouchPoint firstFinger, TouchPoint secondFinger])
+        {
+            multiplePointerPanners = ((firstFinger.ClientX, firstFinger.ClientY), (secondFinger.ClientX, secondFinger.ClientY));
+            SelectionBox = null;
+            ClearSelectedShapes();
+            FocusedShape = null;
+        }
+    }
+
+    public void TouchMove(TouchEventArgs eventArgs)
+    {
+        if (multiplePointerPanners is (var prevFirstFinger, var prevSecondFinger) && eventArgs.Touches is [TouchPoint firstFinger, TouchPoint secondFinger])
+        {
+            double deltaX = (firstFinger.ClientX - prevFirstFinger.x + secondFinger.ClientX - prevSecondFinger.x) / 2;
+            double deltaY = (firstFinger.ClientY - prevFirstFinger.y + secondFinger.ClientY - prevSecondFinger.y) / 2;
+
+            if (!DisablePanning)
+            {
+                Translate = (Translate.x + deltaX, Translate.y + deltaY);
+            }
+
+            (double x, double y) pointBetweenFingers = ((firstFinger.ClientX + secondFinger.ClientX - (BBox.X * 2)) / 2, (firstFinger.ClientY + secondFinger.ClientY - (BBox.Y * 2)) / 2);
+
+            double prevDistance = Math.Sqrt(Math.Pow(prevFirstFinger.x - prevSecondFinger.x, 2) + Math.Pow(prevFirstFinger.y - prevSecondFinger.y, 2));
+            double newDistance = Math.Sqrt(Math.Pow(firstFinger.ClientX - secondFinger.ClientX, 2) + Math.Pow(firstFinger.ClientY - secondFinger.ClientY, 2));
+            if (prevDistance < newDistance)
+            {
+                ZoomIn(pointBetweenFingers.x, pointBetweenFingers.y, newDistance / prevDistance, false);
+            }
+            else
+            {
+                ZoomOut(pointBetweenFingers.x, pointBetweenFingers.y, prevDistance / newDistance, false);
+            }
+
+            multiplePointerPanners = ((firstFinger.ClientX, firstFinger.ClientY), (secondFinger.ClientX, secondFinger.ClientY));
+
+            SelectionBox = null;
+            ClearSelectedShapes();
+            FocusedShape = null;
+        }
+    }
+
+    public void TouchEnd(TouchEventArgs eventArgs)
+    {
+        if (eventArgs.Touches.Length is not 2)
+        {
+            multiplePointerPanners = null;
         }
     }
 

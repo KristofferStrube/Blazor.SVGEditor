@@ -3,23 +3,14 @@ using KristofferStrube.Blazor.SVGEditor.Extensions;
 
 namespace KristofferStrube.Blazor.SVGEditor;
 
-public class Stop : ISVGElement
+public class Stop(IElement element, LinearGradient parent, SVGEditor svg) : ISVGElement
 {
-    public Stop(IElement element, LinearGradient parent, SVGEditor svg)
-    {
-        Element = element;
-        Parent = parent;
-        SVG = svg;
-        AnimationElements = new();
-        Key = Guid.NewGuid();
-    }
-
-    public Guid Key { get; set; }
+    public Guid Key { get; set; } = Guid.NewGuid();
 
     public string? Id { get; set; }
-    public IElement Element { get; init; }
-    public LinearGradient Parent { get; init; }
-    public SVGEditor SVG { get; init; }
+    public IElement Element { get; init; } = element;
+    public LinearGradient Parent { get; init; } = parent;
+    public SVGEditor SVG { get; init; } = svg;
 
     public Type Presenter => throw new NotImplementedException();
 
@@ -51,7 +42,7 @@ public class Stop : ISVGElement
         set { if (value != 1) { Element.SetAttribute("stop-opacity", value.AsString()); } Changed?.Invoke(this); }
     }
 
-    public List<BaseAnimate> AnimationElements { get; set; }
+    public List<BaseAnimate> AnimationElements { get; set; } = [];
 
     public Action<ISVGElement>? Changed
     {

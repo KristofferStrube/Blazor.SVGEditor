@@ -17,7 +17,7 @@ public class Path : Shape
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
-            Instructions = new();
+            Instructions = [];
         }
     }
 

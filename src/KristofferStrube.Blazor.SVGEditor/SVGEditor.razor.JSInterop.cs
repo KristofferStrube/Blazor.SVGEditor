@@ -13,7 +13,7 @@ public partial class SVGEditor : IAsyncDisposable
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        BBox = await GetBoundingBox(SVGElementReference);
+        BBox = await GetBoundingBox(svgElementReference);
     }
 
     public async Task FocusAsync(ElementReference elementReference)
