@@ -4,6 +4,9 @@ namespace KristofferStrube.Blazor.SVGEditor;
 
 public partial class SVGEditor
 {
+    private bool touchUnselectHasStarted = false;
+    private bool touchHasZoomed = false;
+
     private void Move(PointerEventArgs eventArgs)
     {
         if (multiplePointerPanners is not null)
@@ -152,8 +155,8 @@ public partial class SVGEditor
         {
             multiplePointerPanners = ((firstFinger.ClientX, firstFinger.ClientY), (secondFinger.ClientX, secondFinger.ClientY));
             SelectionBox = null;
-            ClearSelectedShapes();
-            FocusedShape = null;
+            boxSelectionShapes = null;
+            touchHasZoomed = true;
         }
     }
 
@@ -183,15 +186,27 @@ public partial class SVGEditor
             }
 
             multiplePointerPanners = ((firstFinger.ClientX, firstFinger.ClientY), (secondFinger.ClientX, secondFinger.ClientY));
-
             SelectionBox = null;
-            ClearSelectedShapes();
-            FocusedShape = null;
+            boxSelectionShapes = null;
+            touchHasZoomed = true;
+        }
+        if (eventArgs.Touches.Length is 1 && !touchHasZoomed && touchUnselectHasStarted)
+        {
+            DeselectAll();
         }
     }
 
     public void TouchEnd(TouchEventArgs eventArgs)
     {
+        if (eventArgs.Touches.Length is 0)
+        {
+            touchHasZoomed = false;
+            touchUnselectHasStarted = false;
+            if (!touchHasZoomed && touchUnselectHasStarted)
+            {
+                DeselectAll();
+            }
+        }
         if (eventArgs.Touches.Length is not 2)
         {
             multiplePointerPanners = null;
@@ -202,11 +217,24 @@ public partial class SVGEditor
     {
         if (EditMode != EditMode.Add && !eventArgs.CtrlKey)
         {
-            EditMode = EditMode.None;
-            ClearSelectedShapes();
-            UnfocusShape();
-            EditGradient = null;
+            DeselectAll();
         }
+    }
+
+    public void TouchUnSelect(TouchEventArgs eventArgs)
+    {
+        if (EditMode != EditMode.Add)
+        {
+            touchUnselectHasStarted = true;
+        }
+    }
+
+    private void DeselectAll()
+    {
+        EditMode = EditMode.None;
+        ClearSelectedShapes();
+        UnfocusShape();
+        EditGradient = null;
     }
 
     public void Out(PointerEventArgs eventArgs)
