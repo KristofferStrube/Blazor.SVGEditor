@@ -202,10 +202,6 @@ public partial class SVGEditor
         {
             touchHasZoomed = false;
             touchUnselectHasStarted = false;
-            if (!touchHasZoomed && touchUnselectHasStarted)
-            {
-                DeselectAll();
-            }
         }
         if (eventArgs.Touches.Length is not 2)
         {
