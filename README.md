@@ -5,7 +5,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/KristofferStrube/Blazor.SVGEditor)](https://github.com/KristofferStrube/Blazor.SVGEditor/stargazers)
 [![NuGet Downloads (official NuGet)](https://img.shields.io/nuget/dt/KristofferStrube.Blazor.SVGEditor?label=NuGet%20Downloads)](https://www.nuget.org/packages/KristofferStrube.Blazor.SVGEditor/)
 
-A basic HTML SVG Editor written in Blazor WASM.
+A basic HTML SVG Editor written in Blazor.
 
 ![Showcase](./docs/showcase.gif?raw=true)
 
