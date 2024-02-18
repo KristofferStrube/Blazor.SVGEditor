@@ -2,20 +2,32 @@
 @using System.Reactive.Subjects;
 @using System.Reactive.Linq;
 @using KristofferStrube.Blazor.FileAPI;
+@using System.Text
+@using SkiaSharp
+@implements IAsyncDisposable
 @inject IURLServiceInProcess URL
 @inject IJSRuntime JSRuntime
 
 <PageTitle>Save SVG with SVGEditor</PageTitle>
 
-@if (SaveLink is null)
-{
-    <buttton class="btn btn-warning btn-md" @onclick="GenerateSaveLink">Generate Save Link</buttton>
-}
-else
-{
-    <a download="BlazorSVG.svg" href="@SaveLink"><button disabled="@(SaveLink is null)" @onclick="LinkPressed" class="btn btn-success btn-md">Save</button></a>
-}
-<br />
+<div style="display:flex;flex-direction:row;grid-gap: 5px;margin-bottom:5px;">
+    @if (SvgSaveLink is null && PngSaveLink is null)
+    {
+        <buttton class="btn btn-warning btn-md" @onclick="GenerateSaveLink">Generate Save Links</buttton>
+    }
+    else
+    {
+        @if (SvgSaveLink is not null)
+        {
+            <a download="BlazorGenerated.svg" href="@SvgSaveLink"><button class="btn btn-success btn-md">Save as SVG</button></a>
+        }
+        @if (PngSaveLink is not null)
+        {
+            <a download="BlazorGenerated.png" href="@PngSaveLink"><button class="btn btn-success btn-md">Save as PNG using SkiaSharp</button></a>
+        }
+        <button class="btn btn-warning btn-md" @onclick=Reset>Reset</button>
+    }
+</div>
 <textarea @bind="Input" @bind:event="oninput" style="width:100%;height:15vh;" />
 <div style="height:75vh">
     <SVGEditor @ref=@SVG Input=@Input InputUpdated="(string s) => { Input = s; StateHasChanged(); }" SelectionMode="SelectionMode.WindowSelection" />
@@ -24,7 +36,9 @@ else
 @code {
     public required SVGEditor SVG;
     protected string Input = @"<path d=""M 250 170 c -39 37 -111 35 -136 -1 s -14 -74 2 -93 s 43 -28 63 -27 s 51 -2 67 -23 c -6 18 -7 18 -12 33 c 28 -8 37 -12 52 -43 c 28 49 1 96 -20 120 s -47 33 -84 36 s -58 -23 -57 -53 s 29 -46 51 -46 s 46 24 47 45 s -8 20 -12 20 s -10 -2 -10 -22 s -2 -26 -18 -27 s -43 10 -42 30 s 12 33 29 34 s 18 -5 23 -12 c 9 15 20 10 27 8 s 18 -17 15 -40 s -36 -49 -59 -49 s -65 17 -66 63 s 51 89 138 45 z m -61 -46 v -20 h -20 c -10 0 -18 5 -17 20 s 10 15 15 16 s 22 0 22 -15 z"" fill=""purple""></path>";
-    protected string? SaveLink;
+
+    protected string? SvgSaveLink;
+    protected string? PngSaveLink;
 
     private async Task GenerateSaveLink()
     {
@@ -40,18 +54,97 @@ else
             var width = maxX - minX;
             var height = maxY - minY;
 
-            Blob blob = await Blob.CreateAsync(
+            var svgText = $@"<svg xmlns=""http://www.w3.org/2000/svg"" viewBox=""{(minX - 10).AsString()} {(minY - 10).AsString()} {(width + 20).AsString()} {(height + 20).AsString()}"" width=""{width + 20}"" height=""{height + 20}"">{Input}</svg>";
+
+            using MemoryStream svgStream = new(Encoding.ASCII.GetBytes(svgText));
+            using MemoryStream imageStream = new();
+
+            var svg = new SkiaSharp.Extended.Svg.SKSvg();
+            svg.Load(svgStream);
+
+            var imageInfo = new SKImageInfo((int)width + 20, (int)height + 20);
+            using (var surface = SKSurface.Create(imageInfo))
+            using (var canvas = surface.Canvas)
+            {
+                // draw the svg
+                canvas.Clear(SKColors.Transparent);
+                canvas.DrawPicture(svg.Picture);
+                canvas.Flush();
+
+                using (var data = surface.Snapshot())
+                using (var pngImage = data.Encode(SKEncodedImageFormat.Png, 100))
+                {
+                    pngImage.SaveTo(imageStream);
+                }
+            }
+            imageStream.Position = 0;
+
+            Blob svgBlob = await Blob.CreateAsync(
                 JSRuntime,
                 new List<BlobPart>() {
-                    $@"<svg xmlns=""http://www.w3.org/2000/svg"" viewBox=""{(minX - 10).AsString()} {(minY - 10).AsString()} {(width + 20).AsString()} {(height + 20).AsString()}"" width=""400"" height=""400"">{Input}</svg>" 
+                    svgText
                 }
             );
-            SaveLink = URL.CreateObjectURL(blob);
+
+            Blob pngBlob = await Blob.CreateAsync(
+                JSRuntime,
+                new List<BlobPart>() {
+                    ReadFully(imageStream)
+                }
+            );
+
+            if (SvgSaveLink is not null)
+            {
+                await URL.RevokeObjectURLAsync(SvgSaveLink);
+            }
+            SvgSaveLink = URL.CreateObjectURL(svgBlob);
+
+            if (PngSaveLink is not null)
+            {
+                await URL.RevokeObjectURLAsync(PngSaveLink);
+            }
+            PngSaveLink = URL.CreateObjectURL(pngBlob);
         }
     }
 
-    private void LinkPressed()
+    public static byte[] ReadFully(Stream input)
     {
-        SaveLink = null;
+        byte[] buffer = new byte[16 * 1024];
+        using (MemoryStream ms = new MemoryStream())
+        {
+            int read;
+            while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                ms.Write(buffer, 0, read);
+            }
+            return ms.ToArray();
+        }
+    }
+
+    private async Task Reset()
+    {
+        if (PngSaveLink is not null)
+        {
+            await URL.RevokeObjectURLAsync(PngSaveLink);
+        }
+        PngSaveLink = null;
+
+        if (SvgSaveLink is not null)
+        {
+            await URL.RevokeObjectURLAsync(SvgSaveLink);
+        }
+        SvgSaveLink = null;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (SvgSaveLink is not null)
+        {
+            await URL.RevokeObjectURLAsync(SvgSaveLink);
+        }
+        if (PngSaveLink is not null)
+        {
+            await URL.RevokeObjectURLAsync(PngSaveLink);
+        }
     }
 }
