@@ -1,13 +1,27 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
 
 <div class="page">
     <div class="sidebar">
         <NavMenu />
     </div>
 
-    <div class="main">
-        <div class="content px-4">
-            @Body
+    <main>
+        <div class="top-row px-4">
+            <a href="@($"https://github.com/KristofferStrube/Blazor.SVGEditor/blob/main/samples/KristofferStrube.Blazor.SVGEditor.WasmExample/Pages/{page}")" target="_blank" style="position: fixed; top: 5px; right: 5px">
+                <img src="https://img.shields.io/badge/this%20page%20on%20GitHub-@(page)-green?logo=github" />
+            </a>
         </div>
-    </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
 </div>
+
+
+@code {
+    private string relativeUri => NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+
+    protected string page => (string.IsNullOrEmpty(relativeUri) ? "Index" : relativeUri) + ".razor";
+}
