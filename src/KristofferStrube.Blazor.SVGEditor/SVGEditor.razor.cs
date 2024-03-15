@@ -2,6 +2,7 @@
 using AngleSharp.Dom;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using System.Globalization;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
@@ -298,4 +299,66 @@ public partial class SVGEditor : ComponentBase
         }
         Translate = (Translate.x + ((x - Translate.x) * (1 - (Scale / prevScale))), Translate.y + ((y - Translate.y) * (1 - (Scale / prevScale))));
     }
+
+/// <summary>
+/// Fits all shapes in the editor to the viewport.
+/// </summary>
+/// <param name="delta">
+///     A number between <c>0</c> and <c>1</c> inclusive that defines how much of the full transformation should be made.
+///     <c>1</c> mean that it fits the shapes perfectly in the center.
+///     <c>0.5</c> means that it makes half the zoom and translation change torwards the perfect fit.
+/// </param>
+/// <param name="padding">How much padding there should be around the shapes to the edge of the editor. The unit is pixels in the rendered space not the space of the SVG that is edited.</param>
+public void FitViewportToAllShapes(double delta = 1, double padding = 20)
+{
+    FitViewportToShapes(Elements.Where(e => e is Shape).Cast<Shape>(), delta, padding);
+}
+
+/// <summary>
+/// Fits the selected shapes in the editor to the viewport.
+/// </summary>
+/// <param name="delta">
+///     A number between <c>0</c> and <c>1</c> inclusive that defines how much of the full transformation should be made.
+///     <c>1</c> mean that it fits the shapes perfectly in the center.
+///     <c>0.5</c> means that it makes half the zoom and translation change torwards the perfect fit.
+/// </param>
+/// <param name="padding">How much padding there should be around the shapes to the edge of the editor. The unit is pixels in the rendered space not the space of the SVG that is edited.</param>
+public void FitViewporToSelectedShapes(double delta = 1, double padding = 20)
+{
+    FitViewportToShapes(SelectedShapes, delta, padding);
+}
+
+/// <summary>
+/// Fits the <paramref name="shapes"/> to the viewport.
+/// </summary>
+/// <param name="shapes">The shapes to fit the viewport to.</param>
+/// <param name="delta">
+///     A number between <c>0</c> and <c>1</c> inclusive that defines how much of the full transformation should be made.<br />
+///     <c>1</c> mean that it fits the shapes perfectly in the center.<br />
+///     <c>0.5</c> means that it makes half the zoom and translation change torwards the perfect fit.
+/// </param>
+/// <param name="padding">How much padding there should be around the shapes to the edge of the editor. The unit is pixels in the rendered space not the space of the SVG that is edited.</param>
+public void FitViewportToShapes(IEnumerable<Shape> shapes, double delta = 1, double padding = 20)
+{
+    if (BBox is null) return;
+    double lowerX = double.MaxValue, lowerY = double.MaxValue;
+    double upperX = double.MinValue, upperY = double.MinValue;
+    foreach (Shape shape in shapes)
+    {
+        foreach ((double x, double y) in shape.SelectionPoints)
+        {
+            double strokeWidth = double.TryParse(shape.StrokeWidth, CultureInfo.InvariantCulture, out double result) ? result : 0;
+            lowerX = Math.Min(x - strokeWidth, lowerX);
+            upperX = Math.Max(x + strokeWidth, upperX);
+            lowerY = Math.Min(y - strokeWidth, lowerY);
+            upperY = Math.Max(y + strokeWidth, upperY);
+        }
+    }
+    double elementsWidth = upperX - lowerX;
+    double elementsHeight = upperY - lowerY;
+    double newScale = Math.Min((BBox.Width - (padding * 2)) / elementsWidth, (BBox.Height - (padding * 2)) / elementsHeight);
+    (double x, double y) newTranslate = ((BBox.Width / 2) - ((lowerX + (elementsWidth / 2)) * newScale), (BBox.Height / 2) - ((lowerY + (elementsHeight / 2)) * newScale));
+    Scale = (Scale * (1 - delta)) + (newScale * delta);
+    Translate = ((Translate.x * (1 - delta)) + (newTranslate.x * delta), (Translate.y * (1 - delta)) + (newTranslate.y * delta));
+}
 }
