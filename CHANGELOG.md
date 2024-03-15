@@ -5,9 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+# Fixed
+- Fixed that `CompleteWithoutCloseMenuItem` would index out of bounds when used.
 
 ## [0.2.1] - 2023-11-25
-### Added
+### Fixed
 - Fixed that zoom on touch devices de-selected all shapes.
 
 ## [0.2.0] - 2023-10-22
