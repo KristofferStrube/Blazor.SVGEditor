@@ -104,11 +104,10 @@ public partial class SVGEditor : ComponentBase
         Definitions.Clear();
         ClearSelectedShapes();
 
-        IBrowsingContext context = BrowsingContext.New();
-        Document = await context.OpenAsync(req => req.Content(Input));
+        Document = await BrowsingContext.New().OpenAsync(res => res.Content($"<svg>{input}</svg>"));
 
         Elements = [];
-        foreach (IElement child in Document.GetElementsByTagName("BODY")[0].Children)
+        foreach (IElement child in Document.GetElementsByTagName("BODY")[0].Children.First().Children)
         {
             ISVGElement? sVGElement = SupportedElements.FirstOrDefault(se => se.CanHandle(child))?.ElementType is Type type
                 ? Activator.CreateInstance(type, child, this) as ISVGElement

@@ -11,16 +11,16 @@ public class LinearGradient : ISVGElement
         Element = element;
         SVG = svg;
 
-        if (Id is not null && Element.ParentElement?.TagName == "DEFS")
+        if (Id is not null && Element.ParentElement?.TagName.ToUpper() == "DEFS")
         {
             SVG.Definitions[Id] = this;
         }
         Stops = Element.Children
-            .Where(child => child.TagName == "STOP")
+            .Where(child => child.TagName.ToUpper() == "STOP")
             .Select(child => new Stop(child, this, svg))
             .ToList();
         AnimationElements = Element.Children
-            .Where(child => child.TagName == "ANIMATE" && child.HasAttribute("attributename"))
+            .Where(child => child.TagName.ToUpper() == "ANIMATE" && child.HasAttribute("attributename"))
             .Select(child =>
             {
                 string? attributeName = child.GetAttribute("attributename");

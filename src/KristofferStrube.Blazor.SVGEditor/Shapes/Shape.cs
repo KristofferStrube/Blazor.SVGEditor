@@ -15,7 +15,7 @@ public abstract class Shape : ISVGElement
         SVG = svg;
 
         AnimationElements = Element.Children
-            .Where(child => child.TagName == "ANIMATE" && child.HasAttribute("attributename"))
+            .Where(child => child.TagName.ToUpper() == "ANIMATE" && child.HasAttribute("attributename"))
             .Select(child =>
                 {
                     string? attributeName = child.GetAttribute("attributename");
@@ -82,7 +82,7 @@ public abstract class Shape : ISVGElement
     public Box BoundingBox { get; set; } = new();
     public Action<ISVGElement>? Changed { get; set; }
     public bool Selected => SVG.VisibleSelectionShapes.Contains(this);
-    public bool IsChildElement => Element.ParentElement?.TagName is "G" or null;
+    public bool IsChildElement => Element.ParentElement?.TagName.ToUpper() is "G" or null;
     public bool ShouldTriggerContextMenu => SVG.ShouldShowContextMenu(this);
     public virtual string StateRepresentation =>
         string.Join("-", Element.Attributes.Select(a => a.Value)) +
