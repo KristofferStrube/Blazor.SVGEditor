@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Fixed
 - Fixed that `CompleteWithoutCloseMenuItem` would index out of bounds when used.
+### Added
+- Added support for self-closing SVG tags.
 
 ## [0.2.1] - 2023-11-25
 ### Fixed
