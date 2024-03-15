@@ -97,16 +97,16 @@ public partial class SVGEditor
 
     [Parameter]
     public List<SupportedElement> SupportedElements { get; set; } = new() {
-        new(typeof(Rect), (IElement element) => element.TagName == "RECT"),
-        new(typeof(Circle), (IElement element) => element.TagName == "CIRCLE"),
-        new(typeof(Ellipse), (IElement element) => element.TagName == "ELLIPSE"),
-        new(typeof(Polygon), (IElement element) => element.TagName == "POLYGON"),
-        new(typeof(Polyline), (IElement element) => element.TagName == "POLYLINE"),
-        new(typeof(Line), (IElement element) => element.TagName == "LINE"),
-        new(typeof(Path), (IElement element) => element.TagName == "PATH"),
-        new(typeof(Text), (IElement element) => element.TagName == "TEXT"),
-        new(typeof(G), (IElement element) => element.TagName == "G"),
-        new(typeof(Defs), (IElement element) => element.TagName == "DEFS"),
+        new(typeof(Rect), (IElement element) => element.TagName.ToUpper() == "RECT"),
+        new(typeof(Circle), (IElement element) => element.TagName.ToUpper() == "CIRCLE"),
+        new(typeof(Ellipse), (IElement element) => element.TagName.ToUpper() == "ELLIPSE"),
+        new(typeof(Polygon), (IElement element) => element.TagName.ToUpper() == "POLYGON"),
+        new(typeof(Polyline), (IElement element) => element.TagName.ToUpper() == "POLYLINE"),
+        new(typeof(Line), (IElement element) => element.TagName.ToUpper() == "LINE"),
+        new(typeof(Path), (IElement element) => element.TagName.ToUpper() == "PATH"),
+        new(typeof(Text), (IElement element) => element.TagName.ToUpper() == "TEXT"),
+        new(typeof(G), (IElement element) => element.TagName.ToUpper() == "G"),
+        new(typeof(Defs), (IElement element) => element.TagName.ToUpper() == "DEFS"),
     };
 
     [Parameter]

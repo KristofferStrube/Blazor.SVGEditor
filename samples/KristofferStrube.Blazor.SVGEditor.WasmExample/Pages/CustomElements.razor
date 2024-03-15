@@ -27,8 +27,8 @@
 
     protected List<SupportedElement> SupportedElements { get; set; } = new()
     {
-        new(typeof(Node), element => element.TagName is "CIRCLE" && element.GetAttribute("data-elementtype") == "node"),
-        new(typeof(Connector), element => element.TagName is "LINE" && element.GetAttribute("data-elementtype") == "connector"),
+        new(typeof(Node), element => element.TagName.ToUpper() is "CIRCLE" && element.GetAttribute("data-elementtype") == "node"),
+        new(typeof(Connector), element => element.TagName.ToUpper() is "LINE" && element.GetAttribute("data-elementtype") == "connector"),
     };
 
     protected List<SupportedAddNewSVGElementMenuItem> AddNewSVGElementMenuItems { get; set; } = new()
