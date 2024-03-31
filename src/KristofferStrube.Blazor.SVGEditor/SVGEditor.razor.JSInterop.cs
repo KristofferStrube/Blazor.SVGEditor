@@ -14,6 +14,7 @@ public partial class SVGEditor : IAsyncDisposable
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         BBox = await GetBoundingBox(svgElementReference);
+        InputRendered?.Invoke();
     }
 
     public async Task FocusAsync(ElementReference elementReference)
