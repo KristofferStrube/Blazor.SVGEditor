@@ -32,7 +32,7 @@ public class Line : Shape
         set { Element.SetAttribute("y2", value.AsString()); Changed?.Invoke(this); }
     }
 
-    public override List<(double x, double y)> SelectionPoints => new() { (X1, Y1), (X2, Y2) };
+    public override List<(double x, double y)> SelectionPoints => [(X1, Y1), (X2, Y2)];
 
     public override void HandlePointerMove(PointerEventArgs eventArgs)
     {

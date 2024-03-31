@@ -45,15 +45,15 @@ public partial class SVGEditor : ComponentBase
 
     public List<ISVGElement> Elements { get; protected set; } = default!;
 
-    public List<Shape> SelectedShapes { get; set; } = new();
+    public List<Shape> SelectedShapes { get; set; } = [];
 
-    public Dictionary<string, ISVGElement> Definitions { get; set; } = new();
+    public Dictionary<string, ISVGElement> Definitions { get; set; } = [];
 
     public ISVGElement? EditGradient { get; set; }
 
     public Shape? FocusedShape { get; set; }
 
-    public List<Shape> MoveOverShapes { get; set; } = new();
+    public List<Shape> MoveOverShapes { get; set; } = [];
 
     public (double x, double y) MovePanner { get; set; }
 

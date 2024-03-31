@@ -27,7 +27,7 @@ public class Circle : Shape
         set { Element.SetAttribute("r", value.AsString()); Changed?.Invoke(this); }
     }
 
-    public override List<(double x, double y)> SelectionPoints => new() { (Cx + R, Cy + R), (Cx + R, Cy - R), (Cx - R, Cy + R), (Cx - R, Cy - R) };
+    public override List<(double x, double y)> SelectionPoints => [(Cx + R, Cy + R), (Cx + R, Cy - R), (Cx - R, Cy + R), (Cx - R, Cy - R)];
 
     public override void HandlePointerMove(PointerEventArgs eventArgs)
     {

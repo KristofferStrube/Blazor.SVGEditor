@@ -32,7 +32,7 @@ public class Ellipse : Shape
         set { Element.SetAttribute("ry", value.AsString()); Changed?.Invoke(this); }
     }
 
-    public override List<(double x, double y)> SelectionPoints => new() { (Cx + Rx, Cy + Ry), (Cx + Rx, Cy - Ry), (Cx - Rx, Cy + Ry), (Cx - Rx, Cy - Ry) };
+    public override List<(double x, double y)> SelectionPoints => [(Cx + Rx, Cy + Ry), (Cx + Rx, Cy - Ry), (Cx - Rx, Cy + Ry), (Cx - Rx, Cy - Ry)];
 
     private double _r;
 

@@ -6,7 +6,7 @@ public abstract class BaseControlPointPathInstruction : BasePathInstruction
     {
         UpdateReflectedPreviousInstructionsLastControlPoint();
     }
-    public List<(double x, double y)> ControlPoints { get; set; } = new();
+    public List<(double x, double y)> ControlPoints { get; set; } = [];
     public override List<(double x, double y)> SelectionPoints => base.SelectionPoints.Concat(ControlPoints).ToList();
 
     public (double x, double y) ReflectedPreviousInstructionsLastControlPoint

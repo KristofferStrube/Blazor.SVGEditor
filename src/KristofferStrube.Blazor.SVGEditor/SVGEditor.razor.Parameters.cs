@@ -64,13 +64,13 @@ public partial class SVGEditor
     public bool DisableScaleLabel { get; set; }
 
     [Parameter]
-    public List<CompleteNewShapeMenuItem> CompleteNewShapeMenuItems { get; set; } = new() {
+    public List<CompleteNewShapeMenuItem> CompleteNewShapeMenuItems { get; set; } = [
         new(typeof(CompleteWithoutCloseMenuItem), (svgEditor) => svgEditor.SelectedShapes[0] is Path),
         new(typeof(RemoveLastInstruction), (svgEditor) => svgEditor.SelectedShapes[0] is Path),
-    };
+    ];
 
     [Parameter]
-    public List<SupportedAddNewSVGElementMenuItem> AddNewSVGElementMenuItems { get; set; } = new() {
+    public List<SupportedAddNewSVGElementMenuItem> AddNewSVGElementMenuItems { get; set; } = [
         new(typeof(AddNewStopFromLinearGradientMenuItem), (svgEditor, data) => data is LinearGradient),
         new(typeof(AddNewStopFromStopMenuItem), (svgEditor, data) => data is Stop),
         new(typeof(AddNewPathMenuItem), (_, data) => data is not (LinearGradient or Stop)),
@@ -83,10 +83,10 @@ public partial class SVGEditor
         new(typeof(AddNewTextMenuItem), (_, data) => data is not (LinearGradient or Stop)),
         new(typeof(AddNewGradientMenuItem), (_, data) => data is not (LinearGradient or Stop)),
         new(typeof(AddNewAnimationMenuItem), (_, data) => data is Shape shape && !shape.IsChildElement && !shape.AnimationElements.Any(a => a.AttributeName is "fill" or "stroke" or "d")),
-    };
+    ];
 
     [Parameter]
-    public List<ActionMenuItem> ActionMenuItems { get; set; } = new() {
+    public List<ActionMenuItem> ActionMenuItems { get; set; } = [
         new(typeof(FillMenuItem), (_, data) => data is Shape shape && !shape.IsChildElement),
         new(typeof(StrokeMenuItem), (_, data) => data is Shape shape && !shape.IsChildElement),
         new(typeof(TextMenuItem), (_, data) => data is Text text && !text.IsChildElement),
@@ -99,10 +99,10 @@ public partial class SVGEditor
         new(typeof(CopyMenuItem), (svgEditor, data) => data is Shape && !svgEditor.DisableCopyElement),
         new(typeof(PasteMenuItem), (svgEditor, _) => !svgEditor.DisablePasteElement),
         new(typeof(OptimizeMenuItem), (_, data) => data is Shape shape && !shape.IsChildElement),
-    };
+    ];
 
     [Parameter]
-    public List<SupportedElement> SupportedElements { get; set; } = new() {
+    public List<SupportedElement> SupportedElements { get; set; } = [
         new(typeof(Rect), (IElement element) => element.TagName.ToUpper() == "RECT"),
         new(typeof(Circle), (IElement element) => element.TagName.ToUpper() == "CIRCLE"),
         new(typeof(Ellipse), (IElement element) => element.TagName.ToUpper() == "ELLIPSE"),
@@ -113,16 +113,16 @@ public partial class SVGEditor
         new(typeof(Text), (IElement element) => element.TagName.ToUpper() == "TEXT"),
         new(typeof(G), (IElement element) => element.TagName.ToUpper() == "G"),
         new(typeof(Defs), (IElement element) => element.TagName.ToUpper() == "DEFS"),
-    };
+    ];
 
     [Parameter]
-    public List<SupportedAnimation> AnimationTypes { get; set; } = new()
-    {
+    public List<SupportedAnimation> AnimationTypes { get; set; } =
+    [
         new(typeof(AnimateFill), "fill"),
         new(typeof(AnimateStroke), "stroke"),
         new(typeof(AnimateStrokeDashoffset), "stroke-dashoffset"),
         new(typeof(AnimateD), "d"),
-    };
+    ];
 
     public void DisableAllInteractions()
     {

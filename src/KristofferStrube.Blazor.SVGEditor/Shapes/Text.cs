@@ -13,7 +13,7 @@ public class Text : Shape
     {
         string? style = element.GetAttribute("style");
         styleAttributes = style is null
-            ? (Dictionary<string, string>)new()
+            ? (Dictionary<string, string>)[]
             : style
                 .Split(";")
                 .Select(style => style.Split(":"))
@@ -77,7 +77,7 @@ public class Text : Shape
 
     public override Type Presenter => typeof(TextEditor);
 
-    public override List<(double x, double y)> SelectionPoints => new() { (BoundingBox.X, BoundingBox.Y), (BoundingBox.X + BoundingBox.Width, BoundingBox.Y), (BoundingBox.X + BoundingBox.Width, BoundingBox.Y + BoundingBox.Height), (BoundingBox.X, BoundingBox.Y + BoundingBox.Height) };
+    public override List<(double x, double y)> SelectionPoints => [(BoundingBox.X, BoundingBox.Y), (BoundingBox.X + BoundingBox.Width, BoundingBox.Y), (BoundingBox.X + BoundingBox.Width, BoundingBox.Y + BoundingBox.Height), (BoundingBox.X, BoundingBox.Y + BoundingBox.Height)];
 
     public override void HandlePointerMove(PointerEventArgs eventArgs)
     {

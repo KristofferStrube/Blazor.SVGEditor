@@ -31,7 +31,7 @@ public class G : Shape
 
     public override string StateRepresentation => string.Join("-", ChildShapes.Select(c => c.StateRepresentation)) + string.Join("-", Element.Attributes.Select(a => a.Value)) + Selected.ToString() + SVG.EditMode.ToString() + SVG.Scale + SVG.Translate.x + SVG.Translate.y + Serialize(BoundingBox);
 
-    public List<Shape> ChildShapes { get; set; } = new List<Shape>();
+    public List<Shape> ChildShapes { get; set; } = [];
 
     public override IEnumerable<(double x, double y)> SelectionPoints => ChildShapes.SelectMany(child => child.SelectionPoints);
 

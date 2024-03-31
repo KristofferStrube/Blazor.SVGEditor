@@ -40,7 +40,7 @@ public class Defs : ISVGElement
 
     public SVGEditor SVG { get; init; }
 
-    public List<ISVGElement> Children { get; init; } = new();
+    public List<ISVGElement> Children { get; init; } = [];
 
     public Type Presenter => typeof(DefsPresenter);
 

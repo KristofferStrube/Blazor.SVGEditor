@@ -34,7 +34,7 @@ public class Rect : Shape
 
     private (double x, double y)? AddPos { get; set; }
 
-    public override List<(double x, double y)> SelectionPoints => new() { (X, Y), (X + Width, Y), (X + Width, Y + Height), (X, Y + Height) };
+    public override List<(double x, double y)> SelectionPoints => [(X, Y), (X + Width, Y), (X + Width, Y + Height), (X, Y + Height)];
 
     public override void HandlePointerMove(PointerEventArgs eventArgs)
     {

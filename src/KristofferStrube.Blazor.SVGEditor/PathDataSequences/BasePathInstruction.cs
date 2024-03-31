@@ -12,7 +12,7 @@ public abstract class BasePathInstruction : IPathInstruction
     public bool ExplicitSymbol { get; set; } = true;
     public (double x, double y) StartPosition => PreviousInstruction is not null ? PreviousInstruction.EndPosition : (0, 0);
     public abstract (double x, double y) EndPosition { get; set; }
-    public virtual List<(double x, double y)> SelectionPoints => new() { StartPosition };
+    public virtual List<(double x, double y)> SelectionPoints => [StartPosition];
     public abstract string AbsoluteInstruction { get; }
     public abstract string RelativeInstruction { get; }
     public abstract override string ToString();
