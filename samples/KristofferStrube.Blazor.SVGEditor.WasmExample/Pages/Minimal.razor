@@ -8,6 +8,9 @@
 </p>
 @if (SVGEditor is not null)
 {
+    <button class="btn btn-primary" @onclick="() => SVGEditor.FitViewportToAllShapes()">Fit Viewport to Shapes</button>
+    <br />
+    <br />
     <div style="display:flex; flex-wrap: wrap; grid-column-gap: 30px;">
         <div>
             <InputCheckbox @bind-Value=SVGEditor.DisableContextMenu id="DisableContextMenu" />
@@ -59,16 +62,16 @@
         </div>
     </div>
 }
-<div style="height:70vh">
+<div style="height:65vh">
     <SVGEditor @ref="SVGEditor"
                Input=@Input
                InputUpdated="(string s) => { Input = s; StateHasChanged(); }"
                SnapToInteger=true
                AddNewSVGElementMenuItems=new()
                ActionMenuItems=@(new() {
-                   new(typeof(RemoveMenuItem), (svgEditor, data) => !svgEditor.DisableRemoveElement),
-                   new(typeof(CopyMenuItem), (svgEditor, data) => !svgEditor.DisableCopyElement),
-                   new(typeof(PasteMenuItem), (svgEditor, data) => !svgEditor.DisablePasteElement),
+               new(typeof(RemoveMenuItem), (svgEditor, data) => !svgEditor.DisableRemoveElement),
+               new(typeof(CopyMenuItem), (svgEditor, data) => !svgEditor.DisableCopyElement),
+               new(typeof(PasteMenuItem), (svgEditor, data) => !svgEditor.DisablePasteElement),
                })
                DisableSelecting=DisableSelecting
                DisableDeselecting=DisableDeselecting
