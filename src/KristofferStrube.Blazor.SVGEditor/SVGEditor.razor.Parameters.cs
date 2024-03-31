@@ -16,10 +16,16 @@ public partial class SVGEditor
     public Action<string>? InputUpdated { get; set; }
 
     [Parameter]
+    public Action? InputRendered { get; set; }
+
+    [Parameter]
     public SelectionMode SelectionMode { get; set; } = SelectionMode.WindowSelection;
 
     [Parameter]
     public bool SnapToInteger { get; set; } = false;
+
+    [Parameter]
+    public bool HideElements { get; set; } = false;
 
     [Parameter]
     public bool DisableContextMenu { get; set; }

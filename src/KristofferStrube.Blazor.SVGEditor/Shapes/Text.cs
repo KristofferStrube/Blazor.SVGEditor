@@ -19,6 +19,17 @@ public class Text : Shape
                 .Select(style => style.Split(":"))
                 .Where(pair => pair.Length is 2)
                 .ToDictionary(pair => pair[0], pair => pair[1]);
+
+        double fontSize = double.TryParse(styleAttributes.GetValueOrDefault("font-size"), out double size) ? size : 12;
+        double fontHeightEstimate = fontSize * 0.7;
+
+        BoundingBox = new()
+        {
+            X = element.GetAttributeOrZero("x"),
+            Y = element.GetAttributeOrZero("y") - fontHeightEstimate,
+            Width = element.TextContent.Length * fontHeightEstimate,
+            Height = fontHeightEstimate
+        };
     }
 
     public double X

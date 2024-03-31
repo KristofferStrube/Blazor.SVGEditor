@@ -2,5 +2,6 @@
     user-select: none;
     touch-action: none;
     background-color: white;
+    fill: white;
     border: 1px solid black;
 }

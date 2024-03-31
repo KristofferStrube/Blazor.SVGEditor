@@ -23,6 +23,10 @@
                 var Parameters = new Dictionary<string, object> { { "SVGElement", SVGElement } };
                 <DynamicComponent Type=@SVGElement.Presenter Parameters=Parameters />
             }
+            @if (HideElements)
+            {
+                <rect width="100%" height="100%" fill="white" class="svg-editor"></rect>
+            }
             @if (!DisableScaleLabel)
             {
                 <foreignObject class="unselectable" x="5" y="0" height="22" width="150" style="font-size:20px;pointer-events:none;touch-action:none;">Scale 1:@(Math.Round(Scale, 3).AsString())</foreignObject>
