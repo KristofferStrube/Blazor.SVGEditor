@@ -1,0 +1,85 @@
+/* _content/KristofferStrube.Blazor.SVGEditor/Anchor.razor.rz.scp.css */
+.anchor-outer[b-rvj5hkm3s6] {
+    stroke: white;
+}
+
+.anchor-inner[b-rvj5hkm3s6] {
+    pointer-events: none;
+    fill: transparent;
+}
+
+
+.anchor-inner-thin[b-rvj5hkm3s6] {
+    stroke-width: 2;
+    r: 5
+}
+
+.anchor-inner-thick[b-rvj5hkm3s6] {
+    stroke-width: 4;
+    r: 5
+}
+
+.anchor-outer-thin[b-rvj5hkm3s6] {
+    stroke-width: 2;
+    r: 6
+}
+
+.anchor-outer-thick[b-rvj5hkm3s6] {
+    stroke-width: 4;
+    r: 7
+}
+
+.anchor-primary[b-rvj5hkm3s6] {
+    stroke: black;
+}
+
+.anchor-secondary[b-rvj5hkm3s6] {
+    stroke: grey;
+}
+
+.anchor-opportunity[b-rvj5hkm3s6] {
+    stroke: blue;
+}
+/* _content/KristofferStrube.Blazor.SVGEditor/BoxScaler.razor.rz.scp.css */
+.box[b-bjhkw6h0i3] {
+    pointer-events: none;
+    fill: grey;
+    fill-opacity: 0.2;
+    stroke: grey;
+    stroke-width: 1;
+    stroke-dasharray: 4;
+}
+/* _content/KristofferStrube.Blazor.SVGEditor/StripedLine.razor.rz.scp.css */
+.line-non-offset[b-fe399spgo0] {
+    pointer-events: none;
+    stroke-dasharray: 4;
+    stroke-width: 2;
+}
+
+.line-offset[b-fe399spgo0] {
+    pointer-events: none;
+    stroke-dasharray: 4;
+    stroke-dashoffset: 4;
+    stroke: white;
+    stroke-width: 2;
+}
+
+.line-primary[b-fe399spgo0] {
+    stroke: black;
+}
+
+.line-secondary[b-fe399spgo0] {
+    stroke: grey;
+}
+
+.line-opportunity[b-fe399spgo0] {
+    stroke: blue;
+}
+/* _content/KristofferStrube.Blazor.SVGEditor/SVGEditor.razor.rz.scp.css */
+.svg-editor[b-9w7y7ibaf8] {
+    user-select: none;
+    touch-action: none;
+    background-color: white;
+    fill: white;
+    border: 1px solid black;
+}
