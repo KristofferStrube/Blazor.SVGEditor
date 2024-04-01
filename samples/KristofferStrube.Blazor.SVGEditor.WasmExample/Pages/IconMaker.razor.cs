@@ -20,7 +20,7 @@ public partial class IconMaker
     public async Task Copy()
     {
         string SVG = $"""
-                    <svg class="bi" width="30" height="30" viewBox="0 0 16 16">
+                    <svg class="bi" viewBox="0 0 16 16">
                         {Input}
                     </svg>
                     """;
