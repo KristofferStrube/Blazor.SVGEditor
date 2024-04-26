@@ -96,8 +96,15 @@ public abstract class Shape : ISVGElement
     public string StoredHtml { get; set; } = string.Empty;
     public virtual void UpdateHtml()
     {
-        AnimationElements.ForEach(a => a.UpdateHtml());
-        StoredHtml = $"<{Element.LocalName}{string.Join("", Element.Attributes.Select(a => $" {a.Name}=\"{a.Value}\""))}>" + (AnimationElements.Count > 0 ? "\n" : "") + string.Join("", AnimationElements.Select(a => a.StoredHtml + "\n")) + $"</{Element.LocalName}>";
+        try
+        {
+            AnimationElements.ForEach(a => a.UpdateHtml());
+            StoredHtml = $"<{Element.LocalName}{string.Join("", Element.Attributes.Select(a => $" {a.Name}=\"{a.Value}\""))}>" + (AnimationElements.Count > 0 ? "\n" : "") + string.Join("", AnimationElements.Select(a => a.StoredHtml + "\n")) + $"</{Element.LocalName}>";
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
     }
 
     public virtual void Rerender()

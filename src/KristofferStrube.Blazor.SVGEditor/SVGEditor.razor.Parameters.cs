@@ -19,6 +19,25 @@ public partial class SVGEditor
     public SelectionMode SelectionMode { get; set; } = SelectionMode.WindowSelection;
 
     [Parameter]
+    public bool BackgroundTransparent { get; set;} = false;
+
+    [Parameter]
+    public string ViewBox { get; set; } = "";
+
+    [Parameter]
+    public double BackgroundWidth { get; set; } = 0;
+
+    [Parameter]
+    public double BackgroundHeight { get; set; } = 0;
+
+    [Parameter]
+    public double ElementWidth { get; set; } = 0;
+
+    [Parameter]
+    public double ElementHeight { get; set; } = 0;
+
+
+    [Parameter]
     public bool SnapToInteger { get; set; } = false;
 
     [Parameter]

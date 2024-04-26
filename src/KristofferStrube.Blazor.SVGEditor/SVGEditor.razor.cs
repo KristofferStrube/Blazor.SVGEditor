@@ -256,6 +256,12 @@ public partial class SVGEditor : ComponentBase
 
     public (double x, double y) LocalDetransform((double x, double y) pos)
     {
+        if(BackgroundWidth != 0 && BackgroundHeight != 0 && ElementWidth != 0 && ElementHeight != 0)
+        {
+            pos.x = pos.x * (BackgroundWidth / ElementWidth);
+            pos.y = pos.y * (BackgroundHeight / ElementHeight);
+        }
+
         (double x, double y) res = (x: (pos.x - Translate.x) / Scale, y: (pos.y - Translate.y) / Scale);
         return SnapToInteger ? ((double x, double y))((int)res.x, (int)res.y) : res;
     }
