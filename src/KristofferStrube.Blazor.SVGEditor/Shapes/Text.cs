@@ -13,12 +13,23 @@ public class Text : Shape
     {
         string? style = element.GetAttribute("style");
         styleAttributes = style is null
-            ? (Dictionary<string, string>)new()
+            ? (Dictionary<string, string>)[]
             : style
                 .Split(";")
                 .Select(style => style.Split(":"))
                 .Where(pair => pair.Length is 2)
                 .ToDictionary(pair => pair[0], pair => pair[1]);
+
+        double fontSize = double.TryParse(styleAttributes.GetValueOrDefault("font-size"), out double size) ? size : 12;
+        double fontHeightEstimate = fontSize * 0.7;
+
+        BoundingBox = new()
+        {
+            X = element.GetAttributeOrZero("x"),
+            Y = element.GetAttributeOrZero("y") - fontHeightEstimate,
+            Width = element.TextContent.Length * fontHeightEstimate,
+            Height = fontHeightEstimate
+        };
     }
 
     public double X
@@ -66,7 +77,7 @@ public class Text : Shape
 
     public override Type Presenter => typeof(TextEditor);
 
-    public override List<(double x, double y)> SelectionPoints => new() { (BoundingBox.X, BoundingBox.Y), (BoundingBox.X + BoundingBox.Width, BoundingBox.Y), (BoundingBox.X + BoundingBox.Width, BoundingBox.Y + BoundingBox.Height), (BoundingBox.X, BoundingBox.Y + BoundingBox.Height) };
+    public override List<(double x, double y)> SelectionPoints => [(BoundingBox.X, BoundingBox.Y), (BoundingBox.X + BoundingBox.Width, BoundingBox.Y), (BoundingBox.X + BoundingBox.Width, BoundingBox.Y + BoundingBox.Height), (BoundingBox.X, BoundingBox.Y + BoundingBox.Height)];
 
     public override void HandlePointerMove(PointerEventArgs eventArgs)
     {

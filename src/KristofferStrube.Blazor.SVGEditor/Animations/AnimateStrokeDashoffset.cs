@@ -60,7 +60,7 @@ public class AnimateStrokeDashoffset : BaseAnimate
         AnimateStrokeDashoffset animate = new(element, parent, SVG)
         {
             AttributeName = "stroke-dashoffset",
-            Values = new(),
+            Values = [],
             Begin = 0,
             Dur = 5,
         };

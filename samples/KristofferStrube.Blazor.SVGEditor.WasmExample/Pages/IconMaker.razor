@@ -1,0 +1,18 @@
+﻿@page "/IconMaker"
+@inject IJSRuntime JSRuntime
+
+<button class="btn btn-primary" @onclick=Copy>Copy SVG to clipboard</button>
+<div style="display:flex;flex-direction:row;width:100%;">
+    <textarea @bind="Input" @bind:event="oninput" style="width:100%;" />
+    <div style="height:80vh;aspect-ratio:1">
+        <SVGEditor @ref=sVGEditor
+                   Input=@Input
+                   InputUpdated="(string s) => { Input = s; StateHasChanged(); }"
+                   InputRendered="InputHasBeenRendered"
+                   DisableZoom=true
+                   DisablePanning=true
+                   SnapToInteger=true
+                   />
+    </div>
+</div>
+

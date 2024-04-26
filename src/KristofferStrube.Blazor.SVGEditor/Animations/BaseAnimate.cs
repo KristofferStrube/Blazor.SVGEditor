@@ -97,7 +97,7 @@ public abstract class BaseAnimate : ISVGElement
 
     public static List<string> StringToValues(string attribute)
     {
-        return attribute == null ? new List<string>() : attribute.Split(";").Select(e => e.Trim()).ToList();
+        return attribute == null ? [] : attribute.Split(";").Select(e => e.Trim()).ToList();
     }
 
     private static string ValuesToString(List<string> values)

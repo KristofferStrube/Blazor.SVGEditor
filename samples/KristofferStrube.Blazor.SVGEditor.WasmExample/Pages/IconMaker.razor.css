@@ -1,0 +1,23 @@
+﻿::deep .anchor-inner-thin {
+    stroke-width: 2;
+    r: 12
+}
+
+::deep .anchor-inner-thick {
+    stroke-width: 4;
+    r: 12
+}
+
+::deep .anchor-outer-thin {
+    stroke-width: 4;
+    r: 14
+}
+
+::deep .anchor-outer-thick {
+    stroke-width: 6;
+    r: 16
+}
+
+::deep .svg-editor {
+    background-color: #f5f5f5;
+}

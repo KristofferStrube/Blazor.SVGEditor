@@ -37,7 +37,7 @@ public class AnimateFill : BaseAnimate
         AnimateFill animate = new(element, parent, SVG)
         {
             AttributeName = "fill",
-            Values = new(),
+            Values = [],
             Begin = 0,
             Dur = 5,
         };

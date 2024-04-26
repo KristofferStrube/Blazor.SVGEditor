@@ -18,7 +18,7 @@ public class Defs : ISVGElement
         {
             ISVGElement? sVGElement = SVG.SupportedElements.FirstOrDefault(se => se.CanHandle(child))?.ElementType is Type type
                 ? Activator.CreateInstance(type, child, SVG) as Shape
-                : GradientTypes.TryGetValue(child.TagName, out Type? gradientType)
+                : GradientTypes.TryGetValue(child.TagName.ToUpper(), out Type? gradientType)
                     ? Activator.CreateInstance(gradientType, child, SVG) as ISVGElement
                     : throw new NotImplementedException($"Tag not supported:\n {child.OuterHtml}");
             if (sVGElement is not null)
@@ -40,7 +40,7 @@ public class Defs : ISVGElement
 
     public SVGEditor SVG { get; init; }
 
-    public List<ISVGElement> Children { get; init; } = new();
+    public List<ISVGElement> Children { get; init; } = [];
 
     public Type Presenter => typeof(DefsPresenter);
 

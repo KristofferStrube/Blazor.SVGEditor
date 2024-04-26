@@ -29,7 +29,7 @@ public class Node : Circle
         }
     }
 
-    public HashSet<Connector> RelatedConnectors { get; } = new();
+    public HashSet<Connector> RelatedConnectors { get; } = [];
 
     public override void HandlePointerMove(PointerEventArgs eventArgs)
     {

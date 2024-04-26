@@ -60,7 +60,7 @@ public class AnimateD : BaseAnimate
         AnimateD animate = new(element, parent, SVG)
         {
             AttributeName = "d",
-            Values = new(),
+            Values = [],
             Begin = 0,
             Dur = 5,
         };

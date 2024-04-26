@@ -37,7 +37,7 @@ public class AnimateStroke : BaseAnimate
         AnimateStroke animate = new(element, parent, SVG)
         {
             AttributeName = "stroke",
-            Values = new(),
+            Values = [],
             Begin = 0,
             Dur = 5,
         };

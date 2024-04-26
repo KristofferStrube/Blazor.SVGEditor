@@ -13,12 +13,12 @@ internal static class StringExtensions
         try
         {
             return string.IsNullOrWhiteSpace(points)
-                ? new()
+                ? []
                 : points.Trim().Split(" ").Select(p => (x: p.Split(",")[0].ParseAsDouble(), y: p.Split(",")[1].ParseAsDouble())).ToList();
         }
         catch (Exception)
         {
-            return new();
+            return [];
         }
     }
     internal static string ToUrl(this string id)

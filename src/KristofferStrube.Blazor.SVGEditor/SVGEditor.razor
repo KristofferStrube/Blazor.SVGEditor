@@ -1,25 +1,42 @@
 ﻿<CascadingValue Value=this IsFixed=true>
     <ContextMenuTrigger MenuId="SVGMenu" style="height:100%;" MouseButtonTrigger="ShouldShowContextMenu(null) ? MouseButtonTrigger.Right : (MouseButtonTrigger)4">
-            <svg @ref=svgElementReference
-                 @onpointermove="Move"
-                 @onpointerdown="Down"
-                 @ontouchstart="TouchStart"
-                 @ontouchmove="TouchMove"
-                 @ontouchend="TouchEnd"
-                 @ontouchleave="TouchEnd"
-                 @onpointerup="Up"
-                 @onpointerout="Out"
-                 @onwheel="Wheel"
-                 @onpointerdown:stopPropagation="true"
-                 @oncontextmenu="()=>{}"
-                 @oncontextmenu:preventDefault="true"
-                 class="svg-editor"
-                 style="@(BackgroundTransparent ? "background: transparent;" : null) cursor:@(translatePanner.HasValue ? "move" : "initial");"
-                 width="100%"
-                 height="100%"
-                 viewBox="@ViewBox">
-                <rect width="100%" height="100%" fill="transparent" @onmousedown=@UnSelect @ontouchstart=@TouchUnSelect></rect>
-                @foreach (ISVGElement SVGElement in Elements)
+        <svg @ref=svgElementReference
+             @onpointermove="Move"
+             @onpointerdown="Down"
+             @ontouchstart="TouchStart"
+             @ontouchmove="TouchMove"
+             @ontouchend="TouchEnd"
+             @ontouchleave="TouchEnd"
+             @onpointerup="Up"
+             @onpointerout="Out"
+             @onwheel="Wheel"
+             @onpointerdown:stopPropagation="true"
+             @oncontextmenu="()=>{}"
+             @oncontextmenu:preventDefault="true"
+             class="svg-editor"
+             style="@(BackgroundTransparent ? "background: transparent;" : null) cursor:@(translatePanner.HasValue ? "move" : "initial");"
+             width="100%"
+             height="100%"
+             viewBox="@ViewBox">
+            <rect width="100%" height="100%" fill="transparent" @onmousedown=@UnSelect @ontouchstart=@TouchUnSelect></rect>
+            @foreach (ISVGElement SVGElement in Elements)
+            {
+                var Parameters = new Dictionary<string, object> { { "SVGElement", SVGElement } };
+                <DynamicComponent Type=@SVGElement.Presenter Parameters=Parameters />
+            }
+            @if (HideElements)
+            {
+                <rect width="100%" height="100%" fill="white" class="svg-editor"></rect>
+            }
+            @if (!DisableScaleLabel)
+            {
+                <foreignObject class="unselectable" x="5" y="0" height="22" width="150" style="font-size:20px;pointer-events:none;touch-action:none;">Scale 1:@(Math.Round(Scale, 3).AsString())</foreignObject>
+            }
+            @foreach (var shape in MarkedShapes)
+            {
+                @if (shape.Fill is ['u', 'r', 'l', '(', '\'', '#', .. var id, '\'', ')']
+               && Definitions.TryGetValue(id, out var definition)
+               && definition is LinearGradient linearGradient)
                 {
                     var Parameters = new Dictionary<string, object> { { "SVGElement", SVGElement } };
                     <DynamicComponent Type=@SVGElement.Presenter Parameters=Parameters />
