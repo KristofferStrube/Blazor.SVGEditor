@@ -1,7 +1,9 @@
 ﻿@page "/IconMaker"
 @inject IJSRuntime JSRuntime
 
-<button class="btn btn-primary" @onclick=Copy>Copy SVG to clipboard</button>
+<button class="btn btn-primary" @onclick=Copy>Copy SVG to clipboard</button><br />
+<input type="number" @bind-value:event="oninput" @bind-value=@width style="width:80px;" min="8" max="128" />
+<input type="range" @bind-value:event="oninput" @bind-value=@width min="8" max="128" step="1" />
 <div style="display:flex;flex-direction:row;width:100%;">
     <textarea @bind="Input" @bind:event="oninput" style="width:100%;" />
     <div style="height:80vh;aspect-ratio:1">
