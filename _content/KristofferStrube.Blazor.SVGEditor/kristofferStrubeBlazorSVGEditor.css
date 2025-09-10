@@ -1,0 +1,50 @@
+﻿.colorPickerCube {
+    width: 0.8rem;
+    height: 0.8rem;
+    display: inline-block;
+    border-width: 1px;
+    border-style: solid;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.icon {
+    width: calc(0.8rem + 10px);
+    display: inline-block;
+    text-align: center;
+}
+
+.dark {
+    background-color: lightgrey;
+}
+
+
+path:focus, rect:focus, circle:focus, ellipse:focus, polygon:focus, polyline:focus, line:focus, g:focus, text:focus {
+    outline: none;
+}
+
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: none;
+}
+
+.textInput {
+    color: transparent;
+    user-select: none;
+    caret-color: black;
+    border: none;
+    outline: none;
+    background: none;
+    text-overflow: clip;
+    line-height: 1;
+    padding: 0px;
+}
+
+    .textInput::selection {
+        background:none;
+    }
